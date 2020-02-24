@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+
+  web:
+
+    image:
+      varlive/vue-varlive:game-latest
+
+    deploy:
+
+      replicas: 1
+
+      restart_policy:
+        condition: on-failure
+
+    volumes :
+      #- /home/luan/docker_lab/vuejs/vue-varlive:/vue-ms
+      - /home/luan/docker_lab/opms_vuejs/vue-competition:/vue-ms
+
+    # command: sh -c "cd /vue-ms && npm install"
+    command: sh -c "cd /vue-ms && npm run serve"
+
+    ports:
+
+      - "8080:8080"
+      #- "8089:8081"
+
+    networks:
+
+      - webnet
+
+
+networks:
+
+  webnet:
+
+

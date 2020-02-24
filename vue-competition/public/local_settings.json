@@ -1,0 +1,44 @@
+{ 
+    "menus":[   
+    {
+        "index": "user_edit",
+        "title": "menus.user_edit"
+    },
+    {
+        "index": "role_edit",
+        "title": "menus.role_edit"
+    },
+    {
+        "index": "dictionary_setting",
+        "title": "menus.dict_setting"
+    },
+    {
+        "index": "competition_info",
+        "title": "menus.competition_info"
+    },
+    {
+        "index": "competition_info_edit",
+        "title": "menus.competition_info_edit"
+    },
+    {
+        "index": "register_verify",
+        "title": "menus.register_verify"
+    },
+    {
+        "index": "competition_check_in",
+        "title": "menus.competition_check_in"
+    },
+    {
+        "index": "competition_group",
+        "title": "menus.competition_group"
+    },
+    {
+        "index": "competition_statistics",
+        "title": "menus.competition_statistics"
+    }
+
+
+
+    
+    ]
+}
