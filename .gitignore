@@ -1,0 +1,48 @@
+
+vue-varlive/\.env
+vue-aws/\.env
+vue-swarm-varlive\.yml
+vue-swarm-aws\.yml
+vue-swarm-competition\.yml
+
+# Created by https://www.gitignore.io/api/vuejs
+# Edit at https://www.gitignore.io/?templates=vuejs
+
+### Vuejs ###
+# Recommended template: Node.gitignore
+
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# End of https://www.gitignore.io/api/vuejs
+
+
+.DS_Store
+node_modules
+/dist
+example.html
+favicon.ico
+# local env files
+.env.local
+.env.*.local
+.env
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+# key ignore
+*.pem
+
+vue-competition/package-lock.json
