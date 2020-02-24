@@ -15,8 +15,8 @@ services:
         condition: on-failure
 
     volumes :
-      #- /home/luan/docker_lab/vuejs/vue-varlive:/vue-ms
-      - /home/luan/docker_lab/opms_vuejs/vue-competition:/vue-ms
+      #- /home/luan/docker_lab/gaming_vuejs/vue-competition:/vue-ms
+      - /home/luan/docker_lab/gaming_vuejs/vue-competition:/vue-ms
 
     # command: sh -c "cd /vue-ms && npm install"
     command: sh -c "cd /vue-ms && npm run serve"
