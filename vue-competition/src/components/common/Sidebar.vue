@@ -53,7 +53,22 @@ export default {
                     icon: "el-icon-info",
                     index: "competition_info",
                     title: this.$t("menus.competition_info"),
-                    show: this.hasThisMenu("competition_info")
+                    show: this.includeSubMenu([
+                        "competition_advance_info",
+                        "competition_league_info"
+                    ]),
+                    subs: [            
+                        {
+                            index: "competition_info?ctype=advance",
+                            title: this.$t("menus.competition_advance_info"),
+                            show: this.hasThisMenu("competition_advance_info")
+                        },
+                        {
+                            index: "competition_info?ctype=league",
+                            title: this.$t("menus.competition_league_info"),
+                            show: this.hasThisMenu("competition_league_info")
+                        },
+                    ]
                 },
                 // Registration Form Verify management
                 {

@@ -78,6 +78,8 @@ export const messages = {
             dict_setting: '字典檔設定',
             dictionary_setting: '字典檔設定',
             competition_info:"比賽資訊",
+            competition_league_info:"聯賽資訊",
+            competition_advance_info:"晉級賽資訊",
             competition_info_edit:"比賽資訊編輯",
             register_verify:"報名審核",
             competition_check_in:"報到管理",
@@ -117,9 +119,12 @@ export const messages = {
                 delete: '刪除字典檔'
             },
             actions:{
-                view_competition:"檢視比賽",
-                update_competition:"編輯比賽",
-                delete_competition:"刪除比賽",
+                view_advance_competition:"檢視晉級賽",
+                update_advance_competition:"編輯晉級賽",
+                delete_advance_competition:"刪除晉級賽",
+                view_league_competition:"檢視聯賽",
+                update_league_competition:"編輯聯賽",
+                delete_league_competition:"刪除聯賽",
             }
         },
         btn:{
@@ -349,6 +354,8 @@ export const messages = {
             dict_setting: 'Dictionary Setting',
             dictionary_setting: 'Dictionary Setting',
             competition_info:"Competition Information",
+            competition_league_info:"League Information",
+            competition_advance_info:"Advance Information",
             competition_info_edit:"Competition Information Edit",
             register_verify:"Registration Form Verify",
             competition_check_in:"Competition Check In",
@@ -388,9 +395,12 @@ export const messages = {
             delete: 'delete dictionary'
             },
             actions:{
-                view_competition:"View Competition",
-                update_competition:"Edit Competition",
-                delete_competition:"Delete Competition",
+                view_advance_competition:"View Advance Competition",
+                update_advance_competition:"Edit Advance Competition",
+                delete_advance_competition:"Delete Advance Competition",
+                view_league_competition:"View League Competition",
+                update_league_competition:"Edit League Competition",
+                delete_league_competition:"Delete League Competition",
             }
         },
         btn: {

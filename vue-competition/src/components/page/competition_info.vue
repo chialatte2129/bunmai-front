@@ -2,7 +2,10 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-info"></i> {{$t('menus.competition_info')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-info"></i>
+                    <span v-if="$route.query.ctype=='league'"> {{$t('menus.competition_league_info')}}</span>
+                    <span v-else> {{$t('menus.competition_advance_info')}}</span>
+                </el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.overview')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -47,10 +50,10 @@
                 <el-table-column prop="location" label="location" sortable="custom"></el-table-column>
                 <el-table-column prop="city" label="city" sortable="custom"></el-table-column>
                 <el-table-column prop="game" label="game" sortable="custom"></el-table-column>
-                <el-table-column prop="status" label="status" width="105" sortable="custom" align="center">
+                <el-table-column prop="status" label="status" width="110" sortable="custom" align="center">
                     <template slot-scope="scope" style="text-align:center;">
-                        <el-button size="mini" plain v-if="scope.row.status=='D'" type="info" @click="">{{$t('common_msg.draft')}}</el-button>
-                        <el-button size="mini" plain v-else-if="scope.row.status=='P'" type="success" @click="">{{$t('common_msg.publish')}}</el-button>
+                        <el-button size="mini" plain v-if="scope.row.status=='D'" type="info" @click="" :disabled="!update_info_auth">{{$t('common_msg.draft')}}</el-button>
+                        <el-button size="mini" plain v-else-if="scope.row.status=='P'" type="success" @click="" :disabled="!update_info_auth">{{$t('common_msg.publish')}}</el-button>
                         <el-button size="mini" plain v-else :disabled="true">{{$t('common_msg.abandon')}}</el-button>
                     </template>
                 </el-table-column>
@@ -115,6 +118,7 @@ export default {
             delVisible:false,
             publish_status:"D",
             table_loading:false,
+            ctype:"",
             options:{
                 country:[],
                 city:[],
@@ -141,23 +145,29 @@ export default {
         },
 
         view_info_auth(){
-            return localStorage.getItem("ms_user_actions").includes("view_competition")
+            return localStorage.getItem("ms_user_actions").includes(`view_${this.$route.query.ctype}_competition`)
         },
 
         update_info_auth(){
-            return localStorage.getItem("ms_user_actions").includes("update_competition")
+            return localStorage.getItem("ms_user_actions").includes(`update_${this.$route.query.ctype}_competition`)
         },
 
         delete_info_auth(){
-            return localStorage.getItem("ms_user_actions").includes("delete_competition")
+            return localStorage.getItem("ms_user_actions").includes(`delete_${this.$route.query.ctype}_competition`)
         },
 
 
     },
     watch:{
-
+        '$route.query.ctype':{
+            handler(newval, oldval){
+                this.getData()
+            },
+        }
     },
     created(){
+        
+        console.log(this.update_info_auth)
         this.getOption();
         this.getData();
     },
@@ -174,8 +184,10 @@ export default {
             }
         },
         getData(){
-
-            this.$router.replace({path:'/competition_info',query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
+            this.table_loading=true;
+            this.ctype = this.$route.query.ctype;
+            this.$router.replace({path:`/competition_info?ctype=${this.ctype}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
+            this.table_loading=false;
         },
 
         getOption(){
@@ -214,7 +226,7 @@ export default {
         },
 
         handleCreate(){
-            this.$router.push({path:'/competition_info_edit', query:{type:"create"}});
+            this.$router.push({path:`/competition_info_edit?ctype=${this.ctype}`, query:{type:"create"}});
         },
 
         pushEdit(row){
@@ -240,7 +252,7 @@ export default {
         },
 
         handleEdit(index, row) {
-            this.$router.push({path:'/competition_info_edit', query:this.pushEdit(row)});
+            this.$router.push({path:`/competition_info_edit?ctype=${this.ctype}`, query:this.pushEdit(row)});
         },
 
         handleDelete(index, row){
@@ -253,17 +265,13 @@ export default {
         },
 
         search(){
-            this.table_loading=true;
             console.log("search ", this.filter);
             this.handleCurrentChange(1);
-            this.table_loading=false;
         },
 
         cancelSearch(){
-            this.table_loading=true;
             this.resetFilter();
             this.handleCurrentChange(1);
-            this.table_loading=false;
         },
 
         resetFilter(){

@@ -13,8 +13,12 @@
         "title": "menus.dict_setting"
     },
     {
-        "index": "competition_info",
-        "title": "menus.competition_info"
+        "index": "competition_advance_info",
+        "title": "menus.competition_advance_info"
+    },
+    {
+        "index": "competition_league_info",
+        "title": "menus.competition_league_info"
     },
     {
         "index": "competition_info_edit",

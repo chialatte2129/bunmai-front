@@ -2,7 +2,10 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb>
-                <el-breadcrumb-item :to="{path:'/competition_info', query:pushTable()}"><i class="el-icon-info"></i> {{$t('menus.competition_info')}}</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{path:`/competition_info?ctype=${$route.query.ctype}`, query:pushTable()}"><i class="el-icon-info"></i>
+                    <span v-if="$route.query.ctype=='league'"> {{$t('menus.competition_league_info')}}</span>
+                    <span v-else> {{$t('menus.competition_advance_info')}}</span>
+                </el-breadcrumb-item>
                 <el-breadcrumb-item>{{$t('menus.competition_info_edit')}}&nbsp;&nbsp;&nbsp;&nbsp;<span v-if="$route.query.type!='create'"><b>{{$route.query.game_id}}. {{form.name}}</b></span></el-breadcrumb-item>
             </el-breadcrumb>
             <span style="float:right;margin-top:-38px">
@@ -177,7 +180,7 @@ export default {
     },
     computed:{
         update_info_auth(){
-            return localStorage.getItem("ms_user_actions").includes("update_competition")
+            return localStorage.getItem("ms_user_actions").includes(`update_${this.$route.query.ctype}_competition`)
         },
 
         block_area(){
@@ -259,9 +262,9 @@ export default {
 
         goBackTable(){
             if(this.$route.query.type=="create"){
-                this.$router.push({path:'/competition_info'});
+                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`});
             }else{
-                this.$router.push({path:'/competition_info',query:this.pushTable()});
+                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`,query:this.pushTable()});
             }
         },
 
