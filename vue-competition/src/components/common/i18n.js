@@ -79,6 +79,7 @@ export const messages = {
             dictionary_setting: '字典檔設定',
             competition_info:"比賽資訊",
             competition_league_info:"聯賽資訊",
+            competition_league_manage:"聯賽管理",
             competition_advance_info:"晉級賽資訊",
             competition_info_edit:"比賽資訊編輯",
             register_verify:"報名審核",
@@ -86,6 +87,13 @@ export const messages = {
             competition_group:"分組設定",
             competition_statistics:"比賽統計顯示",
             overview:"總覽",
+
+            league_detail_setting:"聯賽細項設定",
+            league_teams_matches:"對陣圖設定",
+            league_live_channel:"直播頻道設定",
+            league_standing:"排行榜設定",
+            league_teams:"聯賽戰隊管理",
+            league_players:"聯賽玩家管理"
         },
         table_title:{
             role :'角色代號',
@@ -355,6 +363,7 @@ export const messages = {
             dictionary_setting: 'Dictionary Setting',
             competition_info:"Competition Information",
             competition_league_info:"League Information",
+            competition_league_manage:"League Management",
             competition_advance_info:"Advance Information",
             competition_info_edit:"Competition Information Edit",
             register_verify:"Registration Form Verify",
@@ -362,6 +371,13 @@ export const messages = {
             competition_group:"Competition Group",
             competition_statistics:"Competition Statistics",
             overview:"Overview",
+
+            league_detail_setting:"League Detail Setting",
+            league_teams_matches:"Matches Setting",
+            league_live_channel:"Live Channel Setting",
+            league_standing:"Standing Setting",
+            league_teams:"League Teams Management",
+            league_players:"League Players Management"
         },
         table_title :{
             role :'Role id',

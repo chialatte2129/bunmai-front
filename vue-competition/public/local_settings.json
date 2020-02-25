@@ -21,6 +21,22 @@
         "title": "menus.competition_league_info"
     },
     {
+        "index": "competition_league_manage",
+        "title": "menus.competition_league_manage"
+    },
+    {
+        "index": "league_detail_setting",
+        "title": "menus.league_detail_setting"
+    },
+    {
+        "index": "league_teams",
+        "title": "menus.league_teams"
+    },
+    {
+        "index": "league_players",
+        "title": "menus.league_players"
+    },
+    {
         "index": "competition_info_edit",
         "title": "menus.competition_info_edit"
     },

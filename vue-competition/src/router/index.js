@@ -21,9 +21,34 @@ export default new Router({
                     meta: { title:  'menus.competition_info' }
                 }, 
                 {
+                    path: '/competition_league_info',
+                    component: resolve => require(['../components/page/competition_info.vue'], resolve),
+                    meta: { title:  'menus.competition_league_info' }
+                },
+                {
+                    path: '/competition_advance_info',
+                    component: resolve => require(['../components/page/competition_info.vue'], resolve),
+                    meta: { title:  'menus.competition_advance_info' }
+                },
+                {
                     path: '/competition_info_edit',
                     component: resolve => require(['../components/page/competition_info_edit.vue'], resolve),
                     meta: { title:  'menus.competition_info_edit' }
+                }, 
+                {
+                    path: '/league_detail_setting',
+                    component: resolve => require(['../components/page/league_detail_setting.vue'], resolve),
+                    meta: { title:  'menus.league_detail_setting' }
+                }, 
+                {
+                    path: '/league_teams',
+                    component: resolve => require(['../components/page/league_teams.vue'], resolve),
+                    meta: { title:  'menus.league_teams' }
+                }, 
+                {
+                    path: '/league_players',
+                    component: resolve => require(['../components/page/league_players.vue'], resolve),
+                    meta: { title:  'menus.league_players' }
                 }, 
                 {
                     path: '/register_verify',

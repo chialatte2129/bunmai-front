@@ -161,28 +161,50 @@ export default {
     watch:{
         '$route.query.ctype':{
             handler(newval, oldval){
-                this.getData()
+                this.redirect();
+                this.getData();
+                this.redirectCheck();
             },
         }
     },
     created(){
-        
-        console.log(this.update_info_auth)
         this.getOption();
         this.getData();
     },
     methods:{
+        redirect(){
+            var menus = localStorage.getItem("ms_user_menus")
+            var path_to = menus.substring(0, menus.search(","))
+            if(this.$route.query.ctype=="undefined"||this.$route.query.ctype==undefined){
+                if(path_to=="competition_league_info"){
+                    this.$route.query.ctype="league";
+                }else if(path_to=="competition_advance_info"){
+                    this.$route.query.ctype="advance";
+                }else{
+                    this.$router.push({path:"login"});
+                }
+            }
+        },
+
+        redirectCheck(){
+            if(this.$route.query.ctype!="league"||this.$route.query.ctype!="advance"){
+                this.$router.push({path:"login"});
+            }
+        },
+
         handleCountryVisibleChange(callback){
             if(!callback&&this.filter.country.length>0){
                 this.changeCitySelection();
                 this.search();
             }
         },
+
         handleCityVisibleChange(callback){
             if(!callback&&this.filter.city.length>0){
                 this.search();
             }
         },
+
         getData(){
             this.table_loading=true;
             this.ctype = this.$route.query.ctype;
