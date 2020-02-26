@@ -86,7 +86,7 @@ function list_by_page (token_id,page_count,filter) {
 
 }
 
-function update_account (token_id,is_new,username,email,roles,last_name,new_pass,info) {  
+function update_account (token_id,is_new,username,email,roles,last_name,info,new_pass) {  
   var param = {       
       'token_id': token_id,
       'is_new':is_new,
@@ -94,8 +94,8 @@ function update_account (token_id,is_new,username,email,roles,last_name,new_pass
       'email': email,
       'roles' : roles,
       'last_name':last_name,
-      'new_pass': new_pass,
-      'info': info
+      'info': info,
+      'new_pass': new_pass
   }  
   return new Promise((resolve, reject) => {
     axios.post(process.env.VUE_APP_API+ '/gaming/v1/save_account', param).then((resp) => {

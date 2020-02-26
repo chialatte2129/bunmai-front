@@ -2,7 +2,10 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb>
-                <el-breadcrumb-item :to="{path:'/competition_info', query:pushTable()}"><i class="el-icon-info"></i> {{$t('menus.competition_info')}}</el-breadcrumb-item>
+                <el-breadcrumb-item :to="{path:`/competition_info?ctype=${$route.query.ctype}`, query:pushTable()}"><i class="el-icon-info"></i>
+                    <span v-if="$route.query.ctype=='league'"> {{$t('menus.competition_league_info')}}</span>
+                    <span v-else> {{$t('menus.competition_advance_info')}}</span>
+                </el-breadcrumb-item>
                 <el-breadcrumb-item>{{$t('menus.competition_info_edit')}}&nbsp;&nbsp;&nbsp;&nbsp;<span v-if="$route.query.type!='create'"><b>{{$route.query.game_id}}. {{form.name}}</b></span></el-breadcrumb-item>
             </el-breadcrumb>
             <span style="float:right;margin-top:-38px">
@@ -98,14 +101,14 @@
                                 </el-col>
                             </div>
                         </el-card>
-                        <el-card shadow="hover" style="min-height:204px;height:auto;">
+                        <!-- <el-card shadow="hover" style="min-height:204px;height:auto;">
                             <div slot="header" class="clearfix">
                                 <span>{{$t('game_info.name_i18n')}}</span>
                             </div>
                             <div class="info-area">
                                 
                             </div>
-                        </el-card>
+                        </el-card> -->
                     </el-col>
                 </el-row>
             </el-form>
@@ -124,10 +127,10 @@ export default {
             form:{
                 game_id:"",
                 name:"",
-                name_i18n:{},
                 country:"",
                 city:"",
                 game:"",
+                game_type:this.$route.query.ctype,
                 min_players:1,
                 max_players:1,
                 register_start_time:null,
@@ -137,7 +140,8 @@ export default {
                 show_timezone:8,
                 fee:0,
                 currency:"",
-                content:""
+                content:"",
+                status:"",
             },
             options:{
                 country:[],
@@ -177,7 +181,7 @@ export default {
     },
     computed:{
         update_info_auth(){
-            return localStorage.getItem("ms_user_actions").includes("update_competition")
+            return localStorage.getItem("ms_user_actions").includes(`update_${this.$route.query.ctype}_competition`)
         },
 
         block_area(){
@@ -259,9 +263,9 @@ export default {
 
         goBackTable(){
             if(this.$route.query.type=="create"){
-                this.$router.push({path:'/competition_info'});
+                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`});
             }else{
-                this.$router.push({path:'/competition_info',query:this.pushTable()});
+                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`,query:this.pushTable()});
             }
         },
 

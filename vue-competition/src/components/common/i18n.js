@@ -78,12 +78,22 @@ export const messages = {
             dict_setting: '字典檔設定',
             dictionary_setting: '字典檔設定',
             competition_info:"比賽資訊",
+            competition_league_info:"聯賽資訊",
+            competition_league_manage:"聯賽管理",
+            competition_advance_info:"晉級賽資訊",
             competition_info_edit:"比賽資訊編輯",
             register_verify:"報名審核",
             competition_check_in:"報到管理",
             competition_group:"分組設定",
             competition_statistics:"比賽統計顯示",
             overview:"總覽",
+
+            league_detail_setting:"聯賽細項設定",
+            league_teams_matches:"對陣圖設定",
+            league_live_channel:"直播頻道設定",
+            league_standing:"排行榜設定",
+            league_teams:"聯賽戰隊管理",
+            league_players:"聯賽玩家管理"
         },
         table_title:{
             role :'角色代號',
@@ -117,9 +127,12 @@ export const messages = {
                 delete: '刪除字典檔'
             },
             actions:{
-                view_competition:"檢視比賽",
-                update_competition:"編輯比賽",
-                delete_competition:"刪除比賽",
+                view_advance_competition:"檢視晉級賽",
+                update_advance_competition:"編輯晉級賽",
+                delete_advance_competition:"刪除晉級賽",
+                view_league_competition:"檢視聯賽",
+                update_league_competition:"編輯聯賽",
+                delete_league_competition:"刪除聯賽",
             }
         },
         btn:{
@@ -273,6 +286,12 @@ export const messages = {
             publish_status:"發布狀態",
             status:"狀態",
             
+
+
+
+            league:{
+                "match_map":"對陣圖",
+            }
         },
     },
     'en_US': {
@@ -349,12 +368,22 @@ export const messages = {
             dict_setting: 'Dictionary Setting',
             dictionary_setting: 'Dictionary Setting',
             competition_info:"Competition Information",
+            competition_league_info:"League Information",
+            competition_league_manage:"League Management",
+            competition_advance_info:"Advance Information",
             competition_info_edit:"Competition Information Edit",
             register_verify:"Registration Form Verify",
             competition_check_in:"Competition Check In",
             competition_group:"Competition Group",
             competition_statistics:"Competition Statistics",
             overview:"Overview",
+
+            league_detail_setting:"League Detail Setting",
+            league_teams_matches:"Matches Setting",
+            league_live_channel:"Live Channel Setting",
+            league_standing:"Standing Setting",
+            league_teams:"League Teams Management",
+            league_players:"League Players Management"
         },
         table_title :{
             role :'Role id',
@@ -388,9 +417,12 @@ export const messages = {
             delete: 'delete dictionary'
             },
             actions:{
-                view_competition:"View Competition",
-                update_competition:"Edit Competition",
-                delete_competition:"Delete Competition",
+                view_advance_competition:"View Advance Competition",
+                update_advance_competition:"Edit Advance Competition",
+                delete_advance_competition:"Delete Advance Competition",
+                view_league_competition:"View League Competition",
+                update_league_competition:"Edit League Competition",
+                delete_league_competition:"Delete League Competition",
             }
         },
         btn: {
@@ -543,6 +575,14 @@ export const messages = {
             content:"Content / Notice",
             publish_status:"Publish Status",
             status:"Status",
+
+
+
+
+
+            league:{
+                "match_map":"Match Map",
+            }
         },
     },
     'ja_JP':{

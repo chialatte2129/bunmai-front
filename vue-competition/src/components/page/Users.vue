@@ -318,6 +318,7 @@ export default {
         username: "",
         email: "",
         roles: "",
+        info: "",
         last_name: "",
         new_pass: "",
         confirm_pass: ""
@@ -423,8 +424,8 @@ export default {
               this.form.email,
               this.form.roles,
               this.form.last_name,
-              new_scr_pass,
-              this.form.info
+              this.form.info,
+              new_scr_pass
             )
             .then(result => {
               if (result.msg_code == 1) {           

@@ -53,7 +53,46 @@ export default {
                     icon: "el-icon-info",
                     index: "competition_info",
                     title: this.$t("menus.competition_info"),
-                    show: this.hasThisMenu("competition_info")
+                    show: this.includeSubMenu([
+                        "competition_advance_info",
+                        "competition_league_info"
+                    ]),
+                    subs: [            
+                        {
+                            index: "competition_info?ctype=advance&page=1&row=0",
+                            title: this.$t("menus.competition_advance_info"),
+                            show: this.hasThisMenu("competition_advance_info")
+                        },
+                        {
+                            index: "competition_league_manage",
+                            title: this.$t("menus.competition_league_manage"),
+                            show: this.includeSubMenu([
+                                "competition_league_info"
+                            ]),
+                            subs:[
+                                {
+                                    index: "competition_info?ctype=league&page=1&row=0",
+                                    title: this.$t("menus.competition_league_info"),
+                                    show: this.hasThisMenu("competition_league_info")
+                                },
+                                {
+                                    index: "league_detail_setting",
+                                    title: this.$t("menus.league_detail_setting"),
+                                    show: this.hasThisMenu("league_detail_setting")
+                                },
+                                {
+                                    index: "league_teams",
+                                    title: this.$t("menus.league_teams"),
+                                    show: this.hasThisMenu("league_teams")
+                                },
+                                {
+                                    index: "league_players",
+                                    title: this.$t("menus.league_players"),
+                                    show: this.hasThisMenu("league_players")
+                                },
+                            ]
+                        },
+                    ]
                 },
                 // Registration Form Verify management
                 {

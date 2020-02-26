@@ -11,6 +11,26 @@ export default new Router({
             meta: { title: '自述文件' },
         },
         {
+            path: '/public/league_matches/:competition/:lang',
+            component: resolve => require(['../components/page/public_league_matches.vue'], resolve),
+            meta: { title: 'League Match' }
+        },
+        {
+            path: '/public/league_standings/:competition/:lang',
+            component: resolve => require(['../components/page/public_league_standings.vue'], resolve),
+            meta: { title: 'League Standings' }
+        },
+        {
+            path: '/public/league_match_detail/:competition/:main_team/:lang',
+            component: resolve => require(['../components/page/public_match_detail.vue'], resolve),
+            meta: { title: 'League Match Detail' }
+        },
+        {
+            path: '/public/league_live_channels/:competition/:lang',
+            component: resolve => require(['../components/page/public_live_channels.vue'], resolve),
+            meta: { title: 'League Live Channels' }
+        },
+        {
             path: '/',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
@@ -21,9 +41,34 @@ export default new Router({
                     meta: { title:  'menus.competition_info' }
                 }, 
                 {
+                    path: '/competition_league_info',
+                    component: resolve => require(['../components/page/competition_info.vue'], resolve),
+                    meta: { title:  'menus.competition_league_info' }
+                },
+                {
+                    path: '/competition_advance_info',
+                    component: resolve => require(['../components/page/competition_info.vue'], resolve),
+                    meta: { title:  'menus.competition_advance_info' }
+                },
+                {
                     path: '/competition_info_edit',
                     component: resolve => require(['../components/page/competition_info_edit.vue'], resolve),
                     meta: { title:  'menus.competition_info_edit' }
+                }, 
+                {
+                    path: '/league_detail_setting',
+                    component: resolve => require(['../components/page/league_detail_setting.vue'], resolve),
+                    meta: { title:  'menus.league_detail_setting' }
+                }, 
+                {
+                    path: '/league_teams',
+                    component: resolve => require(['../components/page/league_teams.vue'], resolve),
+                    meta: { title:  'menus.league_teams' }
+                }, 
+                {
+                    path: '/league_players',
+                    component: resolve => require(['../components/page/league_players.vue'], resolve),
+                    meta: { title:  'menus.league_players' }
                 }, 
                 {
                     path: '/register_verify',

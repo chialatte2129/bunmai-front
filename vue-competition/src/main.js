@@ -55,9 +55,6 @@ router.beforeEach((to, from, next) => {
         
         next();
     }else{
-        if (path_id.indexOf('dashboard_sub_') >= 0) {
-            localStorage.setItem('ms_local_new', true);            
-        }
         if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限     
              
             localStorage.removeItem('ms_username');               
