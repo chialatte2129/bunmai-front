@@ -286,6 +286,12 @@ export const messages = {
             publish_status:"發布狀態",
             status:"狀態",
             
+
+
+
+            league:{
+                "match_map":"對陣圖",
+            }
         },
     },
     'en_US': {
@@ -569,6 +575,14 @@ export const messages = {
             content:"Content / Notice",
             publish_status:"Publish Status",
             status:"Status",
+
+
+
+
+
+            league:{
+                "match_map":"Match Map",
+            }
         },
     },
     'ja_JP':{

@@ -101,14 +101,14 @@
                                 </el-col>
                             </div>
                         </el-card>
-                        <el-card shadow="hover" style="min-height:204px;height:auto;">
+                        <!-- <el-card shadow="hover" style="min-height:204px;height:auto;">
                             <div slot="header" class="clearfix">
                                 <span>{{$t('game_info.name_i18n')}}</span>
                             </div>
                             <div class="info-area">
                                 
                             </div>
-                        </el-card>
+                        </el-card> -->
                     </el-col>
                 </el-row>
             </el-form>
@@ -127,10 +127,10 @@ export default {
             form:{
                 game_id:"",
                 name:"",
-                name_i18n:{},
                 country:"",
                 city:"",
                 game:"",
+                game_type:this.$route.query.ctype,
                 min_players:1,
                 max_players:1,
                 register_start_time:null,
@@ -140,7 +140,8 @@ export default {
                 show_timezone:8,
                 fee:0,
                 currency:"",
-                content:""
+                content:"",
+                status:"",
             },
             options:{
                 country:[],

@@ -11,6 +11,26 @@ export default new Router({
             meta: { title: '自述文件' },
         },
         {
+            path: '/public/league_matches/:competition/:lang',
+            component: resolve => require(['../components/page/public_league_matches.vue'], resolve),
+            meta: { title: 'League Match' }
+        },
+        {
+            path: '/public/league_standings/:competition/:lang',
+            component: resolve => require(['../components/page/public_league_standings.vue'], resolve),
+            meta: { title: 'League Standings' }
+        },
+        {
+            path: '/public/league_match_detail/:competition/:main_team/:lang',
+            component: resolve => require(['../components/page/public_match_detail.vue'], resolve),
+            meta: { title: 'League Match Detail' }
+        },
+        {
+            path: '/public/league_live_channels/:competition/:lang',
+            component: resolve => require(['../components/page/public_live_channels.vue'], resolve),
+            meta: { title: 'League Live Channels' }
+        },
+        {
             path: '/',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
