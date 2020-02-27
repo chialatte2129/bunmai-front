@@ -1,5 +1,4 @@
 <template>
-    <!-- <div class="wrapper" ref="content" id="nav-scroller" style="background-color:#333333;font-size:16px"> -->
     <div class="scrollBar" style="background-color:#333333;font-size:16px">
         <el-scrollbar
         ref="scroll" 
@@ -8,9 +7,10 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:0px;background:#333333;">
+            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
+            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
                 <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png" @click="getData"> 
+                    <img width="100%" src="image/league/test.png" @click="reGetData"> 
                 </div>
                 <div style="margin:5px 0 7px 0;position:relative;width:100%;padding-top:8.6%;background-repeat:no-repeat;
                 background-image:url('image/league/TitlePanel.png');background-size:100%;background-position:center;">
@@ -30,9 +30,9 @@
                     </div>
                 </div>
             </div>
-            <div style="visibility:hidden;">
+            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
                 <div style="height:100%;">
-                    <img width="100%"  src="image/league/test.png" @click="getData"> 
+                    <img width="100%"  src="image/league/test.png" @click="reGetData"> 
                 </div>
                 <div style="margin:5px 0 7px 0;position:relative;width:100%;padding-top:8.6%;background-repeat:no-repeat;
                 background-image:url('image/league/TitlePanel.png');background-size:100%;background-position:center;">
@@ -75,6 +75,7 @@
                     </div>
                 </div>
             </div>
+            <div style="margin:5vw 0;"></div>
         </div>
         </el-scrollbar>
     </div>
@@ -90,7 +91,6 @@ export default {
 
     data(){
         return{
-            game_name:"",
             ranks:[],
         }
     },
@@ -119,9 +119,9 @@ export default {
 
     methods:{
         pushDetail(row){
-            console.log("TEAM")
-            console.log(row.team_id)
+            window.open(`${process.env.VUE_APP_HOST}public/league_match_detail/${this.$route.params.competition}/${row.team_id}/${this.$route.params.lang}`);
         },
+
         mouseEnter(index){
             var el = document.querySelector(`.search_${index}`);
             el.classList.add("cursor-point");
@@ -132,35 +132,29 @@ export default {
             el.classList.remove("cursor-point");
         },
 
-        getData(){
+        reGetData(){
             const loading = this.$loading({
                 lock:true,
                 spinner:"el-icon-loading",
                 background:"rgba(0, 0, 0, 0.6)",
                 target: document.querySelector('.container_outer')
             });
+            this.getData();
+            loading.close();
+        },
+
+        getData(){
             publicService.get_standing_game(this.$route.params.competition)
-            .then(res => {
+            .then(res => { 
                 if(res.code==1){
-                    this.game_name = res.game_name;
                     this.ranks = res.standing;
                 }
             });
-            loading.close();
         }
     }
 }
 </script>
 <style scoped>
-#nav-scroller{
-    /* background-image:url('/image/league/QRCode_BG.png');
-    background-repeat:no-repeat;
-    background-position:center; */
-    position:relative; 
-    height:100%; 
-    overflow-y:scroll;
-    /* overflow-x:scroll; */
-}
 .middle_box {
     max-width:1000px;
     min-width:320px;
@@ -169,9 +163,6 @@ export default {
 .column_font {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     color:#ffffff;
-}
-.game-name-font{
-    color:#000000!important;
 }
 .el-table .common-row {
     background : PeachPuff;
@@ -188,7 +179,7 @@ export default {
     position:relative;
     width:100%;
     padding-top:11.1%;
-    margin-bottom:1vw;
+    margin-bottom:0.5vw;
     background-repeat:no-repeat;
     background-size:100%;
     background-position:center;

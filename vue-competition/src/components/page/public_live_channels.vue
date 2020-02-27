@@ -39,8 +39,8 @@
                                 </div>
                             </div>
                         </div>
+                        <div style="margin:5vw 0;"></div>
                     </div>
-                    <div style="margin:5vw 0;"></div>
                 </div>
             </div>
         </div>
@@ -88,13 +88,16 @@ export default {
             var el = document.querySelector(`.ch_${num}`);
             el.classList.add("cursor-point");
         },
+
         mouseLeave(num){
             var el = document.querySelector(`.ch_${num}`);
             el.classList.remove("cursor-point");
         },
+
         pushChannels(row){
             window.open(row);
         },
+        
         getData(){
             publicService.get_channel_game(this.$route.params.competition)
             .then(res => { 
@@ -107,7 +110,7 @@ export default {
 }
 </script>
 <style scoped>
-.middle_box {
+.middle_box{
     max-width:1000px;
     min-width:320px;
     margin:auto;
