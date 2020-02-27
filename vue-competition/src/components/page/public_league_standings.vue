@@ -7,7 +7,8 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:0px;background:#333333;">
+            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
+            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
                 <div style="height:100%;">
                     <img width="100%" src="image/league/test.png" @click="reGetData"> 
                 </div>
@@ -29,7 +30,7 @@
                     </div>
                 </div>
             </div>
-            <div style="visibility:hidden;">
+            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
                 <div style="height:100%;">
                     <img width="100%"  src="image/league/test.png" @click="reGetData"> 
                 </div>
@@ -163,9 +164,6 @@ export default {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     color:#ffffff;
 }
-.game-name-font{
-    color:#000000!important;
-}
 .el-table .common-row {
     background : PeachPuff;
 }
@@ -181,7 +179,7 @@ export default {
     position:relative;
     width:100%;
     padding-top:11.1%;
-    margin-bottom:1vw;
+    margin-bottom:0.5vw;
     background-repeat:no-repeat;
     background-size:100%;
     background-position:center;
