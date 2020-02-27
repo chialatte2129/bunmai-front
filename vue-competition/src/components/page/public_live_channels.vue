@@ -31,8 +31,8 @@
                                 <div style="z-index:2;float:left;width:57%;height:100%;display:flex;align-items:center;justify-content:left;">
                                     <span v-for='(row_ch, index_ch) in row_team.channels'>
                                         <span :class="'ch_'+index+index_team+index_ch" @click="pushChannels(row_ch)" 
-                                        @mouseenter="mouseEnter(index.toString()+index_team.toString()+index_ch.toString())" 
-                                        @mouseleave="mouseLeave(index.toString()+index_team.toString()+index_ch.toString())">
+                                        @mouseenter="mouseEnter(`${index.toString()}${index_team.toString()}${index_ch.toString()}`)"
+                                        @mouseleave="mouseLeave(`${index.toString()}${index_team.toString()}${index_ch.toString()}`)">
                                             <i class="el-icon-folder" style="margin-right:1vw;"></i>
                                         </span>
                                     </span>

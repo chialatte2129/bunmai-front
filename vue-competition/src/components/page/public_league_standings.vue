@@ -69,7 +69,7 @@
                         <span class="column_font" style="font-size:3.5vmin;color:#cccccc;">{{row.scores}}</span>
                     </div>
                     <div style="float:left;width:13%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="font-size:5vmin;"><span :class="'search_'+index" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
+                        <span class="column_font" style="font-size:5vmin;"><span :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
                             <i class="el-icon-search"></i></span>
                         </span>
                     </div>
@@ -163,16 +163,6 @@ export default {
 .column_font {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     color:#ffffff;
-}
-.el-table .common-row {
-    background : PeachPuff;
-}
-.border-line{
-    border-bottom:0.1vmin #000000 solid;
-}
-.game-name-border{
-    border-top:0.1vmin #000000 solid;
-    border-bottom:0.1vmin #000000 solid;
 }
 .background_deep{
     background-image:url('/image/league/EvenPanel.png');
