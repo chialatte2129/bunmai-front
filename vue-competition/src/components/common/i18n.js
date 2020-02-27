@@ -291,6 +291,7 @@ export const messages = {
 
             league:{
                 "match_map":"對陣圖",
+                "online_streaming":"直播空間",
             }
         },
     },
@@ -582,6 +583,7 @@ export const messages = {
 
             league:{
                 "match_map":"Match Map",
+                "online_streaming":"Online Streaming",
             }
         },
     },

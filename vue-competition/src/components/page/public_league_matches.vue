@@ -28,8 +28,9 @@
                         </div>
                     </div>
                 </div>
+                <div style="position:relative;max-width:1000px;min-width:320px;align:center;height:1vw;background:#333333;"></div>
             </div>
-            <div style="visibility:hidden;margin-bottom:5vw;top:3vw;">
+            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
                 <div style="height:100%;">
                     <img width="100%" src="image/league/test.png"> 
                 </div>
@@ -47,7 +48,7 @@
                             <span class="column_font" style="font-size:3.5vmin;"></span>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
             <div v-for='(row, index) in match' :class="`round_${index}`" class="round">
                 <div v-for='(row_rn, index_rn) in row.schedules' :class="`item_${index}${index_rn}`" class="item">

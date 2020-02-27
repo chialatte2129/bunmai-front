@@ -7,13 +7,19 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="max-width:1000px;min-width:320px;align:center;height:auto;background:#333333;">
+            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
+            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
                 <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png" @click="getData"> 
+                    <img width="100%" src="image/league/test.png"> 
+                </div>
+            </div>
+            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
+                <div style="height:100%;">
+                    <img width="100%"  src="image/league/test.png"> 
                 </div>
             </div>
             <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;font-size:3.7vmin;margin:0.5vw 0 2.5vw 0;" class="column_font">
-                直播空間
+                {{$t('game_info.league.online_streaming')}}
             </div>
             <div>
                 <div v-for='(row, index) in channels' style="float:left;width:80%;height:100%;display:flex;align-items:center;justify-content:center;">
