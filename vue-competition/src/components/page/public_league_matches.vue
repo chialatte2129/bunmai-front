@@ -1,5 +1,5 @@
 <template>
-    <div class="scrollBar" style="background-color:#333333;font-size:16px">
+    <div class="scrollBar" style="background-color:#333333;">
         <el-scrollbar
         ref="scroll" 
         wrap-class="list" 
@@ -154,7 +154,7 @@ export default {
 .item{
     background-image:url('/image/league/EvenPanel.png');
     position:relative;
-    margin:1vw 2vw;
+    margin:1vw 2.5vw;
     padding:3%;
     background-repeat:no-repeat;
     background-size:cover;
