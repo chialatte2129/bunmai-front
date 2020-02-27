@@ -14,22 +14,22 @@
                 </div>
                 <div style="margin-top:1vw;position:relative;width:100%;padding-top:9%;">
                     <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                        <div style="float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#00C7EE;background:linear-gradient(to right, #00C7EE, #707070);
+                        <div style="float:left;width:42.5%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#00C7EE;background:linear-gradient(to right, #00C7EE, #707070);
                         background-repeat:no-repeat;background-size:100%;background-position:center;">
                             <div class="column_font text-center"><p style="font-size:3vmin;">BLUE TEAM</p><p style="font-size:2.0vmin;">HOST</p></div>
                         </div>
-                        <div style="float:left;width:20%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#707070;background:radial-gradient(circle, #5D5D5D, #707070);
+                        <div style="float:left;width:15%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#707070;background:radial-gradient(circle, #5D5D5D, #707070);
                         background-repeat:no-repeat;background-size:100%;background-position:center;">
-                            <span class="column_font" style="font-size:3.5vmin;">DATE</span>
+                            <span class="column_font" style="font-size:3vmin;">DATE</span>
                         </div>
-                        <div style="float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#FF1285;background:linear-gradient(to left, #FF1285, #707070);
+                        <div style="float:left;width:42.5%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#FF1285;background:linear-gradient(to left, #FF1285, #707070);
                         background-repeat:no-repeat;background-size:100%;background-position:center;">
                             <div class="column_font text-center"><p style="font-size:3vmin;">RED TEAM</p><p style="font-size:2.0vmin;">Guest</p></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
+            <div style="visibility:hidden;margin-bottom:5vw;top:3vw;">
                 <div style="height:100%;">
                     <img width="100%" src="image/league/test.png"> 
                 </div>
@@ -49,15 +49,35 @@
                     </div>
                 </div>  
             </div>
-            <div v-for='(row, index) in match' class="round"> 
-                <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                    <span style="display:inline;">
-                        <div v-for='(row_rn, index_rn) in row.schedules' class="schedule_round"> 
-                            {{row_rn}}
+            <div v-for='(row, index) in match' :class="`round_${index}`" class="round">
+                <div v-for='(row_rn, index_rn) in row.schedules' :class="`item_${index}${index_rn}`" class="item">
+                    <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
+                        <div style="position:relative;float:left;width:6%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;"></span>
                         </div>
-                    </span>
+                        <div style="position:relative;float:left;width:27%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;">{{row_rn.home}}</span>
+                        </div>
+                        <div style="position:relative;float:left;width:31%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;"></span>
+                        </div>
+                        <div style="position:relative;float:left;width:33%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;">{{row_rn.away}}</span>
+                        </div>
+                    </div>
                 </div>
-                <div style="margin:5vw 0;"></div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vw;left:-47%;transform:rotate(90deg);">
+                    <hr style="margin:1.5vw;border:0;height:0.2vw;width:30%;background-image:linear-gradient(to right, #333333, rgba(255,195,34,1), #333333);"></hr>
+                </div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vw;left:-49%;transform:rotate(90deg);">
+                    <div class="column_font text-center">
+                        <p style="font-size:2vmin;">WEEK {{row.round}}</p>
+                    </div>
+                </div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vw;">
+                    <div class="column_font text-center" style="color:#FFC322;"><p style="font-size:3vmin;">V S</p><p style="font-size:2vmin;">{{row.month}} / {{row.day}}</p></div>
+                </div>
+                <hr style="margin:1.5vw;border:0;height:0.5vw;background-image:linear-gradient(to right, #333333, rgba(255,255,255,0.75), #333333);"></hr>
             </div>
             <div style="margin:5vw 0;"></div>
         </div>
@@ -128,31 +148,18 @@ export default {
 .text-center{
     text-align:center;
 }
-.el-table .common-row {
-    background : PeachPuff;
-}
-.border-line{
-    border-bottom:0.1vmin #000000 solid;
-}
-.game-name-border{
-    border-top:0.1vmin #000000 solid;
-    border-bottom:0.1vmin #000000 solid;
-}
 .round{
     position:relative;
-    width:100%;
-    padding-top:11.1%;
-    margin-bottom:1vw;
 }
-.schedule_round{
+.item{
     background-image:url('/image/league/EvenPanel.png');
     position:relative;
-    margin:1vw;
+    margin:1vw 2vw;
+    padding:3%;
     background-repeat:no-repeat;
-    background-size:100%;
+    background-size:cover;
     background-position:center;
     background-color:#1C1C1C;
-    height:100%;     
 }
 .scrollBar{ 
     /* background-image:url('/image/league/QRCode_BG.png');
