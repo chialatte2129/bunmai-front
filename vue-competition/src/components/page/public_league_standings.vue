@@ -1,5 +1,5 @@
 <template>
-    <div class="scrollBar" style="background-color:#333333;font-size:16px">
+    <div class="scrollBar">
         <el-scrollbar
         ref="scroll" 
         wrap-class="list" 
@@ -7,75 +7,61 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
-            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
+            <div style="margin-bottom:-3vmin;height:7vmin;"></div>
+            <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png" @click="reGetData"> 
+                    <img width="120%" style="margin-left:-10%;" src="image/league/title/standing_pre.png" @click="reGetData"> 
                 </div>
                 <div style="margin:5px 0 7px 0;position:relative;width:100%;padding-top:8.6%;background-repeat:no-repeat;
-                background-image:url('image/league/TitlePanel.png');background-size:100%;background-position:center;">
+                background-image:url('image/league/standing/titlePanel.png');background-size:95%;background-position:center;">
                     <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                        <div style="float:left;width:15.8%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.7vmin;">RANK</span>
+                        <div style="float:left;width:8%;height:100%;display:flex;align-items:center;justify-content:center;"></div>
+                        <div style="float:left;width:17%;height:100%;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;">RANK</span>
                         </div>
-                        <div style="float:left;width:51.2%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.7vmin;">TEAM</span>
-                        </div>
-                        <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.5vmin;"></span>
+                        <div style="float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;">TEAM</span>
                         </div>
                         <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.5vmin;">POINT</span>
+                            <span class="column_font" style="font-size:3vmin;"></span>
+                        </div>
+                        <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
+                            <span class="column_font" style="font-size:3vmin;">POINT</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
-                <div style="height:100%;">
-                    <img width="100%"  src="image/league/test.png" @click="reGetData"> 
-                </div>
-                <div style="margin:5px 0 7px 0;position:relative;width:100%;padding-top:8.6%;background-repeat:no-repeat;
-                background-image:url('image/league/TitlePanel.png');background-size:100%;background-position:center;">
-                    <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                        <div style="float:left;width:15.8%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        </div>
-                        <div style="float:left;width:51.2%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.7vmin;"></span>
-                        </div>
-                        <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.5vmin;"></span>
-                        </div>
-                        <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.5vmin;"></span>
-                        </div>
-                    </div>
-                </div>  
-            </div>
-            <div v-for='(row, index) in ranks' class="background_deep">  
-                <div v-if='index==0' style="position:absolute;width:100%;height:100%;top:0;left:0;background-repeat:no-repeat;background-image:url('image/league/1stPanel.png');background-size:100% 100%;background-position:center;"></div> 
-                <div v-if='index==1' style="position:absolute;width:100%;height:100%;top:0;left:0;background-repeat:no-repeat;background-image:url('image/league/2ndPanel.png');background-size:100% 100%;background-position:center;"></div> 
-                <div v-if='index==2' style="position:absolute;width:100%;height:100%;top:0;left:0;background-repeat:no-repeat;background-image:url('image/league/3rdPanel.png');background-size:100% 100%;background-position:center;"></div>   
+            <div v-for='(row, index) in ranks' class="standing">  
+                <div v-if='index==0' style="position:absolute;width:100%;height:100%;top:0;left:0;
+                background-repeat:no-repeat;background-image:url('image/league/standing/1stPanel.png');background-size:100%;background-position:center;"></div> 
+                <div v-else-if='index==1' style="position:absolute;width:100%;height:100%;top:0;left:0;
+                background-repeat:no-repeat;background-image:url('image/league/standing/2ndPanel.png');background-size:100%;background-position:center;"></div> 
+                <div v-else-if='index==2' style="position:absolute;width:100%;height:100%;top:0;left:0;
+                background-repeat:no-repeat;background-image:url('image/league/standing/3rdPanel.png');background-size:100%;background-position:center;"></div>   
+                <div v-else style="position:absolute;width:100%;height:100%;top:0;left:0;
+                background-repeat:no-repeat;background-image:url('image/league/standing/normalPanel.png');background-size:92%;background-position:center;opacity:0.2;"></div>
                 <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                    <div style="float:left;width:15.8%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="font-size:4vmin;color:white;">{{row.rank}}</span>
+                    <div style="float:left;width:13.3%;height:100%;display:flex;align-items:center;justify-content:center;"></div>
+                    <div style="float:left;width:11.7%;height:100%;display:flex;align-items:center;justify-content:center;">
+                        <span class="Num_font" style="font-size:5vmin;color:white;" v-if='row.rank!=1&&row.rank!=2&&row.rank!=3'>{{row.rank}}</span>
                     </div>
-                    <div style="float:left;width:51.2%;height:100%;text-align:left;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="float:left;font-size:3.5vmin;color:#666666;">{{row.team_name}}</span>
+                    <div style="float:left;width:40%;height:100%;text-align:left;display:flex;align-items:center;justify-content:center;">
+                        <span class="column_font" style="float:left;font-size:3.5vmin;color:white;">{{row.team_name}}</span>
                     </div>
                     <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
                         <span class="column_font" style="font-size:3.5vmin;"></span>
                     </div>
                     <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="font-size:3.5vmin;color:#cccccc;">{{row.scores}}</span>
+                        <span class="Num_font" style="font-size:3.5vmin;color:white;">{{row.scores}}</span>
                     </div>
                     <div style="float:left;width:13%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="font-size:5vmin;"><span :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
+                        <span class="column_font" style="font-size:3vmin;"><span :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
                             <i class="el-icon-search"></i></span>
                         </span>
                     </div>
                 </div>
             </div>
-            <div style="margin:5vw 0;"></div>
+            <div style="margin:5vmin 0;"></div>
         </div>
         </el-scrollbar>
     </div>
@@ -122,6 +108,14 @@ export default {
             window.open(`${process.env.VUE_APP_HOST}public/league_match_detail/${this.$route.params.competition}/${row.team_id}/${this.$route.params.lang}`);
         },
 
+        normalPanel(index){
+            if(index==0||index==1||index==2){
+                return ""
+            }else{
+                return "normalPanel"
+            }
+        },
+
         mouseEnter(index){
             var el = document.querySelector(`.search_${index}`);
             el.classList.add("cursor-point");
@@ -144,6 +138,7 @@ export default {
         },
 
         getData(){
+            this.$i18n.locale = this.$route.params.lang;
             publicService.get_standing_game(this.$route.params.competition)
             .then(res => { 
                 if(res.code==1){
@@ -155,32 +150,33 @@ export default {
 }
 </script>
 <style scoped>
-.middle_box {
+.middle_box{
     max-width:1000px;
     min-width:320px;
     margin:auto;
 }
-.column_font {
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+.column_font{
+    font-family: "NotoSansCJKtc-Regular","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     color:#ffffff;
 }
-.background_deep{
-    background-image:url('/image/league/EvenPanel.png');
+.Num_font{
+    font-family: "AvantGardeITCbyBT","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color:#ffffff;
+}
+.standing{
     position:relative;
     width:100%;
     padding-top:11.1%;
-    margin-bottom:0.5vw;
-    background-repeat:no-repeat;
-    background-size:100%;
-    background-position:center;
+    margin-bottom:-1vmin;
 }
 .cursor-point{
     cursor:pointer;
 }
 .scrollBar{ 
-    /* background-image:url('/image/league/QRCode_BG.png');
+    background-image:url('/image/league/bg/BG.jpg');
     background-repeat:no-repeat;
-    background-position:center; */
+    background-position:center;
+    background-size:cover;
     height:100%; 
     overflow:hidden;
     position:relative;   

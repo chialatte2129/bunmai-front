@@ -1,0 +1,14 @@
+@font-face {
+    font-family: "AvantGardeITCbyBT";
+    src: url('AvantGarde.ttf');
+    font-weight: normal;
+    font-style: normal;
+   }
+
+
+@font-face {
+    font-family: "NotoSansCJKtc-Regular";
+    src: url('NotoSansCJKtc-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+   }

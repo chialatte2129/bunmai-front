@@ -1,5 +1,5 @@
 <template>
-    <div class="scrollBar" style="background-color:#333333;font-size:16px">
+    <div class="scrollBar">
         <el-scrollbar
         ref="scroll" 
         wrap-class="list" 
@@ -7,48 +7,47 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
-            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
+            <div style="margin-bottom:-3vmin;height:7vmin;"></div>
+            <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png"> 
+                    <img width="100%" src="image/league/title/live_pre.png"> 
                 </div>
             </div>
-            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
-                <div style="height:100%;">
-                    <img width="100%"  src="image/league/test.png"> 
-                </div>
-            </div>
-            <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;font-size:3.7vmin;margin:0.5vw 0 2.5vw 0;" class="column_font">
+            <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;font-size:3.7vmin;margin:3vmin 0;" class="column_font">
                 {{$t('game_info.league.online_streaming')}}
             </div>
             <div>
-                <div v-for='(row, index) in channels' style="float:left;width:80%;height:100%;display:flex;align-items:center;justify-content:center;">
-                    <div class="column_font" style="position:relative;width:100%;height:100%;top:0;left:0;margin:3vw 0;">
-                        <div style="margin-bottom:1vw;font-size:4vmin">
+                <div v-for='(row, index) in channels' style="float:left;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+                    <div class="column_font" style="position:relative;width:100%;height:100%;top:0;left:0;">
+                        <div style="margin-bottom:1vmin;font-size:4vmin">
                             <span style="margin-left:15%;">{{row.year}} / {{row.month}} / {{row.day}}</span>
-                            <span style="margin-left:5vw;width:100%;">{{row.start_time}}</span>
+                            <span style="margin-left:5vmin;width:100%;">{{row.start_time}}</span>
                         </div>
-                        <div v-for='(row_team, index_team) in row.game_channels' class="background_deep" style="font-size:3vmin;">
+                        <div v-for='(row_team, index_team) in row.game_channels' class="channel_row" style="font-size:3vmin;">
                             <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                                <div style="z-index:2;float:left;width:3%;height:100%;display:flex;align-items:center;justify-content:center;"> </div>
-                                <div style="z-index:2;float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:center;">
+                                <div style="float:left;width:13%;height:100%;display:flex;align-items:center;justify-content:center;"> </div>
+                                <div style="float:left;width:1%;height:100%;display:flex;align-items:center;justify-content:center;background-size:80%;
+                                background-repeat:no-repeat;background-image:url('image/league/channel/date_title.png');background-position:center;"></div>
+                                <div style="float:left;width:4%;height:100%;display:flex;align-items:center;justify-content:center;"> </div>
+                                <div style="float:left;width:32%;height:100%;display:flex;align-items:center;justify-content:left;">
                                     <div class="column_font" style="font-size:3vmin;color:white;">{{row_team.team_name}}</div>
                                 </div>
-                                <div style="z-index:2;float:left;width:57%;height:100%;display:flex;align-items:center;justify-content:left;">
+                                <div style="float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:left;">
                                     <span v-for='(row_ch, index_ch) in row_team.channels'>
-                                        <span :class="'ch_'+index+index_team+index_ch" @click="pushChannels(row_ch)" 
+                                        <span :class="'ch_'+index+index_team+index_ch" @click="pushChannels(row_ch)" style="display:flex;align-items:center;justify-content:left;"
                                         @mouseenter="mouseEnter(`${index.toString()}${index_team.toString()}${index_ch.toString()}`)"
                                         @mouseleave="mouseLeave(`${index.toString()}${index_team.toString()}${index_ch.toString()}`)">
-                                            <i class="el-icon-folder" style="margin-right:1vw;"></i>
+                                            <img class="channel-img" width="95vmin;" :src="channel_img(index_ch+1)">
                                         </span>
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div style="margin:5vw 0;"></div>
+                        <img v-if="index!=(hr_check-1)" style="margin:4% 10%;" width="80%" src="image/league/channel/hr_line.png">
                     </div>
                 </div>
             </div>
+            <div style="margin:5vmin 0;color:transparent;"> VR LIVE</div>
         </div>
         </el-scrollbar>
     </div>
@@ -64,6 +63,7 @@ export default {
     data(){
         return{
             channels:[],
+            hr_check:null,
         }
     },
 
@@ -104,11 +104,17 @@ export default {
             window.open(row);
         },
         
+        channel_img(num){
+            return `image/league/channel/Var-Live-Logo_ch_${num.toString()}.png`
+        },
+        
         getData(){
+            this.$i18n.locale = this.$route.params.lang;
             publicService.get_channel_game(this.$route.params.competition)
-            .then(res => { 
+            .then(res => {
                 if(res.code==1){
                     this.channels=res.live_channels;
+                    this.hr_check=res.live_channels.length;
                 }
             });
         }
@@ -121,31 +127,49 @@ export default {
     min-width:320px;
     margin:auto;
 }
-.column_font {
+.column_font{
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     color:#ffffff;
 }
 .scrollBar{ 
+    background-image:url('/image/league/bg/BG.jpg');
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:cover;
     height:100%; 
     overflow:hidden;
     position:relative;   
-} 
+}
 .list{ 
   max-height:10px; 
 }
-.background_deep{
-    /* background-image:url('/image/league/EvenPanel.png'); */
+.channel_row{
+    background-image:url('/image/league/channel/rows.png');
     position:relative;
     width:100%;
-    padding-top:11%;
-    margin:1vw 12.5%;
+    padding-top:9%;
+    margin:-1vmin 0;
     background-repeat:no-repeat;
     background-size:100%;
     background-position:center;
-    background-color:#1C1C1C;
-    z-index:1;
 }
 .cursor-point{
     cursor:pointer;
+}
+.channel-img{
+    margin:0 1vmin;
+    max-width:95px;
+}
+@media(max-width:500px){
+.channel-img{
+    margin:0 1vmin;
+    max-width:85px;
+}
+}
+@media(max-width:400px){
+.channel-img{
+    margin:0 1vmin;
+    max-width:75px;
+}
 }
 </style>
