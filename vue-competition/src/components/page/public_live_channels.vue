@@ -18,7 +18,7 @@
             </div>
             <div>
                 <div v-for='(row, index) in channels' style="float:left;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-                    <div class="column_font" style="position:relative;width:100%;height:100%;top:0;left:0;">
+                    <div class="Num_font" style="position:relative;width:100%;height:100%;top:0;left:0;">
                         <div style="margin-bottom:1vmin;font-size:4vmin">
                             <span style="margin-left:15%;">{{row.year}} / {{row.month}} / {{row.day}}</span>
                             <span style="margin-left:5vmin;width:100%;">{{row.start_time}}</span>
@@ -128,7 +128,11 @@ export default {
     margin:auto;
 }
 .column_font{
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    font-family: "NotoSansCJKtc-Regular","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color:#ffffff;
+}
+.Num_font{
+    font-family: "AvantGardeITCbyBT","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     color:#ffffff;
 }
 .scrollBar{ 
