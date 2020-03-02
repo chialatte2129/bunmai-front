@@ -1,5 +1,5 @@
 <template>
-    <div class="scrollBar" style="background-color:#333333;font-size:16px">
+    <div class="scrollBar">
         <el-scrollbar
         ref="scroll" 
         wrap-class="list" 
@@ -7,18 +7,11 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
-            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
+            <div style="margin-bottom:-3vmin;height:7vmin;"></div>
+            <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png"> 
+                    <img width="100%" src="image/league/title/detail_pre.png"> 
                 </div>
-            </div>
-            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
-                <div style="height:100%;">
-                    <img width="100%"  src="image/league/test.png"> 
-                </div>
-            </div>
-            <div>
             </div>
         </div>
         </el-scrollbar>
@@ -78,10 +71,22 @@ export default {
     min-width:320px;
     margin:auto;
 }
+.column_font{
+    font-family: "NotoSansCJKtc-Regular","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color:#ffffff;
+}
+.Num_font{
+    font-family: "AvantGardeITCbyBT","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color:#ffffff;
+}
+.cursor-point{
+    cursor:pointer;
+}
 .scrollBar{ 
-    /* background-image:url('/image/league/QRCode_BG.png');
+    background-image:url('/image/league/bg/BG.jpg');
     background-repeat:no-repeat;
-    background-position:center; */
+    background-position:center;
+    background-size:cover;
     height:100%; 
     overflow:hidden;
     position:relative;   

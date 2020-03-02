@@ -50,15 +50,15 @@
                     </div>
                 </div>
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.5vmin;left:-49%;transform:rotate(90deg);">
-                    <div class="column_font text-center">
-                        <p style="font-size:2vmin;">WEEK {{row.round}}</p>
+                    <div class="column_font text-center" style="font-size:2vmin;">
+                        <p>Week<span class="Num_font" style="font-size:2vmin;"> {{row.round}}</span></p>
                     </div>
                 </div>
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-3vmin;">
                     <div class="column_font text-center" style="color:#E3DB70;">
                         <!-- <img width="100vmin" src="image/league/match/vs.png"> -->
                         <p style="font-size:6vmin;">V S</p>
-                        <p style="font-size:4vmin;">{{row.month}} / {{row.day}}</p>
+                        <p style="font-size:4vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
                     </div>
                 </div>
                 <img v-if="index!=(hr_check-1)" style="margin-left:10%;" width="80%" src="image/league/match/hr_line.png">
