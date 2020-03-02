@@ -7,51 +7,33 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="z-index:999;min-width:1000px;align:center;height:3vw;position:fixed;top:0;background:#333333;"></div>
-            <div style="z-index:999;max-width:1000px;min-width:320px;align:center;height:auto;position:fixed;top:3vw;background:#333333;">
+            <div style="margin-bottom:-3vmin;height:7vmin;"></div>
+            <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png"> 
+                    <img width="100%" src="image/league/title/match_list_pre.png"> 
                 </div>
-                <div style="margin-top:1vw;position:relative;width:100%;padding-top:9%;">
-                    <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                        <div style="float:left;width:42.5%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#00C7EE;background:linear-gradient(to right, #00C7EE, #707070);
-                        background-repeat:no-repeat;background-size:100%;background-position:center;">
-                            <div class="column_font text-center"><p style="font-size:3vmin;">BLUE TEAM</p><p style="font-size:2.0vmin;">HOST</p></div>
+                <div style="position:relative;width:94%;padding-top:20%;margin-left:3%;background-repeat:no-repeat;
+                background-image:url('image/league/match/matches.png');background-size:110%;background-position:center;">
+                    <div style="position:absolute;width:100%;height:100%;top:-1vmin;left:0;">
+                        <div style="float:left;width:42.5%;height:100%;display:flex;align-items:center;justify-content:center;">
+                            <div class="column_font text-center"><p style="font-size:3vmin;"><b>BLUE TEAM</b></p><p style="font-size:2.0vmin;">HOST</p></div>
                         </div>
-                        <div style="float:left;width:15%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#707070;background:radial-gradient(circle, #5D5D5D, #707070);
-                        background-repeat:no-repeat;background-size:100%;background-position:center;">
+                        <div style="float:left;width:15%;height:100%;display:flex;align-items:center;justify-content:center;">
                             <span class="column_font" style="font-size:3vmin;">DATE</span>
                         </div>
-                        <div style="float:left;width:42.5%;height:100%;display:flex;align-items:center;justify-content:center;background-color:#FF1285;background:linear-gradient(to left, #FF1285, #707070);
-                        background-repeat:no-repeat;background-size:100%;background-position:center;">
-                            <div class="column_font text-center"><p style="font-size:3vmin;">RED TEAM</p><p style="font-size:2.0vmin;">Guest</p></div>
-                        </div>
-                    </div>
-                </div>
-                <div style="position:relative;max-width:1000px;min-width:320px;align:center;height:1vw;background:#333333;"></div>
-            </div>
-            <div style="visibility:hidden;margin-bottom:4vw;top:3vw;">
-                <div style="height:100%;">
-                    <img width="100%" src="image/league/test.png"> 
-                </div>
-                <div style="margin-top:1vw;position:relative;width:100%;padding-top:8.6%">
-                    <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
-                        <div style="float:left;width:15.8%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        </div>
-                        <div style="float:left;width:51.2%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.7vmin;"></span>
-                        </div>
-                        <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.5vmin;"></span>
-                        </div>
-                        <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3.5vmin;"></span>
+                        <div style="float:left;width:42.5%;height:100%;display:flex;align-items:center;justify-content:center;">
+                            <div class="column_font text-center"><p style="font-size:3vmin;"><b>RED TEAM</b></p><p style="font-size:2.0vmin;">GUEST</p></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div v-for='(row, index) in match' :class="`round_${index}`" class="round">
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);">
+                    <hr style="z-index:100;margin:1.5vmin;border:0;height:0.5vmin;width:30vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);"></hr>
+                </div>
                 <div v-for='(row_rn, index_rn) in row.schedules' :class="`item_${index}${index_rn}`" class="item">
+                    <div style="position:absolute;margin-left:2%;width:96%;height:100%;top:0;left:0;
+                    background-repeat:no-repeat;background-image:url('image/league/match/rows.png');background-size:100%;background-position:center;"></div>                
                     <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
                         <div style="position:relative;float:left;width:6%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
                             <span class="column_font" style="font-size:3vmin;"></span>
@@ -67,20 +49,21 @@
                         </div>
                     </div>
                 </div>
-                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vw;left:-47%;transform:rotate(90deg);">
-                    <hr style="margin:1.5vw;border:0;height:0.2vw;width:30%;background-image:linear-gradient(to right, #333333, rgba(255,195,34,1), #333333);"></hr>
-                </div>
-                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vw;left:-49%;transform:rotate(90deg);">
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.5vmin;left:-49%;transform:rotate(90deg);">
                     <div class="column_font text-center">
                         <p style="font-size:2vmin;">WEEK {{row.round}}</p>
                     </div>
                 </div>
-                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vw;">
-                    <div class="column_font text-center" style="color:#FFC322;"><p style="font-size:3vmin;">V S</p><p style="font-size:2vmin;">{{row.month}} / {{row.day}}</p></div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-3vmin;">
+                    <div class="column_font text-center" style="color:#E3DB70;">
+                        <!-- <img width="100vmin" src="image/league/match/vs.png"> -->
+                        <p style="font-size:6vmin;">V S</p>
+                        <p style="font-size:4vmin;">{{row.month}} / {{row.day}}</p>
+                    </div>
                 </div>
-                <hr style="margin:1.5vw;border:0;height:0.5vw;background-image:linear-gradient(to right, #333333, rgba(255,255,255,0.75), #333333);"></hr>
+                <img v-if="index!=(hr_check-1)" style="margin-left:10%;" width="80%" src="image/league/match/hr_line.png">
             </div>
-            <div style="margin:5vw 0;"></div>
+            <div style="margin:5vmin 0;"></div>
         </div>
         </el-scrollbar>
     </div>
@@ -98,6 +81,7 @@ export default {
         return{
             game_name:"",
             match:[],
+            hr_check:null,
         }
     },
 
@@ -125,11 +109,13 @@ export default {
 
     methods:{
         getData(){
+            this.$i18n.locale = this.$route.params.lang;
             publicService.get_match_game(this.$route.params.competition)
-            .then(res => { console.log(res)
+            .then(res => { 
                 if(res.code==1){
                     this.game_name = res.game_name;
                     this.match = res.matches;
+                    this.hr_check=res.matches.length;
                 }
             });
         }
@@ -137,35 +123,46 @@ export default {
 }
 </script>
 <style scoped>
-.middle_box {
-    max-width:1000px;
-    min-width:320px;
-    margin:auto;
-}
-.column_font {
-    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-    color:#ffffff;
-}
 .text-center{
     text-align:center;
 }
 .round{
     position:relative;
+    width:95%;
+    margin-left:2.5%;
 }
 .item{
-    background-image:url('/image/league/EvenPanel.png');
     position:relative;
-    margin:1vw 2.5vw;
+    margin:1vmin 2.5vmin;
     padding:3%;
-    background-repeat:no-repeat;
-    background-size:cover;
-    background-position:center;
-    background-color:#1C1C1C;
+}
+.middle_box{
+    max-width:1000px;
+    min-width:320px;
+    margin:auto;
+}
+.column_font{
+    font-family: "NotoSansCJKtc-Regular","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color:#ffffff;
+}
+.Num_font{
+    font-family: "AvantGardeITCbyBT","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color:#ffffff;
+}
+.standing{
+    position:relative;
+    width:100%;
+    padding-top:11.1%;
+    margin-bottom:-1vmin;
+}
+.cursor-point{
+    cursor:pointer;
 }
 .scrollBar{ 
-    /* background-image:url('/image/league/QRCode_BG.png');
+    background-image:url('/image/league/bg/BG.jpg');
     background-repeat:no-repeat;
-    background-position:center; */
+    background-position:center;
+    background-size:cover;
     height:100%; 
     overflow:hidden;
     position:relative;   
