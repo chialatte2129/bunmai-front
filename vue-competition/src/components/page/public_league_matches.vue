@@ -72,7 +72,7 @@
 import Vue from "vue";
 import {publicService} from "@/_services";
 export default {
-    name:"public_league_standings",
+    name:"public_league_matches",
     components: {
         
     },

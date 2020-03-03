@@ -10,9 +10,9 @@
             <div style="margin-bottom:-3vmin;height:7vmin;"></div>
             <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;">
-                    <img width="120%" style="margin-left:-10%;" src="image/league/title/standing_pre.png" @click="reGetData"> 
+                    <img width="100%" src="image/league/title/standing_pre.png" @click="reGetData"> 
                 </div>
-                <div style="margin:5px 0 7px 0;position:relative;width:100%;padding-top:8.6%;background-repeat:no-repeat;
+                <div style="margin:5px 2%;position:relative;width:96%;padding-top:8.6%;background-repeat:no-repeat;
                 background-image:url('image/league/standing/titlePanel.png');background-size:95%;background-position:center;">
                     <div style="position:absolute;width:100%;height:100%;top:0;left:0;">
                         <div style="float:left;width:8%;height:100%;display:flex;align-items:center;justify-content:center;"></div>
@@ -165,9 +165,10 @@ export default {
 }
 .standing{
     position:relative;
-    width:100%;
+    width:96%;
     padding-top:11.1%;
     margin-bottom:-1vmin;
+    margin-left:2%;
 }
 .cursor-point{
     cursor:pointer;
