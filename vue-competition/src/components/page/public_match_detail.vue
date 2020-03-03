@@ -20,7 +20,7 @@
 <script>
 import {publicService} from "@/_services";
 export default {
-    name:"public_league_matches",
+    name:"public_matches_detail",
     components: {
 
     },
