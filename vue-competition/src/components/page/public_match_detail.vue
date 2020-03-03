@@ -8,10 +8,118 @@
         style="height:102%;">
         <div class="middle_box">
             <div style="margin-bottom:-3vmin;height:7vmin;"></div>
-            <div style="margin-bottom:-3vmin;">
+            <div style="margin-bottom:1vmin;">
                 <div style="height:100%;">
                     <img width="100%" src="image/league/title/detail_pre.png"> 
                 </div>
+            </div>
+            <div v-for='(row, index) in details' :class="`detail_${index}`" class="detail">
+                <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding-top:4%;
+                background-size:100%;background-repeat:no-repeat;background-image:url('image/league/detail/rows.png');background-position:center;">
+                    <div class="t0l0 wfhf" style="position:absolute;">
+                        <div style="float:left;width:2.3%;height:100%;display:flex;align-items:center;justify-content:center;"> </div>
+                        <div style="float:left;width:0.7%;height:100%;display:flex;align-items:center;justify-content:right;
+                        background-size:60%;background-repeat:no-repeat;background-image:url('image/league/detail/date_title.png');background-position:center;"></div>
+                        <div style="margin-bottom:1vmin;font-size:2vmin;float:left;width:97%;height:100%;display:flex;align-items:center;justify-content:left;" class="Num_font">
+                            <span style="margin-left:1.5%;">{{row.year}} / {{row.month}} / {{row.day}}</span>
+                            <span style="margin-left:5%;">{{row.start_time}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="wfhf" style="position:relative;">
+                    <div class="t0l0 wfhf" style="position:relative;">
+                        <div class="team-lowpanel" style="background-image:url('image/league/detail/BlueTeam.png');"></div>
+                        <div class="team-lowpanel" style="background-image:url('image/league/detail/RedTeam.png');"></div>
+                        <div class="t0l0 wfhf" style="position:absolute;">
+                            <div v-if="row.home.win==1" class="team-win-lose" style="width:47%;background-image:url('image/league/detail/win.png');background-position:right;margin-top:0.7%;"></div>
+                            <div v-else class="team-win-lose" style="width:47%;background-image:url('image/league/detail/lose.png');background-position:right;margin-top:0.7%;"></div>
+                            <div class="team-win-lose" style="width:6%;"></div>
+                            <div v-if="row.away.win==1" class="team-win-lose" style="width:47%;background-image:url('image/league/detail/win.png');background-position:left;margin-top:0.7%;"></div>
+                            <div v-else class="team-win-lose" style="width:47%;height:100%;background-image:url('image/league/detail/lose.png');background-position:left;margin-top:0.7%;"></div>
+                        </div>
+                        <div class="t0l0 wfhf" style="position:absolute;top:-0.6vmin;">
+                            <div class="team-win-lose" style="width:47%;">
+                                <div class="text-center"><p class="column_font colfont-team">{{row.home.team_name}}</p><p class="Num_font numfont-team">{{row.home.gate_hp}}</p></div>
+                            </div>
+                            <div class="team-win-lose text-center" style="width:6%;"></div>
+                            <div class="team-win-lose text-center" style="width:47%;">
+                                <div class="text-center"><p class="column_font colfont-team">{{row.away.team_name}}</p><p class="Num_font numfont-team">{{row.away.gate_hp}}</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="t0l0 wfhf" style="position:relative;">
+                    <div class="t0l0 wfhf column_font" style="position:absolute;margin-top:8%;color:white;">
+                        <div class="team-win-lose" style="width:47%;background-image:url('image/league/detail/item_col.png');background-position:center;"></div>
+                        <div class="team-win-lose" style="width:3%;"></div>
+                        <div class="team-win-lose" style="width:3%;"></div>
+                        <div class="team-win-lose" style="width:47%;background-image:url('image/league/detail/item_col.png');background-position:center"></div>
+                        <div class="t0l0 wfhf" style="position:absolute;margin-top:-2.1%;font-size:2vmin;">
+                            <div class="team-win-lose" style="width:7%;"></div>
+                            <div class="team-win-lose" style="width:12%;"></div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.kill')}}</div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.headshot')}}</div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.death')}}</div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.fortress')}}</div>
+                            <div class="team-win-lose" style="width:7%;"></div>
+                            <div class="team-win-lose" style="width:12%;"></div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.kill')}}</div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.headshot')}}</div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.death')}}</div>
+                            <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.fortress')}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div v-for='(row_rc, index_rc) in row.home.records' :class="firstrow(index_rc)" style="width:100%;margin-left:-3%;margin-top:1.5%;color:white;" class="records-all row-record Num_font">
+                    <div class="records" style="width:5%;">
+                        <span class="records" v-if="row.home.records[index_rc].mvp==1"><img width="70%" src="image/league/detail/mvp.png"></span>
+                    </div>
+                    <div class="records column_font" style="font-size:2vmin;width:14%;">
+                        <span v-if="row.home.records[index_rc].mvp==0">{{row.home.records[index_rc].nickname}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.home.records[index_rc].nickname}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.home.records[index_rc].mvp==0">{{row.home.records[index_rc].kills}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.home.records[index_rc].kills}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.home.records[index_rc].mvp==0">{{row.home.records[index_rc].headshots}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.home.records[index_rc].headshots}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.home.records[index_rc].mvp==0">{{row.home.records[index_rc].death}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.home.records[index_rc].death}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.home.records[index_rc].mvp==0">{{row.home.records[index_rc].gate}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.home.records[index_rc].gate}}</span>
+                    </div>
+                    <div class="records" style="width:5%;">
+                        <span class="records" v-if="row.away.records[index_rc].mvp==1"><img width="70%" src="image/league/detail/mvp.png"></span>
+                    </div>
+                    <div class="records column_font" style="font-size:2vmin;width:14%;">
+                        <span v-if="row.away.records[index_rc].mvp==0">{{row.away.records[index_rc].nickname}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.away.records[index_rc].nickname}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.away.records[index_rc].mvp==0">{{row.away.records[index_rc].kills}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.away.records[index_rc].kills}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.away.records[index_rc].mvp==0">{{row.away.records[index_rc].headshots}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.away.records[index_rc].headshots}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.away.records[index_rc].mvp==0">{{row.away.records[index_rc].death}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.away.records[index_rc].death}}</span>
+                    </div>
+                    <div class="records" style="width:7%;">
+                        <span v-if="row.away.records[index_rc].mvp==0">{{row.away.records[index_rc].gate}}</span>
+                        <span v-else style="color:#E3DB70;">{{row.away.records[index_rc].gate}}</span>
+                    </div>
+                </div>
+                <img v-if="index!=(hr_check-1)" style="margin:2% 10%;" width="80%" src="image/league/detail/hr_line.png">
+                <img v-if="index==(hr_check-1)" style="margin:2% 10%;opacity:0;" width="80%" src="image/league/detail/hr_line.png">
             </div>
         </div>
         </el-scrollbar>
@@ -27,12 +135,73 @@ export default {
 
     data(){
         return{
-            
+            // details:[],
+            // hr_check:null,
+            hr_check:2,
+            details:[
+                {
+                    "year":"2020",
+                    "month":"03",
+                    "day":"16",
+                    "start_time":"14:30",
+                    "home":{
+                        "win":1,
+                        "gate_hp":"96.80%",
+                        "team_name":"Queen Guards",
+                        "records":[
+                            {"nickname":"init函數","kills":6,"headshots":5,"death":4,"gate":0,"mvp":0},
+                            {"nickname":"冰與火之歌","kills":12,"headshots":10,"death":3,"gate":1.2,"mvp":1},
+                            {"nickname":"上官中二","kills":2,"headshots":2,"death":2,"gate":0.3,"mvp":0},
+                            {"nickname":"R9487","kills":5,"headshots":1,"death":7,"gate":0.8,"mvp":0},
+                        ]
+                    },
+                    "away":{
+                        "win":0,
+                        "gate_hp":"36.50%",
+                        "team_name":"Baaaaad Boys",
+                        "records":[
+                            {"nickname":"wwwwwwwwwww","kills":2,"headshots":5,"death":6,"gate":0,"mvp":0},
+                            {"nickname":"帥帥的路人甲","kills":7,"headshots":3,"death":9,"gate":0,"mvp":0},
+                            {"nickname":"一天轉大人","kills":2,"headshots":2,"death":2,"gate":0,"mvp":0},
+                            {"nickname":"戰現實","kills":4,"headshots":1,"death":9,"gate":0.8,"mvp":0},
+                        ]
+                    }
+                },
+                {
+                    "year":"2020",
+                    "month":"03",
+                    "day":"16",
+                    "start_time":"14:43",
+                    "home":{
+                        "win":0,
+                        "gate_hp":"60.20%",
+                        "team_name":"女王戰隊",
+                        "records":[
+                            {"nickname":"init函數","kills":6,"headshots":5,"death":4,"gate":0,"mvp":0},
+                            {"nickname":"冰與火之歌","kills":5,"headshots":1,"death":4,"gate":0,"mvp":0},
+                            {"nickname":"上官中二","kills":2,"headshots":2,"death":2,"gate":0.3,"mvp":0},
+                            {"nickname":"R9487","kills":5,"headshots":1,"death":7,"gate":0.2,"mvp":0},
+                        ]
+                    },
+                    "away":{
+                        "win":1,
+                        "gate_hp":"88.30%",
+                        "team_name":"壞小子",
+                        "records":[
+                            {"nickname":"wwwwwwwwwww","kills":2,"headshots":5,"death":6,"gate":0,"mvp":0},
+                            {"nickname":"帥帥的路人甲","kills":11,"headshots":7,"death":4,"gate":1.2,"mvp":1},
+                            {"nickname":"一天轉大人","kills":2,"headshots":2,"death":2,"gate":0,"mvp":0},
+                            {"nickname":"戰現實","kills":4,"headshots":1,"death":9,"gate":0.8,"mvp":0},
+                        ]
+                    }
+                },
+            ]
         }
     },
 
     created(){
         this.getData();
+        // console.log(window.screen.orientation)
     },
 
     computed: {
@@ -45,21 +214,38 @@ export default {
                 this.getData()
             },
         },
-
         '$route.params.main_team':{
             handler(newval, oldval){
                 this.getData()
             },
-        }
+        },
+        '$route.params.lang':{
+            handler(newval, oldval){
+                this.getData()
+            },
+        },
+        // 'window.screen.orientation.angle':{
+        //     handler(newval, oldval){
+        //         this.getData()
+        //     },
+        // },
     },
 
     methods:{
+        firstrow(index){
+            if(index==0){
+                return "first-row"
+            }
+        },
+
         getData(){
-            console.log(this.$route.params.competition, this.$route.params.main_team)
             this.$i18n.locale = this.$route.params.lang;
             publicService.get_match_game(this.$route.params.competition, this.$route.params.main_team)
             .then(res => { 
-                
+            //    if(res.code==1){
+            //         this.details=res.details;
+            //         this.hr_check=res.details.length;
+            //     }                
             });
         }
     }
@@ -67,9 +253,12 @@ export default {
 </script>
 <style scoped>
 .middle_box{
-    max-width:1000px;
+    max-width:1440px;
     min-width:320px;
     margin:auto;
+}
+.text-center{
+    text-align:center;
 }
 .column_font{
     font-family: "NotoSansCJKtc-Regular","Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
@@ -93,5 +282,92 @@ export default {
 } 
 .list{ 
   max-height:10px; 
+}
+.detail{
+    position:relative;
+    width:90%;
+    margin-left:5%;
+}
+.first-row{
+    margin-top:2.5%!important;
+}
+.records{
+    float:left;
+    position:relative;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-size:contain;
+    background-repeat:no-repeat;
+}
+.records-all{
+    float:left;
+    position:relative;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-image:linear-gradient(to right, transparent, rgba(0,0,0,0.3), transparent);
+}
+.team-win-lose{
+    float:left;
+    position:relative;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-top:4%;
+    margin-top:0.3%;
+    background-size:contain;
+    background-repeat:no-repeat;
+}
+.team-lowpanel{
+    float:left;
+    width:50%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:right;
+    padding-top:11.5%;
+    margin-top:-1.1vmin;
+    background-size:100%;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+.t0l0{
+    top:0;
+    left:0;
+}
+.wfhf{
+    width:100%;
+    height:100%;
+}
+.colfont-team{
+    font-size:3.3vmin;
+}
+.numfont-team{
+    font-size:2.8vmin;
+}
+.row-record{
+    font-size:3vmin;
+}
+@media(max-width:1024px){
+.colfont-team{
+    font-size:2.8vmin;
+}
+.numfont-team{
+    font-size:2.3vmin;
+}
+}
+@media(max-width:500px){
+.colfont-team{
+    font-size:2.3vmin;
+}
+.numfont-team{
+    font-size:1.8vmin;
+}
 }
 </style>

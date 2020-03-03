@@ -292,6 +292,10 @@ export const messages = {
             league:{
                 "match_map":"對陣圖",
                 "online_streaming":"直 播 空 間",
+                "kill":"擊殺",
+                "headshot":"爆頭",
+                "death":"死亡",
+                "fortress":"據點",
             }
         },
     },
@@ -584,6 +588,10 @@ export const messages = {
             league:{
                 "match_map":"Match Map",
                 "online_streaming":"Online Stream",
+                "kill":"Kill",
+                "headshot":"Headshot",
+                "death":"Death",
+                "fortress":"Fortress",
             }
         },
     },
