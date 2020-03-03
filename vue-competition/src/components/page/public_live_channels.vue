@@ -83,7 +83,6 @@ export default {
         },
         '$route.params.lang':{
             handler(newval, oldval){
-                this.$i18n.locale = this.$route.params.lang;
                 this.getData()
             },
         }

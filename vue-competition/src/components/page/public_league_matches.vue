@@ -29,7 +29,7 @@
             </div>
             <div v-for='(row, index) in match' :class="`round_${index}`" class="round">
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);">
-                    <hr style="z-index:100;margin:1.5vmin;border:0;height:0.5vmin;width:30vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);"></hr>
+                    <hr style="z-index:100;margin:1.5vmin;border:0;height:0.5vmin;width:27vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);"></hr>
                 </div>
                 <div v-for='(row_rn, index_rn) in row.schedules' :class="`item_${index}${index_rn}`" class="item">
                     <div style="position:absolute;margin-left:2%;width:96%;height:100%;top:0;left:0;
@@ -54,14 +54,15 @@
                         <p>Week<span class="Num_font" style="font-size:2vmin;"> {{row.round}}</span></p>
                     </div>
                 </div>
-                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-3vmin;">
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-2.5vmin;">
                     <div class="column_font text-center" style="color:#E3DB70;">
                         <!-- <img width="100vmin" src="image/league/match/vs.png"> -->
-                        <p style="font-size:6vmin;">V S</p>
+                        <p style="font-size:6vmin;">VS</p>
                         <p style="font-size:4vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
                     </div>
                 </div>
                 <img v-if="index!=(hr_check-1)" style="margin-left:10%;" width="80%" src="image/league/match/hr_line.png">
+                <img v-if="index==(hr_check-1)" style="margin-left:10%;" width="80%" src="">
             </div>
             <div style="margin:5vmin 0;"></div>
         </div>
@@ -101,7 +102,6 @@ export default {
         },
         '$route.params.lang':{
             handler(newval, oldval){
-                this.$i18n.locale = this.$route.params.lang;
                 this.getData()
             },
         }
