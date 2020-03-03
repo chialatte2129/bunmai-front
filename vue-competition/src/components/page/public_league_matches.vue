@@ -51,7 +51,7 @@
                 </div>
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.5vmin;left:-49%;transform:rotate(90deg);">
                     <div class="column_font text-center" style="font-size:2vmin;">
-                        <p>Week<span class="Num_font" style="font-size:2vmin;"> {{row.round}}</span></p>
+                        <p>WEEK<span class="Num_font" style="font-size:2vmin;"> {{row.round}}</span></p>
                     </div>
                 </div>
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-2.5vmin;">
