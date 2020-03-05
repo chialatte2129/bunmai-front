@@ -86,15 +86,6 @@ export default {
 
     created(){
         this.getData();
-        // window.addEventListener("beforeunload", event=>this.redirect(event));
-    },
-
-    mounted(){
-        // window.addEventListener("beforeunload", event=>this.redirect(event));
-	},
-
-    destroyed(){
-        // window.removeEventListener("beforeunload", event=>this.redirect(event));
     },
 
     computed: {
@@ -115,16 +106,7 @@ export default {
     },
 
     methods:{
-        // redirect(event){
-        //     console.log(event)
-        //     var confirmationMessage = "\o/";
-        //     event.returnValue = confirmationMessage;
-        //     event.view.close();
-        //     return confirmationMessage;
-        // },
-
         closeWin(){
-            // this.redirect(event);
             var win = window.open('', '_self', '');
             win.close();
         },
