@@ -9,8 +9,11 @@
         <div class="middle_box">
             <div style="margin-bottom:-3vmin;height:7vmin;"></div>
             <div style="margin-bottom:1vmin;">
-                <div style="height:100%;">
-                    <img width="100%" src="image/league/title/detail_pre.png"> 
+                <div style="height:100%;position:relative;">
+                    <img width="100%" src="image/league/title/detail_win.png">
+                    <div style="position:absolute;top:1.1vmin;left:1vmin;">
+                        <img width="13%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
+                    </div>
                 </div>
             </div>
             <div v-for='(row, index) in details' :class="`detail_${index}`" class="detail" v-if="details!=[]">
@@ -248,7 +251,21 @@ export default {
         //     this.angle = window.screen.orientation.angle;
         //     console.log(this.angle)
         // },
+        closeWin(){
+            var win = window.open('', '_self', '');
+            win.close();
+        },
 
+        mouseEnterReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.add("cursor-point");
+        },
+
+        mouseLeaveReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.remove("cursor-point");
+        },
+         
         mvpclass(mvp){
             if(mvp==1){
                 return "mvp-class"
