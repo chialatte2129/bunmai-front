@@ -22,11 +22,11 @@
                         <el-option v-for="item in group.options" :key="item.value" :label="show_label(item)" :value="item.value" :disabled="item.value==''"></el-option>
                     </el-option-group>
                 </el-select>
-                <el-select v-model="filter.publish" :placeholder="$t('game_info.publish_status')" clearable filterable @change="search" class="handle-select-basic mr10">
+                <!-- <el-select v-model="filter.publish" :placeholder="$t('game_info.publish_status')" clearable filterable @change="search" class="handle-select-basic mr10">
                     <el-option v-for="item in options.publish" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                </el-select>
-                <el-select v-model="filter.esports" :placeholder="$t('game_info.filter_game')" clearable filterable @change="search" class="handle-select-basic mr10">
-                    <el-option v-for="item in options.esports" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
+                </el-select> -->
+                <el-select v-model="filter.game" :placeholder="$t('game_info.filter_game')" clearable filterable @change="search" class="handle-select-basic mr10">
+                    <el-option v-for="item in options.game" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                 </el-select>
                 <el-select v-model="filter.match" :placeholder="$t('game_info.filter_match')" clearable filterable @change="search" class="handle-select-match mr10">
                     <el-option v-for="item in options.match" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
@@ -45,21 +45,19 @@
             v-loading="table_loading"
             @sort-change="handleSortChange"
             :row-class-name="tableRowClassName">
-                <el-table-column prop="id" label="ID" sortable="custom"></el-table-column>
-                <el-table-column prop="name" label="name" sortable="custom"></el-table-column>
-                <el-table-column prop="location" label="location" sortable="custom"></el-table-column>
-                <el-table-column prop="city" label="city" sortable="custom"></el-table-column>
-                <el-table-column prop="game" label="game" sortable="custom"></el-table-column>
-                <el-table-column prop="status" label="status" width="110" sortable="custom" align="center">
-                    <template slot-scope="scope" style="text-align:center;">
-                        <el-button size="mini" plain v-if="scope.row.status=='D'" type="info" @click="" :disabled="!update_info_auth">{{$t('common_msg.draft')}}</el-button>
-                        <el-button size="mini" plain v-else-if="scope.row.status=='P'" type="success" @click="" :disabled="!update_info_auth">{{$t('common_msg.publish')}}</el-button>
-                        <el-button size="mini" plain v-else :disabled="true">{{$t('common_msg.abandon')}}</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('btn.action')" width="190" align="center" fixed="right">
+                <el-table-column prop="game_id" :label="$t('game_info.game_id')" width="230" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="name" :label="$t('game_info.name')"  width="auto" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="location" :label="$t('game_info.country')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="city" :label="$t('game_info.city')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="game" :label="$t('game_info.game')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="register_time" :label="$t('game_info.register_time')" width="300" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="game_time" :label="$t('game_info.competition_time')" width="300" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column :label="$t('btn.action')" width="185" align="center">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="!view_info_auth">{{$t('btn.edit')}}</el-button>
+                        <!-- <el-button type="warning" circle size="mini" icon="el-icon-paperclip" v-if="scope.row.status=='Draft'" @click="" :disabled="!update_info_auth"></el-button>
+                        <el-button type="success" circle size="mini" icon="el-icon-video-play" v-else-if="scope.row.status=='Published'" @click="" :disabled="!update_info_auth"></el-button>
+                        <el-button circle size="mini" icon="el-icon-video-pause" v-else :disabled="true"></el-button> -->
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" :disabled="!delete_info_auth">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>
@@ -78,7 +76,7 @@
             </div>
         </div>
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="delVisible" width="500px" center>
-            <div class="del-dialog-cnt">{{$t('common_msg.ask_for_delete')}} ?</div>
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;font-size:20px;"></i>&nbsp;&nbsp;{{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="delVisible=false">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="deleteRow">{{$t('btn.confirm')}}</el-button>
@@ -98,17 +96,7 @@ export default {
     },
     data(){
         return{
-            tableData:[
-                {
-                    "id":"TWN-20200220-Taipei-001",
-                    "name":"槍王",
-                    "location":"台灣",
-                    "city":"台北",
-                    "game":"OverKill",
-                    "status":"P",
-                    
-                }
-            ],
+            tableData:[],
             start_row:0,
             cur_page:1,
             pagesize:10,
@@ -116,14 +104,14 @@ export default {
             totalRow:0,
             delID:null,
             delVisible:false,
-            publish_status:"D",
+            // publish_status:"Draft",
             table_loading:false,
-            ctype:"",
+            game_type:"",
             options:{
                 country:[],
                 city:[],
                 backup_city:[],
-                esports:[],
+                game:[],
                 scheduled_step:[],
                 match:[],
                 publish:[],
@@ -132,7 +120,7 @@ export default {
                 country:[],
                 city:[],
                 schedule:"",
-                esports:"",
+                game:"",
                 match:"",
                 name:"",
                 publish:"",
@@ -207,20 +195,20 @@ export default {
 
         getData(){
             this.table_loading=true;
-            this.ctype = this.$route.query.ctype;
-            this.$router.replace({path:`/competition_info?ctype=${this.ctype}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
+            this.game_type = this.$route.query.ctype;
+            this.$router.replace({path:`/competition_info?ctype=${this.game_type}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
             this.table_loading=false;
         },
 
         getOption(){
-            var option_keys = ["country", "city", "esports", "scheduled_step", "match", "publish_status"]
+            var option_keys = ["country", "city", "esports", "scheduled_step", "match"]
             infoService.get_info_option(option_keys)
             .then(res=>{
                 if(res.code==1){
-                    this.options.esports = res.options.esports;
+                    this.options.game = res.options.esports;
                     this.options.scheduled_step = res.options.scheduled_step;
                     this.options.match = res.options.match;
-                    this.options.publish = res.options.publish_status;
+                    // this.options.publish = res.options.publish_status;
                     this.options.country = res.options.country;
                     this.options.city = res.options.city;
                     for(var i=0;i<this.options.country.length;i++){
@@ -248,7 +236,7 @@ export default {
         },
 
         handleCreate(){
-            this.$router.push({path:`/competition_info_edit?ctype=${this.ctype}`, query:{type:"create"}});
+            this.$router.push({path:`/competition_info_edit?ctype=${this.game_type}`, query:{type:"create"}});
         },
 
         pushEdit(row){
@@ -263,7 +251,7 @@ export default {
                     "filter":{
                         "name":this.filter.name,
                         "match":this.filter.match,
-                        "esports":this.filter.esports,
+                        "game":this.filter.game,
                         "schedule":this.filter.schedule,
                         "city":this.filter.city,
                         "country":this.filter.country
@@ -274,7 +262,7 @@ export default {
         },
 
         handleEdit(index, row) {
-            this.$router.push({path:`/competition_info_edit?ctype=${this.ctype}`, query:this.pushEdit(row)});
+            this.$router.push({path:`/competition_info_edit?ctype=${this.game_type}`, query:this.pushEdit(row)});
         },
 
         handleDelete(index, row){
@@ -301,7 +289,7 @@ export default {
                 country:[],
                 city:[],
                 schedule:"",
-                esports:"",
+                game:"",
                 match:"",
                 name:"",
                 publish:"",
@@ -391,7 +379,7 @@ export default {
     display: inline-block;
 }
 .handle-select-match{
-    width: 145px;
+    width: 180px;
 }
 .handle-select-basic{
     width:130px;

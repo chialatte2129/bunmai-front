@@ -9,8 +9,11 @@
         <div class="middle_box">
             <div style="margin-bottom:-3vmin;height:7vmin;"></div>
             <div style="margin-bottom:-3vmin;">
-                <div style="height:100%;">
-                    <img width="100%" src="image/league/title/standing_pre.png" @click="reGetData"> 
+                <div style="height:100%;position:relative;">
+                    <img width="100%" src="image/league/title/standing_pre.png" @click="reGetData">
+                    <div style="position:absolute;top:0.7vmin;left:0;">
+                        <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
+                    </div>
                 </div>
                 <div style="margin:5px 2%;position:relative;width:96%;padding-top:8.6%;background-repeat:no-repeat;
                 background-image:url('image/league/standing/titlePanel.png');background-size:95%;background-position:center;">
@@ -31,7 +34,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for='(row, index) in ranks' class="standing">  
+            <div v-for='(row, index) in ranks' class="standing" v-if="ranks!=[]">  
                 <div v-if='index==0' style="position:absolute;width:100%;height:100%;top:0;left:0;
                 background-repeat:no-repeat;background-image:url('image/league/standing/1stPanel.png');background-size:100%;background-position:center;"></div> 
                 <div v-else-if='index==1' style="position:absolute;width:100%;height:100%;top:0;left:0;
@@ -83,6 +86,15 @@ export default {
 
     created(){
         this.getData();
+        // window.addEventListener("beforeunload", event=>this.redirect(event));
+    },
+
+    mounted(){
+        // window.addEventListener("beforeunload", event=>this.redirect(event));
+	},
+
+    destroyed(){
+        // window.removeEventListener("beforeunload", event=>this.redirect(event));
     },
 
     computed: {
@@ -103,6 +115,20 @@ export default {
     },
 
     methods:{
+        // redirect(event){
+        //     console.log(event)
+        //     var confirmationMessage = "\o/";
+        //     event.returnValue = confirmationMessage;
+        //     event.view.close();
+        //     return confirmationMessage;
+        // },
+
+        closeWin(){
+            // this.redirect(event);
+            var win = window.open('', '_self', '');
+            win.close();
+        },
+
         pushDetail(row){
             window.open(`${process.env.VUE_APP_HOST}public/league_match_detail/${this.$route.params.competition}/${row.team_id}/${this.$route.params.lang}`);
         },
@@ -113,6 +139,16 @@ export default {
             }else{
                 return "normalPanel"
             }
+        },
+
+        mouseEnterReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.add("cursor-point");
+        },
+
+        mouseLeaveReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.remove("cursor-point");
         },
 
         mouseEnter(index){

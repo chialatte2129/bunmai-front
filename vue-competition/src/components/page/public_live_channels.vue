@@ -9,15 +9,18 @@
         <div class="middle_box">
             <div style="margin-bottom:-3vmin;height:7vmin;"></div>
             <div style="margin-bottom:-3vmin;">
-                <div style="height:100%;">
-                    <img width="100%" src="image/league/title/live_pre.png"> 
+                <div style="height:100%;position:relative;">
+                    <img width="100%" src="image/league/title/live_win.png">
+                    <div style="position:absolute;top:0.7vmin;left:0;">
+                        <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
+                    </div>
                 </div>
             </div>
             <div style="position:relative;width:100%;display:flex;align-items:center;justify-content:center;font-size:3.7vmin;margin:3vmin 0;" class="column_font">
                 {{$t('game_info.league.online_streaming')}}
             </div>
             <div>
-                <div v-for='(row, index) in channels' style="float:left;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+                <div v-for='(row, index) in channels' style="float:left;width:100%;height:100%;display:flex;align-items:center;justify-content:center;" v-if="channels!=[]">  
                     <div class="Num_font" style="position:relative;width:100%;height:100%;top:0;left:0;">
                         <div style="margin-bottom:1vmin;font-size:4vmin">
                             <span style="margin-left:15%;">{{row.year}} / {{row.month}} / {{row.day}}</span>
@@ -89,6 +92,21 @@ export default {
     },
 
     methods:{
+        closeWin(){
+            var win = window.open('', '_self', '');
+            win.close();
+        },
+
+        mouseEnterReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.add("cursor-point");
+        },
+
+        mouseLeaveReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.remove("cursor-point");
+        },
+
         mouseEnter(num){
             var el = document.querySelector(`.ch_${num}`);
             el.classList.add("cursor-point");

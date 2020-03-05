@@ -9,18 +9,21 @@
         <div class="middle_box">
             <div style="margin-bottom:-3vmin;height:7vmin;"></div>
             <div style="margin-bottom:1vmin;">
-                <div style="height:100%;">
-                    <img width="100%" src="image/league/title/detail_pre.png"> 
+                <div style="height:100%;position:relative;">
+                    <img width="100%" src="image/league/title/detail_win.png">
+                    <div style="position:absolute;top:1.1vmin;left:1vmin;">
+                        <img width="13%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
+                    </div>
                 </div>
             </div>
-            <div v-for='(row, index) in details' :class="`detail_${index}`" class="detail">
+            <div v-for='(row, index) in details' :class="`detail_${index}`" class="detail" v-if="details!=[]">
                 <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding-top:4%;
                 background-size:100%;background-repeat:no-repeat;background-image:url('image/league/detail/rows.png');background-position:center;">
                     <div class="t0l0 wfhf" style="position:absolute;">
                         <div style="float:left;width:2.3%;height:100%;display:flex;align-items:center;justify-content:center;"> </div>
                         <div style="float:left;width:0.7%;height:100%;display:flex;align-items:center;justify-content:right;
                         background-size:60%;background-repeat:no-repeat;background-image:url('image/league/detail/date_title.png');background-position:center;"></div>
-                        <div style="margin-bottom:1vmin;font-size:2vmin;float:left;width:97%;height:100%;display:flex;align-items:center;justify-content:left;" class="Num_font">
+                        <div style="margin-bottom:1vmin;font-size:2.5vmin;float:left;width:97%;height:100%;display:flex;align-items:center;justify-content:left;" class="Num_font">
                             <span style="margin-left:1.5%;">{{row.year}} / {{row.month}} / {{row.day}}</span>
                             <span style="margin-left:5%;">{{row.start_time}}</span>
                         </div>
@@ -248,7 +251,21 @@ export default {
         //     this.angle = window.screen.orientation.angle;
         //     console.log(this.angle)
         // },
+        closeWin(){
+            var win = window.open('', '_self', '');
+            win.close();
+        },
 
+        mouseEnterReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.add("cursor-point");
+        },
+
+        mouseLeaveReturn(){
+            var el = document.querySelector(".return-logo");
+            el.classList.remove("cursor-point");
+        },
+         
         mvpclass(mvp){
             if(mvp==1){
                 return "mvp-class"
