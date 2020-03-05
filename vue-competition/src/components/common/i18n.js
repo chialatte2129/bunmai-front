@@ -82,6 +82,7 @@ export const messages = {
             competition_league_manage:"聯賽管理",
             competition_advance_info:"晉級賽資訊",
             competition_info_edit:"比賽資訊編輯",
+            competition_info_create:"建立比賽資訊",
             register_verify:"報名審核",
             competition_check_in:"報到管理",
             competition_group:"分組設定",
@@ -258,7 +259,7 @@ export const messages = {
         game_info:{
             filter_name:"請輸入比賽名稱",
             filter_match:"團體 / 個人",
-            filter_schedule:"比賽排程狀態",
+            filter_schedule:"排程狀態",
             filter_game:"遊戲選擇",
             filter_country:"地區選擇",
             filter_city:"城市選擇",
@@ -268,7 +269,7 @@ export const messages = {
             name_i18n:"比賽名稱 - 多語系",
             country:"比賽地區",
             city:"比賽地點",
-            game:"比賽選擇",
+            game:"比賽遊戲",
             min_players:"最少人數",
             max_players:"最多人數",
             time_setting:"時間設定",
@@ -282,13 +283,22 @@ export const messages = {
             payment_mode:"收費方式",
             fee:"報名費金額",
             currency:"報名費幣別",
-            content:"比賽內容或注意事項",
+            content_detail:"比賽內容或注意事項",
+            content:"內容",
             publish_status:"發布狀態",
             status:"狀態",
+            to:"至",
+            setting_link:"設定連結",
             
 
-
-
+            schedule:{
+                "init":"初始化",
+                "before_registration":"報名開始前",
+                "among_registration":"報名期間內",
+                "between_registration_and_competitions":"報名截止至比賽開始前",
+                "among_competition":"比賽期間內",
+                "finish_competitions":"比賽結束",
+            },
             league:{
                 "match_map":"對陣圖",
                 "online_streaming":"直 播 空 間",
@@ -377,6 +387,7 @@ export const messages = {
             competition_league_manage:"League Management",
             competition_advance_info:"Advance Information",
             competition_info_edit:"Competition Information Edit",
+            competition_info_create:"Competition Information Create",
             register_verify:"Registration Form Verify",
             competition_check_in:"Competition Check In",
             competition_group:"Competition Group",
@@ -553,7 +564,7 @@ export const messages = {
         game_info:{
             filter_name:"Input Competition Name",
             filter_match:"Team / Individual",
-            filter_schedule:"Competition Scheduled",
+            filter_schedule:"Scheduled Status",
             filter_game:"Games",
             filter_country:"Location",
             filter_city:"City",
@@ -577,14 +588,22 @@ export const messages = {
             payment_mode:"Payment Mode",
             fee:"Register Fee",
             currency:"Currency",
-            content:"Content / Notice",
+            content_detail:"Content / Notice",
+            content:"Content",
             publish_status:"Publish Status",
             status:"Status",
+            to:"To",
+            setting_link:"Settings Link",
+            
 
-
-
-
-
+            schedule:{
+                "init":"Initialization Now",
+                "before_registration":"Before Registration",
+                "among_registration":"Among Registration",
+                "between_registration_and_competitions":"Before Competition",
+                "among_competition":"Among Competition",
+                "finish_competitions":"Finish Competition",
+            },
             league:{
                 "match_map":"Match Map",
                 "online_streaming":"Online Stream",

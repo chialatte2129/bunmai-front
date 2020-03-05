@@ -22,9 +22,9 @@
                         <el-option v-for="item in group.options" :key="item.value" :label="show_label(item)" :value="item.value" :disabled="item.value==''"></el-option>
                     </el-option-group>
                 </el-select>
-                <el-select v-model="filter.publish" :placeholder="$t('game_info.publish_status')" clearable filterable @change="search" class="handle-select-basic mr10">
+                <!-- <el-select v-model="filter.publish" :placeholder="$t('game_info.publish_status')" clearable filterable @change="search" class="handle-select-basic mr10">
                     <el-option v-for="item in options.publish" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                </el-select>
+                </el-select> -->
                 <el-select v-model="filter.esports" :placeholder="$t('game_info.filter_game')" clearable filterable @change="search" class="handle-select-basic mr10">
                     <el-option v-for="item in options.esports" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                 </el-select>
@@ -45,21 +45,19 @@
             v-loading="table_loading"
             @sort-change="handleSortChange"
             :row-class-name="tableRowClassName">
-                <el-table-column prop="id" label="ID" sortable="custom"></el-table-column>
-                <el-table-column prop="name" label="name" sortable="custom"></el-table-column>
-                <el-table-column prop="location" label="location" sortable="custom"></el-table-column>
-                <el-table-column prop="city" label="city" sortable="custom"></el-table-column>
-                <el-table-column prop="game" label="game" sortable="custom"></el-table-column>
-                <el-table-column prop="status" label="status" width="110" sortable="custom" align="center">
-                    <template slot-scope="scope" style="text-align:center;">
-                        <el-button size="mini" plain v-if="scope.row.status=='D'" type="info" @click="" :disabled="!update_info_auth">{{$t('common_msg.draft')}}</el-button>
-                        <el-button size="mini" plain v-else-if="scope.row.status=='P'" type="success" @click="" :disabled="!update_info_auth">{{$t('common_msg.publish')}}</el-button>
-                        <el-button size="mini" plain v-else :disabled="true">{{$t('common_msg.abandon')}}</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column :label="$t('btn.action')" width="190" align="center" fixed="right">
+                <el-table-column prop="id" :label="$t('game_info.game_id')" width="230" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="name" :label="$t('game_info.name')"  width="auto" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="location" :label="$t('game_info.country')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="city" :label="$t('game_info.city')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="game" :label="$t('game_info.game')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="register_time" :label="$t('game_info.register_time')" width="300" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="game_time" :label="$t('game_info.competition_time')" width="300" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column :label="$t('btn.action')" width="185" align="center">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="!view_info_auth">{{$t('btn.edit')}}</el-button>
+                        <!-- <el-button type="warning" circle size="mini" icon="el-icon-paperclip" v-if="scope.row.status=='Draft'" @click="" :disabled="!update_info_auth"></el-button>
+                        <el-button type="success" circle size="mini" icon="el-icon-video-play" v-else-if="scope.row.status=='Published'" @click="" :disabled="!update_info_auth"></el-button>
+                        <el-button circle size="mini" icon="el-icon-video-pause" v-else :disabled="true"></el-button> -->
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" :disabled="!delete_info_auth">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>
@@ -78,7 +76,7 @@
             </div>
         </div>
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="delVisible" width="500px" center>
-            <div class="del-dialog-cnt">{{$t('common_msg.ask_for_delete')}} ?</div>
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;font-size:20px;"></i>&nbsp;&nbsp;{{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="delVisible=false">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="deleteRow">{{$t('btn.confirm')}}</el-button>
@@ -98,17 +96,7 @@ export default {
     },
     data(){
         return{
-            tableData:[
-                {
-                    "id":"TWN-20200220-Taipei-001",
-                    "name":"槍王",
-                    "location":"台灣",
-                    "city":"台北",
-                    "game":"OverKill",
-                    "status":"P",
-                    
-                }
-            ],
+            tableData:[],
             start_row:0,
             cur_page:1,
             pagesize:10,
