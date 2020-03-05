@@ -17,7 +17,7 @@
                 {{$t('game_info.league.online_streaming')}}
             </div>
             <div>
-                <div v-for='(row, index) in channels' style="float:left;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+                <div v-for='(row, index) in channels' style="float:left;width:100%;height:100%;display:flex;align-items:center;justify-content:center;" v-if="channels!=[]">  
                     <div class="Num_font" style="position:relative;width:100%;height:100%;top:0;left:0;">
                         <div style="margin-bottom:1vmin;font-size:4vmin">
                             <span style="margin-left:15%;">{{row.year}} / {{row.month}} / {{row.day}}</span>

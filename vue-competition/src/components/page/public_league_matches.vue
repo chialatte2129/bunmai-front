@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for='(row, index) in match' :class="`round_${index}`" class="round">
+            <div v-for='(row, index) in match' :class="`round_${index}`" class="round" v-if="match!=[]">
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);">
                     <hr style="z-index:100;margin:1.5vmin;border:0;height:0.5vmin;width:27vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);"></hr>
                 </div>

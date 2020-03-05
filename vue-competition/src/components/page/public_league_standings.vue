@@ -31,7 +31,7 @@
                     </div>
                 </div>
             </div>
-            <div v-for='(row, index) in ranks' class="standing">  
+            <div v-for='(row, index) in ranks' class="standing" v-if="ranks!=[]">  
                 <div v-if='index==0' style="position:absolute;width:100%;height:100%;top:0;left:0;
                 background-repeat:no-repeat;background-image:url('image/league/standing/1stPanel.png');background-size:100%;background-position:center;"></div> 
                 <div v-else-if='index==1' style="position:absolute;width:100%;height:100%;top:0;left:0;
