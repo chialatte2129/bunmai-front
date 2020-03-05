@@ -25,8 +25,8 @@
                 <!-- <el-select v-model="filter.publish" :placeholder="$t('game_info.publish_status')" clearable filterable @change="search" class="handle-select-basic mr10">
                     <el-option v-for="item in options.publish" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                 </el-select> -->
-                <el-select v-model="filter.esports" :placeholder="$t('game_info.filter_game')" clearable filterable @change="search" class="handle-select-basic mr10">
-                    <el-option v-for="item in options.esports" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
+                <el-select v-model="filter.game" :placeholder="$t('game_info.filter_game')" clearable filterable @change="search" class="handle-select-basic mr10">
+                    <el-option v-for="item in options.game" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                 </el-select>
                 <el-select v-model="filter.match" :placeholder="$t('game_info.filter_match')" clearable filterable @change="search" class="handle-select-match mr10">
                     <el-option v-for="item in options.match" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
@@ -45,7 +45,7 @@
             v-loading="table_loading"
             @sort-change="handleSortChange"
             :row-class-name="tableRowClassName">
-                <el-table-column prop="id" :label="$t('game_info.game_id')" width="230" sortable="custom" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="game_id" :label="$t('game_info.game_id')" width="230" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="name" :label="$t('game_info.name')"  width="auto" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="location" :label="$t('game_info.country')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="city" :label="$t('game_info.city')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
@@ -104,14 +104,14 @@ export default {
             totalRow:0,
             delID:null,
             delVisible:false,
-            publish_status:"D",
+            // publish_status:"Draft",
             table_loading:false,
-            ctype:"",
+            game_type:"",
             options:{
                 country:[],
                 city:[],
                 backup_city:[],
-                esports:[],
+                game:[],
                 scheduled_step:[],
                 match:[],
                 publish:[],
@@ -120,7 +120,7 @@ export default {
                 country:[],
                 city:[],
                 schedule:"",
-                esports:"",
+                game:"",
                 match:"",
                 name:"",
                 publish:"",
@@ -195,20 +195,20 @@ export default {
 
         getData(){
             this.table_loading=true;
-            this.ctype = this.$route.query.ctype;
-            this.$router.replace({path:`/competition_info?ctype=${this.ctype}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
+            this.game_type = this.$route.query.ctype;
+            this.$router.replace({path:`/competition_info?ctype=${this.game_type}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
             this.table_loading=false;
         },
 
         getOption(){
-            var option_keys = ["country", "city", "esports", "scheduled_step", "match", "publish_status"]
+            var option_keys = ["country", "city", "esports", "scheduled_step", "match"]
             infoService.get_info_option(option_keys)
             .then(res=>{
                 if(res.code==1){
-                    this.options.esports = res.options.esports;
+                    this.options.game = res.options.esports;
                     this.options.scheduled_step = res.options.scheduled_step;
                     this.options.match = res.options.match;
-                    this.options.publish = res.options.publish_status;
+                    // this.options.publish = res.options.publish_status;
                     this.options.country = res.options.country;
                     this.options.city = res.options.city;
                     for(var i=0;i<this.options.country.length;i++){
@@ -236,7 +236,7 @@ export default {
         },
 
         handleCreate(){
-            this.$router.push({path:`/competition_info_edit?ctype=${this.ctype}`, query:{type:"create"}});
+            this.$router.push({path:`/competition_info_edit?ctype=${this.game_type}`, query:{type:"create"}});
         },
 
         pushEdit(row){
@@ -251,7 +251,7 @@ export default {
                     "filter":{
                         "name":this.filter.name,
                         "match":this.filter.match,
-                        "esports":this.filter.esports,
+                        "game":this.filter.game,
                         "schedule":this.filter.schedule,
                         "city":this.filter.city,
                         "country":this.filter.country
@@ -262,7 +262,7 @@ export default {
         },
 
         handleEdit(index, row) {
-            this.$router.push({path:`/competition_info_edit?ctype=${this.ctype}`, query:this.pushEdit(row)});
+            this.$router.push({path:`/competition_info_edit?ctype=${this.game_type}`, query:this.pushEdit(row)});
         },
 
         handleDelete(index, row){
@@ -289,7 +289,7 @@ export default {
                 country:[],
                 city:[],
                 schedule:"",
-                esports:"",
+                game:"",
                 match:"",
                 name:"",
                 publish:"",
@@ -379,7 +379,7 @@ export default {
     display: inline-block;
 }
 .handle-select-match{
-    width: 145px;
+    width: 180px;
 }
 .handle-select-basic{
     width:130px;

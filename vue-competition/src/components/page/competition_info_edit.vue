@@ -44,7 +44,7 @@
                                         <el-col :span="12">
                                             <el-form-item :label="$t('game_info.game')" prop="game">
                                                 <el-select v-model="form.game" :placeholder="$t('game_info.filter_game')" class="handle-select" clearable filterable>
-                                                    <el-option v-for="item in options.esports" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
+                                                    <el-option v-for="item in options.game" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                                                 </el-select>
                                             </el-form-item>
                                             <el-form-item :label="$t('game_info.max_players')" prop="max_players">
@@ -202,7 +202,7 @@ export default {
                 country:[],
                 city:[],
                 backup_city:[],
-                esports:[],
+                game:[],
                 scheduled_step:[],
                 match:[],
                 timezone:[],
@@ -259,7 +259,7 @@ export default {
                     this.options.country = res.options.country;
                     this.options.city = res.options.city;
                     this.options.backup_city = res.options.city;
-                    this.options.esports = res.options.esports;
+                    this.options.game = res.options.esports;
                     this.options.scheduled_step = res.options.scheduled_step;
                     this.options.match = res.options.match;
                     this.options.timezone = res.options.timezone;
