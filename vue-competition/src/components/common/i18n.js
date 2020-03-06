@@ -197,7 +197,7 @@ export const messages = {
             input_number: '請輸入數字',
             input_number_lgt_0: '請輸入數字並且大於 0',
             input_string: '請輸入字串',
-            update_ok:'成功更新',
+            update_ok:'更新成功',
             ask_for_copy: '是否確定複製',
             detail_info:"詳細資料",
             content_must_json:"內容格式必須為 JSON",
@@ -207,11 +207,13 @@ export const messages = {
             time_range_too_large:"開始與結束日期不得大於 3 個月",
             post_error_datatype:"參數格式錯誤",
             post_error_param:"參數錯誤",
+            delete_game_tips:"此場比賽的所有設定將全數刪除",
             ask_for_delete:'刪除不可恢復，是否確定刪除',
             no_data:"沒有資料",
             draft:"草稿中",
             publish:"已發布",
             abandon:"已廢棄",
+            not_working:"目前無功能",
         },
         account:{
             login: '登入', 
@@ -264,6 +266,7 @@ export const messages = {
             filter_country:"地區選擇",
             filter_city:"城市選擇",
             
+            
             game_id:"比賽代號",
             name:"比賽名稱",
             name_i18n:"比賽名稱 - 多語系",
@@ -289,6 +292,9 @@ export const messages = {
             status:"狀態",
             to:"至",
             setting_link:"設定連結",
+            individual:"個人賽",
+            team:"團體賽",
+            register_and_game_time_error:"報名截止時間晚於比賽開始時間",
             
 
             schedule:{
@@ -501,9 +507,9 @@ export const messages = {
             max_len: 'Max Length : ',
             min_len: 'Min Length : ',
             input_number: 'Please Input Number',
-            input_number_lgt_0: 'Please Input Number and Larger than 0',
+            input_number_lgt_0: 'Please Input Number Larger than 0',
             input_string: 'Please Input String',
-            update_ok:'Successfully Update',
+            update_ok:'Update OK',
             ask_for_copy: 'Confirm to copy',
             detail_info:"Detail Information",
             content_must_json: 'Content format must be JSON',
@@ -513,11 +519,13 @@ export const messages = {
             time_range_too_large:"The period can't be larger than three months",
             post_error_datatype:"Post parameter data type error",
             post_error_param:"Parameter error",
-            ask_for_delete:'Confirm to delete',
+            delete_game_tips:"All settings in this game will be deleted",
+            ask_for_delete:"All settings can't rollback, Confirm to delete",
             no_data:"No Data",
             draft:"Draft",
             publish:"Published",
             abandon:"Abandoned",
+            not_working:"Not Working Now",
         },
         account: {
             login: 'Login', 
@@ -594,6 +602,9 @@ export const messages = {
             status:"Status",
             to:"To",
             setting_link:"Settings Link",
+            individual:"Individual",
+            team:"Team",
+            register_and_game_time_error:"Register end time is later than Game start time",
             
 
             schedule:{
