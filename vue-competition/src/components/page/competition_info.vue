@@ -114,7 +114,7 @@ export default {
                 game:[],
                 scheduled_step:[],
                 match:[],
-                publish:[],
+                // publish:[],
             },
             filter:{
                 country:[],
@@ -123,7 +123,7 @@ export default {
                 game:"",
                 match:"",
                 name:"",
-                publish:"",
+                // publish:"",
             }
         }
     },
