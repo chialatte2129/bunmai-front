@@ -48,7 +48,7 @@
                                                 </el-select>
                                             </el-form-item>
                                             <el-form-item :label="$t('game_info.max_players')" prop="max_players">
-                                                <el-input-number v-model="form.max_players" class="handle-input-number" :min="1" :max="10" ></el-input-number>
+                                                <el-input-number v-model="form.max_players" class="handle-input-number" :min="1" :max="15" @change="maxplayesChange"></el-input-number>
                                             </el-form-item>
                                             <el-form-item :label="$t('game_info.min_players')" prop="min_players">
                                                 <el-input-number v-model="form.min_players" class="handle-input-number" :min="1" :max="maxplayerNum" ></el-input-number>
@@ -106,7 +106,7 @@
                                             </el-select>
                                         </el-form-item>
                                         <el-form-item :label="$t('game_info.fee')" prop="fee">
-                                            <el-input v-model.number="form.fee" class="handle-input-number"></el-input>
+                                            <el-input v-model="form.fee" class="handle-input-number"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </div>
@@ -131,14 +131,6 @@
                                 <span>{{$t('game_info.status')}}</span>
                             </div>
                             <div class="status-area">
-                                <!-- <el-form-item :label="$t('game_info.publish_status')">
-                                    <el-button type="warning" round plain size="medium" class="status-btn" v-if="form.status=='Draft'" @click="" :disabled="!update_info_auth">
-                                        {{$t('common_msg.draft')}}
-                                    </el-button>
-                                    <el-button type="success" round plain size="medium" class="status-btn" icon="el-icon-video-play" v-else="form.status=='Published'" @click="" :disabled="!update_info_auth">
-                                        {{$t('common_msg.publish')}}
-                                    </el-button>
-                                </el-form-item> -->
                                 <el-form-item :label="$t('game_info.filter_schedule')">
                                     <el-button round plain size="medium" class="status-btn" v-if="form.scheduled=='init'" @click="">{{$t('game_info.schedule.init')}}</el-button>
                                     <el-button round plain size="medium" class="status-btn" v-else-if="form.scheduled=='b_r'" @click="">{{$t('game_info.schedule.before_registration')}}</el-button>
@@ -146,6 +138,10 @@
                                     <el-button type="warning" round plain size="medium" class="status-btn" v-else-if="form.scheduled=='b_c'" @click="">{{$t('game_info.schedule.between_registration_and_competitions')}}</el-button>
                                     <el-button type="primary" round plain size="medium" class="status-btn" v-else-if="form.scheduled=='a_c'" @click="">{{$t('game_info.schedule.among_competition')}}</el-button>
                                     <el-button type="success" round plain size="medium" class="status-btn" v-else @click="">{{$t('game_info.schedule.finish_competitions')}}</el-button>
+                                </el-form-item>
+                                <el-form-item :label="$t('game_info.filter_match')">
+                                    <el-button type="primary" round plain size="medium" class="status-btn" v-if="form.min_players>1" @click="">{{$t('game_info.team')}}</el-button>
+                                    <el-button type="success" round plain size="medium" class="status-btn" v-else @click="">{{$t('game_info.individual')}}</el-button>
                                 </el-form-item>
                             </div>
                         </el-card>
@@ -186,16 +182,11 @@ export default {
                 min_players:1,
                 max_players:1,
                 register_time:null,
-                register_start_time:null,
-                register_end_time:null,
                 game_time:null,
-                game_start_time:null,
-                game_end_time:null,
                 show_timezone:8,
                 fee:0,
                 currency:"",
                 content:"",
-                status:"Draft",
                 scheduled:"init",
             },
             options:{
@@ -211,7 +202,17 @@ export default {
             },
             
             rules:{
-
+                name:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                country:        [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
+                city:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
+                game:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
+                max_players:    [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                min_players:    [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                register_time:  [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                game_time:      [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                show_timezone:  [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                currency:       [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
+                fee:            [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
             }
         }
     },
@@ -236,19 +237,29 @@ export default {
         
     },
     created(){
-        console.log(this.$route.query)
+        console.log(this.$route)
         this.getOption();
-        this.getData();
+        this.getData(this.$route.query.game_id);
     },
+
     methods:{
+        maxplayesChange(){
+            if(this.form.max_players<this.form.min_players){
+                this.form.min_players=this.form.max_players;
+            }
+        },
+
         disabledTime(time){
             var d = new Date(time);
             var timestamp = d.valueOf();
             return timestamp
         },
 
-        getData(){
-
+        getData(id){
+            infoService.get_single_competition_info(id)
+            .then(res=>{ console.log(res)
+                this.form = (res.code==1)?res.game_info:this.form;
+            })
         },
 
         getOption(){
@@ -283,8 +294,43 @@ export default {
             }
         },
 
+        checkField(){
+            if(this.form.register_time[1]>this.form.game_time[0]){
+                this.$message.warning(this.$t("game_info.register_and_game_time_error"));
+                return false
+            }
+            if(!/^[0-9.]+$/.test(this.form.fee)){
+                this.$message.warning(this.$t("common_msg.input_number_lgt_0"));
+                return false
+            }
+            return true
+        },
+
         handleUpdate(){
-            
+            this.$refs.form.validate(valid => {
+                if(this.checkField()){
+                    if(valid){
+                        var action = (this.form.game_id=="")?"create":"update";
+                        infoService.update_competition_info(action, this.form)
+                        .then(res=>{
+                            if(res.code==1){
+                                this.getData(res.game_id);
+                                this.$message.success(this.$t("common_msg.save_ok"));
+                                if(action=="create"){
+                                    this.$router.replace({path:`/competition_info_edit?ctype=${this.form.game_type}&type=update&game_id=${res.game_id}`}).catch(err => {});
+                                }else{
+                                    this.$router.replace({path:`/competition_info_edit?ctype=${this.form.game_type}`,query:this.pushTable()}).catch(err => {});
+                                }
+                            }else if(res.code==0){
+                                this.$message.warning(this.$t(res.msg));
+                            }else{
+                                this.$message.error(res.msg);
+                            }
+                        })
+                        this.$refs.form.clearValidate()
+                    }
+                }
+            })
         },
 
         handleCancel(){
@@ -293,7 +339,7 @@ export default {
 
         goBackTable(){
             if(this.$route.query.type=="create"){
-                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`});
+                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}&page=1&row=0`});
             }else{
                 this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`,query:this.pushTable()});
             }
@@ -303,15 +349,11 @@ export default {
             if(this.$route.query.type=="create"){
                 var query = {}
             }else{
-                var query = {
-                    "type":"update",
-                    "game_id":this.$route.query.game_id,
-                    "position":this.$route.query.position
-                }
+                var query = this.$route.query;
             }
             return query
         },
-
+        
         changeCitySelection(){
             this.options.city=this.options.backup_city;
             if(this.form.country!=""){
