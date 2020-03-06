@@ -11,8 +11,8 @@
             <div style="margin-bottom:1vmin;">
                 <div style="height:100%;position:relative;">
                     <img width="100%" src="image/league/title/detail_win.png">
-                    <div style="position:absolute;top:1.1vmin;left:1vmin;">
-                        <img width="13%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
+                    <div style="position:absolute;top:0.7vmin;left:0;">
+                        <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                             <div v-if="row.away.win==1" class="team-win-lose" style="width:47%;background-image:url('image/league/detail/win.png');background-position:left;margin-top:0.7%;"></div>
                             <div v-else class="team-win-lose" style="width:47%;height:100%;background-image:url('image/league/detail/lose.png');background-position:left;margin-top:0.7%;"></div>
                         </div>
-                        <div class="t0l0 wfhf" style="position:absolute;top:-0.5vmin;">
+                        <div class="t0l0 wfhf" style="position:absolute;top:-0.7vmin;">
                             <div class="team-win-lose" style="width:47%;">
                                 <div class="text-center"><p class="column_font colfont-team">{{row.home.team_name}}</p><p class="Num_font numfont-team">{{row.home.gate_hp}}</p></div>
                             </div>
@@ -57,7 +57,7 @@
                         <div class="team-win-lose" style="width:3%;"></div>
                         <div class="team-win-lose" style="width:3%;"></div>
                         <div class="team-win-lose" style="width:47%;background-image:url('image/league/detail/item_col.png');background-position:center"></div>
-                        <div class="t0l0 wfhf" style="position:absolute;margin-top:-2.1%;font-size:2vmin;">
+                        <div class="t0l0 wfhf" style="position:absolute;margin-top:-2.1%;font-size:1.7vmin;">
                             <div class="team-win-lose" style="width:7%;"></div>
                             <div class="team-win-lose" style="width:12%;"></div>
                             <div class="team-win-lose" style="width:7%;">{{$t('game_info.league.kill')}}</div>
@@ -152,7 +152,7 @@ export default {
                         "gate_hp":"36.50%",
                         "team_name":"Baaaaad Boys",
                         "records":[
-                            {"nickname":"wwwwwwwwwwwww","kills":2,"headshots":5,"death":6,"gate":0,"mvp":0},
+                            {"nickname":"wwwwwwwwwww","kills":2,"headshots":5,"death":6,"gate":0,"mvp":0},
                             {"nickname":"帥帥的路人甲","kills":7,"headshots":3,"death":9,"gate":0,"mvp":0},
                             {"nickname":"一天轉大人","kills":2,"headshots":2,"death":2,"gate":0,"mvp":0},
                             {"nickname":"戰現實","kills":4,"headshots":1,"death":9,"gate":0.8,"mvp":0},
@@ -293,7 +293,7 @@ export default {
 </script>
 <style scoped>
 .middle_box{
-    max-width:1440px;
+    max-width:1000px;
     min-width:320px;
     margin:auto;
 }
@@ -397,37 +397,37 @@ export default {
     height:100%;
 }
 .colfont-team{
-    font-size:3.3vmin;
+    font-size:3vmin;
 }
 .numfont-team{
-    font-size:2.8vmin;
+    font-size:2.5vmin;
 }
 .row-record{
-    font-size:2.8vmin;
-}
-.nickname-size{
-    font-size:2vmin;
-}
-@media(max-width:1024px){
-.colfont-team{
-    font-size:2.8vmin;
-}
-.numfont-team{
-    font-size:2.3vmin;
+    font-size:2.5vmin;
 }
 .nickname-size{
     font-size:1.8vmin;
+}
+@media(max-width:1024px){
+.colfont-team{
+    font-size:2.5vmin;
+}
+.numfont-team{
+    font-size:2.0vmin;
+}
+.nickname-size{
+    font-size:1.6vmin;
 }
 }
 @media(max-width:500px){
 .colfont-team{
-    font-size:2.3vmin;
+    font-size:2.0vmin;
 }
 .numfont-team{
-    font-size:1.8vmin;
+    font-size:1.5vmin;
 }
 .nickname-size{
-    font-size:1.6vmin;
+    font-size:1.4vmin;
 }
 }
 @media screen and (max-width:1024px) and (orientation:landscape){

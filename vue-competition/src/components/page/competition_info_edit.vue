@@ -130,15 +130,15 @@
                             <div slot="header" class="clearfix">
                                 <span>{{$t('game_info.status')}}</span>
                             </div>
-                            <div style="padding:20px 30px;">
-                                <el-form-item :label="$t('game_info.publish_status')">
+                            <div class="status-area">
+                                <!-- <el-form-item :label="$t('game_info.publish_status')">
                                     <el-button type="warning" round plain size="medium" class="status-btn" v-if="form.status=='Draft'" @click="" :disabled="!update_info_auth">
                                         {{$t('common_msg.draft')}}
                                     </el-button>
                                     <el-button type="success" round plain size="medium" class="status-btn" icon="el-icon-video-play" v-else="form.status=='Published'" @click="" :disabled="!update_info_auth">
                                         {{$t('common_msg.publish')}}
                                     </el-button>
-                                </el-form-item>
+                                </el-form-item> -->
                                 <el-form-item :label="$t('game_info.filter_schedule')">
                                     <el-button round plain size="medium" class="status-btn" v-if="form.scheduled=='init'" @click="">{{$t('game_info.schedule.init')}}</el-button>
                                     <el-button round plain size="medium" class="status-btn" v-else-if="form.scheduled=='b_r'" @click="">{{$t('game_info.schedule.before_registration')}}</el-button>
