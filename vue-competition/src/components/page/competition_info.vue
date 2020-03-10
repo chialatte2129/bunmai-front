@@ -305,7 +305,7 @@ export default {
             return query
         },
 
-        handleEdit(index, row) {
+        handleEdit(index, row){
             this.$router.push({path:`/competition_info_edit?ctype=${this.game_type}`, query:this.pushEdit(row)});
         },
 

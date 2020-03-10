@@ -2,12 +2,14 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb>
-                <el-breadcrumb-item :to="{path:`/competition_info?ctype=${$route.query.ctype}`, query:pushTable()}"><i class="el-icon-info"></i>
-                    <span v-if="$route.query.ctype=='league'"> {{$t('menus.competition_league_info')}}</span>
-                    <span v-else> {{$t('menus.competition_advance_info')}}</span>
+                <el-breadcrumb-item v-if="$route.query.type=='create'" :to="{path:`/league_teams?game_id=${$route.query.game_id}`, query:pushTable()}"><i class="el-icon-info"></i>
+                    <span> {{$t('menus.league_teams')}} </span><span style="font-size:16px;">{{$route.query.game_id}}</span>
                 </el-breadcrumb-item>
-                <el-breadcrumb-item v-if="$route.query.type=='create'">{{$t('menus.competition_info_create')}}</el-breadcrumb-item>
-                <el-breadcrumb-item v-else>{{$t('menus.competition_info_edit')}}&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$route.query.game_id}}. {{form.name}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item v-else :to="{path:`/league_teams?game_id=${$route.query.game_id}&team_id=${$route.query.team_id}`, query:pushTable()}"><i class="el-icon-info"></i>
+                    <span> {{$t('menus.league_teams')}} </span><span style="font-size:16px;">{{$route.query.game_id}}</span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item v-if="$route.query.type=='create'">{{$t('menus.league_teams_create')}}</el-breadcrumb-item>
+                <el-breadcrumb-item v-else>{{$t('menus.league_teams_edit')}}&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$route.query.team_id}}. {{form.team_name}}</b></el-breadcrumb-item>
             </el-breadcrumb>
             <span style="float:right;margin-top:-38px">
                 <el-button type="primary" icon="el-icon-edit" @click="handleUpdate" size=large :disabled="disableEdit()">{{$t('btn.save')}}</el-button>
@@ -16,7 +18,7 @@
         </div>
         <div class="container">
             <el-form ref="form" :model="form" :rules="rules" label-width="auto" label-position="right">
-                <el-row class="mb10">
+                <!-- <el-row class="mb10">
                     <el-col :span="18" class="pdr10">
                         <el-row>
                             <el-card shadow="hover" style="min-height:251px;height:auto;" class="mb10">
@@ -169,7 +171,7 @@
                             </div>
                         </el-card>
                     </el-col>
-                </el-row>                
+                </el-row>                 -->
             </el-form>
         </div>
         <el-backtop target=".content" :visibility-height="0" :bottom="40" :right="10">
@@ -180,7 +182,7 @@
 <script>
 import { infoService } from "@/_services";
 export default {
-    name:"competition_information_edit",
+    name:"league_teams_edit",
     components:{
 
     },
@@ -188,65 +190,36 @@ export default {
         return{
             form:{
                 game_id:"",
-                name:"",
-                country:"",
-                city:"",
-                game:"",
-                game_type:this.$route.query.ctype,
-                min_players:1,
-                max_players:1,
-                register_time:null,
-                game_time:null,
-                show_timezone:8,
-                fee:0,
-                currency:"",
-                content:"",
-                scheduled:"init",
-                match_disabled:0,
-                channel_disabled:0,
-                standing_disabled:0,
-                team_disabled:0,
+                team_id:"",
+                team_name:"",
+                logo:null,
+                slogan:"",
+                is_major:1,
+                contact_person:"",
+                email:"",
+                phone:"",
+                gender:"",
+                birthday:"",
+                note:"",
+                status:"Operation",
             },
             options:{
-                country:[],
-                city:[],
-                backup_city:[],
-                game:[],
-                scheduled_step:[],
-                match:[],
-                timezone:[],
-                currency:[],
-                language:[]
+                team_status:[],
+                gender:[],
             },
             
             rules:{
-                name:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                country:        [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
-                city:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
-                game:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
-                max_players:    [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                min_players:    [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                register_time:  [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                game_time:      [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                show_timezone:  [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                currency:       [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
-                fee:            [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                team_name:          [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                contact_person:     [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                email:              [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                phone:              [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                gender:             [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
             }
         }
     },
     computed:{
         update_info_auth(){
-            return localStorage.getItem("ms_user_actions").includes(`update_${this.$route.query.ctype}_competition`)
-        },
-
-        block_area(){
-            if(this.$route.query.type!='create'){
-                return 18
-            }
-        },
-
-        maxplayerNum(){
-            return this.form.max_players
+            return localStorage.getItem("ms_user_actions").includes("update_league_competition")
         },
 
     },
@@ -255,23 +228,12 @@ export default {
         
     },
     created(){
-        // console.log(this.$route)
+        console.log(this.$route)
         this.getOption();
-        this.getData(this.$route.query.game_id);
+        // this.getData(this.$route.query.game_id);
     },
 
     methods:{
-        leaguePush(page, game_id){
-            let to_where = this.$router.resolve({name:page, query: {game_id: game_id}});
-            window.open(to_where.href, '_blank');
-        },
-
-        maxplayesChange(){
-            if(this.form.max_players<this.form.min_players){
-                this.form.min_players=this.form.max_players;
-            }
-        },
-
         disabledTime(time){
             var d = new Date(time);
             var timestamp = d.valueOf();
@@ -286,19 +248,12 @@ export default {
         },
 
         getOption(){
-            var option_keys = ["country", "city", "esports", "scheduled_step", "match", "timezone", "currency", "language"]
+            var option_keys = ["gender", "team_status"]
             infoService.get_info_option(option_keys)
-            .then(res=>{
+            .then(res=>{ console.log(res)
                 if(res.code==1){
-                    this.options.country = res.options.country;
-                    this.options.city = res.options.city;
-                    this.options.backup_city = res.options.city;
-                    this.options.game = res.options.esports;
-                    this.options.scheduled_step = res.options.scheduled_step;
-                    this.options.match = res.options.match;
-                    this.options.timezone = res.options.timezone;
-                    this.options.currency = res.options.currency;
-                    this.options.language = res.options.language;
+                    this.options.gender = res.options.gender;
+                    this.options.team_status = res.options.team_status;
                     if(res.error_param!=""){
                         this.$message.warning(res.error_param+" "+this.$i18n.t(res.msg));
                     }
@@ -340,9 +295,9 @@ export default {
                                 this.getData(res.game_id);
                                 this.$message.success(this.$t("common_msg.save_ok"));
                                 if(action=="create"){
-                                    this.$router.replace({path:`/competition_info_edit?ctype=${this.form.game_type}&type=update&game_id=${res.game_id}`}).catch(err => {});
+                                    this.$router.replace({path:`/league_teams?game_id=${this.$route.query.game_id}&type=update&team_id=${res.team_id}`}).catch(err => {});
                                 }else{
-                                    this.$router.replace({path:`/competition_info_edit?ctype=${this.form.game_type}`,query:this.pushTable()}).catch(err => {});
+                                    this.$router.replace({path:`/league_teams?game_id`,query:this.pushTable()}).catch(err => {});
                                 }
                             }else if(res.code==0){
                                 this.$message.warning(this.$t(res.msg));
@@ -362,9 +317,9 @@ export default {
 
         goBackTable(){
             if(this.$route.query.type=="create"){
-                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}&page=1&row=0`});
+                this.$router.push({path:`/league_teams?game_id=${this.$route.query.game_id}&page=1&row=0`});
             }else{
-                this.$router.push({path:`/competition_info?ctype=${this.$route.query.ctype}`,query:this.pushTable()});
+                this.$router.push({path:`/league_teams?game_id`,query:this.pushTable()});
             }
         },
 

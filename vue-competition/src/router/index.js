@@ -59,11 +59,35 @@ export default new Router({
                     path: '/league_detail_setting',
                     component: resolve => require(['../components/page/league_detail_setting.vue'], resolve),
                     meta: { title:  'menus.league_detail_setting' }
-                }, 
+                },  
+                {
+                    path: '/league_teams_matches',
+                    name: 'league_teams_matches',
+                    component: resolve => require(['../components/page/league_teams_matches.vue'], resolve),
+                    meta: { title:  'menus.league_teams_matches' }
+                },  
+                {
+                    path: '/league_live_channel',
+                    name: 'league_live_channel',
+                    component: resolve => require(['../components/page/league_live_channel.vue'], resolve),
+                    meta: { title:  'menus.league_live_channel' }
+                },  
+                {
+                    path: '/league_standing',
+                    name: 'league_standing',
+                    component: resolve => require(['../components/page/league_standing.vue'], resolve),
+                    meta: { title:  'menus.league_standing' }
+                },
                 {
                     path: '/league_teams',
+                    name: 'league_teams',
                     component: resolve => require(['../components/page/league_teams.vue'], resolve),
                     meta: { title:  'menus.league_teams' }
+                }, 
+                {
+                    path: '/league_teams_edit',
+                    component: resolve => require(['../components/page/league_teams_edit.vue'], resolve),
+                    meta: { title:  'menus.league_teams_edit' }
                 }, 
                 {
                     path: '/league_players',

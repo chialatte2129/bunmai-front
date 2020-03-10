@@ -33,6 +33,10 @@
         "title": "menus.league_teams"
     },
     {
+        "index": "league_teams_edit",
+        "title": "menus.league_teams_edit"
+    },
+    {
         "index": "league_players",
         "title": "menus.league_players"
     },
@@ -55,6 +59,18 @@
     {
         "index": "competition_statistics",
         "title": "menus.competition_statistics"
+    },
+    {
+        "index": "league_teams_matches",
+        "title": "menus.league_teams_matches"
+    },
+    {
+        "index": "league_live_channel",
+        "title": "menus.league_live_channel"
+    },
+    {
+        "index": "league_standing",
+        "title": "menus.league_standing"
     }
 
 

@@ -6,6 +6,9 @@ export const infoService = {
 	delete_competition_info,
 	get_single_competition_info,
 	update_competition_info,
+
+	get_league_team,
+	delete_league_team,
 }
 
 function get_info_option(option_keys){
@@ -40,7 +43,6 @@ function delete_competition_info(param){
 	})		
 }
 
-
 function get_single_competition_info(game_id){
     var param = {"game_id":game_id}
     return new Promise((resolve, reject) => {
@@ -52,7 +54,6 @@ function get_single_competition_info(game_id){
 	})	
 }
 
-
 function update_competition_info(type, data){
     var param = {"type":type, "param":data}
     return new Promise((resolve, reject) => {
@@ -62,4 +63,26 @@ function update_competition_info(type, data){
 			}
 		)
 	})	
+}
+
+function get_league_team(game_id, filter){
+	var param = {"game_id":game_id, "filter":filter}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/get_league_team', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+
+function delete_league_team(param){
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/delete_league_team', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})		
 }

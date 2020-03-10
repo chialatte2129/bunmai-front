@@ -90,11 +90,13 @@ export const messages = {
             overview:"總覽",
 
             league_detail_setting:"聯賽細項設定",
-            league_teams_matches:"對陣圖設定",
+            league_teams_matches:"比賽場次設定",
             league_live_channel:"直播頻道設定",
             league_standing:"排行榜設定",
-            league_teams:"聯賽戰隊管理",
-            league_players:"聯賽玩家管理"
+            league_teams:"參賽隊伍管理",
+            league_teams_edit:"參賽隊伍編輯",
+            league_teams_create:"參賽隊伍建立",
+            league_players:"聯賽玩家管理",
         },
         table_title:{
             role :'角色代號',
@@ -208,12 +210,14 @@ export const messages = {
             post_error_datatype:"參數格式錯誤",
             post_error_param:"參數錯誤",
             delete_game_tips:"此場比賽的所有設定將全數刪除",
+            delete_team_tips:"此隊伍的設定含隊員將全數刪除",
             ask_for_delete:'刪除不可恢復，是否確定刪除',
             no_data:"沒有資料",
             draft:"草稿中",
             publish:"已發布",
             abandon:"已廢棄",
             not_working:"目前無功能",
+            team_delete_ng_tips:"無法刪除，因有細項設定已設定",
         },
         account:{
             login: '登入', 
@@ -295,6 +299,16 @@ export const messages = {
             individual:"個人賽",
             team:"團體賽",
             register_and_game_time_error:"報名截止時間晚於比賽開始時間",
+            enter_game_teams_total:"參賽隊伍總數 : ",
+            enter_game_players_total:"參賽總人數 : ",
+            team_id:"團隊代號",
+            team_name:"團隊名稱",
+            contact_person:"聯絡人",
+            contact_mail:"聯絡人信箱",
+            contact_phone:"聯絡人電話",
+            teams_players_total:"團隊人數",
+            created_at:"建立時間",
+            
             
 
             schedule:{
@@ -307,7 +321,7 @@ export const messages = {
             },
             league:{
                 "match_map":"對陣圖",
-                "online_streaming":"直 播 空 間",
+                "online_streaming":"戰 況 直 播",
                 "kill":"擊殺",
                 "headshot":"爆頭",
                 "death":"死亡",
@@ -404,8 +418,10 @@ export const messages = {
             league_teams_matches:"Matches Setting",
             league_live_channel:"Live Channel Setting",
             league_standing:"Standing Setting",
-            league_teams:"League Teams Management",
-            league_players:"League Players Management"
+            league_teams:"Teams Management",
+            league_teams_edit:"Teams Edit",
+            league_teams_create:"Teams Create",
+            league_players:"League Players Management",
         },
         table_title :{
             role :'Role id',
@@ -520,12 +536,14 @@ export const messages = {
             post_error_datatype:"Post parameter data type error",
             post_error_param:"Parameter error",
             delete_game_tips:"All settings in this game will be deleted",
+            delete_team_tips:"All settings in this team will be deleted",
             ask_for_delete:"All settings can't rollback, Confirm to delete",
             no_data:"No Data",
             draft:"Draft",
             publish:"Published",
             abandon:"Abandoned",
             not_working:"Not Working Now",
+            team_delete_ng_tips:"Delete Failed, detail settings have already used",
         },
         account: {
             login: 'Login', 
@@ -605,6 +623,15 @@ export const messages = {
             individual:"Individual",
             team:"Team",
             register_and_game_time_error:"Register end time is later than Game start time",
+            enter_game_teams_total:"Enter Total Teams : ",
+            enter_game_players_total:"Enter Total Players : ",
+            team_id:"Team ID",
+            team_name:"Team Name",
+            contact_person:"Contact Person",
+            contact_mail:"Contact Mail",
+            contact_phone:"Contact Phone",
+            teams_players_total:"Team Players",
+            created_at:"Created At",
             
 
             schedule:{
