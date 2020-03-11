@@ -7,13 +7,16 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="margin-bottom:-3vmin;height:7vmin;"></div>
+            <div style="margin-bottom:-3vmin;height:11.5vmin;">
+                <div style="height:100%;position:relative;">
+                    <div style="position:absolute;top:1vmin;z-index:99999;display:flex;align-items:center;justify-content:center;">
+                        <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
+                    </div>
+                </div>
+            </div>
             <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;position:relative;">
                     <img width="100%" src="image/league/title/standing_win.png" @click="reGetData">
-                    <div style="position:absolute;top:0.7vmin;left:0;">
-                        <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
-                    </div>
                 </div>
                 <div style="margin:5px 2%;position:relative;width:96%;padding-top:8.6%;background-repeat:no-repeat;
                 background-image:url('image/league/standing/titlePanel.png');background-size:95%;background-position:center;">

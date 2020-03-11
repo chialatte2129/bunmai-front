@@ -145,13 +145,27 @@
                                 </el-form-item>
                             </div>
                         </el-card>
-                        <el-card shadow="hover" style="min-height:249px;height:auto;" class="mb10" v-if="false">
+                        <el-card shadow="hover" style="min-height:249px;height:auto;" class="mb10" v-if="$route.query.ctype=='league'&&$route.query.game_id">
                             <div slot="header" class="clearfix">
                                 <span>{{$t('game_info.setting_link')}}</span>
                             </div>
-                            <div class="link-area" v-if="$route.query.ctype=='league'">
-                            </div>
-                            <div class="link-area" v-else>
+                            <div class="link-area">
+                                <el-form-item :label="$t('menus.league_teams')">
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
+                                    :disabled="form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
+                                </el-form-item>
+                                <el-form-item :label="$t('menus.league_teams_matches')">
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams_matches', form.game_id)" 
+                                    :disabled="form.match_disabled==1||!this.update_info_auth">{{$t('menus.league_teams_matches')}}</el-button>
+                                </el-form-item>
+                                <el-form-item :label="$t('menus.league_live_channel')">
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_live_channel', form.game_id)" 
+                                    :disabled="form.channel_disabled==1||!this.update_info_auth">{{$t('menus.league_live_channel')}}</el-button>
+                                </el-form-item>
+                                <el-form-item :label="$t('menus.league_standing')">
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
+                                    :disabled="form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button>
+                                </el-form-item>
                             </div>
                         </el-card>
                     </el-col>
@@ -188,6 +202,10 @@ export default {
                 currency:"",
                 content:"",
                 scheduled:"init",
+                match_disabled:0,
+                channel_disabled:0,
+                standing_disabled:0,
+                team_disabled:0,
             },
             options:{
                 country:[],
@@ -200,7 +218,7 @@ export default {
                 currency:[],
                 language:[]
             },
-            
+            is_admin:localStorage.getItem("ms_is_admin")=='true'?true:false,
             rules:{
                 name:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
                 country:        [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
@@ -230,19 +248,22 @@ export default {
         maxplayerNum(){
             return this.form.max_players
         },
-
     },
     watch:{
         
         
     },
     created(){
-        console.log(this.$route)
         this.getOption();
         this.getData(this.$route.query.game_id);
     },
 
     methods:{
+        leaguePush(page, game_id){
+            let to_where = this.$router.resolve({name:page, query: {game_id: game_id, table_type:"single"}});
+            window.open(to_where.href, '_blank');
+        },
+
         maxplayesChange(){
             if(this.form.max_players<this.form.min_players){
                 this.form.min_players=this.form.max_players;
@@ -257,7 +278,7 @@ export default {
 
         getData(id){
             infoService.get_single_competition_info(id)
-            .then(res=>{ console.log(res)
+            .then(res=>{ 
                 this.form = (res.code==1)?res.game_info:this.form;
             })
         },

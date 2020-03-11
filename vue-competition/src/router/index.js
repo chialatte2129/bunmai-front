@@ -32,6 +32,30 @@ export default new Router({
         },
         {
             path: '/',
+            component: resolve => require(['../components/common/Home_without_sidebar.vue'], resolve),
+            meta: { title: '自述文件' },
+            children:[
+                {
+                    path: '/league_teams',
+                    name: 'league_teams',
+                    component: resolve => require(['../components/page/league_teams.vue'], resolve),
+                    meta: { title:  'menus.league_teams' }
+                }, 
+                {
+                    path: '/league_teams_edit',
+                    name: 'league_teams_edit',
+                    component: resolve => require(['../components/page/league_teams_edit.vue'], resolve),
+                    meta: { title:  'menus.league_teams_edit' }
+                }, 
+                {
+                    path: '/league_players',
+                    component: resolve => require(['../components/page/league_players.vue'], resolve),
+                    meta: { title:  'menus.league_players' }
+                }, 
+            ]
+        },
+        {
+            path: '/',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[
@@ -59,17 +83,25 @@ export default new Router({
                     path: '/league_detail_setting',
                     component: resolve => require(['../components/page/league_detail_setting.vue'], resolve),
                     meta: { title:  'menus.league_detail_setting' }
-                }, 
+                },  
                 {
-                    path: '/league_teams',
-                    component: resolve => require(['../components/page/league_teams.vue'], resolve),
-                    meta: { title:  'menus.league_teams' }
-                }, 
+                    path: '/league_teams_matches',
+                    name: 'league_teams_matches',
+                    component: resolve => require(['../components/page/league_teams_matches.vue'], resolve),
+                    meta: { title:  'menus.league_teams_matches' }
+                },  
                 {
-                    path: '/league_players',
-                    component: resolve => require(['../components/page/league_players.vue'], resolve),
-                    meta: { title:  'menus.league_players' }
-                }, 
+                    path: '/league_live_channel',
+                    name: 'league_live_channel',
+                    component: resolve => require(['../components/page/league_live_channel.vue'], resolve),
+                    meta: { title:  'menus.league_live_channel' }
+                },  
+                {
+                    path: '/league_standing',
+                    name: 'league_standing',
+                    component: resolve => require(['../components/page/league_standing.vue'], resolve),
+                    meta: { title:  'menus.league_standing' }
+                },
                 {
                     path: '/register_verify',
                     component: resolve => require(['../components/page/register_verify.vue'], resolve),
