@@ -122,6 +122,7 @@ export default {
                 match:[],
                 // publish:[],
             },
+            is_admin:localStorage.getItem("ms_is_admin")=='true'?true:false,
             filter:{
                 country:[],
                 city:[],
@@ -149,10 +150,6 @@ export default {
         delete_info_auth(){
             return localStorage.getItem("ms_user_actions").includes(`delete_${this.$route.query.ctype}_competition`)
         },
-
-        is_admin(){
-            return !!localStorage.getItem("ms_is_admin")
-        },
     },
     watch:{
         '$route.query.ctype':{
@@ -164,7 +161,6 @@ export default {
         }
     },
     created(){
-        console.log(this.$route)
         this.getOption();
         this.getData();
     },
@@ -174,9 +170,9 @@ export default {
             var path_to = menus.substring(0, menus.search(","))
             if(this.$route.query.ctype=="undefined"||this.$route.query.ctype==undefined){
                 if(path_to=="competition_league_info"){
-                    this.$route.query.ctype="league";
+                    this.$router.replace({path:`/competition_info?ctype=league`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
                 }else if(path_to=="competition_advance_info"){
-                    this.$route.query.ctype="advance";
+                    this.$router.replace({path:`/competition_info?ctype=advance`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
                 }else{
                     this.$router.push({path:"login"});
                 }
@@ -203,18 +199,18 @@ export default {
         },
 
         getParam(){
-            this.cur_page=('position' in this.$route.query)?parseInt(this.$route.query.position.page):this.cur_page;
-            this.totalRow=('position' in this.$route.query)?parseInt(this.$route.query.position.total):this.totalRow;
-            this.sort_column=('position' in this.$route.query)?this.$route.query.position.col:this.sort_column;
-            this.sort=('position' in this.$route.query)?this.$route.query.position.order:this.sort;
-            this.start_row=('position' in this.$route.query)?(
+            this.cur_page=('position' in this.$route.query&&typeof this.$route.query.position==='object')?parseInt(this.$route.query.position.page):this.cur_page;
+            this.totalRow=('position' in this.$route.query&&typeof this.$route.query.position==='object')?parseInt(this.$route.query.position.total):this.totalRow;
+            this.sort_column=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.col:this.sort_column;
+            this.sort=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.order:this.sort;
+            this.start_row=('position' in this.$route.query&&typeof this.$route.query.position==='object')?(
                 (this.$route.query.position.row==(this.totalRow-1)&&this.$route.query.position.row!=0)?this.$route.query.position.row-this.pagesize:this.$route.query.position.row):this.start_row;
-            this.filter.match=('position' in this.$route.query)?this.$route.query.position.filter.match:this.filter.match;
-            this.filter.schedule=('position' in this.$route.query)?this.$route.query.position.filter.schedule:this.filter.schedule;
-            this.filter.name=('position' in this.$route.query)?this.$route.query.position.filter.name:this.filter.name;
-            this.filter.game=('position' in this.$route.query)?this.$route.query.position.filter.game:this.filter.game;
-            this.filter.country=('position' in this.$route.query)?this.$route.query.position.filter.country:this.filter.country;
-            this.filter.city=('position' in this.$route.query)?this.$route.query.position.filter.city:this.filter.city;
+            this.filter.match=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.match:this.filter.match;
+            this.filter.schedule=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.schedule:this.filter.schedule;
+            this.filter.name=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.name:this.filter.name;
+            this.filter.game=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.game:this.filter.game;
+            this.filter.country=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.country:this.filter.country;
+            this.filter.city=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.city:this.filter.city;
             var param = {
                 'sort_column':this.sort_column,
                 'sort':this.sort,
@@ -235,7 +231,7 @@ export default {
             this.table_loading=true;
             this.game_type = this.$route.query.ctype;
             infoService.get_competition_info_table(this.getParam())
-            .then(res => { console.log(res)
+            .then(res => {
                 this.tableData = res.tableData;
                 this.totalRow = res.total;
                 this.$router.replace({path:`/competition_info?ctype=${this.game_type}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
@@ -332,7 +328,6 @@ export default {
         },
 
         search(){
-            console.log("search ", this.filter);
             this.handleCurrentChange(1);
         },
 
@@ -369,7 +364,6 @@ export default {
             this.sort_column=prop;
             this.sort=order;
             this.handleCurrentChange(1);
-            // console.log('sort-change',  this.sort_column , this.sort)
         },
 
         handleCurrentChange(currentPage){

@@ -3,9 +3,9 @@
         <div class="crumbs">
             <el-breadcrumb>
                 <el-breadcrumb-item><span style="color:#303133;"><i class="el-icon-info"></i><b> {{$t('menus.league_teams')}}</b></span></el-breadcrumb-item>
-                <el-breadcrumb-item><span><b>{{$route.query.game_id}}. {{teams.game_name}}</b></span></el-breadcrumb-item>
+                <el-breadcrumb-item v-if="$route.query.table_type=='single'"><span><b>{{$route.query.game_id}}. {{teams.game_name}}</b></span></el-breadcrumb-item>
             </el-breadcrumb>
-            <span style="float:right;margin-top:-30px;margin-right:10px;font-size:18px;"><b>
+            <span style="float:right;margin-top:-30px;margin-right:10px;font-size:18px;" v-if="$route.query.table_type=='single'"><b>
                 <span>{{$t('game_info.enter_game_teams_total')}}<span style="font-size:24px;color:#FF074A;">{{teams.teams_total}}</span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>{{$t('game_info.enter_game_players_total')}}<span style="font-size:24px;color:#FF074A;">{{teams.players_total}}</span></span></b>
             </span>
@@ -97,6 +97,7 @@ export default {
             table_loading:false,
 
             filter:{
+                game_id:"",
                 team_id:"",
                 team_name:"",
                 contact_person:"",
@@ -136,22 +137,24 @@ export default {
 
     methods:{
         getParam(){
-            this.cur_page=('position' in this.$route.query)?parseInt(this.$route.query.position.page):this.cur_page;
-            this.totalRow=('position' in this.$route.query)?parseInt(this.$route.query.position.total):this.totalRow;
-            this.sort_column=('position' in this.$route.query)?this.$route.query.position.col:this.sort_column;
-            this.sort=('position' in this.$route.query)?this.$route.query.position.order:this.sort;
-            this.start_row=('position' in this.$route.query)?(
+            this.cur_page=('position' in this.$route.query&&typeof this.$route.query.position==='object')?parseInt(this.$route.query.position.page):this.cur_page;
+            this.totalRow=('position' in this.$route.query&&typeof this.$route.query.position==='object')?parseInt(this.$route.query.position.total):this.totalRow;
+            this.sort_column=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.col:this.sort_column;
+            this.sort=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.order:this.sort;
+            this.start_row=('position' in this.$route.query&&typeof this.$route.query.position==='object')?(
                 (this.$route.query.position.row==(this.totalRow-1)&&this.$route.query.position.row!=0)?this.$route.query.position.row-this.pagesize:this.$route.query.position.row):this.start_row;
-            this.filter.team_id=('position' in this.$route.query)?this.$route.query.position.filter.team_id:this.filter.team_id;
-            this.filter.team_name=('position' in this.$route.query)?this.$route.query.position.filter.team_name:this.filter.team_name;
-            this.filter.contact_person=('position' in this.$route.query)?this.$route.query.position.filter.contact_person:this.filter.contact_person;
-            this.filter.email=('position' in this.$route.query)?this.$route.query.position.filter.email:this.filter.email;
+            this.filter.team_id=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.team_id:this.filter.team_id;
+            this.filter.game_id=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.game_id:this.filter.game_id;
+            this.filter.team_name=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.team_name:this.filter.team_name;
+            this.filter.contact_person=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.contact_person:this.filter.contact_person;
+            this.filter.email=('position' in this.$route.query&&typeof this.$route.query.position==='object')?this.$route.query.position.filter.email:this.filter.email;
             var param = {
                 'sort_column':this.sort_column,
                 'sort':this.sort,
                 'start_row':this.start_row,
                 'page_size':this.pagesize,
                 'team_id':this.filter.team_id,
+                'game_id':this.filter.game_id,
                 'team_name':this.filter.team_name,
                 'contact_person':this.filter.contact_person,
                 'email':this.filter.email
@@ -161,11 +164,11 @@ export default {
 
         getData(id){
             this.table_loading=true;
-            infoService.get_league_team(id, this.getParam())
-            .then(res => { console.log(res)
+            infoService.get_league_team(this.$route.query.table_type, id, this.getParam())
+            .then(res => { 
                 this.teams = res.teams;
                 this.totalRow = res.total;
-                this.$router.replace({path:`/league_teams?game_id=${this.$route.query.game_id}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
+                this.$router.replace({path:`/league_teams?table_type=${this.$route.query.table_type}&game_id=${this.$route.query.game_id}`,query:{page:this.cur_page,row:this.start_row}}).catch(err => {});
             })
             this.table_loading=false;
         },
@@ -180,12 +183,13 @@ export default {
         },
 
         handleCreate(){
-            this.$router.push({path:`/league_teams_edit?game_id=${this.$route.query.game_id}`, query:{type:"create"}});
+            this.$router.push({path:`/league_teams_edit?table_type=${this.$route.query.table_type}&game_id=${this.$route.query.game_id}`, query:{type:"create"}});
         },
 
         pushEdit(row){
             var query = {
                 "type":"update",
+                "table_type":this.$route.query.table_type,
                 "game_id":row.game_id,
                 "team_id":row.team_id,
                 "position":{
@@ -195,6 +199,7 @@ export default {
                     "order":this.sort,
                     "total":this.totalRow,
                     "filter":{
+                        "game_id":this.filter.game_id,
                         "team_id":this.filter.team_id,
                         "team_name":this.filter.team_name,
                         "contact_person":this.filter.contact_person,
@@ -206,7 +211,7 @@ export default {
         },
 
         handleEdit(index, row){
-            this.$router.push({path:`/league_teams_edit?game_id=${this.$route.query.game_id}`, query:this.pushEdit(row)});
+            this.$router.push({path:`/league_teams_edit?table_type=${this.$route.query.table_type}&game_id=${this.$route.query.game_id}`, query:this.pushEdit(row)});
         },
 
         handleDelete(index, row){
@@ -232,7 +237,6 @@ export default {
         },
 
         search(){
-            // console.log("search ", this.filter);
             this.handleCurrentChange(1);
         },
 
@@ -245,7 +249,6 @@ export default {
             this.sort_column=prop;
             this.sort=order;
             this.handleCurrentChange(1);
-            // console.log('sort-change',  this.sort_column , this.sort)
         },
 
         handleCurrentChange(currentPage){

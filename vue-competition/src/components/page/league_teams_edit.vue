@@ -2,177 +2,89 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb>
-                <el-breadcrumb-item v-if="$route.query.type=='create'" :to="{path:`/league_teams?game_id=${$route.query.game_id}`, query:pushTable()}"><i class="el-icon-info"></i>
-                    <span> {{$t('menus.league_teams')}} </span><span style="font-size:16px;">{{$route.query.game_id}}</span>
+                <el-breadcrumb-item v-if="$route.query.type=='create'" :to="{path:`/league_teams?table_type=${$route.query.table_type}&game_id=${$route.query.game_id}`, query:pushTable()}">
+                <i class="el-icon-info"></i><span> {{$t('menus.league_teams')}} </span><span style="font-size:16px;">{{$route.query.game_id}}</span>
                 </el-breadcrumb-item>
-                <el-breadcrumb-item v-else :to="{path:`/league_teams?game_id=${$route.query.game_id}&team_id=${$route.query.team_id}`, query:pushTable()}"><i class="el-icon-info"></i>
+                <el-breadcrumb-item v-else :to="{path:`/league_teams?table_type=${$route.query.table_type}&game_id=${$route.query.game_id}&team_id=${$route.query.team_id}`, query:pushTable()}"><i class="el-icon-info"></i>
                     <span> {{$t('menus.league_teams')}} </span><span style="font-size:16px;">{{$route.query.game_id}}</span>
                 </el-breadcrumb-item>
                 <el-breadcrumb-item v-if="$route.query.type=='create'">{{$t('menus.league_teams_create')}}</el-breadcrumb-item>
                 <el-breadcrumb-item v-else>{{$t('menus.league_teams_edit')}}&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$route.query.team_id}}. {{form.team_name}}</b></el-breadcrumb-item>
             </el-breadcrumb>
             <span style="float:right;margin-top:-38px">
-                <el-button type="primary" icon="el-icon-edit" @click="handleUpdate" size=large :disabled="disableEdit()">{{$t('btn.save')}}</el-button>
+                <el-button type="primary" icon="el-icon-edit" @click="handleUpdate" size=large :disabled="!this.update_info_auth">{{$t('btn.save')}}</el-button>
                 <el-button type="info" icon="el-icon-back" @click="handleCancel" size=large> {{$t('btn.leave')}}</el-button>
             </span>   
         </div>
         <div class="container">
-            <el-form ref="form" :model="form" :rules="rules" label-width="auto" label-position="right">
-                <!-- <el-row class="mb10">
-                    <el-col :span="18" class="pdr10">
-                        <el-row>
-                            <el-card shadow="hover" style="min-height:251px;height:auto;" class="mb10">
-                                <div slot="header" class="clearfix">
-                                    <span>{{$t('menus.competition_info_edit')}}</span>
-                                </div>
-                                <div class="info-area">
-                                    <el-row>
-                                        <el-col :span="12">
-                                            <el-form-item :label="$t('game_info.name')" prop="name">
-                                                <el-input v-model="form.name" class="handle-input"></el-input>
-                                            </el-form-item>
-                                            <el-form-item :label="$t('game_info.country')" prop="country">
-                                                <el-select v-model="form.country" :placeholder="$t('game_info.filter_country')" class="handle-select" clearable filterable @change="changeCountrySelection">
-                                                    <el-option v-for="item in options.country" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                                                </el-select>
-                                            </el-form-item>
-                                            <el-form-item :label="$t('game_info.city')" prop="city">
-                                                <el-select v-model="form.city" :placeholder="$t('game_info.filter_city')" class="handle-select" clearable filterable 
-                                                @focus="changeCitySelection" :disabled="form.country==''||form.country=='GLOBAL'">
-                                                    <el-option v-for="item in options.city" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                                                </el-select>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="12">
-                                            <el-form-item :label="$t('game_info.game')" prop="game">
-                                                <el-select v-model="form.game" :placeholder="$t('game_info.filter_game')" class="handle-select" clearable filterable>
-                                                    <el-option v-for="item in options.game" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                                                </el-select>
-                                            </el-form-item>
-                                            <el-form-item :label="$t('game_info.max_players')" prop="max_players">
-                                                <el-input-number v-model="form.max_players" class="handle-input-number" :min="1" :max="15" @change="maxplayesChange"></el-input-number>
-                                            </el-form-item>
-                                            <el-form-item :label="$t('game_info.min_players')" prop="min_players">
-                                                <el-input-number v-model="form.min_players" class="handle-input-number" :min="1" :max="maxplayerNum" ></el-input-number>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                </div>
-                            </el-card>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12" class="pdr10">
-                                <el-card shadow="hover" style="min-height:248px;height:auto;" class="mb10">
-                                    <div slot="header" class="clearfix">
-                                        <span>{{$t('game_info.time_setting')}}</span>
-                                    </div>
-                                    <div class="info-area">
-                                        <el-form-item :label="$t('game_info.register_time')" prop="register_time">
-                                            <el-date-picker
-                                            v-model="form.register_time"
-                                            type="datetimerange"
-                                            class="handle-select-time"
-                                            :range-separator="$t('game_info.to')"
-                                            :start-placeholder="$t('game_info.register_start_time')"
-                                            :end-placeholder="$t('game_info.register_end_time')">
-                                            </el-date-picker>
-                                        </el-form-item>
-                                        <el-form-item :label="$t('game_info.competition_time')" prop="game_time">
-                                            <el-date-picker
-                                            v-model="form.game_time"
-                                            type="datetimerange"
-                                            class="handle-select-time"
-                                            :range-separator="$t('game_info.to')"
-                                            :start-placeholder="$t('game_info.game_start_time')"
-                                            :end-placeholder="$t('game_info.game_end_time')"
-                                            :disabled="form.register_time==null">
-                                            </el-date-picker>
-                                        </el-form-item>
-                                        <el-form-item :label="$t('game_info.show_timezone')" prop="show_timezone">
-                                            <el-select v-model="form.show_timezone" clearable filterable class="handle-input-number">
-                                                <el-option v-for="item in options.timezone" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
+            <el-row>
+                <el-form ref="form" :model="form" :rules="rules" label-width="auto" label-position="right">
+                    <el-col :span="12" class="pdr10">
+                        <el-card shadow="hover" style="min-height:320px;height:auto;" class="mb10">
+                            <div slot="header" class="clearfix"><span><b>{{$t('game_info.team_information')}}</b></span></div>
+                            <div>
+                                <el-form-item :label="$t('game_info.team_name')" prop="team_name">
+                                    <el-input v-model="form.team_name" class="handle-input" maxlength="12" show-word-limit></el-input>
+                                </el-form-item>
+                                <el-row>
+                                    <el-col :span="10" class="pdr10">
+                                        <el-form-item :label="$t('game_info.status')" prop="status">
+                                            <el-select v-model="form.status" :placeholder="$t('game_info.status')" class="handle-select" clearable filterable @change="statusChange" :disabled="!is_admin">
+                                                <el-option v-for="item in options.team_status" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                                             </el-select>
-                                        </el-form-item>
-                                    </div>
-                                </el-card>
-                            </el-col>
-                            <el-card shadow="hover" style="min-height:249px;height:auto;" class="mb10">
-                                <div slot="header" class="clearfix">
-                                    <span>{{$t('game_info.payment_mode')}}</span>
-                                </div>
-                                <div class="info-area">
-                                    <el-col style="padding-left:0px">
-                                        <el-form-item :label="$t('game_info.currency')" prop="currency">
-                                            <el-select v-model="form.currency" clearable filterable class="handle-select">
-                                                <el-option v-for="item in options.currency" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                                            </el-select>
-                                        </el-form-item>
-                                        <el-form-item :label="$t('game_info.fee')" prop="fee">
-                                            <el-input v-model="form.fee" class="handle-input-number"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                </div>
-                            </el-card>
-                        </el-row>
-                        <el-row>
-                            <el-card shadow="hover" style="min-height:347px;height:auto;">
-                                <div slot="header" class="clearfix">
-                                    <span>{{$t('game_info.content_detail')}}</span>
-                                </div>
-                                <div class="info-area">
-                                    <el-form-item :label="$t('game_info.content')" prop="content" style="margin:10px 20px 0 -40px;">
-                                        <el-input type="textarea" :rows="11" v-model="form.content" class="handle-input-texarea"></el-input>
-                                    </el-form-item>
-                                </div>
-                            </el-card>
-                        </el-row>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-card shadow="hover" style="min-height:251px;height:auto;" class="mb10">
-                            <div slot="header" class="clearfix">
-                                <span>{{$t('game_info.status')}}</span>
-                            </div>
-                            <div class="status-area">
-                                <el-form-item :label="$t('game_info.filter_schedule')">
-                                    <el-button round plain size="medium" class="status-btn" v-if="form.scheduled=='init'" @click="">{{$t('game_info.schedule.init')}}</el-button>
-                                    <el-button round plain size="medium" class="status-btn" v-else-if="form.scheduled=='b_r'" @click="">{{$t('game_info.schedule.before_registration')}}</el-button>
-                                    <el-button type="info" round plain size="medium" class="status-btn" v-else-if="form.scheduled=='a_r'" @click="">{{$t('game_info.schedule.among_registration')}}</el-button>
-                                    <el-button type="warning" round plain size="medium" class="status-btn" v-else-if="form.scheduled=='b_c'" @click="">{{$t('game_info.schedule.between_registration_and_competitions')}}</el-button>
-                                    <el-button type="primary" round plain size="medium" class="status-btn" v-else-if="form.scheduled=='a_c'" @click="">{{$t('game_info.schedule.among_competition')}}</el-button>
-                                    <el-button type="success" round plain size="medium" class="status-btn" v-else @click="">{{$t('game_info.schedule.finish_competitions')}}</el-button>
+                                    <el-col :span="14">                                       
+                                        <el-form-item :label="$t('game_info.closed_at')" prop="closed_at">
+                                            <el-date-picker type="datetime" :placeholder="$t('game_info.closed_at')" v-model="form.closed_at" clearable
+                                            @change="closeChange" :disabled="form.status!='closed'" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-form-item :label="$t('game_info.slogan')" prop="slogan">
+                                    <el-input type="textarea" :rows="1" v-model="form.slogan" class="handle-input"></el-input>
                                 </el-form-item>
-                                <el-form-item :label="$t('game_info.filter_match')">
-                                    <el-button type="primary" round plain size="medium" class="status-btn" v-if="form.min_players>1" @click="">{{$t('game_info.team')}}</el-button>
-                                    <el-button type="success" round plain size="medium" class="status-btn" v-else @click="">{{$t('game_info.individual')}}</el-button>
-                                </el-form-item>
-                            </div>
-                        </el-card>
-                        <el-card shadow="hover" style="min-height:249px;height:auto;" class="mb10" v-if="$route.query.ctype=='league'&&$route.query.game_id">
-                            <div slot="header" class="clearfix">
-                                <span>{{$t('game_info.setting_link')}}</span>
-                            </div>
-                            <div class="link-area">
-                                <el-form-item :label="$t('menus.league_teams')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
-                                    :disabled="form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
-                                </el-form-item>
-                                <el-form-item :label="$t('menus.league_teams_matches')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams_matches', form.game_id)" 
-                                    :disabled="form.match_disabled==1||!this.update_info_auth">{{$t('menus.league_teams_matches')}}</el-button>
-                                </el-form-item>
-                                <el-form-item :label="$t('menus.league_live_channel')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_live_channel', form.game_id)" 
-                                    :disabled="form.channel_disabled==1||!this.update_info_auth">{{$t('menus.league_live_channel')}}</el-button>
-                                </el-form-item>
-                                <el-form-item :label="$t('menus.league_standing')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
-                                    :disabled="form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button>
+                                <el-form-item :label="$t('game_info.note')" prop="note">
+                                    <el-input type="textarea" :rows="2" v-model="form.note" class="handle-input"></el-input>
                                 </el-form-item>
                             </div>
                         </el-card>
                     </el-col>
-                </el-row>                 -->
-            </el-form>
+                    <el-col :span="12">
+                        <el-card shadow="hover" style="min-height:320px;height:auto;" class="mb10">
+                            <div slot="header" class="clearfix"><span><b>{{$t('game_info.team_contact_person_information')}}</b></span></div>
+                            <div>
+                                <el-form-item :label="$t('game_info.contact_person_name')" prop="contact_person">
+                                    <el-input v-model="form.contact_person" class="handle-input" maxlength="40"></el-input>
+                                </el-form-item>
+                                <el-form-item :label="$t('game_info.phone')" prop="phone">
+                                    <el-input v-model="form.phone" class="handle-input" maxlength="20"></el-input>
+                                </el-form-item>
+                                <el-form-item :label="$t('game_info.mail')" prop="email">
+                                    <el-input v-model="form.email" class="handle-input" maxlength="200"></el-input>
+                                </el-form-item>
+                                <el-row>
+                                    <el-col :span="10" class="pdr10">
+                                        <el-form-item :label="$t('game_info.gender')" prop="gender">
+                                            <el-select v-model="form.gender" :placeholder="$t('game_info.gender')" class="handle-select" clearable filterable>
+                                                <el-option v-for="item in options.gender" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="14">                                       
+                                        <el-form-item :label="$t('game_info.birthday')" prop="birthday">
+                                            <el-date-picker type="date" :placeholder="$t('game_info.birthday')" v-model="form.birthday" clearable value-format="yyyy-MM-dd"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-form>
+            </el-row>
+            <el-row v-if="form.team_id">
+                <leaguePlayers :team_id="form.team_id" :game_id="form.game_id" :table_type="$route.query.table_type"></leaguePlayers>
+            </el-row>
         </div>
         <el-backtop target=".content" :visibility-height="0" :bottom="40" :right="10">
             <div style="{height:100%; width:100%; box-shadow:0 0 6px rgba(0,0,0, .12); border-radius:50%; text-align:center; font-size:15px; font-weight:bold; line-height:40px; color:#000000;}">TOP</div>
@@ -181,15 +93,16 @@
 </template>
 <script>
 import { infoService } from "@/_services";
+import leaguePlayers from "@/components/page/league_players.vue";
 export default {
     name:"league_teams_edit",
     components:{
-
+        leaguePlayers
     },
     data(){
         return{
             form:{
-                game_id:"",
+                game_id:this.$route.query.game_id,
                 team_id:"",
                 team_name:"",
                 logo:null,
@@ -202,18 +115,21 @@ export default {
                 birthday:"",
                 note:"",
                 status:"Operation",
+                closed_at:null,
             },
             options:{
                 team_status:[],
                 gender:[],
             },
+            is_admin:localStorage.getItem("ms_is_admin")=='true'?true:false,
             
             rules:{
                 team_name:          [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
                 contact_person:     [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                email:              [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                email:              [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}, {type:"email", message:this.$i18n.t("rules.invalidate_email"), trigger:"blur"}],
                 phone:              [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                gender:             [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
+                // gender:             [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
+                status:             [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
             }
         }
     },
@@ -228,12 +144,19 @@ export default {
         
     },
     created(){
-        console.log(this.$route)
         this.getOption();
-        // this.getData(this.$route.query.game_id);
+        this.getData(this.$route.query.team_id);
     },
 
     methods:{
+        statusChange(){
+            this.form.closed_at=(this.form.status!="closed")?null:this.form.closed_at;
+        },
+
+        closeChange(){
+            this.form.closed_at=(this.form.closed_at=="")?null:this.form.closed_at;
+        },
+
         disabledTime(time){
             var d = new Date(time);
             var timestamp = d.valueOf();
@@ -241,16 +164,16 @@ export default {
         },
 
         getData(id){
-            infoService.get_single_competition_info(id)
-            .then(res=>{ console.log(res)
-                this.form = (res.code==1)?res.game_info:this.form;
+            infoService.get_single_league_team(id)
+            .then(res=>{ 
+                this.form = (res.code==1)?res.team_info:this.form;
             })
         },
 
         getOption(){
             var option_keys = ["gender", "team_status"]
             infoService.get_info_option(option_keys)
-            .then(res=>{ console.log(res)
+            .then(res=>{
                 if(res.code==1){
                     this.options.gender = res.options.gender;
                     this.options.team_status = res.options.team_status;
@@ -263,13 +186,6 @@ export default {
                     this.$message.warning(res.msg);
                 }
             })
-        },
-
-        disableEdit(){
-            // 應該還有時間可能性
-            if(!this.update_info_auth){
-                return true
-            }
         },
 
         checkField(){
@@ -286,27 +202,25 @@ export default {
 
         handleUpdate(){
             this.$refs.form.validate(valid => {
-                if(this.checkField()){
-                    if(valid){
-                        var action = (this.form.game_id=="")?"create":"update";
-                        infoService.update_competition_info(action, this.form)
-                        .then(res=>{
-                            if(res.code==1){
-                                this.getData(res.game_id);
-                                this.$message.success(this.$t("common_msg.save_ok"));
-                                if(action=="create"){
-                                    this.$router.replace({path:`/league_teams?game_id=${this.$route.query.game_id}&type=update&team_id=${res.team_id}`}).catch(err => {});
-                                }else{
-                                    this.$router.replace({path:`/league_teams?game_id`,query:this.pushTable()}).catch(err => {});
-                                }
-                            }else if(res.code==0){
-                                this.$message.warning(this.$t(res.msg));
+                if(valid){
+                    var action = (this.form.team_id=="")?"create":"update";
+                    infoService.update_league_team_info(action, this.form)
+                    .then(res=>{
+                        if(res.code==1){
+                            this.getData(res.team_id);
+                            this.$message.success(this.$t("common_msg.save_ok"));
+                            if(action=="create"){
+                                this.$router.replace({path:`/league_teams_edit?table_type=single&game_id=${this.$route.query.game_id}&type=update&team_id=${res.team_id}`}).catch(err => {});
                             }else{
-                                this.$message.error(res.msg);
+                                this.$router.replace({path:`/league_teams_edit`,query:this.pushTable()}).catch(err => {});
                             }
-                        })
-                        this.$refs.form.clearValidate()
-                    }
+                        }else if(res.code==0){
+                            this.$message.warning(this.$t(res.msg));
+                        }else{
+                            this.$message.error(res.msg);
+                        }
+                    })
+                    this.$refs.form.clearValidate()
                 }
             })
         },
@@ -317,9 +231,9 @@ export default {
 
         goBackTable(){
             if(this.$route.query.type=="create"){
-                this.$router.push({path:`/league_teams?game_id=${this.$route.query.game_id}&page=1&row=0`});
+                this.$router.push({path:`/league_teams?table_type=${this.$route.query.table_type}&game_id=${this.$route.query.game_id}&page=1&row=0`});
             }else{
-                this.$router.push({path:`/league_teams?game_id`,query:this.pushTable()});
+                this.$router.push({path:`/league_teams`,query:this.pushTable()});
             }
         },
 
@@ -332,30 +246,6 @@ export default {
             return query
         },
         
-        changeCitySelection(){
-            this.options.city=this.options.backup_city;
-            if(this.form.country!=""){
-                var tempCity=[];
-                tempCity = this.options.city.filter(el=>{
-                    if(this.form.country.includes(el.country)){
-                        tempCity.push(el)
-                    }
-                    this.options.city=tempCity
-                })
-            }else{
-                this.options.city=this.options.backup_city;
-            }
-        },
-
-        changeCountrySelection(){
-            if(this.form.country=="GLOBAL"){
-                this.options.city=this.options.backup_city;
-                this.form.city="Unlimited";
-            }else{
-                this.form.city="";
-            }
-        },
-
         show_label(item){
             return localStorage.getItem("ms_user_lang")=='zh_TW'?item.label:(item.label_i18n==undefined?item.label:item.label_i18n);
         },
@@ -386,7 +276,7 @@ export default {
     font-size:16px;
 }
 .handle-input{
-    width:90%;
+    width:98%;
 }
 .handle-input-number{
     width:250px;
@@ -395,7 +285,7 @@ export default {
     width:95%;
 }
 .handle-select{
-    width:90%;
+    width:98%;
 }
 </style>
 <style>

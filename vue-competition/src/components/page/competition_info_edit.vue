@@ -218,7 +218,7 @@ export default {
                 currency:[],
                 language:[]
             },
-            
+            is_admin:localStorage.getItem("ms_is_admin")=='true'?true:false,
             rules:{
                 name:           [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
                 country:        [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: ["blur", "change"]}],
@@ -248,21 +248,19 @@ export default {
         maxplayerNum(){
             return this.form.max_players
         },
-
     },
     watch:{
         
         
     },
     created(){
-        // console.log(this.$route)
         this.getOption();
         this.getData(this.$route.query.game_id);
     },
 
     methods:{
         leaguePush(page, game_id){
-            let to_where = this.$router.resolve({name:page, query: {game_id: game_id}});
+            let to_where = this.$router.resolve({name:page, query: {game_id: game_id, table_type:"single"}});
             window.open(to_where.href, '_blank');
         },
 
@@ -280,7 +278,7 @@ export default {
 
         getData(id){
             infoService.get_single_competition_info(id)
-            .then(res=>{ console.log(res)
+            .then(res=>{ 
                 this.form = (res.code==1)?res.game_info:this.form;
             })
         },
