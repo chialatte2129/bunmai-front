@@ -21,7 +21,7 @@
                 <el-form ref="form" :model="form" :rules="rules" label-width="auto" label-position="right">
                     <el-col :span="12" class="pdr10">
                         <el-card shadow="hover" style="min-height:320px;height:auto;" class="mb10">
-                            <div slot="header" class="clearfix"><span><b>{{$t('game_info.team_information')}}</b></span></div>
+                            <div slot="header" class="clearfix"><span>{{$t('game_info.team_information')}}</span></div>
                             <div>
                                 <el-form-item :label="$t('game_info.team_name')" prop="team_name">
                                     <el-input v-model="form.team_name" class="handle-input" maxlength="12" show-word-limit></el-input>
@@ -52,7 +52,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-card shadow="hover" style="min-height:320px;height:auto;" class="mb10">
-                            <div slot="header" class="clearfix"><span><b>{{$t('game_info.team_contact_person_information')}}</b></span></div>
+                            <div slot="header" class="clearfix"><span>{{$t('game_info.team_contact_person_information')}}</span></div>
                             <div>
                                 <el-form-item :label="$t('game_info.contact_person_name')" prop="contact_person">
                                     <el-input v-model="form.contact_person" class="handle-input" maxlength="40"></el-input>
@@ -92,7 +92,7 @@
     </div>
 </template>
 <script>
-import { infoService } from "@/_services";
+import { infoService, leagueService } from "@/_services";
 import leaguePlayers from "@/components/page/league_players.vue";
 export default {
     name:"league_teams_edit",
@@ -164,7 +164,7 @@ export default {
         },
 
         getData(id){
-            infoService.get_single_league_team(id)
+            leagueService.get_single_league_team(id)
             .then(res=>{ 
                 this.form = (res.code==1)?res.team_info:this.form;
             })
@@ -204,7 +204,7 @@ export default {
             this.$refs.form.validate(valid => {
                 if(valid){
                     var action = (this.form.team_id=="")?"create":"update";
-                    infoService.update_league_team_info(action, this.form)
+                    leagueService.update_league_team_info(action, this.form)
                     .then(res=>{
                         if(res.code==1){
                             this.getData(res.team_id);

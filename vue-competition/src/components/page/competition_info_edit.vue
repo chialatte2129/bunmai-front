@@ -155,15 +155,15 @@
                                     :disabled="form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_teams_matches')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams_matches', form.game_id)" 
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="matchVisible=true" 
                                     :disabled="form.match_disabled==1||!this.update_info_auth">{{$t('menus.league_teams_matches')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_live_channel')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_live_channel', form.game_id)" 
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="channelVisible=true" 
                                     :disabled="form.channel_disabled==1||!this.update_info_auth">{{$t('menus.league_live_channel')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_standing')">
-                                    <el-button type="info" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
+                                    <el-button type="info" round plain size="medium" class="status-btn" @click="standingVisible=true" 
                                     :disabled="form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button>
                                 </el-form-item>
                             </div>
@@ -172,6 +172,7 @@
                 </el-row>                
             </el-form>
         </div>
+        <teamsMatches v-if="matchVisible" :visible="matchVisible" :game_id="form.game_id" @closeDialog="matchVisible=false"></teamsMatches>
         <el-backtop target=".content" :visibility-height="0" :bottom="40" :right="10">
             <div style="{height:100%; width:100%; box-shadow:0 0 6px rgba(0,0,0, .12); border-radius:50%; text-align:center; font-size:15px; font-weight:bold; line-height:40px; color:#000000;}">TOP</div>
         </el-backtop>
@@ -179,13 +180,17 @@
 </template>
 <script>
 import { infoService } from "@/_services";
+import teamsMatches from "@/components/page/league_teams_matches.vue";
 export default {
     name:"competition_information_edit",
     components:{
-
+        teamsMatches
     },
     data(){
         return{
+            matchVisible:false,
+            channelVisible:false,
+            standingVisible:false,
             form:{
                 game_id:"",
                 name:"",

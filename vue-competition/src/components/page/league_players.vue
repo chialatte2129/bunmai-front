@@ -1,7 +1,7 @@
 <template>
     <div class="temp">
         <el-card shadow="hover" style="min-height:300px;height:auto;">
-            <div slot="header" class="clearfix"><span><b>{{$t('game_info.team_players')}}</b></span></div>
+            <div slot="header" class="clearfix"><span>{{$t('game_info.team_players')}}</span></div>
             <div style="padding:0 7px;">
             <div class="handle-box">
                 <el-button type="success" class="el-icon-circle-plus-outline mr10" @click="handleCreate" v-if="update_info_auth"> {{$t('btn.new')}}</el-button>
@@ -62,41 +62,42 @@
                         <el-row>
                             <el-col :span="12">
                                 <el-form-item :label="$t('game_info.member_id')" prop="member_id">
-                                    <el-input v-model="form.member_id" class="handle-input-form" :disabled="updateVisible" maxlength="16" show-word-limit></el-input>
+                                    <el-input v-model="form.member_id" class="handle-input-form" :disabled="updateVisible" maxlength="16" show-word-limit @change="memberValid"></el-input>
                                 </el-form-item>
                                 <el-form-item :label="$t('game_info.contact_person_name')" prop="name">
-                                    <el-input v-model="form.name" class="handle-input-form" maxlength="40"></el-input>
+                                    <el-input v-model="form.name" class="handle-input-form" maxlength="40" :disabled="createLock"></el-input>
                                 </el-form-item>
                                 <el-form-item :label="$t('game_info.nickname')" prop="nickname">
-                                    <el-input v-model="form.nickname" class="handle-input-form" maxlength="40"></el-input>
+                                    <el-input v-model="form.nickname" class="handle-input-form" maxlength="40" :disabled="createLock"></el-input>
                                 </el-form-item>
                                 <el-form-item :label="$t('game_info.status')" prop="status">
-                                    <el-select v-model="form.status" :placeholder="$t('game_info.status')" class="handle-input-form" clearable filterable :disabled="!is_admin">>
+                                    <el-select v-model="form.status" :placeholder="$t('game_info.status')" class="handle-input-form" clearable filterable :disabled="(!is_admin)||createLock">
                                         <el-option v-for="item in options.players_status" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                                     </el-select>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item :label="$t('game_info.mail')" prop="email">
-                                    <el-input v-model="form.email" class="handle-input-form" maxlength="200"></el-input>
+                                    <el-input v-model="form.email" class="handle-input-form" maxlength="200" :disabled="createLock"></el-input>
                                 </el-form-item>
                                 <el-form-item :label="$t('game_info.phone')" prop="phone">
-                                    <el-input v-model="form.phone" class="handle-input-form" maxlength="20"></el-input>
+                                    <el-input v-model="form.phone" class="handle-input-form" maxlength="20" :disabled="createLock"></el-input>
                                 </el-form-item>
                                 <el-form-item :label="$t('game_info.gender')" prop="gender">
-                                    <el-select v-model="form.gender" :placeholder="$t('game_info.gender')" class="handle-input-form" clearable filterable>
+                                    <el-select v-model="form.gender" :placeholder="$t('game_info.gender')" class="handle-input-form" clearable filterable :disabled="createLock">
                                         <el-option v-for="item in options.gender" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                                     </el-select>
                                 </el-form-item>
                                 <el-form-item :label="$t('game_info.birthday')" prop="birthday">
-                                    <el-date-picker type="date" :placeholder="$t('game_info.birthday')" v-model="form.birthday" clearable value-format="yyyy-MM-dd" class="handle-input-form"></el-date-picker>
+                                    <el-date-picker type="date" :placeholder="$t('game_info.birthday')" v-model="form.birthday" 
+                                    clearable value-format="yyyy-MM-dd" class="handle-input-form" :disabled="createLock"></el-date-picker>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
                             <el-col :span="24">
                                 <el-form-item :label="$t('game_info.note')" prop="note">
-                                    <el-input type="textarea" :rows="6" v-model="form.note" class="handle-input-form-note mb10"></el-input>
+                                    <el-input type="textarea" :rows="6" v-model="form.note" class="handle-input-form-note mb10" :disabled="createLock"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -105,13 +106,13 @@
             </el-col>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleCancelEdit">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="handleUpload()" v-if="editVisible">{{$t('btn.save')}}</el-button>
+                <el-button type="primary" @click="handleUpload()" v-if="editVisible" :disabled="createLock">{{$t('btn.save')}}</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 <script>
-import { infoService } from "@/_services";
+import { infoService, leagueService } from "@/_services";
 export default {
     name:"league_players",
     components:{},
@@ -129,12 +130,13 @@ export default {
             sort:"",
             page_size_list:[10,20],
             totalRow:0,
-            delIF:{},
+            delInfo:{},
             delVisible:false,
             players_info:[],
             table_loading:false,
             createVisible:false,
             updateVisible:false,
+            createLock:true,
 
             filter:{
                 member_id:"",
@@ -227,6 +229,22 @@ export default {
     },
 
     methods:{
+        memberValid(){
+            if(this.createVisible&&this.form.member_id.length==16){
+                leagueService.member_valid(this.form.member_id)
+                .then(res => { 
+                    if(res.code==1){
+                        this.$message.success(res.msg);
+                        this.createLock=false;
+                    }else{
+                        this.$message.error(res.msg);
+                    }
+                })
+            }else{
+                this.createLock=true;
+            }
+        },
+
         getParam(){
             var param = {
                 'sort_column':this.sort_column,
@@ -244,7 +262,7 @@ export default {
 
         getData(id){
             this.table_loading=true;
-            infoService.get_league_player(this.table_type, id, this.getParam())
+            leagueService.get_league_player(this.table_type, id, this.getParam())
             .then(res => { 
                 this.players_info = res.players_info;
                 this.totalRow = res.total;
@@ -309,23 +327,25 @@ export default {
 
         handleCreate(){
             this.createVisible=true;
+            this.createLock=true;
             this.form.game_id=this.$route.query.game_id;
             this.form.team_id=this.$route.query.team_id;
         },
 
         handleEdit(index, row){
-            infoService.get_single_league_player(row.team_id, row.member_id)
+            leagueService.get_single_league_player(row.team_id, row.member_id)
             .then(res=>{ 
                 this.form = (res.code==1)?res.player_info:this.form;
             })
             this.updateVisible=true;
+            this.createLock=false;
         },
 
         handleUpload(){
             this.$refs.form.validate(valid => {
                 if(valid){
                     var action = (this.createVisible)?"create":"update";
-                    infoService.update_league_player(action, this.form)
+                    leagueService.update_league_player(action, this.form)
                     .then(res=>{
                         if(res.code==1){
                             this.getData(this.$route.query.team_id);
@@ -344,13 +364,13 @@ export default {
         },
 
         handleDelete(index, row){
-            this.delIF=row;
+            this.delInfo=row;
             this.delVisible=true;
         },
 
         deleteRow(){
-            var param = {"team_id":this.delIF.team_id,"member_id":this.delIF.member_id,"game_id":this.delIF.game_id}
-            infoService.delete_league_player(param)
+            var param = {"team_id":this.delInfo.team_id,"member_id":this.delInfo.member_id,"game_id":this.delInfo.game_id}
+            leagueService.delete_league_player(param)
             .then(res => {
                 if(res.code==1){
                     this.handleDeleteChange();
@@ -362,7 +382,7 @@ export default {
                     this.$message.error(res.msg);
                 }
                 this.delVisible=false;
-                this.delIF={};
+                this.delInfo={};
             }); 
         },
 

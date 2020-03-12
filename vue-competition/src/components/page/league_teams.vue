@@ -70,7 +70,7 @@
     </div>
 </template>
 <script>
-import { infoService } from "@/_services";
+import { leagueService } from "@/_services";
 export default {
     name:"league_teams",
     components:{
@@ -164,7 +164,7 @@ export default {
 
         getData(id){
             this.table_loading=true;
-            infoService.get_league_team(this.$route.query.table_type, id, this.getParam())
+            leagueService.get_league_team(this.$route.query.table_type, id, this.getParam())
             .then(res => { 
                 this.teams = res.teams;
                 this.totalRow = res.total;
@@ -221,7 +221,7 @@ export default {
 
         deleteRow(){
             var param = {"team_id":this.delID}
-            infoService.delete_league_team(param)
+            leagueService.delete_league_team(param)
             .then(res => {
                 if(res.code==1){
                     this.handleDeleteChange();
