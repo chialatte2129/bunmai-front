@@ -325,6 +325,14 @@ export const messages = {
             update_player:"編輯團隊隊員",
             duplicated_team_name:"隊名已經存在",
             duplicated_player:"人員已經報名",
+            game_date:"比賽日期",
+            start_time:"開始時間",
+            end_time:"結束時間",
+            week:"周",
+            home_team:"主隊 (藍隊)",
+            away_team:"客隊 (紅隊)",
+            reset_time:"重設時間",
+
             
             
 
@@ -666,6 +674,13 @@ export const messages = {
             update_player:"Update Team Member",
             duplicated_team_name:"Team Name Duplicated",
             duplicated_player:"Player Duplicated",
+            game_date:"Game Date",
+            start_time:"Start Time",
+            end_time:"End Time",
+            week:"Week",
+            home_team:"Home (Blue)",
+            away_team:"Away (Red)",
+            reset_time:"Reset Time",
             
 
             schedule:{
