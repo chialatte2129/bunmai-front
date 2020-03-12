@@ -331,6 +331,7 @@ export const messages = {
             week:"周",
             home_team:"主隊 (藍隊)",
             away_team:"客隊 (紅隊)",
+            reset_time:"重設時間",
 
             
             
@@ -679,6 +680,7 @@ export const messages = {
             week:"Week",
             home_team:"Home (Blue)",
             away_team:"Away (Red)",
+            reset_time:"Reset Time",
             
 
             schedule:{

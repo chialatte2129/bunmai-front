@@ -9,7 +9,8 @@
                             <el-row>
                                 <el-col :span="6">
                                     <el-form-item :label="$t('game_info.game_date')" prop="game_date">
-                                        <el-date-picker type="date" :placeholder="$t('game_info.game_date')" v-model="form.game_date" clearable value-format="yyyy-MM-dd" class="handle-input mr10"></el-date-picker>
+                                        <el-date-picker type="date" :placeholder="$t('game_info.game_date')" v-model="form.game_date" clearable @change="form.start_time='',form.end_time=''" value-format="yyyy-MM-dd" 
+                                        class="handle-input mr10" :picker-options="{ disabledDate(time){ return parse_game_end_time <= time.getTime()||time.getTime() < parse_game_start_time }}"></el-date-picker>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="6">
@@ -19,13 +20,13 @@
                                 </el-col>
                                 <el-col :span="6">
                                     <el-form-item :label="$t('game_info.start_time')" prop="start_time">
-                                        <el-time-select v-model="form.start_time" :placeholder="$t('game_info.start_time')" clearable filterable class="handle-input-short mr10"
+                                        <el-time-select v-model="form.start_time" :placeholder="$t('game_info.start_time')" clearable filterable class="handle-input-short mr10" :disabled="form.game_date==''"
                                         :picker-options="{ start:'00:00', step:'00:05', end:'23:55', maxTime:form.end_time}"></el-time-select>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="6">
                                     <el-form-item :label="$t('game_info.end_time')" prop="end_time">
-                                        <el-time-select v-model="form.end_time" :placeholder="$t('game_info.end_time')" clearable filterable class="handle-input-short mr10"
+                                        <el-time-select v-model="form.end_time" :placeholder="$t('game_info.end_time')" clearable filterable class="handle-input-short mr10" :disabled="form.game_date==''"
                                         :picker-options="{ start:'00:00', step:'00:05', end:'23:55', minTime:form.start_time }"></el-time-select>
                                     </el-form-item>
                                 </el-col>
@@ -188,6 +189,7 @@ export default {
     props:{
         visible: Boolean,
         game_id: String,
+        game_time: Array,
     },
     data(){
         return{
@@ -207,6 +209,14 @@ export default {
             pos:0,
             teams:[],
             dates:[],
+            game_start_time:"",
+            game_end_time:"",
+            parse_game_start_time:null,
+            date_game_start_time:"",
+            time_game_start_time:"",
+            parse_game_end_time:null,
+            date_game_end_time:"",
+            time_game_end_time:"",
             backup_row:{},
             filter:{
                 game_date:"",
@@ -214,7 +224,6 @@ export default {
                 end_time:"",
                 team_name:"",
             },
-            game_start_time:"",
             form:{
                 id:null,
                 game_id:this.game_id,
@@ -222,8 +231,8 @@ export default {
                 home_team:"",
                 away_team:"",
                 game_date:"",
-                start_time:"10:00",
-                end_time:"23:00",
+                start_time:"",
+                end_time:"",
                 note:"",
             },
             rules:{
@@ -258,6 +267,7 @@ export default {
     },
 
     created(){
+        this.getGameTime();
         this.getOption();
         this.getData(this.game_id);
     },
@@ -327,17 +337,26 @@ export default {
             return param
         },
         
+        getGameTime(){
+            this.game_start_time = this.game_time[0];
+            var dt = new Date(this.game_start_time)
+            this.parse_game_start_time = Date.parse(dt.toString());
+            this.date_game_start_time = this.game_start_time.substr(0,10);
+            this.time_game_start_time = this.game_start_time.substr(11,5);
+
+            this.game_end_time = this.game_time[1];
+            var dt = new Date(this.game_end_time)
+            this.parse_game_end_time = Date.parse(dt.toString());
+            this.date_game_end_time = this.game_end_time.substr(0,10);
+            this.time_game_end_time = this.game_end_time.substr(11,5);
+        },
+
         getData(id){
             this.table_loading=true;
             leagueService.get_league_match_list(id, this.getParam())
             .then(res => { 
                 this.match_list = res.match_list;
                 this.totalRow = res.total;
-                this.game_start_time = res.game_start_time;
-                console.log(this.game_start_time)
-                var dt = new Date(this.game_start_time)
-                console.log(dt.toString())
-                console.log(Date.parse(dt.toString()))
                 this.getSpanArr(this.match_list);
             })
             this.table_loading=false;
@@ -367,7 +386,8 @@ export default {
                             this.$message.success(this.$t("common_msg.save_ok"));
                             this.createVisible=false;
                             this.updateVisible=false;
-                            this.resetForm()
+                            this.resetForm();
+                            if(action=="create"){this.getOption();}
                         }else if(res.code==0){
                             this.$message.warning(this.$t(res.msg));
                         }else{
@@ -462,8 +482,8 @@ export default {
                 home_team:"",
                 away_team:"",
                 game_date:"",
-                start_time:"10:00",
-                end_time:"23:00",
+                start_time:"",
+                end_time:"",
                 note:""
             }
         },

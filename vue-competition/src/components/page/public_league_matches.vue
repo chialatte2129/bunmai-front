@@ -34,9 +34,6 @@
                 </div>
             </div>
             <div v-for='(row, index) in match' :class="`round_${index}`" class="round" v-if="match!=[]">
-                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);z-index:1;">
-                    <hr style="margin:1.5vmin;border:0;height:0.5vmin;width:27vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);z-index:1;"></hr>
-                </div>
                 <div v-for='(row_rn, index_rn) in row.schedules' :class="`item_${index}${index_rn}`" class="item">
                     <div style="position:absolute;margin-left:2%;width:96%;height:100%;top:0;left:0;
                     background-repeat:no-repeat;background-image:url('image/league/match/rows.png');background-size:100%;background-position:center;"></div>                
@@ -55,16 +52,33 @@
                         </div>
                     </div>
                 </div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);z-index:1;" v-if="row.schedules.length>=4">
+                    <hr style="margin:1.5vmin;border:0;height:0.5vmin;width:27vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);z-index:1;"></hr>
+                </div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);z-index:1;" 
+                v-else-if="row.schedules.length==3||row.schedules.length==2">
+                    <hr style="margin:1.5vmin;border:0;height:0.45vmin;width:18vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);z-index:1;"></hr>
+                </div>
+                <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.0vmin;left:-47%;transform:rotate(90deg);z-index:1;" v-else>
+                    <hr style="margin:1.5vmin;border:0;height:0.4vmin;width:10vmin;background-image:linear-gradient(to right, transparent, rgba(255,195,34,1), transparent);z-index:1;"></hr>
+                </div>
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-1.5vmin;left:-49%;transform:rotate(90deg);z-index:1;">
                     <div class="column_font text-center" style="font-size:2vmin;">
                         <p>WEEK<span class="Num_font" style="font-size:2vmin;"> {{row.round}}</span></p>
                     </div>
                 </div>
                 <div style="position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;top:-2.5vmin;z-index:1;">
-                    <div class="column_font text-center" style="color:#E3DB70;">
-                        <!-- <img width="100vmin" src="image/league/match/vs.png"> -->
+                    <div class="column_font text-center" style="color:#E3DB70;" v-if="row.schedules.length>=4">
                         <p style="font-size:6vmin;">VS</p>
                         <p style="font-size:4vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
+                    </div>
+                    <div class="column_font text-center" style="color:#E3DB70;" v-else-if="row.schedules.length==3||row.schedules.length==2">
+                        <p style="font-size:5vmin;">VS</p>
+                        <p style="font-size:3vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
+                    </div>
+                    <div class="column_font text-center" style="color:#E3DB70;" v-else>
+                        <p style="font-size:3vmin;">VS</p>
+                        <p style="font-size:2vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
                     </div>
                 </div>
                 <img v-if="index!=(hr_check-1)" style="margin-left:10%;" width="80%" src="image/league/match/hr_line.png">
