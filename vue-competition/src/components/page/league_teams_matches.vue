@@ -421,7 +421,7 @@ export default {
                 if(this.form.home_team===this.teams[i].team_name){
                     this.form.home_team=this.teams[i].id
                 }
-                if(this.form.away_team===this.teams[i].away_team){
+                if(this.form.away_team===this.teams[i].team_name){
                     this.form.away_team=this.teams[i].id
                 }
             }
