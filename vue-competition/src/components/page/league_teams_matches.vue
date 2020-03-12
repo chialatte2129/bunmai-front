@@ -73,7 +73,6 @@
                 :picker-options="{ start:'00:00', step:'00:05', end:'23:55', minTime:filter.start_time }"></el-time-select>
                 <el-button type="info" @click="cancelSearch" :disabled="updateVisible"> {{$t('btn.clean')}}</el-button>
             </div>
-            <el-form ref="form" :model="form" :rules="rules" label-position="top" label-width=auto class="table-form" size="mini">
             <el-table
             :data="match_list"
             height="573"
@@ -89,10 +88,8 @@
                 <el-table-column prop="start_time" :label="$t('game_info.start_time')" width="145" align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
-                            <!-- <el-form-item prop="start_time"> -->
-                                <el-time-select v-model="form.start_time" :placeholder="$t('game_info.start_time')" clearable class="handle-input-short" size="small"
-                                :picker-options="{ start:'00:00', step:'00:05', end:'23:55', maxTime:form.end_time}"></el-time-select>
-                            <!-- </el-form-item> -->
+                            <el-time-select v-model="form.start_time" :placeholder="$t('game_info.start_time')" clearable class="handle-input-short" size="small"
+                            :picker-options="{ start:'00:00', step:'00:05', end:'23:55', maxTime:form.end_time}"></el-time-select>
                         </span>
                         <span v-else>{{scope.row.start_time}}</span>
                     </template>
@@ -100,10 +97,8 @@
                 <el-table-column prop="end_time" :label="$t('game_info.end_time')"  width="145" align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
-                            <!-- <el-form-item prop="end_time"> -->
-                                <el-time-select v-model="form.end_time" :placeholder="$t('game_info.end_time')" clearable class="handle-input-short" size="small"
-                                :picker-options="{ start:'00:00', step:'00:05', end:'23:55', minTime:form.start_time }"></el-time-select>
-                            <!-- </el-form-item> -->
+                            <el-time-select v-model="form.end_time" :placeholder="$t('game_info.end_time')" clearable class="handle-input-short" size="small"
+                            :picker-options="{ start:'00:00', step:'00:05', end:'23:55', minTime:form.start_time }"></el-time-select>
                         </span>
                         <span v-else>{{scope.row.end_time}}</span>
                     </template>
@@ -111,11 +106,9 @@
                 <el-table-column prop="home_team" :label="$t('game_info.home_team')" width="auto" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
-                            <!-- <el-form-item prop="home_team"> -->
-                                <el-select v-model="form.home_team" :placeholder="$t('game_info.home_team')" style="width:100%;" size="small" clearable filterable>
-                                    <el-option v-for="item in teams" :key="item.id" :label="item.team_name" :value="item.id" :disabled="item.id==form.away_team"></el-option>  
-                                </el-select>
-                            <!-- </el-form-item> -->
+                            <el-select v-model="form.home_team" :placeholder="$t('game_info.home_team')" style="width:100%;" size="small" clearable filterable>
+                                <el-option v-for="item in teams" :key="item.id" :label="item.team_name" :value="item.id" :disabled="item.id==form.away_team"></el-option>  
+                            </el-select>
                         </span>
                         <span v-else>{{scope.row.home_team}}</span>
                     </template>
@@ -123,11 +116,9 @@
                 <el-table-column prop="away_team" :label="$t('game_info.away_team')" width="auto" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
-                            <!-- <el-form-item prop="away_team"> -->
-                                <el-select v-model="form.away_team" :placeholder="$t('game_info.away_team')" style="width:100%;" size="small" clearable filterable>
-                                    <el-option v-for="item in teams" :key="item.id" :label="item.team_name" :value="item.id" :disabled="item.id==form.home_team"></el-option>  
-                                </el-select>
-                            <!-- </el-form-item> -->
+                            <el-select v-model="form.away_team" :placeholder="$t('game_info.away_team')" style="width:100%;" size="small" clearable filterable>
+                                <el-option v-for="item in teams" :key="item.id" :label="item.team_name" :value="item.id" :disabled="item.id==form.home_team"></el-option>  
+                            </el-select>
                         </span>
                         <span v-else>{{scope.row.away_team}}</span>
                     </template>
@@ -135,9 +126,7 @@
                 <el-table-column prop="note" :label="$t('game_info.note')" width="300" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
-                            <!-- <el-form-item prop="note"> -->
-                                <el-input v-model="form.note" style="width:100%;" size="small" clearable maxlength="20" show-word-limit></el-input>
-                            <!-- </el-form-item> -->
+                            <el-input v-model="form.note" style="width:100%;" size="small" clearable maxlength="20" show-word-limit></el-input>
                         </span>
                         <span v-else>{{scope.row.note}}</span>
                     </template>
@@ -155,7 +144,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-            </el-form>
             <div class="pagination">                      
                 <el-pagination
                 background
@@ -553,6 +541,9 @@ export default {
 .match-table >>> .success-cell{
     background:#DBFFD8;
 }
+.match-table >>> .edit-row{
+    background:#FFF4D8;
+}
 .temp{
     width: 100%;
 }
@@ -560,15 +551,6 @@ export default {
     font-size: 16px;
     text-align: center;
 }
-.match-table >>> .edit-row{
-    background:#FFF4D8;
-}
-.el-form >>> .el-table >>> .edit-row >>> .el-form-item.el-form-item--mini{
-    margin-bottom:0px;
-}
 </style>
 <style>
-/* .el-form-item.el-form-item--mini{
-    margin-bottom:0px;
-} */
 </style>
