@@ -263,6 +263,7 @@ export const messages = {
 
         },
         game_info:{
+            ID:"代碼",
             filter_name:"請輸入比賽名稱",
             filter_match:"團體 / 個人",
             filter_schedule:"排程狀態",
@@ -613,6 +614,7 @@ export const messages = {
             invalidate_email:'Please enter validate email'      
         },
         game_info:{
+            ID:"ID",
             filter_name:"Input Competition Name",
             filter_match:"Team / Individual",
             filter_schedule:"Scheduled Status",
