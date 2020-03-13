@@ -55,7 +55,7 @@
                 <el-button type="primary" @click="deleteRow">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
-        <el-dialog :visible.sync="editVisible" :title="this.showTitle" width="900px" :before-close="handleCancelEdit">
+        <el-dialog :visible.sync="editVisible" :title="this.showTitle" width="900px" :before-close="handleCancelEdit" :close-on-click-modal="false">
             <el-col :span="24">
                 <div style="padding:0 15px;">
                     <el-form ref="form" :model="form" :rules="rules" label-position="right" label-width=auto>

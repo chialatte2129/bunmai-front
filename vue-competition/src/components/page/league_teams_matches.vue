@@ -1,11 +1,14 @@
 <template>
     <div class="temp">
-        <el-dialog :visible.sync="visible" :title="$t('menus.league_teams_matches')" width="1600px" top="60px" :before-close="handleCloseDialog">
+        <el-dialog :visible.sync="visible" :title="$t('menus.league_teams_matches')" width="1600px" top="60px" :before-close="handleCloseDialog" :close-on-click-modal="false">
             <div class="handle-box">
                 <span class="ml30"></span>
                 <el-popover placement="right" width="1100" v-model="createVisible" v-if="update_info_auth">
                     <div style="padding:10px 20px;">
                         <el-form ref="form" :model="form" :rules="rules" label-position="right" label-width=auto>
+                            <el-row style="margin:0 0 30px 5px;">
+                                <p style="font-size:20px;"><b>{{$t('game_info.competition_time')}} : {{game_start_time}} ~ {{game_end_time}}</b></p>
+                            </el-row>
                             <el-row>
                                 <el-col :span="6">
                                     <el-form-item :label="$t('game_info.game_date')" prop="game_date">
@@ -131,9 +134,10 @@
                         <span v-else>{{scope.row.note}}</span>
                     </template>
                 </el-table-column>
+                <el-table-column prop="match_id" :label="$t('game_info.ID')" width="65" align="center"></el-table-column>
                 <el-table-column :label="$t('btn.action')" width="165" align="center">
                     <template slot-scope="scope">
-                        <el-button v-if="scope.row.edit" type="success" size="small" circle icon="el-icon-check" @click="handleCheck(scope.$index, scope.row)" style="padding:5px;"
+                        <el-button v-if="scope.row.edit" type="primary" size="small" circle icon="el-icon-check" @click="handleCheck(scope.$index, scope.row)" style="padding:5px;"
                         :disabled="(!update_info_auth||scope.row.btn_disabled==1)&&(!is_admin)"></el-button>
                         <el-button v-else type="warning" size="mini" circle icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit,handleEdit(scope.$index, scope.row)" style="padding:5px;"
                         :disabled="((!delete_info_auth||scope.row.btn_disabled==1)&&(!is_admin))||updateVisible"></el-button>
@@ -206,6 +210,7 @@ export default {
             date_game_end_time:"",
             time_game_end_time:"",
             backup_row:{},
+            backup_form:{},
             filter:{
                 game_date:"",
                 start_time:"",
@@ -342,7 +347,7 @@ export default {
         getData(id){
             this.table_loading=true;
             leagueService.get_league_match_list(id, this.getParam())
-            .then(res => { 
+            .then(res => {
                 this.match_list = res.match_list;
                 this.totalRow = res.total;
                 this.getSpanArr(this.match_list);
@@ -397,13 +402,19 @@ export default {
             }else if(row.end_time==""||row.end_time==null){
                 this.$message.warning(this.$i18n.t("game_info.end_time")+" "+this.$i18n.t("common_msg.must_fill"));
             }else{
-                this.handleUpload();
+                if(this.form.start_time==this.backup_form.start_time&&this.form.end_time==this.backup_form.end_time&&this.form.home_team==this.backup_form.home_team&&
+                this.form.away_team==this.backup_form.away_team&&this.form.note==this.backup_form.note){
+                    this.$message.success(this.$t("common_msg.save_ok"));
+                    this.handleCancelEdit(index, row);
+                }else{
+                    this.handleUpload();
+                }
             }
         },
 
         handleEdit(index, row){
             this.updateVisible=true;
-            this.backup_row = Object.assign({}, row);;
+            this.backup_row = Object.assign({}, row);
             this.form = row;
             for(var i=0;i<this.teams.length;i++){
                 if(this.form.home_team===this.teams[i].team_name){
@@ -413,6 +424,7 @@ export default {
                     this.form.away_team=this.teams[i].id
                 }
             }
+            this.backup_form = Object.assign({}, this.form);
         },
 
         handleCancelEdit(index, row){
@@ -463,6 +475,7 @@ export default {
 
         resetForm(){
             this.backup_row = {};
+            this.backup_form = {};
             this.form = {
                 id:null,
                 game_id:this.game_id,
