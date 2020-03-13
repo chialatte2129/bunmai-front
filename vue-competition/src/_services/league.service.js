@@ -16,7 +16,12 @@ export const leagueService = {
 	get_league_match_list,
 	delete_league_match_list,
 	update_league_match_list,
-	
+
+	get_option_matches,
+	get_league_channel_list,
+	delete_league_channel_list,
+	update_league_channel_list,
+
 }
 function get_league_team(type, game_id, filter){
 	var param = {"type":type, "game_id":game_id, "filter":filter}
@@ -156,4 +161,47 @@ function update_league_match_list(type, data){
 			}
 		)
 	})	
+}
+
+function get_league_channel_list(id, filter){
+	var param = {"game_id":id, "filter":filter}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/get_league_channel_list', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function delete_league_channel_list(param){
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/delete_league_channel_list', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})		
+}
+
+function update_league_channel_list(type, data){
+    var param = {"type":type, "param":data}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/update_league_channel_list', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})	
+}
+
+function get_option_matches(id){
+    var param = {"game_id":id}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/get_option_matches', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
 }

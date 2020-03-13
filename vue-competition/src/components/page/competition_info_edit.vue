@@ -175,7 +175,10 @@
                 </el-row>                
             </el-form>
         </div>
-        <teamsMatches v-if="matchVisible" :visible="matchVisible" :game_id="form.game_id" :game_time="form.game_time" @closeDialog="matchVisible=false"></teamsMatches>
+        <teamsMatches v-if="matchVisible" :visible="matchVisible" :game_id="form.game_id" :game_time="form.game_time" 
+        @closeDialog="matchVisible=false" @goToChannel="matchVisible=false,channelVisible=true"></teamsMatches>
+        <liveChannels v-if="channelVisible" :visible="channelVisible" :game_id="form.game_id" :game_time="form.game_time"
+        @closeDialog="channelVisible=false" @goToMatch="channelVisible=false,matchVisible=true"></liveChannels>
         <el-backtop target=".content" :visibility-height="0" :bottom="40" :right="10">
             <div style="{height:100%; width:100%; box-shadow:0 0 6px rgba(0,0,0, .12); border-radius:50%; text-align:center; font-size:15px; font-weight:bold; line-height:40px; color:#000000;}">TOP</div>
         </el-backtop>
@@ -184,10 +187,12 @@
 <script>
 import { infoService } from "@/_services";
 import teamsMatches from "@/components/page/league_teams_matches.vue";
+import liveChannels from "@/components/page/league_live_channel.vue";
 export default {
     name:"competition_information_edit",
     components:{
-        teamsMatches
+        teamsMatches,
+        liveChannels
     },
     data(){
         return{
@@ -285,13 +290,7 @@ export default {
                 this.form.min_players=this.form.max_players;
             }
         },
-
-        disabledTime(time){
-            var d = new Date(time);
-            var timestamp = d.valueOf();
-            return timestamp
-        },
-
+        
         getData(id){
             infoService.get_single_competition_info(id)
             .then(res=>{ 
