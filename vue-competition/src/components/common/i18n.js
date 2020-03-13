@@ -218,6 +218,7 @@ export const messages = {
             abandon:"已廢棄",
             not_working:"目前無功能",
             team_delete_ng_tips:"無法刪除，因有細項設定已設定",
+            go_to_foreign_url:"即將前往外部連結",
         },
         account:{
             login: '登入', 
@@ -327,12 +328,15 @@ export const messages = {
             duplicated_team_name:"隊名已經存在",
             duplicated_player:"人員已經報名",
             game_date:"比賽日期",
+            live_date:"直播日期",
             start_time:"開始時間",
             end_time:"結束時間",
             week:"周",
             home_team:"主隊 (藍隊)",
             away_team:"客隊 (紅隊)",
             reset_time:"重設時間",
+            add_channels:"增加頻道",
+            live_channel:"直播頻道",
 
             
             
@@ -570,6 +574,7 @@ export const messages = {
             abandon:"Abandoned",
             not_working:"Not Working Now",
             team_delete_ng_tips:"Delete Failed, detail settings have already used",
+            go_to_foreign_url:"Go to foreign URL",
         },
         account: {
             login: 'Login', 
@@ -677,12 +682,15 @@ export const messages = {
             duplicated_team_name:"Team Name Duplicated",
             duplicated_player:"Player Duplicated",
             game_date:"Game Date",
+            live_date:"Live Date",
             start_time:"Start Time",
             end_time:"End Time",
             week:"Week",
             home_team:"Home (Blue)",
             away_team:"Away (Red)",
             reset_time:"Reset Time",
+            add_channels:"Add Channels",
+            live_channel:"Live Channels",
             
 
             schedule:{

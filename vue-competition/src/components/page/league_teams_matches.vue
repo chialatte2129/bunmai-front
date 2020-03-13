@@ -75,17 +75,10 @@
                 :disabled="filter.game_date==''||updateVisible" @change="search"
                 :picker-options="{ start:'00:00', step:'00:05', end:'23:55', minTime:filter.start_time }"></el-time-select>
                 <el-button type="info" @click="cancelSearch" :disabled="updateVisible"> {{$t('btn.clean')}}</el-button>
+                <el-button type="primary"size="medium" @click="goToChannel" style="float:right;" class="el-icon-right mr10" :disabled="updateVisible"> {{$t('menus.league_live_channel')}}</el-button>
             </div>
-            <el-table
-            :data="match_list"
-            height="573"
-            class="match-table" 
-            ref="multipleTable"
-            tooltip-effect="light" 
-            :cell-class-name="cellClassName"
-            :span-method="dateCellMerge"
-            :row-class-name="tableRowClassName"
-            v-loading="table_loading">
+            <el-table :data="match_list" height="573" class="match-table" ref="multipleTable" tooltip-effect="light" 
+            :cell-class-name="cellClassName" :span-method="dateCellMerge" :row-class-name="tableRowClassName" v-loading="table_loading">
                 <el-table-column prop="game_date" :label="$t('game_info.game_date')" width="140" align="center"></el-table-column>
                 <el-table-column prop="round" :label="$t('game_info.week')" width="90" align="center"></el-table-column>
                 <el-table-column prop="start_time" :label="$t('game_info.start_time')" width="145" align="center">
@@ -109,9 +102,7 @@
                 <el-table-column prop="home_team" :label="$t('game_info.home_team')" width="auto" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
-                            <el-select v-model="form.home_team" :placeholder="$t('game_info.home_team')" style="width:100%;" size="small" clearable filterable>
-                                <el-option v-for="item in teams" :key="item.id" :label="item.team_name" :value="item.id" :disabled="item.id==form.away_team"></el-option>  
-                            </el-select>
+                            {{scope.row.home_team_name}}
                         </span>
                         <span v-else>{{scope.row.home_team}}</span>
                     </template>
@@ -148,17 +139,9 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">                      
-                <el-pagination
-                background
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :disabled="updateVisible"
-                :current-page="cur_page"
-                :page-sizes="page_size_list" 
-                :page-size="pagesize"         
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="totalRow">    
+            <div class="pagination">
+                <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                :disabled="updateVisible" :current-page="cur_page" :page-sizes="page_size_list" :page-size="pagesize" :total="totalRow">    
                 </el-pagination>
             </div>
         </el-dialog>
@@ -266,11 +249,15 @@ export default {
     },
 
     methods:{
+        goToChannel(){
+            this.$emit('goToChannel', true);
+        },
+
         tableRowClassName({row, rowIndex}){
             if(row.edit==true){
                 return "edit-row"
             }else{
-                return "'"
+                return ""
             }
         },
 
@@ -364,7 +351,6 @@ export default {
         },
 
         handleCloseDialog(){
-            this.cancelSearch();
             this.$emit('closeDialog', false);
         },
 
@@ -393,16 +379,14 @@ export default {
         },
 
         handleCheck(index, row){
-            if(row.home_team==""||row.home_team==null){
-                this.$message.warning(this.$i18n.t("game_info.home_team")+" "+this.$i18n.t("common_msg.must_fill"));
-            }else if(row.away_team==""||row.away_team==null){
+            if(row.away_team==""||row.away_team==null){
                 this.$message.warning(this.$i18n.t("game_info.away_team")+" "+this.$i18n.t("common_msg.must_fill"));
             }else if(row.start_time==""||row.start_time==null){
                 this.$message.warning(this.$i18n.t("game_info.start_time")+" "+this.$i18n.t("common_msg.must_fill"));
             }else if(row.end_time==""||row.end_time==null){
                 this.$message.warning(this.$i18n.t("game_info.end_time")+" "+this.$i18n.t("common_msg.must_fill"));
             }else{
-                if(this.form.start_time==this.backup_form.start_time&&this.form.end_time==this.backup_form.end_time&&this.form.home_team==this.backup_form.home_team&&
+                if(this.form.start_time==this.backup_form.start_time&&this.form.end_time==this.backup_form.end_time&&
                 this.form.away_team==this.backup_form.away_team&&this.form.note==this.backup_form.note){
                     this.$message.success(this.$t("common_msg.save_ok"));
                     this.handleCancelEdit(index, row);
@@ -418,10 +402,11 @@ export default {
             this.form = row;
             for(var i=0;i<this.teams.length;i++){
                 if(this.form.home_team===this.teams[i].team_name){
-                    this.form.home_team=this.teams[i].id
+                    this.form.home_team=this.teams[i].id;
+                    this.form.home_team_name=this.teams[i].team_name;
                 }
                 if(this.form.away_team===this.teams[i].team_name){
-                    this.form.away_team=this.teams[i].id
+                    this.form.away_team=this.teams[i].id;
                 }
             }
             this.backup_form = Object.assign({}, this.form);
@@ -513,10 +498,6 @@ export default {
         handleSizeChange(size){
             this.pagesize = size;
             this.handleCurrentChange(1);
-        },
-
-        show_label(item){
-            return localStorage.getItem("ms_user_lang")=='zh_TW'?item.label:(item.label_i18n==undefined?item.label:item.label_i18n);
         },
 
     }
