@@ -157,6 +157,8 @@ export const messages = {
             enter_test : '進入測試介面',
             leave:'離開',
             copy:'複製',
+            submit:"提交",
+            check_submit:"確認提交",
             select_options:'請選擇',
             select_no_limit: '沒有選擇視同與 使用期限 或 活動期限 的最小期限相同',
             select_coupon_no_limit: '沒有選擇視同與 使用期限 或 對應系統設定期限 的最小期限相同',
@@ -337,6 +339,8 @@ export const messages = {
             reset_time:"重設時間",
             add_channels:"增加頻道",
             live_channel:"直播頻道",
+            rank:"排名",
+            scores:"積分",
 
             
             
@@ -512,6 +516,8 @@ export const messages = {
             clean:'Clean',
             leave:'Leave',
             copy:'Copy',
+            submit:"Submit",
+            check_submit:"Check Submission",
             enter_test : 'Enter TEST Interface',
             select_options:'Select Options',
             select_no_limit: "Without Options will be Same with tha Min Date between Events' Expired and Use's Expired",
@@ -691,6 +697,8 @@ export const messages = {
             reset_time:"Reset Time",
             add_channels:"Add Channels",
             live_channel:"Live Channels",
+            rank:"Rank",
+            scores:"Scores",
             
 
             schedule:{

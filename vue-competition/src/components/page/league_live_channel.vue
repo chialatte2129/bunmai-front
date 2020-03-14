@@ -38,7 +38,7 @@
                                             <el-input v-model="row.value" :placeholder="$t('game_info.live_channel')" clearable style="width:90%;" class="mb10"></el-input>
                                             <el-button v-if="index!=0" type="danger" plain circle icon="el-icon-delete" @click="delChannelRow(index)" style="padding:5px;" class="ml10"></el-button>
                                         </div>
-                                        <el-button :disabled="addRowDisabled()" type="success" plain size=mini class="el-icon-circle-plus-outline" 
+                                        <el-button :disabled="addRowDisabled()" type="success" plain size=mini class="el-icon-circle-plus-outline" v-if="form.channels.length<4"
                                         @click="addChannelRow"> {{$t('game_info.add_channels')}}</el-button>
                                     </el-form-item>
                                 </el-col>
@@ -79,10 +79,10 @@
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
                             <div v-for='(row,index) in form.channels'>
-                                <el-input v-model="row.value" :placeholder="$t('game_info.live_channel')" clearable style="width:90%;" class="mb10"></el-input>
-                                <el-button v-if="index!=0" type="danger" plain circle icon="el-icon-delete" @click="delChannelRow(index)" style="padding:5px;" class="ml10"></el-button>
+                                <el-input v-model="row.value" :placeholder="$t('game_info.live_channel')" clearable style="width:90%;margin:3px 0;"></el-input>
+                                <el-button v-if="index!=0" type="danger" plain circle icon="el-icon-delete" @click="delChannelRow(index)" style="padding:5px;margin:3px 10px;"></el-button>
                             </div>
-                            <el-button :disabled="addRowDisabled()" type="success" plain size=mini class="el-icon-circle-plus-outline" 
+                            <el-button :disabled="addRowDisabled()" type="success" plain size=mini class="el-icon-circle-plus-outline" v-if="form.channels.length<4" style="margin:3px 0;"
                             @click="addChannelRow"> {{$t('game_info.add_channels')}}</el-button>
                         </span>
                         <span v-else>

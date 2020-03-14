@@ -22,6 +22,9 @@ export const leagueService = {
 	delete_league_channel_list,
 	update_league_channel_list,
 
+	get_league_standing_list,
+	update_league_standing_list,
+
 }
 function get_league_team(type, game_id, filter){
 	var param = {"type":type, "game_id":game_id, "filter":filter}
@@ -204,4 +207,26 @@ function get_option_matches(id){
 			}
 		)
 	})
+}
+
+function get_league_standing_list(id){
+	var param = {"game_id":id}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/get_league_standing_list', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function update_league_standing_list(id, data){
+    var param = {"game_id":id, "rows":data}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/update_league_standing_list', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})	
 }
