@@ -27,7 +27,7 @@
         </el-dialog>
         <el-dialog :visible.sync="submitVisible" width="500px" top="60px" :before-close="handleCloseSubmit" :close-on-click-modal="false">
             <el-button type="primary" size="small" class="el-icon-edit mb10" @click="handleSubmit"> {{$t('btn.save')}}</el-button>
-            <el-table :data="standing_list" :row-class-name="tableRowClassNameRank" :cell-class-name="cellClassNameSetting" :cell-style="cellStyle" :default-sort="{prop:'rank', order:'ascending'}"
+            <el-table :data="submit_list" :row-class-name="tableRowClassNameRank" :cell-class-name="cellClassNameSetting" :cell-style="cellStyle" :default-sort="{prop:'rank', order:'ascending'}"
             height="573" class="standing-table" ref="multipleTable" tooltip-effect="light">
                 <el-table-column prop="team_name" :label="$t('game_info.team_name')" width="auto" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="rank" :label="$t('game_info.rank')" width="130" align="center"></el-table-column>
@@ -51,6 +51,7 @@ export default {
             table_loading:false,
             submitVisible:false,
             standing_list:[],
+            submit_list:[],
             search:"",
         }
     },
@@ -90,7 +91,7 @@ export default {
         },
 
         handleSubmit(){
-            leagueService.update_league_standing_list(this.game_id, this.standing_list)
+            leagueService.update_league_standing_list(this.game_id, this.submit_list)
             .then(res=>{
                 if(res.code==1){
                     this.getData(this.game_id);
@@ -104,9 +105,17 @@ export default {
             })
         },
 
-        handleSubmitCheck(){ this.submitVisible=true; },
+        handleSubmitCheck(){ 
+            console.log(this.standing_list);
+            this.submit_list=Object.assign([], this.standing_list);
+            console.log(this.submit_list)
+            this.submitVisible=true;
+        },
         
-        handleCloseSubmit(){ this.submitVisible=false; },
+        handleCloseSubmit(){ 
+            this.submit_list=[];
+            this.submitVisible=false;
+        },
 
         tableRowClassNameRank({row, rowIndex}){
             if(row.rank==1){ return "golden-row" }
