@@ -94,9 +94,13 @@ export const messages = {
             league_live_channel:"直播頻道設定",
             league_standing:"排行榜設定",
             league_teams:"參賽隊伍管理",
+            league_teams_info:"隊伍資訊",
             league_teams_edit:"參賽隊伍編輯",
             league_teams_create:"參賽隊伍建立",
             league_players:"聯賽玩家管理",
+            league_players_info:"玩家資訊",
+            league_matches_info:"場次資訊",
+            league_standing_info:"排名資訊",
         },
         table_title:{
             role :'角色代號',
@@ -341,6 +345,7 @@ export const messages = {
             live_channel:"直播頻道",
             rank:"排名",
             scores:"積分",
+            entered_game:"參加的比賽",
 
             
             
@@ -453,9 +458,13 @@ export const messages = {
             league_live_channel:"Live Channel Setting",
             league_standing:"Standing Setting",
             league_teams:"Teams Management",
+            league_teams_info:"Teams Information",
             league_teams_edit:"Teams Edit",
             league_teams_create:"Teams Create",
             league_players:"League Players Management",
+            league_players_info:"Players Information",
+            league_matches_info:"Matches Information",
+            league_standing_info:"Standing Information",
         },
         table_title :{
             role :'Role id',
@@ -699,6 +708,7 @@ export const messages = {
             live_channel:"Live Channels",
             rank:"Rank",
             scores:"Scores",
+            entered_game:"Entered Game",
             
 
             schedule:{

@@ -4,7 +4,7 @@
             <div slot="header" class="clearfix"><span>{{$t('game_info.team_players')}}</span></div>
             <div style="padding:0 7px;">
             <div class="handle-box">
-                <el-button type="success" class="el-icon-circle-plus-outline mr10" @click="handleCreate" v-if="update_info_auth"> {{$t('btn.new')}}</el-button>
+                <el-button type="success" class="el-icon-circle-plus-outline mr10" @click="handleCreate" v-if="update_info_auth&&table_type=='single'"> {{$t('btn.new')}}</el-button>
                 <el-input v-model="filter.member_id" :placeholder="$t('game_info.member_id')" clearable @change="search" class="handle-input mr10"></el-input>
                 <el-input v-model="filter.name" :placeholder="$t('game_info.contact_person_name')" clearable @change="search" class="handle-input mr10"></el-input>
                 <el-input v-model="filter.nickname" :placeholder="$t('game_info.nickname')" clearable @change="search" class="handle-input mr10"></el-input>
@@ -24,7 +24,7 @@
                 <el-table-column prop="email" :label="$t('game_info.mail')" width="auto" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="phone" :label="$t('game_info.phone')" width="145" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="created_at" :label="$t('game_info.created_at')" width="155" sortable="custom" show-overflow-tooltip></el-table-column>
-                <el-table-column :label="$t('btn.action')" width="165" align="center">
+                <el-table-column :label="$t('btn.action')" width="165" align="center" v-if="table_type=='single'">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" style="padding:5px 10px;" :disabled="!view_info_auth">{{$t('btn.edit')}}</el-button>
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" style="padding:5px 10px;"

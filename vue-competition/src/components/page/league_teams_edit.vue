@@ -12,8 +12,8 @@
                 <el-breadcrumb-item v-else>{{$t('menus.league_teams_edit')}}&nbsp;&nbsp;&nbsp;&nbsp;<b>{{$route.query.team_id}}. {{form.team_name}}</b></el-breadcrumb-item>
             </el-breadcrumb>
             <span style="float:right;margin-top:-38px">
-                <el-button type="primary" icon="el-icon-edit" @click="handleUpdate" size=large :disabled="!this.update_info_auth">{{$t('btn.save')}}</el-button>
-                <el-button type="info" icon="el-icon-back" @click="handleCancel" size=large> {{$t('btn.leave')}}</el-button>
+                <el-button type="primary" v-if="$route.query.table_type=='single'" icon="el-icon-edit" @click="handleUpdate" size=large :disabled="!this.update_info_auth">{{$t('btn.save')}}</el-button>
+                <el-button type="info" v-if="$route.query.table_type=='single'" icon="el-icon-back" @click="handleCancel" size=large> {{$t('btn.leave')}}</el-button>
             </span>   
         </div>
         <div class="container">
@@ -83,7 +83,7 @@
                 </el-form>
             </el-row>
             <el-row v-if="form.team_id">
-                <leaguePlayers :team_id="form.team_id" :game_id="form.game_id" :table_type="$route.query.table_type"></leaguePlayers>
+                <leaguePlayers :team_id="form.team_id" :game_id="form.game_id" :table_type="'single'"></leaguePlayers>
             </el-row>
         </div>
         <el-backtop target=".content" :visibility-height="0" :bottom="40" :right="10">
@@ -116,6 +116,7 @@ export default {
                 note:"",
                 status:"Operation",
                 closed_at:null,
+                member_count:null,
             },
             options:{
                 team_status:[],

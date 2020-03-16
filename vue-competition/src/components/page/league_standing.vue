@@ -28,9 +28,9 @@
         <el-dialog :visible.sync="submitVisible" width="500px" top="60px" :before-close="handleCloseSubmit" :close-on-click-modal="false">
             <el-button type="primary" size="small" class="el-icon-edit mb10" @click="handleSubmit"> {{$t('btn.save')}}</el-button>
             <el-table :data="submit_list" :row-class-name="tableRowClassNameRank" :cell-class-name="cellClassNameSetting" :cell-style="cellStyle" :default-sort="{prop:'rank', order:'ascending'}"
-            height="573" class="standing-table" ref="multipleTable" tooltip-effect="light">
-                <el-table-column prop="team_name" :label="$t('game_info.team_name')" width="auto" show-overflow-tooltip></el-table-column>
+            height="500" class="standing-table" ref="multipleTable" tooltip-effect="light">
                 <el-table-column prop="rank" :label="$t('game_info.rank')" width="130" align="center"></el-table-column>
+                <el-table-column prop="team_name" :label="$t('game_info.team_name')" width="auto" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="scores" :label="$t('game_info.scores')" width="150" align="center"></el-table-column>
             </el-table>
         </el-dialog>
