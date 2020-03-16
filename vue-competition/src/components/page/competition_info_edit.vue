@@ -2,7 +2,7 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb>
-                <el-breadcrumb-item :to="{path:`/competition_info?ctype=${$route.query.ctype}`, query:pushTable()}"><i class="el-icon-info"></i>
+                <el-breadcrumb-item :to="{path:`/competition_info?ctype=${$route.query.ctype}`, query:pushTable()}"><i class="el-icon-warning-outline"></i>
                     <span v-if="$route.query.ctype=='league'"> {{$t('menus.competition_league_info')}}</span>
                     <span v-else> {{$t('menus.competition_advance_info')}}</span>
                 </el-breadcrumb-item>
@@ -155,20 +155,19 @@
                             <div class="link-area">
                                 <el-form-item :label="$t('menus.league_teams')">
                                     <el-button type="success" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
-                                    :disabled="form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
+                                    :disabled="is_admin?!is_admin:form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_teams_matches')">
                                     <el-button type="warning" round plain size="medium" class="status-btn" @click="matchVisible=true" 
-                                    :disabled="form.match_disabled==1||!this.update_info_auth">{{$t('menus.league_teams_matches')}}</el-button>
+                                    :disabled="is_admin?!is_admin:form.match_disabled==1||!this.update_info_auth">{{$t('menus.league_teams_matches')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_live_channel')">
                                     <el-button type="warning" round plain size="medium" class="status-btn" @click="channelVisible=true" 
-                                    :disabled="form.channel_disabled==1||!this.update_info_auth">{{$t('menus.league_live_channel')}}</el-button>
+                                    :disabled="is_admin?!is_admin:form.channel_disabled==1||!this.update_info_auth">{{$t('menus.league_live_channel')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_standing')">
-                                    <!-- <el-button type="danger" round plain size="medium" class="status-btn" @click="standingVisible=true" 
-                                    :disabled="form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button> -->
-                                    <el-button type="danger" round plain size="medium" class="status-btn" @click="standingVisible=true">{{$t('menus.league_standing')}}</el-button>
+                                    <el-button type="danger" round plain size="medium" class="status-btn" @click="standingVisible=true" 
+                                    :disabled="is_admin?!is_admin:form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button>
                                 </el-form-item>
                             </div>
                         </el-card>
@@ -177,9 +176,9 @@
             </el-form>
         </div>
         <teamsMatches v-if="matchVisible" :visible="matchVisible" :game_id="form.game_id" :game_time="form.game_time" 
-        @closeDialog="matchVisible=false" @goToChannel="matchVisible=false,channelVisible=true"></teamsMatches>
+        @closeDialog="matchVisible=false" @goToChannel="channelVisible=true,matchVisible=false"></teamsMatches>
         <liveChannels v-if="channelVisible" :visible="channelVisible" :game_id="form.game_id" :game_time="form.game_time"
-        @closeDialog="channelVisible=false" @goToMatch="channelVisible=false,matchVisible=true"></liveChannels>
+        @closeDialog="channelVisible=false" @goToMatch="matchVisible=true,channelVisible=false"></liveChannels>
         <leagueStanding v-if="standingVisible" :visible="standingVisible" :game_id="form.game_id" @closeDialog="standingVisible=false"></leagueStanding>
         <el-backtop target=".content" :visibility-height="0" :bottom="40" :right="10">
             <div style="{height:100%; width:100%; box-shadow:0 0 6px rgba(0,0,0, .12); border-radius:50%; text-align:center; font-size:15px; font-weight:bold; line-height:40px; color:#000000;}">TOP</div>
@@ -200,6 +199,7 @@ export default {
     },
     data(){
         return{
+            is_admin:localStorage.getItem("ms_is_admin")=='true'?true:false,
             matchVisible:false,
             channelVisible:false,
             standingVisible:false,

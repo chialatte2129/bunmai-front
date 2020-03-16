@@ -33,12 +33,20 @@
         "title": "menus.league_teams"
     },
     {
+        "index": "league_teams_info",
+        "title": "menus.league_teams_info"
+    },
+    {
         "index": "league_teams_edit",
         "title": "menus.league_teams_edit"
     },
     {
         "index": "league_players",
         "title": "menus.league_players"
+    },
+    {
+        "index": "league_players_info",
+        "title": "menus.league_players_info"
     },
     {
         "index": "competition_info_edit",
@@ -65,12 +73,20 @@
         "title": "menus.league_teams_matches"
     },
     {
+        "index": "league_matches_info",
+        "title": "menus.league_matches_info"
+    },
+    {
         "index": "league_live_channel",
         "title": "menus.league_live_channel"
     },
     {
         "index": "league_standing",
         "title": "menus.league_standing"
+    },
+    {
+        "index": "league_standing_info",
+        "title": "menus.league_standing_info"
     }
 
 

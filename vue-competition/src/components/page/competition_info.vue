@@ -2,7 +2,7 @@
     <div class="temp">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-info"></i>
+                <el-breadcrumb-item><i class="el-icon-warning-outline"></i>
                     <span v-if="$route.query.ctype=='league'"> {{$t('menus.competition_league_info')}}</span>
                     <span v-else> {{$t('menus.competition_advance_info')}}</span>
                 </el-breadcrumb-item>

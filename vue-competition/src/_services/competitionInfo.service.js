@@ -6,6 +6,7 @@ export const infoService = {
 	delete_competition_info,
 	get_single_competition_info,
 	update_competition_info,
+	get_all_competition_info,
 }
 
 function get_info_option(option_keys){
@@ -60,4 +61,15 @@ function update_competition_info(type, data){
 			}
 		)
 	})	
+}
+
+function get_all_competition_info(type){
+    var param = {"ctype":type}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/get_all_competition_info', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})		
 }

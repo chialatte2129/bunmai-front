@@ -83,13 +83,31 @@ export default new Router({
                     path: '/league_detail_setting',
                     component: resolve => require(['../components/page/league_detail_setting.vue'], resolve),
                     meta: { title:  'menus.league_detail_setting' }
-                },  
+                },
+                {
+                    path: '/league_teams_info',
+                    name: 'league_teams_info',
+                    component: resolve => require(['../components/page/league_teams_info.vue'], resolve),
+                    meta: { title:  'menus.league_teams_info' }
+                }, 
+                {
+                    path: '/league_players_info',
+                    name: 'league_players_info',
+                    component: resolve => require(['../components/page/league_players_info.vue'], resolve),
+                    meta: { title:  'menus.league_players_info' }
+                }, 
                 {
                     path: '/league_teams_matches',
                     name: 'league_teams_matches',
                     component: resolve => require(['../components/page/league_teams_matches.vue'], resolve),
                     meta: { title:  'menus.league_teams_matches' }
-                },  
+                },
+                {
+                    path: '/league_matches_info',
+                    name: 'league_matches_info',
+                    component: resolve => require(['../components/page/league_matches_info.vue'], resolve),
+                    meta: { title:  'menus.league_matches_info' }
+                },
                 {
                     path: '/league_live_channel',
                     name: 'league_live_channel',
@@ -101,6 +119,12 @@ export default new Router({
                     name: 'league_standing',
                     component: resolve => require(['../components/page/league_standing.vue'], resolve),
                     meta: { title:  'menus.league_standing' }
+                }, 
+                {
+                    path: '/league_standing_info',
+                    name: 'league_standing_info',
+                    component: resolve => require(['../components/page/league_standing_info.vue'], resolve),
+                    meta: { title:  'menus.league_standing_info' }
                 },
                 {
                     path: '/register_verify',

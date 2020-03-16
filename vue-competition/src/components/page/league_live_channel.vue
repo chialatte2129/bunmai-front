@@ -362,7 +362,7 @@ export default {
                     var action = (this.createVisible)?"create":"update";
                     var channels = [];
                     for(var i=0;i<this.form.channels.length;i++){
-                        channels.push(this.form.channels[i].value);
+                        if(this.form.channels[i].value!=""||this.form.channels[i].value!=null){ channels.push(this.form.channels[i].value) }
                     }
                     this.form.channels = channels;
                     leagueService.update_league_channel_list(action, this.form)
