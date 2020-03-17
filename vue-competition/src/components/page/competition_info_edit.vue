@@ -154,19 +154,19 @@
                             </div>
                             <div class="link-area">
                                 <el-form-item :label="$t('menus.league_teams')">
-                                    <el-button type="success" round plain size="medium" class="status-btn" @click="leaguePush('league_teams', form.game_id)" 
+                                    <el-button type="success" round plain size="medium" class="link-btn" @click="leaguePush('league_teams', form.game_id)" 
                                     :disabled="is_admin?!is_admin:form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_teams_matches')">
-                                    <el-button type="warning" round plain size="medium" class="status-btn" @click="matchVisible=true" 
+                                    <el-button type="warning" round plain size="medium" class="link-btn" @click="matchVisible=true" 
                                     :disabled="is_admin?!is_admin:form.match_disabled==1||!this.update_info_auth">{{$t('menus.league_teams_matches')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_live_channel')">
-                                    <el-button type="warning" round plain size="medium" class="status-btn" @click="channelVisible=true" 
+                                    <el-button type="warning" round plain size="medium" class="link-btn" @click="channelVisible=true" 
                                     :disabled="is_admin?!is_admin:form.channel_disabled==1||!this.update_info_auth">{{$t('menus.league_live_channel')}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('menus.league_standing')">
-                                    <el-button type="danger" round plain size="medium" class="status-btn" @click="standingVisible=true" 
+                                    <el-button type="danger" round plain size="medium" class="link-btn" @click="standingVisible=true" 
                                     :disabled="is_admin?!is_admin:form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button>
                                 </el-form-item>
                             </div>
@@ -436,6 +436,10 @@ export default {
     margin-right:10px;
 }
 .status-btn{
+    margin-left:30px;
+    cursor:default;
+}
+.link-btn{
     margin-left:30px;
 }
 .pdr10{
