@@ -12,7 +12,7 @@
                             <el-row>
                                 <el-col :span="7">
                                     <el-form-item :label="$t('game_info.live_date')" prop="game_date">
-                                        <el-select v-model="form.game_date" :placeholder="$t('game_info.game_date')" class="handle-input mr10" clearable filterable @change="filter.start_time='', handleTeamSelect()">
+                                        <el-select v-model="form.game_date" :placeholder="$t('game_info.game_date')" class="handle-input mr10" clearable filterable @change="form.team_id='', handleTeamSelect()">
                                             <el-option v-for="item in dates" :key="item.game_date" :label="item.game_date" :value="item.game_date"></el-option>  
                                         </el-select>
                                     </el-form-item>
@@ -96,13 +96,13 @@
                 <el-table-column :label="$t('btn.action')" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button v-if="scope.row.edit" type="primary" size="small" circle icon="el-icon-check" @click="handleCheck(scope.$index, scope.row)" style="padding:5px;"
-                        :disabled="(!update_info_auth||scope.row.btn_disabled==1)&&(!is_admin)"></el-button>
+                        :disabled="(!update_info_auth)&&(!is_admin)"></el-button>
                         <el-button v-else type="warning" size="mini" circle icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit,handleEdit(scope.$index, scope.row)" style="padding:5px;"
-                        :disabled="((!delete_info_auth||scope.row.btn_disabled==1)&&(!is_admin))||updateVisible"></el-button>
+                        :disabled="((!delete_info_auth)&&(!is_admin))||updateVisible"></el-button>
                         <el-button v-if="scope.row.edit==0" type="danger" size="mini" circle icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" style="padding:5px;"
-                        :disabled="((!delete_info_auth||scope.row.btn_disabled==1)&&(!is_admin))||updateVisible"></el-button>
+                        :disabled="((!delete_info_auth)&&(!is_admin))||updateVisible"></el-button>
                         <el-button v-else type="info" size="mini" circle icon="el-icon-close" @click="scope.row.edit=!scope.row.edit,handleCancelEdit(scope.$index, scope.row)" style="padding:5px;"
-                        :disabled="((!delete_info_auth||scope.row.btn_disabled==1)&&(!is_admin))||!updateVisible"></el-button>
+                        :disabled="((!delete_info_auth)&&(!is_admin))||!updateVisible"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
