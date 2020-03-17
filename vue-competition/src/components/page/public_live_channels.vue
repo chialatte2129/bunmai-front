@@ -27,7 +27,7 @@
                     <div class="Num_font" style="position:relative;width:100%;height:100%;top:0;left:0;">
                         <div style="margin-bottom:1vmin;font-size:4vmin">
                             <span style="margin-left:15%;">{{row.year}} / {{row.month}} / {{row.day}}</span>
-                            <span style="margin-left:5vmin;width:100%;">{{row.start_time}}</span>
+                            <!-- <span style="margin-left:5vmin;width:100%;">{{row.start_time}}</span> -->
                         </div>
                         <div v-for='(row_team, index_team) in row.game_channels' class="channel_row" style="font-size:3vmin;">
                             <div style="position:absolute;width:100%;height:100%;top:0;left:0;">

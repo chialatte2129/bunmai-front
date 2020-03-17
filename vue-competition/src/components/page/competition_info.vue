@@ -22,9 +22,6 @@
                         <el-option v-for="item in group.options" :key="item.value" :label="show_label(item)" :value="item.value" :disabled="item.value==''"></el-option>
                     </el-option-group>
                 </el-select>
-                <!-- <el-select v-model="filter.publish" :placeholder="$t('game_info.publish_status')" clearable filterable @change="search" class="handle-select-basic mr10">
-                    <el-option v-for="item in options.publish" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
-                </el-select> -->
                 <el-select v-model="filter.game" :placeholder="$t('game_info.filter_game')" clearable filterable @change="search" class="handle-select-basic mr10">
                     <el-option v-for="item in options.game" :key="item.value" :label="show_label(item)" :value="item.value"></el-option>  
                 </el-select>
@@ -55,9 +52,6 @@
                 <el-table-column :label="$t('btn.action')" width="165" align="center">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" style="padding:5px 10px;" :disabled="!view_info_auth">{{$t('btn.edit')}}</el-button>
-                        <!-- <el-button type="warning" circle size="mini" icon="el-icon-paperclip" v-if="scope.row.status=='Draft'" @click="" :disabled="!update_info_auth"></el-button>
-                        <el-button type="success" circle size="mini" icon="el-icon-video-play" v-else-if="scope.row.status=='Published'" @click="" :disabled="!update_info_auth"></el-button>
-                        <el-button circle size="mini" icon="el-icon-video-pause" v-else :disabled="true"></el-button> -->
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" style="padding:5px 10px;"
                         :disabled="(!delete_info_auth||scope.row.del_disabled==1)&&(!is_admin)">{{$t('btn.delete')}}</el-button>
                     </template>
@@ -110,7 +104,6 @@ export default {
             totalRow:0,
             delID:null,
             delVisible:false,
-            // publish_status:"Draft",
             table_loading:false,
             game_type:"",
             options:{
@@ -120,7 +113,6 @@ export default {
                 game:[],
                 scheduled_step:[],
                 match:[],
-                // publish:[],
             },
             is_admin:localStorage.getItem("ms_is_admin")=='true'?true:false,
             filter:{
@@ -130,7 +122,6 @@ export default {
                 game:"",
                 match:"",
                 name:"",
-                // publish:"",
             }
         }
     },
