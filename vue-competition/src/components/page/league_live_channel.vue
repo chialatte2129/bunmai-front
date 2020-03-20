@@ -87,7 +87,7 @@
                         </span>
                         <span v-else>
                             <span v-for='(row,index) in scope.row.channels'>
-                                <el-button size="mini" plain type="primary" @click="openTag(row)" style="padding:4px;margin:2px 5px 2px 0;">{{row}}</el-button>
+                                <el-button size="mini" plain type="primary" @click="openTag(row)" style="padding:4px;margin:2px 5px 2px 0;" v-if="row!=''">{{row}}</el-button>
                             </span>
                         </span>
                     </template>
@@ -186,7 +186,7 @@ export default {
                 game_date:  [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
                 start_time: [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
                 team_id:    [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
-                channels:   [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
+                // channels:   [{required: true, message: this.$i18n.t("common_msg.must_fill"), trigger: "blur"}],
             }
         }
     },
@@ -248,10 +248,10 @@ export default {
         },
 
         checkFormChannels(){
-            if((this.form.channels[this.form.channels.length-1].value=="")){
-                this.$message.warning(this.$i18n.t("game_info.live_channel")+" "+this.$i18n.t("common_msg.must_fill"));
-                return false
-            }
+            // if((this.form.channels[this.form.channels.length-1].value=="")){
+            //     this.$message.warning(this.$i18n.t("game_info.live_channel")+" "+this.$i18n.t("common_msg.must_fill"));
+            //     return false
+            // }
             return true
         },
 
@@ -387,9 +387,11 @@ export default {
         handleCheck(index, row){            
             if(row.start_time==""||row.start_time==null){
                 this.$message.warning(this.$i18n.t("game_info.start_time")+" "+this.$i18n.t("common_msg.must_fill"));
-            }else if(row.channels[row.channels.length-1].value==""){
-                this.$message.warning(this.$i18n.t("game_info.live_channel")+" "+this.$i18n.t("common_msg.must_fill"));
-            }else{
+            }
+            // else if(row.channels[row.channels.length-1].value==""){
+            //     this.$message.warning(this.$i18n.t("game_info.live_channel")+" "+this.$i18n.t("common_msg.must_fill"));
+            // }
+            else{
                 this.handleUpload();
             }
         },

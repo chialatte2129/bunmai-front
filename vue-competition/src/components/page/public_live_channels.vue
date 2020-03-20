@@ -40,7 +40,8 @@
                                 </div>
                                 <div style="float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:left;">
                                     <span v-for='(row_ch, index_ch) in row_team.channels'>
-                                        <span :class="'ch_'+index+index_team+index_ch" @click="pushChannels(row_ch)" style="display:flex;align-items:center;justify-content:left;"
+                                        <span :class="'ch_'+index+index_team+index_ch" @click="pushChannels(row_ch)" 
+                                        style="display:flex;align-items:center;justify-content:left;" v-if="row_ch!=''"
                                         @mouseenter="mouseEnter(`${index.toString()}${index_team.toString()}${index_ch.toString()}`)"
                                         @mouseleave="mouseLeave(`${index.toString()}${index_team.toString()}${index_ch.toString()}`)">
                                             <img class="channel-img" width="95vmin;" :src="channel_img(index_ch+1)">
