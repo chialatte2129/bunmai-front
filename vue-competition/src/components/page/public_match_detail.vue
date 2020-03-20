@@ -129,68 +129,9 @@ export default {
 
     data(){
         return{
-            // details:[],
-            // hr_check:null,
+            details:[],
+            hr_check:null,
             // angle:null,
-            hr_check:2,
-            details:[
-                {
-                    "year":"2020",
-                    "month":"03",
-                    "day":"16",
-                    "start_time":"14:30",
-                    "home":{
-                        "win":1,
-                        "gate_hp":"96.80%",
-                        "team_name":"Queen Guards",
-                        "records":[
-                            {"nickname":"init函數","kills":6,"headshots":5,"death":4,"gate":0,"mvp":0},
-                            {"nickname":"冰與火之歌","kills":12,"headshots":10,"death":3,"gate":1.2,"mvp":1},
-                            {"nickname":"上官中二","kills":2,"headshots":2,"death":2,"gate":0.3,"mvp":0},
-                            {"nickname":"R9487","kills":5,"headshots":1,"death":7,"gate":0.8,"mvp":0},
-                        ]
-                    },
-                    "away":{
-                        "win":0,
-                        "gate_hp":"36.50%",
-                        "team_name":"Baaaaad Boys",
-                        "records":[
-                            {"nickname":"wwwwwwwwwww","kills":2,"headshots":5,"death":6,"gate":0,"mvp":0},
-                            {"nickname":"帥帥的路人甲","kills":7,"headshots":3,"death":9,"gate":0,"mvp":0},
-                            {"nickname":"一天轉大人","kills":2,"headshots":2,"death":2,"gate":0,"mvp":0},
-                            {"nickname":"戰現實","kills":4,"headshots":1,"death":9,"gate":0.8,"mvp":0},
-                        ]
-                    }
-                },
-                {
-                    "year":"2020",
-                    "month":"03",
-                    "day":"16",
-                    "start_time":"14:43",
-                    "home":{
-                        "win":0,
-                        "gate_hp":"60.20%",
-                        "team_name":"女王戰隊",
-                        "records":[
-                            {"nickname":"init函數","kills":6,"headshots":5,"death":4,"gate":0,"mvp":0},
-                            {"nickname":"冰與火之歌","kills":5,"headshots":1,"death":4,"gate":0,"mvp":0},
-                            {"nickname":"上官中二","kills":2,"headshots":2,"death":2,"gate":0.3,"mvp":0},
-                            {"nickname":"R9487","kills":5,"headshots":1,"death":7,"gate":0.2,"mvp":0},
-                        ]
-                    },
-                    "away":{
-                        "win":1,
-                        "gate_hp":"88.30%",
-                        "team_name":"壞小子",
-                        "records":[
-                            {"nickname":"wwwwwwwwwww","kills":2,"headshots":5,"death":6,"gate":0,"mvp":0},
-                            {"nickname":"帥帥的路人甲","kills":11,"headshots":7,"death":4,"gate":1.2,"mvp":1},
-                            {"nickname":"一天轉大人","kills":2,"headshots":2,"death":2,"gate":0,"mvp":0},
-                            {"nickname":"戰現實","kills":4,"headshots":1,"death":9,"gate":0.8,"mvp":0},
-                        ]
-                    }
-                },
-            ]
         }
     },
 
@@ -283,12 +224,12 @@ export default {
 
         getData(){
             this.$i18n.locale = this.$route.params.lang;
-            publicService.get_match_game(this.$route.params.competition, this.$route.params.main_team)
-            .then(res => { 
-            //    if(res.code==1){
-            //         this.details=res.details;
-            //         this.hr_check=res.details.length;
-            //     }                
+            publicService.get_detail_match(this.$route.params.competition, this.$route.params.main_team)
+            .then(res => {
+               if(res.code==1){
+                    this.details=res.detail;
+                    this.hr_check=res.detail.length;
+                }                
             });
         }
     }
