@@ -78,7 +78,7 @@
                 </div>
                 <div v-for='(row_rc, index_rc) in row.home.records' :class="firstrow(index_rc)" style="width:100%;margin-left:-3%;margin-top:1.5%;color:white;" class="records-all row-record Num_font">
                     <div class="records-name column_font" style="width:18%;">
-                        <span class="records" v-if="row.home.records[index_rc].mvp==1"><img width="70%" src="image/league/detail/mvp.png"></span>
+                        <span class="records" style="margin-left:-5vmin;" v-if="row.home.records[index_rc].mvp==1"><img width="50%" src="image/league/detail/mvp.png"></span>
                         <span style="width:auto;word-break:break-all;" class="nickname-size" :class="mvpclass(row.home.records[index_rc].mvp)">{{row.home.records[index_rc].nickname}}</span>
                     </div>
                     <div class="records column_font" style="width:1%;"></div>
@@ -95,7 +95,7 @@
                         <span :class="mvpclass(row.home.records[index_rc].mvp)">{{row.home.records[index_rc].gate}}</span>
                     </div>
                     <div class="records-name column_font" style="width:18%;">
-                        <span class="records" v-if="row.away.records[index_rc].mvp==1"><img width="70%" src="image/league/detail/mvp.png"></span>
+                        <span class="records" style="margin-left:-5vmin;" v-if="row.away.records[index_rc].mvp==1"><img width="50%" src="image/league/detail/mvp.png"></span>
                         <span style="width:auto;word-break:break-all;" class="nickname-size" :class="mvpclass(row.away.records[index_rc].mvp)">{{row.away.records[index_rc].nickname}}</span>
                     </div>
                     <div class="records column_font" style="width:1%;"></div>
