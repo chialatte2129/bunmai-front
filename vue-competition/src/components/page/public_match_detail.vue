@@ -9,7 +9,7 @@
         <div class="middle_box">
             <div style="margin-bottom:-3vmin;height:11.5vmin;">
                 <div style="height:100%;position:relative;">
-                    <div style="position:absolute;top:1vmin;z-index:99999;display:flex;align-items:center;justify-content:center;">
+                    <div style="position:absolute;top:1vmin;display:flex;align-items:center;justify-content:center;">
                         <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
                     </div>
                 </div>
@@ -223,13 +223,22 @@ export default {
         },
 
         getData(){
+            const loading = this.$loading({
+                lock:true,
+                spinner:"el-icon-loading",
+                background:"rgba(0, 0, 0, 0.6)",
+                target: document.querySelector('.scrollBar')
+            });
             this.$i18n.locale = this.$route.params.lang;
             publicService.get_detail_match(this.$route.params.competition, this.$route.params.main_team)
             .then(res => {
-               if(res.code==1){
-                    this.details=res.detail;
-                    this.hr_check=res.detail.length;
-                }                
+                    if(res.code==1){
+                        this.details=res.detail;
+                        this.hr_check=res.detail.length;
+                        loading.close();
+                    }else{
+                        console.log(res)
+                    }
             });
         }
     }
