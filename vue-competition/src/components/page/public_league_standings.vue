@@ -7,12 +7,12 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="margin-bottom:-3vmin;height:11.5vmin;">
-                <div style="height:100%;position:relative;">
+            <div style="margin-bottom:-3vmin;height:6vmin;">
+                <!-- <div style="height:100%;position:relative;">
                     <div style="position:absolute;top:1vmin;z-index:99999;display:flex;align-items:center;justify-content:center;">
                         <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;position:relative;">
@@ -51,8 +51,9 @@
                     <div style="float:left;width:11.7%;height:100%;display:flex;align-items:center;justify-content:center;">
                         <span class="Num_font" style="font-size:5vmin;color:white;" v-if='row.rank!=1&&row.rank!=2&&row.rank!=3'>{{row.rank}}</span>
                     </div>
-                    <div style="float:left;width:40%;height:100%;text-align:left;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="float:left;font-size:3.5vmin;color:white;">{{row.team_name}}</span>
+                    <div style="float:left;width:40%;height:100%;text-align:left;display:flex;align-items:center;justify-content:center;"
+                    :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
+                        <span class="column_font" style="float:left;font-size:3.5vmin;color:white;margin-top:-0.5vmin;">{{row.team_name}}</span>
                     </div>
                     <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
                         <span class="column_font" style="font-size:3.5vmin;"></span>

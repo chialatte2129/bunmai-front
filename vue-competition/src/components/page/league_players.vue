@@ -28,7 +28,7 @@
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" style="padding:5px 10px;" :disabled="!view_info_auth">{{$t('btn.edit')}}</el-button>
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" style="padding:5px 10px;"
-                        :disabled="(!delete_info_auth||scope.row.del_disabled==1)&&(!is_admin)">{{$t('btn.delete')}}</el-button>
+                        :disabled="(!delete_info_auth)&&(!is_admin)">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>

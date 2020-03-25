@@ -7,12 +7,12 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="margin-bottom:-3vmin;height:11.5vmin;">
-                <div style="height:100%;position:relative;">
+            <div style="margin-bottom:-3vmin;height:6vmin;">
+                <!-- <div style="height:100%;position:relative;">
                     <div style="position:absolute;top:1vmin;z-index:99999;display:flex;align-items:center;justify-content:center;">
                         <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;position:relative;">
@@ -36,7 +36,7 @@
                                 background-repeat:no-repeat;background-image:url('image/league/channel/date_title.png');background-position:center;"></div>
                                 <div style="float:left;width:4%;height:100%;display:flex;align-items:center;justify-content:center;"> </div>
                                 <div style="float:left;width:32%;height:100%;display:flex;align-items:center;justify-content:left;">
-                                    <div class="column_font" style="font-size:3vmin;color:white;">{{row_team.team_name}}</div>
+                                    <div class="column_font" style="font-size:3vmin;color:white;margin-top:-0.4vmin;">{{row_team.team_name}}</div>
                                 </div>
                                 <div style="float:left;width:40%;height:100%;display:flex;align-items:center;justify-content:left;">
                                     <span v-for='(row_ch, index_ch) in row_team.channels'>
