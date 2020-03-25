@@ -52,7 +52,7 @@
                         <span class="Num_font" style="font-size:5vmin;color:white;" v-if='row.rank!=1&&row.rank!=2&&row.rank!=3'>{{row.rank}}</span>
                     </div>
                     <div style="float:left;width:40%;height:100%;text-align:left;display:flex;align-items:center;justify-content:center;"
-                    :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
+                    :class="`search_team_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index, 'search_team_')" @mouseleave="mouseLeave(index, 'search_team_')">
                         <span class="column_font" style="float:left;font-size:3.5vmin;color:white;margin-top:-0.5vmin;">{{row.team_name}}</span>
                     </div>
                     <div style="float:left;width:10%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -62,8 +62,10 @@
                         <span class="Num_font" style="font-size:3.5vmin;color:white;">{{row.scores}}</span>
                     </div>
                     <div style="float:left;width:13%;height:100%;display:flex;align-items:center;justify-content:center;">
-                        <span class="column_font" style="font-size:3vmin;"><span :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index)" @mouseleave="mouseLeave(index)">
-                            <i class="el-icon-search"></i></span>
+                        <span class="column_font" style="font-size:3vmin;">
+                            <span :class="`search_${index}`" @click="pushDetail(row)" @mouseenter="mouseEnter(index, 'search_')" @mouseleave="mouseLeave(index, 'search_')">
+                                <i class="el-icon-search"></i>
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -137,13 +139,13 @@ export default {
             el.classList.remove("cursor-point");
         },
 
-        mouseEnter(index){
-            var el = document.querySelector(`.search_${index}`);
+        mouseEnter(index, prefix){
+            var el = document.querySelector(`.${prefix}${index}`);
             el.classList.add("cursor-point");
         },
         
-        mouseLeave(index){
-            var el = document.querySelector(`.search_${index}`);
+        mouseLeave(index, prefix){
+            var el = document.querySelector(`.${prefix}${index}`);
             el.classList.remove("cursor-point");
         },
 
