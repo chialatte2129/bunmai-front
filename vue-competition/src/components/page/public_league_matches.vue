@@ -77,7 +77,7 @@
                         <p style="font-size:3vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
                     </div>
                     <div class="column_font text-center" style="color:#E3DB70;" v-else>
-                        <p style="font-size:3vmin;">VS</p>
+                        <p style="font-size:3vmin;margin-top:1.1vmin;">VS</p>
                         <p style="font-size:2vmin;color:#E3DB70;" class="Num_font">{{row.month}} / {{row.day}}</p>
                     </div>
                 </div>
