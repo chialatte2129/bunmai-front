@@ -7,12 +7,12 @@
         :native="false" 
         style="height:102%;">
         <div class="middle_box">
-            <div style="margin-bottom:-3vmin;height:11.5vmin;">
-                <div style="height:100%;position:relative;">
+            <div style="margin-bottom:-3vmin;height:6vmin;">
+                <!-- <div style="height:100%;position:relative;">
                     <div style="position:absolute;top:1vmin;z-index:99999;display:flex;align-items:center;justify-content:center;">
                         <img width="10%" src="image/league/other/return_logo.png" class="return-logo" @click="closeWin" @mouseenter="mouseEnterReturn()" @mouseleave="mouseLeaveReturn()">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div style="margin-bottom:-3vmin;">
                 <div style="height:100%;position:relative;">
@@ -42,13 +42,13 @@
                             <span class="column_font" style="font-size:3vmin;"></span>
                         </div>
                         <div style="position:relative;float:left;width:27%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3vmin;">{{row_rn.home}}</span>
+                            <span class="column_font" style="font-size:3vmin;margin-top:-0.5vmin;">{{row_rn.home}}</span>
                         </div>
                         <div style="position:relative;float:left;width:31%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
                             <span class="column_font" style="font-size:3vmin;"></span>
                         </div>
                         <div style="position:relative;float:left;width:33%;height:100%;text-align:center;display:flex;align-items:center;justify-content:center;">
-                            <span class="column_font" style="font-size:3vmin;">{{row_rn.away}}</span>
+                            <span class="column_font" style="font-size:3vmin;margin-top:-0.5vmin;">{{row_rn.away}}</span>
                         </div>
                     </div>
                 </div>

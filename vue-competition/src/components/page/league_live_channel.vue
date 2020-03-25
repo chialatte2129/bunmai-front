@@ -27,7 +27,7 @@
                                 <el-col :span="6">
                                     <el-form-item :label="$t('game_info.start_time')" prop="start_time">
                                         <el-time-select v-model="form.start_time" :placeholder="$t('game_info.start_time')" clearable filterable class="handle-input-short mr10" :disabled="form.game_date==''"
-                                        :picker-options="{ start:'00:00', step:'00:05', end:'23:55', maxTime:form.end_time}"></el-time-select>
+                                        :picker-options="{ start:'00:00', step:'00:01', end:'23:59', maxTime:form.end_time}"></el-time-select>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
@@ -58,7 +58,7 @@
                 </el-select>
                 <el-time-select v-model="filter.start_time" :placeholder="$t('game_info.start_time')" clearable filterable class="handle-input-short mr10" 
                 :disabled="filter.game_date==''||updateVisible" @change="search"
-                :picker-options="{ start:'00:00', step:'00:05', end:'23:55' }"></el-time-select>
+                :picker-options="{ start:'00:00', step:'00:01', end:'23:59' }"></el-time-select>
                 <el-button type="info" @click="cancelSearch" :disabled="updateVisible"> {{$t('btn.clean')}}</el-button>
                 <el-button type="primary"size="medium" @click="goToMatch" style="float:right;" class="el-icon-back mr10" :disabled="updateVisible"> {{$t('menus.league_teams_matches')}}</el-button>
             </div>
@@ -70,7 +70,7 @@
                     <template slot-scope="scope">
                         <span v-if="scope.row.edit">
                             <el-time-select v-model="form.start_time" :placeholder="$t('game_info.start_time')" clearable class="handle-input-short" size="small"
-                            :picker-options="{ start:'00:00', step:'00:05', end:'23:55' }"></el-time-select>
+                            :picker-options="{ start:'00:00', step:'00:01', end:'23:59' }"></el-time-select>
                         </span>
                         <span v-else>{{scope.row.start_time}}</span>
                     </template>
