@@ -45,11 +45,17 @@
                         </div>
                         <div class="t0l0 wfhf" style="position:absolute;top:-0.7vmin;">
                             <div class="team-win-lose" style="width:47%;">
-                                <div class="text-center"><p class="column_font colfont-team">{{row.home.team_name}}</p><p class="Num_font numfont-team">{{row.home.gate_hp}}</p></div>
+                                <div class="text-center">
+                                    <p class="column_font colfont-team">{{row.home.team_name}}</p>
+                                    <!-- <p class="Num_font numfont-team">{{row.home.gate_hp}}</p> -->
+                                </div>
                             </div>
                             <div class="team-win-lose text-center" style="width:6%;"></div>
                             <div class="team-win-lose text-center" style="width:47%;">
-                                <div class="text-center"><p class="column_font colfont-team">{{row.away.team_name}}</p><p class="Num_font numfont-team">{{row.away.gate_hp}}</p></div>
+                                <div class="text-center">
+                                    <p class="column_font colfont-team">{{row.away.team_name}}</p>
+                                    <!-- <p class="Num_font numfont-team">{{row.away.gate_hp}}</p> -->
+                                </div>
                             </div>
                         </div>
                     </div>
