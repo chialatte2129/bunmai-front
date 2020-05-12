@@ -365,6 +365,12 @@ export const messages = {
                 "headshot":"爆頭",
                 "death":"死亡",
                 "fortress":"據點",
+            },
+            foreign:{
+                link:"外部連結",
+                live_channel:"聯賽直播頻道",
+                match_map:"聯賽對陣圖",
+                standing:"聯賽排行榜",
             }
         },
     },
@@ -726,6 +732,12 @@ export const messages = {
                 "headshot":"Headshot",
                 "death":"Death",
                 "fortress":"Fortress",
+            },
+            foreign:{
+                link:"Foreign Link",
+                live_channel:"Live Channels",
+                match_map:"Match Map",
+                standing:"League Standing",
             }
         },
     },

@@ -145,7 +145,7 @@
                             <div slot="header" class="clearfix">
                                 <span>{{$t('game_info.setting_link')}}</span>
                             </div>
-                            <div class="link-area">
+                            <div class="settin-area">
                                 <el-form-item :label="$t('menus.league_teams')">
                                     <el-button type="success" round plain size="medium" class="link-btn" @click="leaguePush('league_teams', form.game_id)" 
                                     :disabled="is_admin?!is_admin:form.team_disabled==1||!this.update_info_auth">{{$t('menus.league_teams')}}</el-button>
@@ -161,6 +161,22 @@
                                 <el-form-item :label="$t('menus.league_standing')">
                                     <el-button type="danger" round plain size="medium" class="link-btn" @click="standingVisible=true" 
                                     :disabled="is_admin?!is_admin:form.standing_disabled==1||!this.update_info_auth">{{$t('menus.league_standing')}}</el-button>
+                                </el-form-item>
+                            </div>
+                        </el-card>
+                        <el-card shadow="hover" style="min-height:249px;height:auto;" class="mb10" v-if="$route.query.ctype=='league'&&$route.query.game_id">
+                            <div slot="header" class="clearfix">
+                                <span>{{$t('game_info.foreign.link')}}</span>
+                            </div>
+                            <div class="link-area">
+                                <el-form-item :label="$t('game_info.foreign.match_map')">
+                                    <el-button type="info" circle plain size="mini" class="link-btn el-icon-c-scale-to-original" @click="publicPush('league_matches', form.game_id)"></el-button>
+                                </el-form-item>
+                                <el-form-item :label="$t('game_info.foreign.live_channel')">
+                                    <el-button type="info" circle plain size="mini" class="link-btn el-icon-video-play" @click="publicPush('league_live_channels', form.game_id)"></el-button>
+                                </el-form-item>
+                                <el-form-item :label="$t('game_info.foreign.standing')">
+                                    <el-button type="info" circle plain size="mini" class="link-btn el-icon-s-operation" @click="publicPush('league_standings', form.game_id)"></el-button>
                                 </el-form-item>
                             </div>
                         </el-card>
@@ -199,6 +215,7 @@ export default {
             check_start_time:null,
             check_end_time:null,
             resetDisableTimeKey:0,
+            public_host:process.env.VUE_APP_HOST+"public/",
             form:{
                 game_id:"",
                 name:"",
@@ -303,6 +320,11 @@ export default {
         leaguePush(page, game_id){
             let to_where = this.$router.resolve({name:page, query: {game_id: game_id, table_type:"single"}});
             window.open(to_where.href, '_blank');
+        },
+
+        publicPush(page, game_id){
+            let to_where = this.public_host+page+"/"+game_id+"/"+localStorage.getItem("ms_user_lang");
+            window.open(to_where, '_blank');
         },
 
         maxplayesChange(){

@@ -49,11 +49,19 @@
                 <el-table-column prop="game" :label="$t('game_info.game')" width="120" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="register_time" :label="$t('game_info.register_time')" width="300" sortable="custom" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="game_time" :label="$t('game_info.competition_time')" width="300" sortable="custom" show-overflow-tooltip></el-table-column>
-                <el-table-column :label="$t('btn.action')" width="165" align="center">
+                <el-table-column :label="$t('btn.action')" width="205" align="center">
                     <template slot-scope="scope">
-                        <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" style="padding:5px 10px;" :disabled="!view_info_auth">{{$t('btn.edit')}}</el-button>
-                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" style="padding:5px 10px;"
-                        :disabled="(!delete_info_auth||scope.row.del_disabled==1)&&(!is_admin)">{{$t('btn.delete')}}</el-button>
+                        <el-button type="warning" size="mini" circle icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="!view_info_auth"></el-button>
+                        <el-button type="danger" size="mini" circle icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" :disabled="(!delete_info_auth||scope.row.del_disabled==1)&&(!is_admin)"></el-button>
+                        <el-tooltip class="item" effect="light" :content="$t('game_info.foreign.match_map')" placement="top">
+                            <el-button type="info" size="mini" circle plain icon="el-icon-c-scale-to-original" @click="publicPush('league_matches', scope.row.game_id)"></el-button>
+                        </el-tooltip>
+                        <el-tooltip class="item" effect="light" :content="$t('game_info.foreign.live_channel')" placement="top">
+                            <el-button type="info" size="mini" circle plain icon="el-icon-video-play" @click="publicPush('league_live_channels', scope.row.game_id)"></el-button>
+                        </el-tooltip>
+                        <el-tooltip class="item" effect="light" :content="$t('game_info.foreign.standing')" placement="top">
+                            <el-button type="info" size="mini" circle plain icon="el-icon-s-operation" @click="publicPush('league_standings', scope.row.game_id)"></el-button>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
@@ -105,6 +113,7 @@ export default {
             delID:null,
             delVisible:false,
             table_loading:false,
+            public_host:process.env.VUE_APP_HOST+"public/",
             game_type:"",
             options:{
                 country:[],
@@ -156,6 +165,11 @@ export default {
         this.getData();
     },
     methods:{
+        publicPush(page, game_id){
+            let to_where = this.public_host+page+"/"+game_id+"/"+localStorage.getItem("ms_user_lang");
+            window.open(to_where, '_blank');
+        },
+
         redirect(){
             var menus = localStorage.getItem("ms_user_menus")
             var path_to = menus.substring(0, menus.search(","))
