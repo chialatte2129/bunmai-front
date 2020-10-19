@@ -5,4 +5,5 @@ export {dictService} from './dictionary.service'
 export {infoService} from './competitionInfo.service'
 export {leagueService} from './league.service'
 export {publicService} from './league.public.service'
+export {eventService} from './event.service'
 

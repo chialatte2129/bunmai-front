@@ -11,6 +11,16 @@ export default new Router({
             meta: { title: '自述文件' },
         },
         {
+            path: '/public/event/box_taipei/match',
+            component: () => import('../components/event/box_taipei_20201025/match'),
+            meta: { title: 'Box Taipei 20201025 Match' }
+        },
+        {
+            path: '/public/event/box_taipei/score',
+            component: () => import('../components/event/box_taipei_20201025/score'),
+            meta: { title: 'Box Taipei 20201025 Score' }
+        },
+        {
             path: '/public/league_matches/:competition/:lang',
             component: resolve => require(['../components/page/public_league_matches.vue'], resolve),
             meta: { title: 'League Match' }
