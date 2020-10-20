@@ -11,13 +11,13 @@ export default new Router({
             meta: { title: '自述文件' },
         },
         {
-            path: '/public/event/box_taipei/match',
-            component: () => import('../components/event/box_taipei_20201025/match'),
+            path: '/public/event/box_taipei/match/:match_id',
+            component: () => import('../components/page/event/box_taipei_20201025/show/match'),
             meta: { title: 'Box Taipei 20201025 Match' }
         },
         {
-            path: '/public/event/box_taipei/score',
-            component: () => import('../components/event/box_taipei_20201025/score'),
+            path: '/public/event/box_taipei/score/:match_id',
+            component: () => import('../components/page/event/box_taipei_20201025/show/score'),
             meta: { title: 'Box Taipei 20201025 Score' }
         },
         {
@@ -69,6 +69,16 @@ export default new Router({
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[
+                {
+                    path: '/dt_setting',
+                    component: () => import('../components/page/event/box_taipei_20201025/back/DT_setting'),
+                    meta: { title: 'Box Taipei 20201025 DoubleTap Setting' }
+                },
+                {
+                    path: '/ok_setting',
+                    component: () => import('../components/page/event/box_taipei_20201025/back/OK_setting'),
+                    meta: { title: 'Box Taipei 20201025 OverKill  Setting' }
+                },
                 {
                     path: '/competition_info',
                     component: resolve => require(['../components/page/competition_info.vue'], resolve),

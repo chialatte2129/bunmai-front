@@ -65,7 +65,7 @@ export default {
     data(){
         return{
             table:{
-                status:"",
+                status:"N",
                 name:"",
                 center:{
                     top:{name:"", score:[]},
@@ -93,7 +93,10 @@ export default {
 
     methods:{
         getData(){
-
+            console.log(this.$route.params.match_id)
+            if(this.$route.params.match_id){
+                
+            }
         },
 
         show_table_name(){

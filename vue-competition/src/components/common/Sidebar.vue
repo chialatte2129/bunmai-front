@@ -139,6 +139,29 @@ export default {
                         },
                     ]
                 },
+                {
+                    icon: "el-icon-trophy-1",
+                    index: "event_box_taipei_20201025",
+                    title: this.$t("menus.event_box_taipei_20201025"),
+                    show: this.includeSubMenu([
+                        "DT_setting",
+                        "OK_setting",
+                    ]),
+                    subs: [
+                        {
+                            icon: "el-icon-aim",
+                            index: "DT_setting",
+                            title: this.$t("menus.DT_setting"),
+                            show: this.hasThisMenu("DT_setting")
+                        },
+                        {
+                            icon: "el-icon-s-flag",
+                            index: "OK_setting",
+                            title: this.$t("menus.OK_setting"),
+                            show: this.hasThisMenu("OK_setting")
+                        },
+                    ],
+                },
                 
                 // Authority management
                 {

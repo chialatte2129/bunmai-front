@@ -74,36 +74,36 @@ export default {
     data(){
         return{
             table:{
-                g1_1:{id:"", name:"", is_win:"", process:"D"},
-                g1_2:{id:"", name:"", is_win:"", process:"D"},
-                g2_1:{id:"", name:"", is_win:"", process:"D"},
-                g2_2:{id:"", name:"", is_win:"", process:"D"},
-                g3_1:{id:"", name:"", is_win:"", process:"D"},
-                g3_2:{id:"", name:"", is_win:"", process:"D"},
-                g4_1:{id:"", name:"", is_win:"", process:"D"},
-                g4_2:{id:"", name:"", is_win:"", process:"D"},
-                g5_1:{id:"", name:"", is_win:"", process:"D"},
-                g5_2:{id:"", name:"", is_win:"", process:"D"},
-                g6_1:{id:"", name:"", is_win:"", process:"D"},
-                g6_2:{id:"", name:"", is_win:"", process:"D"},
-                g7_1:{id:"", name:"", is_win:"", process:"D"},
-                g7_2:{id:"", name:"", is_win:"", process:"D"},
-                g8_1:{id:"", name:"", is_win:"", process:"D"},
-                g8_2:{id:"", name:"", is_win:"", process:"D"},
-                g9_1:{id:"", name:"", is_win:"", process:"D"},
-                g9_2:{id:"", name:"", is_win:"", process:"D"},
-                g10_1:{id:"", name:"", is_win:"", process:"D"},
-                g10_2:{id:"", name:"", is_win:"", process:"D"},
-                g11_1:{id:"", name:"", is_win:"", process:"D"},
-                g11_2:{id:"", name:"", is_win:"", process:"D"},
-                g12_1:{id:"", name:"", is_win:"", process:"D"},
-                g12_2:{id:"", name:"", is_win:"", process:"D"},
-                g13_1:{id:"", name:"", is_win:"", process:"D"},
-                g13_2:{id:"", name:"", is_win:"", process:"D"},
-                g14_1:{id:"", name:"", is_win:"", process:"D"},
-                g14_2:{id:"", name:"", is_win:"", process:"D"},
-                g15_1:{id:"", name:"", is_win:"", process:"D"},
-                g15_2:{id:"", name:"", is_win:"", process:"D"},
+                g1_1:{id:"", name:"", is_win:false, process:"D"},
+                g1_2:{id:"", name:"", is_win:false, process:"D"},
+                g2_1:{id:"", name:"", is_win:false, process:"D"},
+                g2_2:{id:"", name:"", is_win:false, process:"D"},
+                g3_1:{id:"", name:"", is_win:false, process:"D"},
+                g3_2:{id:"", name:"", is_win:false, process:"D"},
+                g4_1:{id:"", name:"", is_win:false, process:"D"},
+                g4_2:{id:"", name:"", is_win:false, process:"D"},
+                g5_1:{id:"", name:"", is_win:false, process:"D"},
+                g5_2:{id:"", name:"", is_win:false, process:"D"},
+                g6_1:{id:"", name:"", is_win:false, process:"D"},
+                g6_2:{id:"", name:"", is_win:false, process:"D"},
+                g7_1:{id:"", name:"", is_win:false, process:"D"},
+                g7_2:{id:"", name:"", is_win:false, process:"D"},
+                g8_1:{id:"", name:"", is_win:false, process:"D"},
+                g8_2:{id:"", name:"", is_win:false, process:"D"},
+                g9_1:{id:"", name:"", is_win:false, process:"D"},
+                g9_2:{id:"", name:"", is_win:false, process:"D"},
+                g10_1:{id:"", name:"", is_win:false, process:"D"},
+                g10_2:{id:"", name:"", is_win:false, process:"D"},
+                g11_1:{id:"", name:"", is_win:false, process:"D"},
+                g11_2:{id:"", name:"", is_win:false, process:"D"},
+                g12_1:{id:"", name:"", is_win:false, process:"D"},
+                g12_2:{id:"", name:"", is_win:false, process:"D"},
+                g13_1:{id:"", name:"", is_win:false, process:"D"},
+                g13_2:{id:"", name:"", is_win:false, process:"D"},
+                g14_1:{id:"", name:"", is_win:false, process:"D"},
+                g14_2:{id:"", name:"", is_win:false, process:"D"},
+                g15_1:{id:"", name:"", is_win:false, process:"D"},
+                g15_2:{id:"", name:"", is_win:false, process:"D"},
             },
         }
     },
@@ -118,7 +118,10 @@ export default {
 
     methods:{
         getData(){
-
+            console.log(this.$route.params.match_id)
+            if(this.$route.params.match_id){
+                
+            }
         },
 
         show_name(game){
@@ -150,7 +153,7 @@ export default {
         margin: 0;
         width: 1920px;
         height: 1080px;
-        // background: url("board/bg.jpg") no-repeat top center;
+        background: url("board/bg.jpg") no-repeat top center;
         background-size: contain;
         background-position: center;
         display: block;

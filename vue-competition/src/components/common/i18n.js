@@ -101,6 +101,11 @@ export const messages = {
             league_players_info:"玩家資訊",
             league_matches_info:"場次資訊",
             league_standing_info:"排名資訊",
+
+
+            event_box_taipei_20201025:"Box Taipei 2020 錦標賽",
+            DT_setting:"DoubleTap 設定",
+            OK_setting:"OverKill  設定",
         },
         table_title:{
             role :'角色代號',
@@ -471,6 +476,12 @@ export const messages = {
             league_players_info:"Players Information",
             league_matches_info:"Matches Information",
             league_standing_info:"Standing Information",
+
+
+            
+            event_box_taipei_20201025:"Box Taipei 2020 championship",
+            DT_setting:"DoubleTap Setting",
+            OK_setting:"OverKill  Setting",
         },
         table_title :{
             role :'Role id',

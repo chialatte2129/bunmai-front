@@ -1,5 +1,5 @@
 { 
-    "menus":[   
+    "menus":[
     {
         "index": "user_edit",
         "title": "menus.user_edit"
@@ -87,10 +87,24 @@
     {
         "index": "league_standing_info",
         "title": "menus.league_standing_info"
+    },
+
+
+
+
+
+
+    {
+        "index": "event_box_taipei_20201025",
+        "title": "menus.event_box_taipei_20201025"
+    },
+    {
+        "index": "DT_setting",
+        "title": "menus.DT_setting"
+    },
+    {
+        "index": "OK_setting",
+        "title": "menus.OK_setting"
     }
-
-
-
-    
     ]
 }
