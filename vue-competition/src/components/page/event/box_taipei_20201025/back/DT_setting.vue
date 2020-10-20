@@ -119,14 +119,16 @@
                     </el-form>
                 </div>
             </el-card>
+            <teamManage :match_id="match_id" @change="handleTeamChange"></teamManage>
         </div>
     </div>
 </template>
 <script>
+import teamManage from "./team_manage.vue";
 export default {
     name:"DT_setting",
     components: {
-
+        teamManage
     },
 
     data(){
@@ -214,6 +216,10 @@ export default {
     },
 
     methods:{
+        handleTeamChange(data){
+            console.log(data);
+        },
+
         getBaseOptions(){
             // title
             // teams
