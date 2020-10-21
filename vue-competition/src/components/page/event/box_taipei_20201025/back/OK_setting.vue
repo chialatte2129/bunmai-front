@@ -14,6 +14,7 @@
     </div>
 </template>
 <script>
+import { eventService } from "@/_services";
 export default {
     name:"OK_setting",
     components: {

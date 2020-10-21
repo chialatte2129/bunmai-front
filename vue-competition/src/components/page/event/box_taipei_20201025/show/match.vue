@@ -74,36 +74,7 @@ export default {
     data(){
         return{
             table:{
-                g1_1:{id:"", name:"", is_win:false, process:"D"},
-                g1_2:{id:"", name:"", is_win:false, process:"D"},
-                g2_1:{id:"", name:"", is_win:false, process:"D"},
-                g2_2:{id:"", name:"", is_win:false, process:"D"},
-                g3_1:{id:"", name:"", is_win:false, process:"D"},
-                g3_2:{id:"", name:"", is_win:false, process:"D"},
-                g4_1:{id:"", name:"", is_win:false, process:"D"},
-                g4_2:{id:"", name:"", is_win:false, process:"D"},
-                g5_1:{id:"", name:"", is_win:false, process:"D"},
-                g5_2:{id:"", name:"", is_win:false, process:"D"},
-                g6_1:{id:"", name:"", is_win:false, process:"D"},
-                g6_2:{id:"", name:"", is_win:false, process:"D"},
-                g7_1:{id:"", name:"", is_win:false, process:"D"},
-                g7_2:{id:"", name:"", is_win:false, process:"D"},
-                g8_1:{id:"", name:"", is_win:false, process:"D"},
-                g8_2:{id:"", name:"", is_win:false, process:"D"},
-                g9_1:{id:"", name:"", is_win:false, process:"D"},
-                g9_2:{id:"", name:"", is_win:false, process:"D"},
-                g10_1:{id:"", name:"", is_win:false, process:"D"},
-                g10_2:{id:"", name:"", is_win:false, process:"D"},
-                g11_1:{id:"", name:"", is_win:false, process:"D"},
-                g11_2:{id:"", name:"", is_win:false, process:"D"},
-                g12_1:{id:"", name:"", is_win:false, process:"D"},
-                g12_2:{id:"", name:"", is_win:false, process:"D"},
-                g13_1:{id:"", name:"", is_win:false, process:"D"},
-                g13_2:{id:"", name:"", is_win:false, process:"D"},
-                g14_1:{id:"", name:"", is_win:false, process:"D"},
-                g14_2:{id:"", name:"", is_win:false, process:"D"},
-                g15_1:{id:"", name:"", is_win:false, process:"D"},
-                g15_2:{id:"", name:"", is_win:false, process:"D"},
+                // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "top"},
             },
         }
     },
@@ -117,10 +88,14 @@ export default {
     },
 
     methods:{
-        getData(){
-            console.log(this.$route.params.match_id)
+        async getData(){
             if(this.$route.params.match_id){
-                
+                await eventService.get_match_map({match_id:this.$route.params.match_id}).then(res => {
+                    console.log(res)
+                    if(res.code==1){
+                        this.table = res.match_form;
+                    }
+                })
             }
         },
 

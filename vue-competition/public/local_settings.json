@@ -105,6 +105,10 @@
     {
         "index": "OK_setting",
         "title": "menus.OK_setting"
+    },
+    {
+        "index": "TS_setting",
+        "title": "menus.TS_setting"
     }
     ]
 }

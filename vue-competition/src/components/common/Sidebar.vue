@@ -144,10 +144,17 @@ export default {
                     index: "event_box_taipei_20201025",
                     title: this.$t("menus.event_box_taipei_20201025"),
                     show: this.includeSubMenu([
+                        "TS_setting",
                         "DT_setting",
                         "OK_setting",
                     ]),
                     subs: [
+                        {
+                            icon: "el-icon-loading",
+                            index: "TS_setting",
+                            title: this.$t("menus.TS_setting"),
+                            show: this.hasThisMenu("TS_setting")
+                        },
                         {
                             icon: "el-icon-aim",
                             index: "DT_setting",

@@ -3,18 +3,14 @@
         <el-card shadow="hover" body-style="padding:10px">
             <div slot="header" class="clearfix">
                 <span style="font-size:16px;">隊伍管理</span>
-                <el-button v-if="teamData.length == 0" type="success" size="large" icon="el-icon-plus" class="card-header-r-btn" @click="handleInputTeam"> 新增隊伍</el-button>
+                <el-button v-if="teamData.length==0" type="success" size="large" icon="el-icon-plus" class="card-header-r-btn" @click="handleInputTeam"> 新增隊伍</el-button>
             </div>
-            <div  style="padding:10px;">
-                <el-table 
-                v-if="teamData.length > 0"
-                :data="teamData" 
-                border class="table" 
-                ref="multipleTable">
+            <div style="padding:10px;">
+                <el-table v-if="teamData.length>0" :data="teamData" border class="table" ref="multipleTable" v-loading="table_loading" height="310px">
                     <el-table-column prop="id" label="隊伍ID" align="left" width="100px"></el-table-column>    
                     <el-table-column prop="name" label="隊伍名稱" align="left" width="400px"></el-table-column>  
                     <el-table-column prop="note" label="備註" align="left" width="auto"></el-table-column>  
-                    <el-table-column :label="$t('btn.action')" width="200px" align="center">
+                    <el-table-column :label="$t('btn.action')" width="130px" align="center">
                         <template slot-scope="scope">
                             <el-button type="text" icon="el-icon-edit" size="mini"  @click="handleChangeName(scope.$index, scope.row)">隊伍更名</el-button>
                         </template>
@@ -22,9 +18,9 @@
                 </el-table>
             </div>
         </el-card>
-        <el-dialog title="新增隊伍" :visible.sync="teamInputView" width="50%" center>
+        <el-dialog title="新增隊伍" :visible.sync="teamInputView" width="50%" center :close-on-click-modal="false" class="edit-Dialog">
             <div class="del-dialog-cnt">
-                <div><span style="color:red;">隊伍名稱需以" ; "隔開，隊名不可為空，且必須要有16組隊伍。 例:"team_1;team_2;team_3;team......team_16"</span></div>
+                <div><span style="color:red;">隊伍名稱需以 " ; " 隔開，隊名不可為空，且必須要有16組隊伍。 例:"team_1;team_2;team_3;team......team_16"</span></div>
                 <div style="margin-top:10px;">
                     <el-form>
                         <el-form-item label="">
@@ -42,7 +38,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title=" select_team_id+ ' - 隊伍更名'" :visible.sync="teamRenameView" width="500px" center>
+        <el-dialog :title=" select_team_id+ ' - 隊伍更名'" :visible.sync="teamRenameView" width="500px" center :close-on-click-modal="false" class="edit-Dialog">
             <div style="margin-top:10px;">
                 <el-form label-position="left" label-width="80px">
                     <el-form-item label="原始隊名">
@@ -64,10 +60,9 @@
     </div>
 </template>
 <script>
-import Vue from "vue";
 import { eventService } from "@/_services";
 export default {
-    name:"DT_setting",
+    name:"team_manage",
     components: {
 
     },
@@ -76,6 +71,7 @@ export default {
     },
     data(){
         return {
+            table_loading:false,
             teamData:[],
             teamRenameView:false,
             teamInputView:false,
@@ -105,6 +101,15 @@ export default {
     },
 
     methods:{
+        startLoading(class_name){
+            return this.$loading({
+                lock:true,
+                spinner:"el-icon-loading",
+                background:"rgba(0, 0, 0, 0.6)",
+                target: document.querySelector(class_name)
+            });
+        },
+
         handleInputTeam(){
             this.input_teams="";
             this.teamInputView=true;
@@ -112,19 +117,18 @@ export default {
         cancelInputTeam(){
             this.teamInputView=false;
         },
-        confirmInputTeam(){
-            eventService
-            .create_teams(this.match_id,this.input_teams)
-            .then(res=>{
+        async confirmInputTeam(){
+            const loading = this.startLoading('.edit-Dialog');
+            await eventService.create_teams(this.match_id,this.input_teams).then(res => {
                 if(res.code==1){
                     this.$message.success("success");
                     this.getData();
-                    this.result_change();
                     this.teamInputView=false;
                 }else{
                     this.$message.warning(res.msg);
                 }
-            });            
+            });     
+            loading.close();
         },
 
         handleChangeName(index,row){
@@ -137,39 +141,38 @@ export default {
         cancelChangeName(){
             this.teamRenameView=false;
         },
-        confirmChangeName(){
+        async confirmChangeName(){
             if(this.new_name==""){
                 return this.$message.warning("Team Name cannot empty.");
             }
-            eventService
-            .change_team_name(this.match_id,this.select_team_id,this.new_name,this.team_note)
-            .then(res=>{
+            const loading = this.startLoading('.edit-Dialog');
+            await eventService.change_team_name(this.match_id,this.select_team_id,this.new_name,this.team_note).then( res => {
                 if(res.code==1){
                     this.$message.success("success");
                     this.getData();
-                    this.result_change();
                     this.teamRenameView=false;
                 }else{
                     this.$message.warning(res.msg);
                 }
             });
-            
+            loading.close();
         },
 
-        getData(){
-            console.log(this.match_id);
-            eventService
-            .get_match_teams(this.match_id)
-            .then(res=>{
+        async getData(){
+            this.table_loading=true;
+            await eventService.get_match_teams(this.match_id).then(res => {
                 if(res.code==1){
                     this.teamData = res.data;
+                    this.result_change();
                 }else{
                     this.$message.warning(res.msg);
                 }
             })
+            this.table_loading=false;
         },
+
         result_change(){
-            this.$emit('change',{"status":true})
+            this.$emit("change", this.teamData)
         },
     }
 }
@@ -188,5 +191,8 @@ export default {
         position:relative;
         float:right;
         margin:-10px 10px 0 0;
+    }
+    .table{
+        font-size:14px;
     }
 </style>

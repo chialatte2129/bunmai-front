@@ -70,6 +70,11 @@ export default new Router({
             meta: { title: '自述文件' },
             children:[
                 {
+                    path: '/ts_setting',
+                    component: () => import('../components/page/event/box_taipei_20201025/back/TS_setting'),
+                    meta: { title: 'Box Taipei 20201025 Test Setting' }
+                },
+                {
                     path: '/dt_setting',
                     component: () => import('../components/page/event/box_taipei_20201025/back/DT_setting'),
                     meta: { title: 'Box Taipei 20201025 DoubleTap Setting' }
