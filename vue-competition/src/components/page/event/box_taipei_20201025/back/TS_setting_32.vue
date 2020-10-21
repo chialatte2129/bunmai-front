@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-aim"></i> {{$t("menus.event_box_taipei_20201025")}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t("menus.DT_setting")}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t("menus.TS_setting_32")}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -1013,14 +1013,14 @@
 import teamManage from "./team_manage.vue";
 import { eventService } from "@/_services";
 export default {
-    name:"DT_setting",
+    name:"TS_setting_32",
     components: {
         teamManage
     },
 
     data(){
         return {
-            match_id:"MATCH-DT-2020-10-25",
+            match_id:"MATCH-TS-2020-10-25-32",
             scoreFormKey:0,
             scoreboardKey:0,
             thirtyTwoKey:0,

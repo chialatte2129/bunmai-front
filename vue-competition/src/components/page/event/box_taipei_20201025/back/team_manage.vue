@@ -20,14 +20,14 @@
         </el-card>
         <el-dialog title="新增隊伍" :visible.sync="teamInputView" width="50%" center :close-on-click-modal="false" class="edit-Dialog">
             <div class="del-dialog-cnt">
-                <div><span style="color:red;">隊伍名稱需以 " ; " 隔開，隊名不可為空，且必須要有16組隊伍。 例:"team_1;team_2;team_3;team......team_16"</span></div>
+                <div><span style="color:red;">隊伍名稱需以 " ; " 隔開，隊名不可為空，且必須要有{{max_teams}}組隊伍。 例 : "team_1;team_2;team_3;team......team_{{max_teams}}"</span></div>
                 <div style="margin-top:10px;">
                     <el-form>
                         <el-form-item label="">
                             <el-input type="textarea" :rows="3" v-model="input_teams"></el-input>
                         </el-form-item>
                         <el-form-item label="新增隊伍數">
-                            <span>{{team_count}} / 16</span>
+                            <span>{{team_count}} / {{max_teams}}</span>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -81,6 +81,7 @@ export default {
             old_name:"",
             new_name:"",
             team_note:"",
+            max_teams:null,
         }
     },
     computed: {
@@ -162,6 +163,7 @@ export default {
             this.table_loading=true;
             await eventService.get_match_teams(this.match_id).then(res => {
                 if(res.code==1){
+                    this.max_teams = res.max_teams;
                     this.teamData = res.data;
                     this.result_change();
                 }else{

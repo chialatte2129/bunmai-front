@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-aim"></i> {{$t("menus.event_box_taipei_20201025")}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t("menus.TS_setting")}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t("menus.OK_setting")}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -694,7 +694,7 @@ export default {
         },
 
         async getGroupSetting(){
-            await eventService.get_group_setting({match_id:this.match_id}).then(res => {
+            await eventService.get_group_setting({match_id:this.match_id, round:1}).then(res => {
                 if(res.code==1){
                     this.group_form = res.group_form;
                     this.group_lock = res.group_lock;

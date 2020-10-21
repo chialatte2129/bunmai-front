@@ -533,7 +533,6 @@
             <teamManage :match_id="match_id" @change="handleTeamChange"></teamManage>
         </div>
         <el-dialog ref="dialog" :title="`Group ${editScoreGroup}`" :visible.sync="editScoreView" :before-close="cancelEditScore" :close-on-click-modal="false" :key="scoreFormKey">
-            <!-- :width="`${250+edit_score_rule.match*110}px`" -->
             <div v-loading.lock="dialog_loading">
                 <el-form ref="edit_score_form" :model="{edit_score_form:edit_score_form}" :rules="rules" label-position="right" label-width="auto">
                     <el-table class="table" ref="table" :data="edit_score_form" :cell-style="{padding:'0',height:'28px',fontSize:'8px'}">
@@ -588,14 +587,6 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <!-- <div style="margin:20px 0 0 70px;" v-if="edit_score_form.length>0">
-                        <span style="display:inline-block;">晉級隊伍&emsp;&emsp;&emsp;&emsp;</span>
-                        <span style="display:inline-block;">
-                            <el-checkbox-group v-model="edit_score_win" :max="1">
-                                <el-checkbox v-for="(row, idx) in edit_score_form" :label="row.name" :key="idx" border/>
-                            </el-checkbox-group>
-                        </span>
-                    </div> -->
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="cancelEditScore">{{$t('btn.cancel')}}</el-button>
@@ -694,7 +685,7 @@ export default {
         },
 
         async getGroupSetting(){
-            await eventService.get_group_setting({match_id:this.match_id}).then(res => {
+            await eventService.get_group_setting({match_id:this.match_id, round:1}).then(res => {
                 if(res.code==1){
                     this.group_form = res.group_form;
                     this.group_lock = res.group_lock;

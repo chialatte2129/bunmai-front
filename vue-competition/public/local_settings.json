@@ -109,6 +109,10 @@
     {
         "index": "TS_setting",
         "title": "menus.TS_setting"
+    },
+    {
+        "index": "TS_setting_32",
+        "title": "menus.TS_setting_32"
     }
     ]
 }

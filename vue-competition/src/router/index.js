@@ -72,7 +72,12 @@ export default new Router({
                 {
                     path: '/ts_setting',
                     component: () => import('../components/page/event/box_taipei_20201025/back/TS_setting'),
-                    meta: { title: 'Box Taipei 20201025 Test Setting' }
+                    meta: { title: 'Box Taipei 20201025 [16] Test Setting' }
+                },
+                {
+                    path: '/ts_setting_32',
+                    component: () => import('../components/page/event/box_taipei_20201025/back/TS_setting_32'),
+                    meta: { title: 'Box Taipei 20201025 [32] Test Setting' }
                 },
                 {
                     path: '/dt_setting',
