@@ -81,6 +81,7 @@ export default {
 
     created(){
         this.getData();
+        // this.refresh();
     },
 
     computed:{
@@ -91,13 +92,18 @@ export default {
         async getData(){
             if(this.$route.params.match_id){
                 await eventService.get_match_map({match_id:this.$route.params.match_id}).then(res => {
-                    console.log(res)
                     if(res.code==1){
                         this.table = res.match_form;
                     }
                 })
             }
         },
+
+        refresh(){
+            setInterval(() => {
+                this.getData()
+            }, 5000);
+        },    
 
         show_name(game){
             if(this.table[game]!=undefined&&"name" in this.table[game]) return this.table[game].name;

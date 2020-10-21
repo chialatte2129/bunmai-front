@@ -10,6 +10,10 @@ export const eventService = {
 	get_match_map,
 	get_group_score_info,
 	update_group_score,
+	get_group_option,
+	save_scoreboard_setting,
+	get_scoreboard_setting,
+	show_scoreboard,
 }
 
 function get_match_teams(match_id){
@@ -115,3 +119,42 @@ function update_group_score(param){
 	})
 }
 
+function get_group_option(param){
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/option/group/get', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function save_scoreboard_setting(param){
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/scoreboard/setting/save', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function get_scoreboard_setting(param){
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/scoreboard/setting/get', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function show_scoreboard(param){
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/scoreboard/show', param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}

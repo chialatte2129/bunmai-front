@@ -65,7 +65,7 @@ export default {
     data(){
         return{
             table:{
-                status:"N",
+                status:"",
                 name:"",
                 center:{
                     top:{name:"", score:[]},
@@ -85,6 +85,7 @@ export default {
 
     created(){
         this.getData();
+        // this.refresh();
     },
 
     computed:{
@@ -92,12 +93,21 @@ export default {
     },
 
     methods:{
-        getData(){
-            console.log(this.$route.params.match_id)
+        async getData(){
             if(this.$route.params.match_id){
-                
+                await eventService.show_scoreboard({match_id:this.$route.params.match_id}).then(res => {
+                    if(res.code==1){
+                        this.table = res.table;
+                    }
+                })
             }
         },
+
+        refresh(){
+            setInterval(() => {
+                this.getData()
+            }, 5000);
+        }, 
 
         show_table_name(){
             if("name" in this.table) return this.table.name;
@@ -142,7 +152,7 @@ export default {
         margin: 0;
         width: 1920px;
         height: 1080px;
-        // background: url("board/bg.jpg") no-repeat top center;
+        background: url("board/bg.jpg") no-repeat top center;
         background-size: contain;
         background-position: center;
         display: block;

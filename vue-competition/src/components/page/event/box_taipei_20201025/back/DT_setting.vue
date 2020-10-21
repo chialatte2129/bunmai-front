@@ -1,17 +1,18 @@
 <template>
-    <div>
+    <div class="setting-page">
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-aim"></i> {{$t("menus.event_box_taipei_20201025")}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t("menus.DT_setting")}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t("menus.TS_setting")}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <el-card shadow="hover" body-style="padding:10px" class="mgb10">
                 <div slot="header" class="clearfix">
                     <span style="font-size:16px;">顯示記分板設定</span>
-                    <el-button type="primary" size="large" icon="el-icon-files" class="card-header-r-btn" :disabled="disabledScoreBoard()" @click="saveScoreBoard"> {{$t('btn.save')}}</el-button>
+                    <el-button type="primary" size="large" icon="el-icon-files" class="card-header-r-btn" :disabled="disabledScoreBoard()" @click="saveScoreBoard(false)"> {{$t('btn.save')}}</el-button>
                     <el-button type="info" size="large" plain icon="el-icon-connection" class="card-header-btn" @click="getLink('score')"> 取得記分板連結</el-button>
+                    <el-button type="success" size="large" plain class="card-header-btn" @click="saveScoreBoard(true)"> 重置</el-button>
                 </div>
                 <div style="padding:10px;">
                     <el-form ref="show_scoreboard_form" :model="show_scoreboard_form" label-position="right" label-width="auto">
@@ -101,7 +102,7 @@
                                     <span class="match-final-name" :class="result_status('g15_2')">{{show_name('g15_2')}}</span>
                                 </el-col>
                             </el-badge>
-                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('15')" @click="editScore('15', '', '')"/>
+                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('15')" @click="editScore('15', '-1', -1, 'top')"/>
                         </el-row>
                         <el-row class="match-final mgb10">
                             <el-badge :value="16" class="item" type="danger">
@@ -115,7 +116,7 @@
                                     <span class="match-final-name" :class="result_status('g16_2')">{{show_name('g16_2')}}</span>
                                 </el-col>
                             </el-badge>
-                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('16')" @click="editScore('16', '', '')"/>
+                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('16')" @click="editScore('16', '-1', -1, 'btm')"/>
                         </el-row>
                         <el-row class="match-semifinal mgb10">
                             <el-col :span="10" style="position:relative;">
@@ -130,7 +131,7 @@
                                         <span class="match-final-name" :class="result_status('g13_2')">{{show_name('g13_2')}}</span>
                                     </el-col>
                                 </el-badge>
-                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('13')" @click="editScore('13', '15', 'top')"/>
+                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('13')" @click="editScore('13', '15', 4, 'top')"/>
                             </el-col>
                             <el-col :span="4">
                                 <el-divider>SEMIFINALS</br>4 強賽</el-divider>
@@ -147,7 +148,7 @@
                                         <span class="match-final-name" :class="result_status('g14_2')">{{show_name('g14_2')}}</span>
                                     </el-col>
                                 </el-badge>
-                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('14')" @click="editScore('14', '15', 'btm')"/>
+                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('14')" @click="editScore('14', '15', 4, 'btm')"/>
                             </el-col>
                         </el-row>
                         <el-row class="match-quarterfinail mgb10">
@@ -162,7 +163,7 @@
                                             <span class="match-final-name" :class="result_status('g9_2')">{{show_name('g9_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('9')" @click="editScore('9', '13', 'top')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('9')" @click="editScore('9', '13', 3, 'top')"/>
                                 </el-col>
                                 <el-col :span="2">
                                     <el-divider direction="vertical"/>
@@ -177,7 +178,7 @@
                                             <span class="match-final-name" :class="result_status('g10_2')">{{show_name('g10_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('10')" @click="editScore('10', '13', 'btm')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('10')" @click="editScore('10', '13', 3, 'btm')"/>
                                 </el-col>
                             </el-col>
                             <el-col :span="4" class="quarterfinail-division">
@@ -194,7 +195,7 @@
                                             <span class="match-final-name" :class="result_status('g11_2')">{{show_name('g11_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('11')" @click="editScore('11', '14', 'top')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('11')" @click="editScore('11', '14', 3, 'top')"/>
                                 </el-col>
                                 <el-col :span="2">
                                     <el-divider direction="vertical"/>
@@ -209,11 +210,11 @@
                                             <span class="match-final-name" :class="result_status('g12_2')">{{show_name('g12_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('12')" @click="editScore('12', '14', 'btm')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('12')" @click="editScore('12', '14', 3, 'btm')"/>
                                 </el-col>
                             </el-col>
                         </el-row>
-                        <el-row class="match-sixteen mgb10">
+                        <el-row class="match-sixteen mgb10" :key="sixteenKey">
                             <el-col :span="10">
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
@@ -226,7 +227,7 @@
                                                 <span class="match-final-name" :class="result_status('g1_2')">{{show_name('g1_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('1')" @click="editScore('1', '9', 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('1')" @click="editScore('1', '9', 2, 'top')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
@@ -241,7 +242,7 @@
                                                 <span class="match-final-name" :class="result_status('g2_2')">{{show_name('g2_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('2')" @click="editScore('2', '9', 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('2')" @click="editScore('2', '9', 2, 'btm')"/>
                                     </el-col>
                                 </el-col>
                                 <el-col :span="2">
@@ -258,7 +259,7 @@
                                                 <span class="match-final-name" :class="result_status('g3_2')">{{show_name('g3_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('3')" @click="editScore('3', '10', 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('3')" @click="editScore('3', '10', 2, 'top')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
@@ -273,7 +274,7 @@
                                                 <span class="match-final-name" :class="result_status('g4_2')">{{show_name('g4_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('4')" @click="editScore('4', '10', 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('4')" @click="editScore('4', '10', 2, 'btm')"/>
                                     </el-col>
                                 </el-col>
                             </el-col>
@@ -292,7 +293,7 @@
                                                 <span class="match-final-name" :class="result_status('g5_2')">{{show_name('g5_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('5')" @click="editScore('5', '11', 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('5')" @click="editScore('5', '11', 2, 'top')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
@@ -307,7 +308,7 @@
                                                 <span class="match-final-name" :class="result_status('g6_2')">{{show_name('g6_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('6')" @click="editScore('6', '11', 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('6')" @click="editScore('6', '11', 2, 'btm')"/>
                                     </el-col>
                                 </el-col>
                                 <el-col :span="2">
@@ -324,7 +325,7 @@
                                                 <span class="match-final-name" :class="result_status('g7_2')">{{show_name('g7_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('7')" @click="editScore('7', '12', 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('7')" @click="editScore('7', '12', 2, 'top')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
@@ -339,7 +340,7 @@
                                                 <span class="match-final-name" :class="result_status('g8_2')">{{show_name('g8_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('8')" @click="editScore('8', '12', 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('8')" @click="editScore('8', '12', 2, 'btm')"/>
                                     </el-col>
                                 </el-col>
                             </el-col>
@@ -347,11 +348,11 @@
                     </el-form>
                 </div>
             </el-card>
-            <el-card shadow="hover" body-style="padding:10px" class="mgb10">
+            <el-card shadow="hover" body-style="padding:10px" class="group-setting mgb10">
                 <div slot="header" class="clearfix">
                     <span style="font-size:16px;">分組設定</span>
-                    <el-button v-if="group_disabled" type="success" size="large" class="el-icon-lock card-header-r-btn" @click="group_disabled=false"> 鎖定分組</el-button>
-                    <el-button v-else type="danger" size="large" class="el-icon-unlock card-header-r-btn" @click="group_disabled=true"> 鎖定解除</el-button>
+                    <el-button v-if="group_disabled" type="success" size="large" class="el-icon-lock card-header-r-btn" @click="group_disabled=false" :disabled="group_lock"> 鎖定分組中</el-button>
+                    <el-button v-else type="danger" size="large" class="el-icon-unlock card-header-r-btn" @click="group_disabled=true" :disabled="group_lock"> 鎖定解除中</el-button>
                 </div>
                 <div style="padding:10px;text-align:center;">
                     <el-form ref="group_form" :model="group_form" label-position="right" label-width="auto">
@@ -362,14 +363,14 @@
                                         <el-badge :value="1" class="item" type="primary">
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g1_1" clearable filterable 
-                                                :disabled="group_form.g1_1!=''&&group_disabled" @change="saveGroup(group_form.g1_1, 'top')">
+                                                :disabled="groupSettingDisabled('g1_1')" @change="createGroupSetting(group_form.g1_1, '1', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g1_2" clearable filterable 
-                                                :disabled="group_form.g1_2!=''&&group_disabled" @change="saveGroup(group_form.g1_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g1_2')" @change="createGroupSetting(group_form.g1_2, '1', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -382,14 +383,14 @@
                                         <el-badge :value="2" class="item" type="primary">
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g2_1" clearable filterable 
-                                                :disabled="group_form.g2_1!=''&&group_disabled" @change="saveGroup(group_form.g2_1, 'top')">
+                                                :disabled="groupSettingDisabled('g2_1')" @change="createGroupSetting(group_form.g2_1, '2', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g2_2" clearable filterable 
-                                                :disabled="group_form.g2_2!=''&&group_disabled" @change="saveGroup(group_form.g2_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g2_2')" @change="createGroupSetting(group_form.g2_2, '2', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -404,14 +405,14 @@
                                         <el-badge :value="3" class="item" type="primary">
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g3_1" clearable filterable 
-                                                :disabled="group_form.g3_1!=''&&group_disabled" @change="saveGroup(group_form.g3_1, 'top')">
+                                                :disabled="groupSettingDisabled('g3_1')" @change="createGroupSetting(group_form.g3_1, '3', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g3_2" clearable filterable 
-                                                :disabled="group_form.g3_2!=''&&group_disabled" @change="saveGroup(group_form.g3_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g3_2')" @change="createGroupSetting(group_form.g3_2, '3', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -424,14 +425,14 @@
                                         <el-badge :value="4" class="item" type="primary">
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g4_1" clearable filterable 
-                                                :disabled="group_form.g4_1!=''&&group_disabled" @change="saveGroup(group_form.g4_1, 'top')">
+                                                :disabled="groupSettingDisabled('g4_1')" @change="createGroupSetting(group_form.g4_1, '4', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
                                                 <el-select class="team-selector-N" v-model="group_form.g4_2" clearable filterable 
-                                                :disabled="group_form.g4_2!=''&&group_disabled" @change="saveGroup(group_form.g4_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g4_2')" @change="createGroupSetting(group_form.g4_2, '4', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -448,14 +449,14 @@
                                         <el-badge :value="5" class="item" type="danger">
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g5_1" clearable filterable 
-                                                :disabled="group_form.g5_1!=''&&group_disabled" @change="saveGroup(group_form.g5_1, 'top')">
+                                                :disabled="groupSettingDisabled('g5_1')" @change="createGroupSetting(group_form.g5_1, '5', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g5_2" clearable filterable 
-                                                :disabled="group_form.g5_2!=''&&group_disabled" @change="saveGroup(group_form.g5_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g5_2')" @change="createGroupSetting(group_form.g5_2, '5', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -468,14 +469,14 @@
                                         <el-badge :value="6" class="item" type="danger">
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g6_1" clearable filterable 
-                                                :disabled="group_form.g6_1!=''&&group_disabled" @change="saveGroup(group_form.g6_1, 'top')">
+                                                :disabled="groupSettingDisabled('g6_1')" @change="createGroupSetting(group_form.g6_1, '6', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g6_2" clearable filterable 
-                                                :disabled="group_form.g6_2!=''&&group_disabled" @change="saveGroup(group_form.g6_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g6_2')" @change="createGroupSetting(group_form.g6_2, '6', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -490,14 +491,14 @@
                                         <el-badge :value="7" class="item" type="danger">
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g7_1" clearable filterable 
-                                                :disabled="group_form.g7_1!=''&&group_disabled" @change="saveGroup(group_form.g7_1, 'top')">
+                                                :disabled="groupSettingDisabled('g7_1')" @change="createGroupSetting(group_form.g7_1, '7', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g7_2" clearable filterable 
-                                                :disabled="group_form.g7_2!=''&&group_disabled" @change="saveGroup(group_form.g7_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g7_2')" @change="createGroupSetting(group_form.g7_2, '7', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -510,14 +511,14 @@
                                         <el-badge :value="8" class="item" type="danger">
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g8_1" clearable filterable 
-                                                :disabled="group_form.g8_1!=''&&group_disabled" @change="saveGroup(group_form.g8_1, 'top')">
+                                                :disabled="groupSettingDisabled('g8_1')" @change="createGroupSetting(group_form.g8_1, '8', 'top')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
                                                 <el-select class="team-selector-N" v-model="group_form.g8_2" clearable filterable 
-                                                :disabled="group_form.g8_2!=''&&group_disabled" @change="saveGroup(group_form.g8_2, 'btm')">
+                                                :disabled="groupSettingDisabled('g8_2')" @change="createGroupSetting(group_form.g8_2, '8', 'btm')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -531,73 +532,76 @@
             </el-card>
             <teamManage :match_id="match_id" @change="handleTeamChange"></teamManage>
         </div>
-        <el-dialog :title="`Group ${editScoreGroup}`" :visible.sync="editScoreView" :width="`${250+edit_score_rule.match*110}px`" :before-close="cancelEditScore" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form ref="edit_score_form" :model="{edit_score_form:edit_score_form}" :rules="rules" label-position="right" label-width="auto">
-                <el-table ref="table" :data="edit_score_form" :cell-style="{padding:'0',height:'28px',fontSize:'8px'}">
-                    <el-table-column prop="name" label="隊伍名稱" width="200" align="center"/>
-                    <el-table-column v-if="edit_score_rule.match>=1" prop="r1" label="R1" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r1`" :rules="rules.score">
-                                <el-input v-model="scope.row.r1" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="edit_score_rule.match>=2" prop="r2" label="R2" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r2`" :rules="rules.score">
-                                <el-input v-model="scope.row.r2" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="edit_score_rule.match>=3" prop="r3" label="R3" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r3`" :rules="rules.score">
-                                <el-input v-model="scope.row.r3" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="edit_score_rule.match>=4" prop="r4" label="R4" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r4`" :rules="rules.score">
-                                <el-input v-model="scope.row.r4" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="edit_score_rule.match>=5" prop="r5" label="R5" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r5`" :rules="rules.score">
-                                <el-input v-model="scope.row.r5" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="edit_score_rule.match>=6" prop="r6" label="R6" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r6`" :rules="rules.score">
-                                <el-input v-model="scope.row.r6" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                    <el-table-column v-if="edit_score_rule.match>=7" prop="r7" label="R7" width="110" align="center">
-                        <template slot-scope="scope">
-                            <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r7`" :rules="rules.score">
-                                <el-input v-model="scope.row.r7" class="score-input"/>
-                            </el-form-item>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <div style="margin:20px 0 0 50px;" v-if="edit_score_form.length>0">
-                    <span style="display:inline-block;">晉級隊伍&emsp;&emsp;&emsp;&emsp;</span>
-                    <span style="display:inline-block;">
-                        <el-checkbox-group v-model="edit_score_win" :min="0" :max="1">
-                            <el-checkbox v-for="(row, idx) in edit_score_form" :label="row.name" :key="idx"/>
-                        </el-checkbox-group>
-                    </span>
+        <el-dialog ref="dialog" :title="`Group ${editScoreGroup}`" :visible.sync="editScoreView" :before-close="cancelEditScore" :close-on-click-modal="false" :key="scoreFormKey">
+            <!-- :width="`${250+edit_score_rule.match*110}px`" -->
+            <div v-loading.lock="dialog_loading">
+                <el-form ref="edit_score_form" :model="{edit_score_form:edit_score_form}" :rules="rules" label-position="right" label-width="auto">
+                    <el-table class="table" ref="table" :data="edit_score_form" :cell-style="{padding:'0',height:'28px',fontSize:'8px'}">
+                        <el-table-column prop="name" label="隊伍名稱" width="200" align="left" headerAlign="center"/>
+                        <el-table-column v-if="edit_score_rule.match>=1" prop="r1" label="R1" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r1`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r1" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="edit_score_rule.match>=2" prop="r2" label="R2" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r2`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r2" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="edit_score_rule.match>=3" prop="r3" label="R3" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r3`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r3" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="edit_score_rule.match>=4" prop="r4" label="R4" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r4`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r4" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="edit_score_rule.match>=5" prop="r5" label="R5" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r5`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r5" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="edit_score_rule.match>=6" prop="r6" label="R6" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r6`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r6" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                        <el-table-column v-if="edit_score_rule.match>=7" prop="r7" label="R7" width="110" align="center">
+                            <template slot-scope="scope">
+                                <el-form-item :prop="`edit_score_form.${scope.$index.toString()}.r7`" :rules="rules.score">
+                                    <el-input v-model="scope.row.r7" class="score-input"/>
+                                </el-form-item>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!-- <div style="margin:20px 0 0 70px;" v-if="edit_score_form.length>0">
+                        <span style="display:inline-block;">晉級隊伍&emsp;&emsp;&emsp;&emsp;</span>
+                        <span style="display:inline-block;">
+                            <el-checkbox-group v-model="edit_score_win" :max="1">
+                                <el-checkbox v-for="(row, idx) in edit_score_form" :label="row.name" :key="idx" border/>
+                            </el-checkbox-group>
+                        </span>
+                    </div> -->
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="cancelEditScore">{{$t('btn.cancel')}}</el-button>
+                    <el-button type="primary" @click="saveScore">{{$t('btn.confirm')}}</el-button>
                 </div>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelEditScore">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="saveScore">{{$t('btn.confirm')}}</el-button>
-            </span>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -613,9 +617,14 @@ export default {
     data(){
         return {
             match_id:"MATCH-DT-2020-10-25",
+            scoreFormKey:0,
+            scoreboardKey:0,
+            sixteenKey:0,
+            dialog_loading:false,
             editScoreView:false,
             editScoreGroup:"",
             editDestinationGroup:"",
+            editDestinationRound:null,
             editDestinationPosition:"",
             selectGroup_disabled:false,
             unknown_value:[null, "", undefined], 
@@ -632,68 +641,14 @@ export default {
                 center:"",
             },
             group_disabled:true,
-            group_form:{
-                g1_1:"",
-                g1_2:"",
-                g2_1:"",
-                g2_2:"",
-                g3_1:"",
-                g3_2:"",
-                g4_1:"",
-                g4_2:"",
-                g5_1:"",
-                g5_2:"",
-                g6_1:"",
-                g6_2:"",
-                g7_1:"",
-                g7_2:"",
-                g8_1:"",
-                g8_2:"",
-
-            },
+            group_lock:true,
+            group_form:{},
             match_form:{
-                g1_1:{id:"", name:"", is_win:false, process:"D"},
-                g1_2:{id:"", name:"", is_win:false, process:"D"},
-                g2_1:{id:"", name:"", is_win:false, process:"D"},
-                g2_2:{id:"", name:"", is_win:false, process:"D"},
-                g3_1:{id:"", name:"", is_win:false, process:"D"},
-                g3_2:{id:"", name:"", is_win:false, process:"D"},
-                g4_1:{id:"", name:"", is_win:false, process:"D"},
-                g4_2:{id:"", name:"", is_win:false, process:"D"},
-                g5_1:{id:"", name:"", is_win:false, process:"D"},
-                g5_2:{id:"", name:"", is_win:false, process:"D"},
-                g6_1:{id:"", name:"", is_win:false, process:"D"},
-                g6_2:{id:"", name:"", is_win:false, process:"D"},
-                g7_1:{id:"", name:"", is_win:false, process:"D"},
-                g7_2:{id:"", name:"", is_win:false, process:"D"},
-                g8_1:{id:"", name:"", is_win:false, process:"D"},
-                g8_2:{id:"", name:"", is_win:false, process:"D"},
-                g9_1:{id:"", name:"", is_win:false, process:"D"},
-                g9_2:{id:"", name:"", is_win:false, process:"D"},
-                g10_1:{id:"", name:"", is_win:false, process:"D"},
-                g10_2:{id:"", name:"", is_win:false, process:"D"},
-                g11_1:{id:"", name:"", is_win:false, process:"D"},
-                g11_2:{id:"", name:"", is_win:false, process:"D"},
-                g12_1:{id:"", name:"", is_win:false, process:"D"},
-                g12_2:{id:"", name:"", is_win:false, process:"D"},
-                g13_1:{id:"", name:"", is_win:false, process:"D"},
-                g13_2:{id:"", name:"", is_win:false, process:"D"},
-                g14_1:{id:"", name:"", is_win:false, process:"D"},
-                g14_2:{id:"", name:"", is_win:false, process:"D"},
-                g15_1:{id:"", name:"", is_win:false, process:"D"},
-                g15_2:{id:"", name:"", is_win:false, process:"D"},
-                g16_1:{id:"", name:"", is_win:false, process:"D"},
-                g16_2:{id:"", name:"", is_win:false, process:"D"},
+                // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "top"},
             },
-            edit_score_form:[
-                {team_id:"01", name:"team-01", score:[500,400,null], r1:500, r2:400, r3:null},
-                {team_id:"02", name:"team-02", score:[600,500,null], r1:600, r2:500, r3:null},
-            ],
+            edit_score_form:[],
             edit_score_win:[],
-            edit_score_rule:{
-                match:5,
-                win:2
-            },
+            edit_score_rule:{},
             rules:{
                 score:[
                     // { required: true, message: this.$t("common_msg.must_fill"), trigger:"blur" },
@@ -702,44 +657,26 @@ export default {
             },
             options:{
                 group:{
-                    "01":{"id":"01","label":"Group 1", "top":"01","btm":"02"},
-                    "02":{"id":"02","label":"Group 2", "top":"03","btm":"04"},
-                    "03":{"id":"03","label":"Group 3", "top":"","btm":""},
-                    "04":{"id":"04","label":"Group 4", "top":"","btm":""},
-                    "05":{"id":"05","label":"Group 5", "top":"","btm":""},
-                    "06":{"id":"06","label":"Group 6", "top":"","btm":""},
-                    "07":{"id":"07","label":"Group 7", "top":"","btm":""},
-                    "08":{"id":"08","label":"Group 8", "top":"","btm":""},
-                    "09":{"id":"09","label":"Group 9", "top":"","btm":""},
-                    "10":{"id":"10","label":"Group 10", "top":"","btm":""},
-                    "11":{"id":"11","label":"Group 11", "top":"","btm":""},
-                    "12":{"id":"12","label":"Group 12", "top":"","btm":""},
-                    "13":{"id":"13","label":"Group 13", "top":"","btm":""},
-                    "14":{"id":"14","label":"Group 14", "top":"","btm":""},
-                    "15":{"id":"15","label":"Group 15", "top":"","btm":""},
-                    "16":{"id":"16","label":"Group 16", "top":"","btm":""},
+                    // "1":{"id":"1","label":"Group 1", "top":"01","btm":"02"},
                 },
-                title:{
-                    "01":{"id":"01","label":"FINAL","note":"冠軍賽","status":"F","round":4},
-                    "02":{"id":"02","label":"THIRD","note":"季軍賽","status":"F","round":4},
-                    "03":{"id":"03","label":"SEMIFINALS","note":"4 強賽","status":"N","round":3},
-                    "04":{"id":"04","label":"QUARTERFINALS","note":"8 強賽","status":"N","round":2},
-                    "05":{"id":"05","label":"ROUND OF SIXTEEN","note":"16 強賽","status":"N","round":1}
-                },
+                title:{},
                 teams:[],
             },
         }
     },
     computed: {
-
+        
     },
+
     watch: {
         
     },
 
     created(){
-        this.getBaseOptions();
-        this.getData();
+        this.getTitle();
+        this.getGroupSetting();
+        this.refreshMatchData();
+        this.getScoreBoard();
     },
 
     methods:{
@@ -752,33 +689,115 @@ export default {
                 lock:true,
                 spinner:"el-icon-loading",
                 background:"rgba(0, 0, 0, 0.6)",
-                target: document.querySelector(class_name)
+                target: class_name
             });
         },
 
-        saveGroup(team_id, pos){
-            
+        async getGroupSetting(){
+            await eventService.get_group_setting({match_id:this.match_id}).then(res => {
+                if(res.code==1){
+                    this.group_form = res.group_form;
+                    this.group_lock = res.group_lock;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
+        },
+
+        async createGroupSetting(team_id, group_id, pos){
+            var param = {
+                match_id:this.match_id,
+                group_id:group_id,
+                team_id:team_id,
+                pos_id:pos
+            };
+            await eventService.create_group_setting(param).then(res => {
+                if(res.code==1){
+                    this.$message.success(res.msg);
+                    var name = ""
+                    var temp_team_id = "";
+                    if(!this.unknown_value.includes(team_id)){
+                        for(var row in this.options.teams){
+                            if(this.options.teams[row].id==team_id){
+                                name = this.options.teams[row].name;
+                                temp_team_id = team_id
+                            }
+                        }
+                    }
+                    // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "top"},
+                    this.match_form[`g${group_id}_${(pos=='top')?1:2}`] = {id:temp_team_id, name:name, group_id:group_id, is_win:false, process:"D", pos_id:pos};
+                    this.sixteenKey++;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
+        },
+
+        groupSettingDisabled(group_pos){
+            if(this.group_lock) return true;
+            return !this.unknown_value.includes(this.group_form[group_pos])&&this.group_disabled;
         },
 
         saveScore(){
-            this.cancelEditScore();
+            this.$refs.edit_score_form.validate(valid => {
+                if(valid){
+                    this.dialog_loading=true;
+                    var param = {
+                        match_id:this.match_id,
+                        group_id:this.editScoreGroup,
+                        destination_group_id:this.editDestinationGroup,
+                        destination_round:this.editDestinationRound,
+                        destination_position:this.editDestinationPosition,
+                        win:this.edit_score_win,
+                        score_form:this.edit_score_form,
+                    }
+                    eventService.update_group_score(param).then(res => {
+                        if(res.code==1||res.code==2){
+                            // if(res.code==2){
+                            //     this.refreshMatchData();
+                            // }
+                            this.refreshMatchData();
+                            this.$message.success(res.msg);
+                            this.group_lock=true;
+                            this.cancelEditScore();
+                        }else{
+                            this.$message.warning(res.msg);
+                            this.dialog_loading = false;
+                        }
+                    })
+                }
+            })
         },
 
-        editScore(group_id, destination_group_id, position){
+        async editScore(group_id, destination_group_id, destination_round, destination_position){
             this.editScoreView=true;
+            this.dialog_loading=true;
             this.editScoreGroup=group_id;
             this.editDestinationGroup=destination_group_id;
-            this.editDestinationPosition=position;
-            const loading = this.startLoading('.edit-Dialog');
-            // edit_score_rule
-            loading.close();
+            this.editDestinationRound=destination_round;
+            this.editDestinationPosition=destination_position;
+            await eventService.get_group_score_info({match_id:this.match_id, group_id:group_id}).then(res => {
+                if(res.code==1){
+                    this.edit_score_form = res.score_form;
+                    this.edit_score_win = res.win;
+                    this.edit_score_rule = res.rules;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
+            this.dialog_loading = false;
         },
         
         cancelEditScore(){
+            this.scoreFormKey++;
             this.editScoreView=false;
             this.editScoreGroup="";
             this.editDestinationGroup="";
+            this.editDestinationRound=null;
             this.editDestinationPosition="";
+            this.edit_score_win=[];
+            this.edit_score_form=[];
+            this.edit_score_rule={};
         },
 
         editDisabled(group_id){
@@ -786,18 +805,25 @@ export default {
             return false;
         },
 
-        getBaseOptions(){
-            // title
-            // teams
-        },
-
-        getData(){
-
+        async getTitle(){
+            await eventService.get_title({match_id:this.match_id}).then(res => {
+                if(res.code==1){
+                    this.options.title = res.title;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
         },
 
         refreshMatchData(){
             const loading = this.startLoading('.match-data');
-            //  get 分數設定表
+            eventService.get_match_map({match_id:this.match_id}).then(res => {
+                if(res.code==1){
+                    this.match_form = res.match_form;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
             loading.close();
         },
 
@@ -839,32 +865,63 @@ export default {
             return false;
         },
 
-        saveScoreBoard(){
-
+        async getScoreBoard(){
+            await eventService.get_scoreboard_setting({match_id:this.match_id}).then(res => {
+                if(res.code==1){
+                    this.show_scoreboard_form = res.scoreboard;
+                    this.select_scoreboard = res.select;
+                    if(!this.unknown_value.includes(this.show_scoreboard_form.title)){
+                        this.getGroups();
+                    }
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
         },
 
-        async scoreboardChange(){
-            this.show_scoreboard_form.status = (this.unknown_value.includes(this.show_scoreboard_form.title))?"":this.options.title[this.show_scoreboard_form.title].status;
-            this.show_scoreboard_form = {
-                title:this.show_scoreboard_form.title,
-                status:this.show_scoreboard_form.status,
-                left:{ top:"", btm:"", },
-                right:{ top:"", btm:"", },
-                center:{ top:"", btm:"", }
-            };
+        saveScoreBoard(status){
+            eventService.save_scoreboard_setting({match_id:this.match_id, scoreboard:this.show_scoreboard_form, is_reset:status}).then(res => {
+                if(res.code==1){
+                    this.$message.success(res.msg);
+                    if(status){
+                        this.resetScoreboard();
+                        this.show_scoreboard_form.title = "";
+                        this.show_scoreboard_form.status = "";
+                    }
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
+        },
+
+        resetScoreboard(){
+            this.show_scoreboard_form.left = { top:"", btm:"" };
+            this.show_scoreboard_form.right = { top:"", btm:"" };
+            this.show_scoreboard_form.center = { top:"", btm:"" };
             this.select_scoreboard = {
                 left:"",
                 right:"",
                 center:"",
             };
+        },
+
+        async scoreboardChange(){
+            this.resetScoreboard();
+            this.show_scoreboard_form.status = (this.unknown_value.includes(this.show_scoreboard_form.title))?"":this.options.title[this.show_scoreboard_form.title].status;
             if(!this.unknown_value.includes(this.show_scoreboard_form.title)){
                 await this.getGroups();
             }
         },
 
-        getGroups(){
+        async getGroups(){
             this.selectGroup_disabled=true;
-            // api
+            await eventService.get_group_option({match_id:this.match_id, title_id:this.show_scoreboard_form.title}).then(res => {
+                if(res.code==1){
+                    this.options.group = res.group;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
             this.selectGroup_disabled=false;
         },
 
@@ -1041,5 +1098,11 @@ export default {
         width:100%;
         margin:5px 0;
     }
-    
+    .table{
+        font-size:14px;
+    }
+    .dialog-footer{
+        text-align:right;
+        margin-top:10px;
+    }
 </style>

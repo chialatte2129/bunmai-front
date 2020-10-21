@@ -10,8 +10,9 @@
             <el-card shadow="hover" body-style="padding:10px" class="mgb10">
                 <div slot="header" class="clearfix">
                     <span style="font-size:16px;">顯示記分板設定</span>
-                    <el-button type="primary" size="large" icon="el-icon-files" class="card-header-r-btn" :disabled="disabledScoreBoard()" @click="saveScoreBoard"> {{$t('btn.save')}}</el-button>
+                    <el-button type="primary" size="large" icon="el-icon-files" class="card-header-r-btn" :disabled="disabledScoreBoard()" @click="saveScoreBoard(false)"> {{$t('btn.save')}}</el-button>
                     <el-button type="info" size="large" plain icon="el-icon-connection" class="card-header-btn" @click="getLink('score')"> 取得記分板連結</el-button>
+                    <el-button type="success" size="large" plain class="card-header-btn" @click="saveScoreBoard(true)"> 重置</el-button>
                 </div>
                 <div style="padding:10px;">
                     <el-form ref="show_scoreboard_form" :model="show_scoreboard_form" label-position="right" label-width="auto">
@@ -617,6 +618,7 @@ export default {
         return {
             match_id:"MATCH-TS-2020-10-25",
             scoreFormKey:0,
+            scoreboardKey:0,
             sixteenKey:0,
             dialog_loading:false,
             editScoreView:false,
@@ -655,22 +657,7 @@ export default {
             },
             options:{
                 group:{
-                    "1":{"id":"1","label":"Group 1", "top":"01","btm":"02"},
-                    "2":{"id":"2","label":"Group 2", "top":"03","btm":"04"},
-                    "3":{"id":"3","label":"Group 3", "top":"","btm":""},
-                    "4":{"id":"4","label":"Group 4", "top":"","btm":""},
-                    "5":{"id":"5","label":"Group 5", "top":"","btm":""},
-                    "6":{"id":"6","label":"Group 6", "top":"","btm":""},
-                    "7":{"id":"7","label":"Group 7", "top":"","btm":""},
-                    "8":{"id":"8","label":"Group 8", "top":"","btm":""},
-                    "9":{"id":"9","label":"Group 9", "top":"","btm":""},
-                    "10":{"id":"10","label":"Group 10", "top":"","btm":""},
-                    "11":{"id":"11","label":"Group 11", "top":"","btm":""},
-                    "12":{"id":"12","label":"Group 12", "top":"","btm":""},
-                    "13":{"id":"13","label":"Group 13", "top":"","btm":""},
-                    "14":{"id":"14","label":"Group 14", "top":"","btm":""},
-                    "15":{"id":"15","label":"Group 15", "top":"","btm":""},
-                    "16":{"id":"16","label":"Group 16", "top":"","btm":""},
+                    // "1":{"id":"1","label":"Group 1", "top":"01","btm":"02"},
                 },
                 title:{},
                 teams:[],
@@ -689,6 +676,7 @@ export default {
         this.getTitle();
         this.getGroupSetting();
         this.refreshMatchData();
+        this.getScoreBoard();
     },
 
     methods:{
@@ -765,9 +753,10 @@ export default {
                     }
                     eventService.update_group_score(param).then(res => {
                         if(res.code==1||res.code==2){
-                            if(res.code==2){
-                                this.refreshMatchData();
-                            }
+                            // if(res.code==2){
+                            //     this.refreshMatchData();
+                            // }
+                            this.refreshMatchData();
                             this.$message.success(res.msg);
                             this.group_lock=true;
                             this.cancelEditScore();
@@ -876,32 +865,63 @@ export default {
             return false;
         },
 
-        saveScoreBoard(){
-
+        async getScoreBoard(){
+            await eventService.get_scoreboard_setting({match_id:this.match_id}).then(res => {
+                if(res.code==1){
+                    this.show_scoreboard_form = res.scoreboard;
+                    this.select_scoreboard = res.select;
+                    if(!this.unknown_value.includes(this.show_scoreboard_form.title)){
+                        this.getGroups();
+                    }
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
         },
 
-        async scoreboardChange(){
-            this.show_scoreboard_form.status = (this.unknown_value.includes(this.show_scoreboard_form.title))?"":this.options.title[this.show_scoreboard_form.title].status;
-            this.show_scoreboard_form = {
-                title:this.show_scoreboard_form.title,
-                status:this.show_scoreboard_form.status,
-                left:{ top:"", btm:"", },
-                right:{ top:"", btm:"", },
-                center:{ top:"", btm:"", }
-            };
+        saveScoreBoard(status){
+            eventService.save_scoreboard_setting({match_id:this.match_id, scoreboard:this.show_scoreboard_form, is_reset:status}).then(res => {
+                if(res.code==1){
+                    this.$message.success(res.msg);
+                    if(status){
+                        this.resetScoreboard();
+                        this.show_scoreboard_form.title = "";
+                        this.show_scoreboard_form.status = "";
+                    }
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
+        },
+
+        resetScoreboard(){
+            this.show_scoreboard_form.left = { top:"", btm:"" };
+            this.show_scoreboard_form.right = { top:"", btm:"" };
+            this.show_scoreboard_form.center = { top:"", btm:"" };
             this.select_scoreboard = {
                 left:"",
                 right:"",
                 center:"",
             };
+        },
+
+        async scoreboardChange(){
+            this.resetScoreboard();
+            this.show_scoreboard_form.status = (this.unknown_value.includes(this.show_scoreboard_form.title))?"":this.options.title[this.show_scoreboard_form.title].status;
             if(!this.unknown_value.includes(this.show_scoreboard_form.title)){
                 await this.getGroups();
             }
         },
 
-        getGroups(){
+        async getGroups(){
             this.selectGroup_disabled=true;
-            // api
+            await eventService.get_group_option({match_id:this.match_id, title_id:this.show_scoreboard_form.title}).then(res => {
+                if(res.code==1){
+                    this.options.group = res.group;
+                }else{
+                    this.$message.warning(res.msg);
+                }
+            })
             this.selectGroup_disabled=false;
         },
 
