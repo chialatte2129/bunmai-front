@@ -14,6 +14,9 @@ export const eventService = {
 	save_scoreboard_setting,
 	get_scoreboard_setting,
 	show_scoreboard,
+
+	get_match_options,
+	create_test_match
 }
 
 function get_match_teams(match_id){
@@ -158,3 +161,30 @@ function show_scoreboard(param){
 		)
 	})
 }
+
+// 測試活動頁
+function get_match_options(){
+	var params={}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/test/get_match_options', params).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function create_test_match(match_name,match_type){
+	var params={
+		"match_name":match_name,
+		"match_type":match_type
+	}
+    return new Promise((resolve, reject) => {
+		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/test/create_new_match', params).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
