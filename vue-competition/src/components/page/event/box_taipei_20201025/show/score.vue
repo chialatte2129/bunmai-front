@@ -64,6 +64,7 @@ export default {
     },
     data(){
         return{
+            reload_time:60000,
             table:{
                 status:"",
                 name:"",
@@ -86,7 +87,7 @@ export default {
     created(){
         this.getData();
         this.connect_websocket();
-        // this.refresh();
+        this.refresh();
     },
 
     computed:{
@@ -136,7 +137,7 @@ export default {
                 await eventService.show_scoreboard({match_id:this.$route.params.match_id, screen:this.$route.params.screen}).then(res => {
                     if(res.code==1){
                         this.table = res.table;
-                        console.log(this.table)
+                        this.reload_time = res.reload_time;
                     }
                 })
             }
@@ -144,8 +145,9 @@ export default {
 
         refresh(){
             setInterval(() => {
+                console.log("refresh");
                 this.getData()
-            }, 5000);
+            }, this.reload_time);
         }, 
 
         show_table_name(){

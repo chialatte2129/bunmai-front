@@ -24,94 +24,94 @@
                 <div style="padding:10px;text-align:center;">
                     <el-form ref="match_form" :model="match_form" label-position="right" label-width="auto">
                         <el-row class="match-final mgb10">
-                            <el-badge :value="15" class="item" type="danger">
+                            <el-badge :value="1" class="item" type="danger">
                                 <el-col :span="10" class="bg-blue">
-                                    <span class="match-final-name" :class="result_status('g15_1')">{{show_name('g15_1')}}</span>
+                                    <span class="match-final-name" :class="result_status('g1_1')">{{show_name('g1_1')}}</span>
                                 </el-col>
                                 <el-col :span="4">
                                     <el-divider>FINAL</br>決賽</el-divider>
                                 </el-col>
                                 <el-col :span="10" class="bg-red">
-                                    <span class="match-final-name" :class="result_status('g15_2')">{{show_name('g15_2')}}</span>
+                                    <span class="match-final-name" :class="result_status('g1_2')">{{show_name('g1_2')}}</span>
                                 </el-col>
                             </el-badge>
-                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('15')" @click="editScore('15', '-1', -1, 'top')"/>
+                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('1')" @click="editScore('1', '0', 0, '1')"/>
                         </el-row>
                         <el-row class="match-final mgb10">
-                            <el-badge :value="16" class="item" type="danger">
+                            <el-badge :value="2" class="item" type="danger">
                                 <el-col :span="10" class="bg-blue">
-                                    <span class="match-final-name" :class="result_status('g16_1')">{{show_name('g16_1')}}</span>
+                                    <span class="match-final-name" :class="result_status('g2_1')">{{show_name('g2_1')}}</span>
                                 </el-col>
                                 <el-col :span="4">
                                     <el-divider>THIRD</br>季軍賽</el-divider>
                                 </el-col>
                                 <el-col :span="10" class="bg-red">
-                                    <span class="match-final-name" :class="result_status('g16_2')">{{show_name('g16_2')}}</span>
+                                    <span class="match-final-name" :class="result_status('g2_2')">{{show_name('g2_2')}}</span>
                                 </el-col>
                             </el-badge>
-                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('16')" @click="editScore('16', '-1', -1, 'btm')"/>
+                            <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('2')" @click="editScore('2', '0', 0, '2')"/>
                         </el-row>
                         <el-row class="match-semifinal mgb10">
                             <el-col :span="10" style="position:relative;">
-                                <el-badge :value="13" class="item" type="primary">
+                                <el-badge :value="3" class="item" type="primary">
                                     <el-col :span="11" class="bg-blue">
-                                        <span class="match-final-name" :class="result_status('g13_1')">{{show_name('g13_1')}}</span>
+                                        <span class="match-final-name" :class="result_status('g3_1')">{{show_name('g3_1')}}</span>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" class="bg-blue">
-                                        <span class="match-final-name" :class="result_status('g13_2')">{{show_name('g13_2')}}</span>
+                                        <span class="match-final-name" :class="result_status('g3_2')">{{show_name('g3_2')}}</span>
                                     </el-col>
                                 </el-badge>
-                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('13')" @click="editScore('13', '15', 4, 'top')"/>
+                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('3')" @click="editScore('3', '1', 1, '1')"/>
                             </el-col>
                             <el-col :span="4">
                                 <el-divider>SEMIFINALS</br>4 強賽</el-divider>
                             </el-col>
                             <el-col :span="10" style="position:relative;">
-                                <el-badge :value="14" class="item" type="danger">
+                                <el-badge :value="4" class="item" type="danger">
                                     <el-col :span="11" class="bg-red">
-                                        <span class="match-final-name" :class="result_status('g14_1')">{{show_name('g14_1')}}</span>
+                                        <span class="match-final-name" :class="result_status('g4_1')">{{show_name('g4_1')}}</span>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" class="bg-red">
-                                        <span class="match-final-name" :class="result_status('g14_2')">{{show_name('g14_2')}}</span>
+                                        <span class="match-final-name" :class="result_status('g4_2')">{{show_name('g4_2')}}</span>
                                     </el-col>
                                 </el-badge>
-                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('14')" @click="editScore('14', '15', 4, 'btm')"/>
+                                <el-button type="warning" size="mini" circle class="el-icon-setting btn-final" :disabled="editDisabled('4')" @click="editScore('4', '1', 1, '2')"/>
                             </el-col>
                         </el-row>
                         <el-row class="match-quarterfinail mgb10">
                             <el-col :span="10">
                                 <el-col :span="11" style="position:relative;">
-                                    <el-badge :value="9" class="item" type="primary">
+                                    <el-badge :value="5" class="item" type="primary">
                                         <el-row class="bg-blue">
-                                            <span class="match-final-name" :class="result_status('g9_1')">{{show_name('g9_1')}}</span>
+                                            <span class="match-final-name" :class="result_status('g5_1')">{{show_name('g5_1')}}</span>
                                         </el-row>
                                         <el-divider/>
                                         <el-row class="bg-blue">
-                                            <span class="match-final-name" :class="result_status('g9_2')">{{show_name('g9_2')}}</span>
+                                            <span class="match-final-name" :class="result_status('g5_2')">{{show_name('g5_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('9')" @click="editScore('9', '13', 3, 'top')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('5')" @click="editScore('5', '3', 2, '1')"/>
                                 </el-col>
                                 <el-col :span="2">
                                     <el-divider direction="vertical"/>
                                 </el-col>
                                 <el-col :span="11" style="position:relative;">
-                                    <el-badge :value="10" class="item" type="primary">
+                                    <el-badge :value="6" class="item" type="primary">
                                         <el-row class="bg-blue">
-                                            <span class="match-final-name" :class="result_status('g10_1')">{{show_name('g10_1')}}</span>
+                                            <span class="match-final-name" :class="result_status('g6_1')">{{show_name('g6_1')}}</span>
                                         </el-row>
                                         <el-divider/>
                                         <el-row class="bg-blue">
-                                            <span class="match-final-name" :class="result_status('g10_2')">{{show_name('g10_2')}}</span>
+                                            <span class="match-final-name" :class="result_status('g6_2')">{{show_name('g6_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('10')" @click="editScore('10', '13', 3, 'btm')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('6')" @click="editScore('6', '3', 2, '2')"/>
                                 </el-col>
                             </el-col>
                             <el-col :span="4" class="quarterfinail-division">
@@ -119,31 +119,31 @@
                             </el-col>
                             <el-col :span="10">
                                 <el-col :span="11" style="position:relative;">
-                                    <el-badge :value="11" class="item" type="danger">
+                                    <el-badge :value="7" class="item" type="danger">
                                         <el-row class="bg-red">
-                                            <span class="match-final-name" :class="result_status('g11_1')">{{show_name('g11_1')}}</span>
+                                            <span class="match-final-name" :class="result_status('g7_1')">{{show_name('g7_1')}}</span>
                                         </el-row>
                                         <el-divider/>
                                         <el-row class="bg-red">
-                                            <span class="match-final-name" :class="result_status('g11_2')">{{show_name('g11_2')}}</span>
+                                            <span class="match-final-name" :class="result_status('g7_2')">{{show_name('g7_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('11')" @click="editScore('11', '14', 3, 'top')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('7')" @click="editScore('7', '4', 2, '1')"/>
                                 </el-col>
                                 <el-col :span="2">
                                     <el-divider direction="vertical"/>
                                 </el-col>
                                 <el-col :span="11" style="position:relative;">
-                                    <el-badge :value="12" class="item" type="danger">
+                                    <el-badge :value="8" class="item" type="danger">
                                         <el-row class="bg-red">
-                                            <span class="match-final-name" :class="result_status('g12_1')">{{show_name('g12_1')}}</span>
+                                            <span class="match-final-name" :class="result_status('g8_1')">{{show_name('g8_1')}}</span>
                                         </el-row>
                                         <el-divider/>
                                         <el-row class="bg-red">
-                                            <span class="match-final-name" :class="result_status('g12_2')">{{show_name('g12_2')}}</span>
+                                            <span class="match-final-name" :class="result_status('g8_2')">{{show_name('g8_2')}}</span>
                                         </el-row>
                                     </el-badge>
-                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('12')" @click="editScore('12', '14', 3, 'btm')"/>
+                                    <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('8')" @click="editScore('8', '4', 2, '2')"/>
                                 </el-col>
                             </el-col>
                         </el-row>
@@ -151,31 +151,31 @@
                             <el-col :span="10">
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="1" class="item" type="primary">
+                                        <el-badge :value="9" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g1_1')">{{show_name('g1_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g9_1')">{{show_name('g9_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g1_2')">{{show_name('g1_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g9_2')">{{show_name('g9_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('1')" @click="editScore('1', '9', 2, 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('9')" @click="editScore('9', '5', 3, '1')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="2" class="item" type="primary">
+                                        <el-badge :value="10" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g2_1')">{{show_name('g2_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g10_1')">{{show_name('g10_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g2_2')">{{show_name('g2_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g10_2')">{{show_name('g10_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('2')" @click="editScore('2', '9', 2, 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('10')" @click="editScore('10', '5', 3, '2')"/>
                                     </el-col>
                                 </el-col>
                                 <el-col :span="2">
@@ -183,31 +183,31 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="3" class="item" type="primary">
+                                        <el-badge :value="11" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g3_1')">{{show_name('g3_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g11_1')">{{show_name('g11_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g3_2')">{{show_name('g3_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g11_2')">{{show_name('g11_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('3')" @click="editScore('3', '10', 2, 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('11')" @click="editScore('11', '6', 3, '1')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="4" class="item" type="primary">
+                                        <el-badge :value="12" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g4_1')">{{show_name('g4_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g12_1')">{{show_name('g12_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <span class="match-final-name" :class="result_status('g4_2')">{{show_name('g4_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g12_2')">{{show_name('g12_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('4')" @click="editScore('4', '10', 2, 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('12')" @click="editScore('12', '6', 3, '2')"/>
                                     </el-col>
                                 </el-col>
                             </el-col>
@@ -217,31 +217,31 @@
                             <el-col :span="10">
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="5" class="item" type="danger">
+                                        <el-badge :value="13" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g5_1')">{{show_name('g5_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g13_1')">{{show_name('g13_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g5_2')">{{show_name('g5_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g13_2')">{{show_name('g13_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('5')" @click="editScore('5', '11', 2, 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('13')" @click="editScore('13', '7', 3, '1')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="6" class="item" type="danger">
+                                        <el-badge :value="14" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g6_1')">{{show_name('g6_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g14_1')">{{show_name('g14_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g6_2')">{{show_name('g6_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g14_2')">{{show_name('g14_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('6')" @click="editScore('6', '11', 2, 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('14')" @click="editScore('14', '7', 3, '2')"/>
                                     </el-col>
                                 </el-col>
                                 <el-col :span="2">
@@ -249,31 +249,31 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="7" class="item" type="danger">
+                                        <el-badge :value="15" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g7_1')">{{show_name('g7_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g15_1')">{{show_name('g15_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g7_2')">{{show_name('g7_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g15_2')">{{show_name('g15_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('7')" @click="editScore('7', '12', 2, 'top')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('15')" @click="editScore('15', '8', 3, '1')"/>
                                     </el-col>
                                     <el-col :span="2">
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="8" class="item" type="danger">
+                                        <el-badge :value="16" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g8_1')">{{show_name('g8_1')}}</span>
+                                                <span class="match-final-name" :class="result_status('g16_1')">{{show_name('g16_1')}}</span>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <span class="match-final-name" :class="result_status('g8_2')">{{show_name('g8_2')}}</span>
+                                                <span class="match-final-name" :class="result_status('g16_2')">{{show_name('g16_2')}}</span>
                                             </el-row>
                                         </el-badge>
-                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('8')" @click="editScore('8', '12', 2, 'btm')"/>
+                                        <el-button type="warning" size="mini" circle class="el-icon-setting btn-sixteen" :disabled="editDisabled('16')" @click="editScore('16', '8', 3, '2')"/>
                                     </el-col>
                                 </el-col>
                             </el-col>
@@ -293,17 +293,17 @@
                             <el-col :span="11">
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="1" class="item" type="primary">
+                                        <el-badge :value="9" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g1_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g1_1')" @change="createGroupSetting(group_form.g1_1, '1', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g9_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g9_1')" @change="createGroupSetting(group_form.g9_1, '9', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g1_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g1_2')" @change="createGroupSetting(group_form.g1_2, '1', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g9_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g9_2')" @change="createGroupSetting(group_form.g9_2, '9', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -313,17 +313,17 @@
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="2" class="item" type="primary">
+                                        <el-badge :value="10" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g2_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g2_1')" @change="createGroupSetting(group_form.g2_1, '2', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g10_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g10_1')" @change="createGroupSetting(group_form.g10_1, '10', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g2_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g2_2')" @change="createGroupSetting(group_form.g2_2, '2', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g10_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g10_2')" @change="createGroupSetting(group_form.g10_2, '10', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -335,17 +335,17 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="3" class="item" type="primary">
+                                        <el-badge :value="11" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g3_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g3_1')" @change="createGroupSetting(group_form.g3_1, '3', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g11_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g11_1')" @change="createGroupSetting(group_form.g11_1, '11', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g3_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g3_2')" @change="createGroupSetting(group_form.g3_2, '3', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g11_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g11_2')" @change="createGroupSetting(group_form.g11_2, '11', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -355,17 +355,17 @@
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="4" class="item" type="primary">
+                                        <el-badge :value="12" class="item" type="primary">
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g4_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g4_1')" @change="createGroupSetting(group_form.g4_1, '4', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g12_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g12_1')" @change="createGroupSetting(group_form.g12_1, '12', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-blue">
-                                                <el-select class="team-selector-N" v-model="group_form.g4_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g4_2')" @change="createGroupSetting(group_form.g4_2, '4', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g12_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g12_2')" @change="createGroupSetting(group_form.g12_2, '12', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -379,17 +379,17 @@
                             <el-col :span="11">
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="5" class="item" type="danger">
+                                        <el-badge :value="13" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g5_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g5_1')" @change="createGroupSetting(group_form.g5_1, '5', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g13_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g13_1')" @change="createGroupSetting(group_form.g13_1, '13', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g5_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g5_2')" @change="createGroupSetting(group_form.g5_2, '5', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g13_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g13_2')" @change="createGroupSetting(group_form.g13_2, '13', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -399,17 +399,17 @@
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="6" class="item" type="danger">
+                                        <el-badge :value="14" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g6_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g6_1')" @change="createGroupSetting(group_form.g6_1, '6', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g14_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g14_1')" @change="createGroupSetting(group_form.g14_1, '14', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g6_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g6_2')" @change="createGroupSetting(group_form.g6_2, '6', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g14_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g14_2')" @change="createGroupSetting(group_form.g14_2, '14', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -421,17 +421,17 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="7" class="item" type="danger">
+                                        <el-badge :value="15" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g7_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g7_1')" @change="createGroupSetting(group_form.g7_1, '7', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g15_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g15_1')" @change="createGroupSetting(group_form.g15_1, '15', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g7_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g7_2')" @change="createGroupSetting(group_form.g7_2, '7', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g15_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g15_2')" @change="createGroupSetting(group_form.g15_2, '15', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -441,17 +441,17 @@
                                         <el-divider direction="vertical"/>
                                     </el-col>
                                     <el-col :span="11" style="position:relative;">
-                                        <el-badge :value="8" class="item" type="danger">
+                                        <el-badge :value="16" class="item" type="danger">
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g8_1" clearable filterable 
-                                                :disabled="groupSettingDisabled('g8_1')" @change="createGroupSetting(group_form.g8_1, '8', 'top')">
+                                                <el-select class="team-selector-N" v-model="group_form.g16_1" clearable filterable 
+                                                :disabled="groupSettingDisabled('g16_1')" @change="createGroupSetting(group_form.g16_1, '16', '1')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
                                             <el-divider/>
                                             <el-row class="bg-red">
-                                                <el-select class="team-selector-N" v-model="group_form.g8_2" clearable filterable 
-                                                :disabled="groupSettingDisabled('g8_2')" @change="createGroupSetting(group_form.g8_2, '8', 'btm')">
+                                                <el-select class="team-selector-N" v-model="group_form.g16_2" clearable filterable 
+                                                :disabled="groupSettingDisabled('g16_2')" @change="createGroupSetting(group_form.g16_2, '16', '2')">
                                                     <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id" :disabled="teamSelectDisabled(option.id)"/>
                                                 </el-select>
                                             </el-row>
@@ -557,7 +557,7 @@ export default {
             group_lock:true,
             group_form:{},
             match_form:{
-                // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "top"},
+                // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "1"},
             },
             edit_score_form:[],
             edit_score_win:[],
@@ -605,7 +605,7 @@ export default {
         },
 
         async getGroupSetting(){
-            await eventService.get_group_setting({match_id:this.match_id, round:1}).then(res => {
+            await eventService.get_group_setting({match_id:this.match_id}).then(res => {
                 if(res.code==1){
                     this.group_form = res.group_form;
                     this.group_lock = res.group_lock;
@@ -635,8 +635,8 @@ export default {
                             }
                         }
                     }
-                    // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "top"},
-                    this.match_form[`g${group_id}_${(pos=='top')?1:2}`] = {id:temp_team_id, name:name, group_id:group_id, is_win:false, process:"D", pos_id:pos};
+                    // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "1"},
+                    this.match_form[`g${group_id}_${(pos=='1')?1:2}`] = {id:temp_team_id, name:name, group_id:group_id, is_win:false, process:"D", pos_id:pos};
                     this.sixteenKey++;
                 }else{
                     this.$message.warning(res.msg);
@@ -753,22 +753,22 @@ export default {
         },
 
         teamSelectDisabled(id){
-            if(id==this.group_form.g1_1) return true;
-            if(id==this.group_form.g1_2) return true;
-            if(id==this.group_form.g2_1) return true;
-            if(id==this.group_form.g2_2) return true;
-            if(id==this.group_form.g3_1) return true;
-            if(id==this.group_form.g3_2) return true;
-            if(id==this.group_form.g4_1) return true;
-            if(id==this.group_form.g4_2) return true;
-            if(id==this.group_form.g5_1) return true;
-            if(id==this.group_form.g5_2) return true;
-            if(id==this.group_form.g6_1) return true;
-            if(id==this.group_form.g6_2) return true;
-            if(id==this.group_form.g7_1) return true;
-            if(id==this.group_form.g7_2) return true;
-            if(id==this.group_form.g8_1) return true;
-            if(id==this.group_form.g8_2) return true;
+            if(id==this.group_form.g9_1) return true;
+            if(id==this.group_form.g9_2) return true;
+            if(id==this.group_form.g10_1) return true;
+            if(id==this.group_form.g10_2) return true;
+            if(id==this.group_form.g11_1) return true;
+            if(id==this.group_form.g11_2) return true;
+            if(id==this.group_form.g12_1) return true;
+            if(id==this.group_form.g12_2) return true;
+            if(id==this.group_form.g13_1) return true;
+            if(id==this.group_form.g13_2) return true;
+            if(id==this.group_form.g14_1) return true;
+            if(id==this.group_form.g14_2) return true;
+            if(id==this.group_form.g15_1) return true;
+            if(id==this.group_form.g15_2) return true;
+            if(id==this.group_form.g16_1) return true;
+            if(id==this.group_form.g16_2) return true;
             return false;
         },
     }

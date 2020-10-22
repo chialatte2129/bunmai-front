@@ -6,25 +6,25 @@
             <div class="match-logo"></div>
             <div class="list-bg">
                 <div class="round-16">
-                    <div class="cell g1-1" :class="game_result_status('g1_1')">{{show_name('g1_1')}}</div>
-                    <div class="cell g2-1" :class="game_result_status('g2_1')">{{show_name('g2_1')}}</div>
-                    <div class="cell g3-1" :class="game_result_status('g3_1')">{{show_name('g3_1')}}</div>
-                    <div class="cell g4-1" :class="game_result_status('g4_1')">{{show_name('g4_1')}}</div>
+                    <div class="cell g9-1" :class="game_result_status('g9_1')">{{show_name('g9_1')}}</div>
+                    <div class="cell g10-1" :class="game_result_status('g10_1')">{{show_name('g10_1')}}</div>
+                    <div class="cell g11-1" :class="game_result_status('g11_1')">{{show_name('g11_1')}}</div>
+                    <div class="cell g12-1" :class="game_result_status('g12_1')">{{show_name('g12_1')}}</div>
                     <div class="space"></div>
-                    <div class="cell g5-1" :class="game_result_status('g5_1')">{{show_name('g5_1')}}</div>
-                    <div class="cell g6-1" :class="game_result_status('g6_1')">{{show_name('g6_1')}}</div>
-                    <div class="cell g7-1" :class="game_result_status('g7_1')">{{show_name('g7_1')}}</div>
-                    <div class="cell g8-1" :class="game_result_status('g8_1')">{{show_name('g8_1')}}</div>
+                    <div class="cell g13-1" :class="game_result_status('g13_1')">{{show_name('g13_1')}}</div>
+                    <div class="cell g14-1" :class="game_result_status('g14_1')">{{show_name('g14_1')}}</div>
+                    <div class="cell g15-1" :class="game_result_status('g15_1')">{{show_name('g15_1')}}</div>
+                    <div class="cell g16-1" :class="game_result_status('g16_1')">{{show_name('g16_1')}}</div>
 
-                    <div class="cell g1-2" :class="game_result_status('g1_2')">{{show_name('g1_2')}}</div>
-                    <div class="cell g2-2" :class="game_result_status('g2_2')">{{show_name('g2_2')}}</div>
-                    <div class="cell g3-2" :class="game_result_status('g3_2')">{{show_name('g3_2')}}</div>
-                    <div class="cell g4-2" :class="game_result_status('g4_2')">{{show_name('g4_2')}}</div>
+                    <div class="cell g9-2" :class="game_result_status('g9_2')">{{show_name('g9_2')}}</div>
+                    <div class="cell g10-2" :class="game_result_status('g10_2')">{{show_name('g10_2')}}</div>
+                    <div class="cell g11-2" :class="game_result_status('g11_2')">{{show_name('g11_2')}}</div>
+                    <div class="cell g12-2" :class="game_result_status('g12_2')">{{show_name('g12_2')}}</div>
                     <div class="space"></div>
-                    <div class="cell g5-2" :class="game_result_status('g5_2')">{{show_name('g5_2')}}</div>
-                    <div class="cell g6-2" :class="game_result_status('g6_2')">{{show_name('g6_2')}}</div>
-                    <div class="cell g7-2" :class="game_result_status('g7_2')">{{show_name('g7_2')}}</div>
-                    <div class="cell g8-2" :class="game_result_status('g8_2')">{{show_name('g8_2')}}</div>
+                    <div class="cell g13-2" :class="game_result_status('g13_2')">{{show_name('g13_2')}}</div>
+                    <div class="cell g14-2" :class="game_result_status('g14_2')">{{show_name('g14_2')}}</div>
+                    <div class="cell g15-2" :class="game_result_status('g15_2')">{{show_name('g15_2')}}</div>
+                    <div class="cell g16-2" :class="game_result_status('g16_2')">{{show_name('g16_2')}}</div>
                 </div>
                 <div class="round-32 round-32-up">
                     <div class="cell g17-1" :class="game_result_status('g17_1')">{{show_name('g17_1')}}</div>
@@ -95,13 +95,14 @@ export default {
             table:{
                 // g1_1:{ id: "00001", group_id: "1", name: "team_01", process: "D", is_win: 0, pos_id: "top"},
             },
+            reload_time:60000,
         }
     },
 
     created(){
         this.getData();
         this.connect_websocket();
-        // this.refresh();
+        this.refresh();
     },
 
     computed:{
@@ -151,6 +152,7 @@ export default {
                 await eventService.get_match_map({match_id:this.$route.params.match_id}).then(res => {
                     if(res.code==1){
                         this.table = res.match_form;
+                        this.reload_time = res.reload_time;
                     }
                 })
             }
@@ -158,8 +160,9 @@ export default {
 
         refresh(){
             setInterval(() => {
+                console.log("refresh");
                 this.getData()
-            }, 5000);
+            }, this.reload_time);
         },    
 
         show_name(game){
