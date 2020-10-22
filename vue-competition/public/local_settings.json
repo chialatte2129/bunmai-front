@@ -111,6 +111,10 @@
         "title": "menus.TS_setting"
     },
     {
+        "index": "TS_setting_16",
+        "title": "menus.TS_setting_16"
+    },
+    {
         "index": "TS_setting_32",
         "title": "menus.TS_setting_32"
     }

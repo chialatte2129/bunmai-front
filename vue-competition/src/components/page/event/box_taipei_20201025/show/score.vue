@@ -94,10 +94,11 @@ export default {
 
     methods:{
         async getData(){
-            if(this.$route.params.match_id){
-                await eventService.show_scoreboard({match_id:this.$route.params.match_id}).then(res => {
+            if(this.$route.params.match_id&&this.$route.params.screen){
+                await eventService.show_scoreboard({match_id:this.$route.params.match_id, screen:this.$route.params.screen}).then(res => {
                     if(res.code==1){
                         this.table = res.table;
+                        console.log(this.table)
                     }
                 })
             }

@@ -7,86 +7,20 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <el-card shadow="hover" body-style="padding:10px" class="mgb10">
-                <div slot="header" class="clearfix">
-                    <span style="font-size:16px;">顯示記分板設定</span>
-                    <el-button type="primary" size="large" icon="el-icon-files" class="card-header-r-btn" :disabled="disabledScoreBoard()" @click="saveScoreBoard(false)"> {{$t('btn.save')}}</el-button>
-                    <el-button type="info" size="large" plain icon="el-icon-connection" class="card-header-btn" @click="getLink('score')"> 取得記分板連結</el-button>
-                    <el-button type="success" size="large" plain class="card-header-btn" @click="saveScoreBoard(true)"> 重置</el-button>
-                </div>
-                <div style="padding:10px;">
-                    <el-form ref="show_scoreboard_form" :model="show_scoreboard_form" label-position="right" label-width="auto">
-                        <el-row>
-                            <el-col :span="9">
-                                <el-form-item label="記分板標題" prop="title">
-                                    <el-select v-model="show_scoreboard_form.title" clearable placeholder="中文翻譯 - 顯示頁面標題" style="width:90%;" @change="scoreboardChange">
-                                        <el-option v-for="option in options.title" :label="`${option.note} - ${option.label}`" :value="option.id" :key="option.id"/>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item v-if="show_scoreboard_form.status=='N'" label="左方組別">
-                                    <el-select v-model="select_scoreboard.left" style="width:90%;" @change="selectScoreboardChange('left')">
-                                        <el-option v-for="option in options.group" :label="`${option.label}`" :value="option.id" :key="option.id" :disabled="selectGroupDisabled(option.id)||selectGroup_disabled"/>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item v-if="show_scoreboard_form.status=='N'" label="右方組別">
-                                    <el-select v-model="select_scoreboard.right" style="width:90%;" @change="selectScoreboardChange('right')">
-                                        <el-option v-for="option in options.group" :label="`${option.label}`" :value="option.id" :key="option.id" :disabled="selectGroupDisabled(option.id)||selectGroup_disabled"/>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item v-if="show_scoreboard_form.status=='F'" label="中央組別">
-                                    <el-select v-model="select_scoreboard.center" style="width:90%;" @change="selectScoreboardChange('center')">
-                                        <el-option v-for="option in options.group" :label="`${option.label}`" :value="option.id" :key="option.id" :disabled="selectGroupDisabled(option.id)||selectGroup_disabled"/>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="15" v-if="show_scoreboard_form.title" style="text-align:center;">
-                                <div class="scoreboard-stauts-N" v-if="show_scoreboard_form.status=='N'">
-                                    <el-col :span="11" class="bg-blue">
-                                        <el-select class="team-selector-N" v-model="show_scoreboard_form.left.top" placeholder="左上隊伍" disabled>
-                                            <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id"/>
-                                        </el-select>
-                                        <el-divider class="division"/>
-                                        <el-select class="team-selector-N" v-model="show_scoreboard_form.left.btm" placeholder="左下隊伍" disabled>
-                                            <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id"/>
-                                        </el-select>
-                                    </el-col>
-                                    <el-col :span="1">
-                                        <el-divider direction="vertical"/>
-                                    </el-col>
-                                    <el-col :span="11" class="bg-red">
-                                        <el-select class="team-selector-N" v-model="show_scoreboard_form.right.top" placeholder="右上隊伍" disabled>
-                                            <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id"/>
-                                        </el-select>
-                                        <el-divider class="division"/>
-                                        <el-select class="team-selector-N" v-model="show_scoreboard_form.right.btm" placeholder="右下隊伍" disabled>
-                                            <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id"/>
-                                        </el-select>
-                                    </el-col>
-                                </div>
-                                <div class="scoreboard-stauts-F" v-else-if="show_scoreboard_form.status=='F'">
-                                    <el-row class="bg-blue">
-                                        <el-select class="team-selector-F" v-model="show_scoreboard_form.center.top" placeholder="上方隊伍" disabled>
-                                            <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id"/>
-                                        </el-select>
-                                    </el-row>
-                                    <el-divider class="division"/>
-                                    <el-row class="bg-red">
-                                        <el-select class="team-selector-F" v-model="show_scoreboard_form.center.btm" placeholder="下方隊伍" disabled>
-                                            <el-option v-for="option in options.teams" :label="`${option.name}`" :value="option.id" :key="option.id"/>
-                                        </el-select>
-                                    </el-row>
-                                </div>
-                                <div v-else>Unknown Status</div>
-                            </el-col>
-                        </el-row>
-                    </el-form>
-                </div>
-            </el-card>
+            <el-row class="mgb10">
+                <el-col :span="12">
+                    <scoreBoard :match_id="match_id" :screen="'1'" style="padding-right:5px;"/>
+                </el-col>
+                <el-col :span="12">
+                    <scoreBoard :match_id="match_id" :screen="'2'" style="padding-left:5px;"/>
+                </el-col>
+            </el-row>
             <el-card shadow="hover" body-style="padding:10px" class="match-data mgb10">
                 <div slot="header" class="clearfix">
                     <span style="font-size:16px;">分數設定</span>
                     <el-button type="warning" size="large" icon="el-icon-refresh" class="card-header-r-btn" @click="refreshMatchData"> 重整</el-button>
-                    <el-button type="info" size="large" plain icon="el-icon-connection" class="card-header-btn" @click="getLink('match')"> 取得對陣圖連結</el-button>
+                    <el-button type="info" size="large" plain icon="el-icon-connection" class="card-header-btn" @click="getLink('match')"> 取得 16 強 對陣圖連結</el-button>
+                    <el-button type="info" size="large" plain icon="el-icon-connection" class="card-header-btn" @click="getLink('match_32')"> 取得 32 強 對陣圖連結</el-button>
                 </div>
                 <div style="padding:10px;text-align:center;">
                     <el-form ref="match_form" :model="match_form" label-position="right" label-width="auto">
@@ -352,7 +286,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="17" class="item" type="primary">
+                                            <el-badge :value="'A'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g17_1')">{{show_name('g17_1')}}</span>
                                                 </el-row>
@@ -365,7 +299,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="18" class="item" type="primary">
+                                            <el-badge :value="'B'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g18_1')">{{show_name('g18_1')}}</span>
                                                 </el-row>
@@ -382,7 +316,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="19" class="item" type="primary">
+                                            <el-badge :value="'C'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g19_1')">{{show_name('g19_1')}}</span>
                                                 </el-row>
@@ -395,7 +329,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="20" class="item" type="primary">
+                                            <el-badge :value="'D'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g20_1')">{{show_name('g20_1')}}</span>
                                                 </el-row>
@@ -414,7 +348,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="21" class="item" type="primary">
+                                            <el-badge :value="'E'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g21_1')">{{show_name('g21_1')}}</span>
                                                 </el-row>
@@ -427,7 +361,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="22" class="item" type="primary">
+                                            <el-badge :value="'F'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g22_1')">{{show_name('g22_1')}}</span>
                                                 </el-row>
@@ -444,7 +378,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="23" class="item" type="primary">
+                                            <el-badge :value="'G'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g23_1')">{{show_name('g23_1')}}</span>
                                                 </el-row>
@@ -457,7 +391,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="24" class="item" type="primary">
+                                            <el-badge :value="'H'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g24_1')">{{show_name('g24_1')}}</span>
                                                 </el-row>
@@ -478,7 +412,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="25" class="item" type="danger">
+                                            <el-badge :value="'I'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g25_1')">{{show_name('g25_1')}}</span>
                                                 </el-row>
@@ -491,7 +425,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="26" class="item" type="danger">
+                                            <el-badge :value="'J'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g26_1')">{{show_name('g26_1')}}</span>
                                                 </el-row>
@@ -508,7 +442,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="27" class="item" type="danger">
+                                            <el-badge :value="'K'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g27_1')">{{show_name('g27_1')}}</span>
                                                 </el-row>
@@ -521,7 +455,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="28" class="item" type="danger">
+                                            <el-badge :value="'L'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g28_1')">{{show_name('g28_1')}}</span>
                                                 </el-row>
@@ -540,7 +474,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="29" class="item" type="danger">
+                                            <el-badge :value="'M'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g29_1')">{{show_name('g29_1')}}</span>
                                                 </el-row>
@@ -553,7 +487,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="30" class="item" type="danger">
+                                            <el-badge :value="'N'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g30_1')">{{show_name('g30_1')}}</span>
                                                 </el-row>
@@ -570,7 +504,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="31" class="item" type="danger">
+                                            <el-badge :value="'O'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g31_1')">{{show_name('g31_1')}}</span>
                                                 </el-row>
@@ -583,7 +517,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="32" class="item" type="danger">
+                                            <el-badge :value="'P'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g32_1')">{{show_name('g32_1')}}</span>
                                                 </el-row>
@@ -614,7 +548,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="17" class="item" type="primary">
+                                            <el-badge :value="'A'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g17_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g17_1')" @change="createGroupSetting(group_form.g17_1, '17', 'top')">
@@ -632,7 +566,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="18" class="item" type="primary">
+                                            <el-badge :value="'B'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g18_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g18_1')" @change="createGroupSetting(group_form.g18_1, '18', 'top')">
@@ -654,7 +588,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="19" class="item" type="primary">
+                                            <el-badge :value="'C'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g19_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g19_1')" @change="createGroupSetting(group_form.g19_1, '19', 'top')">
@@ -672,7 +606,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="20" class="item" type="primary">
+                                            <el-badge :value="'D'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g20_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g20_1')" @change="createGroupSetting(group_form.g20_1, '20', 'top')">
@@ -696,7 +630,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="21" class="item" type="primary">
+                                            <el-badge :value="'E'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g21_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g21_1')" @change="createGroupSetting(group_form.g21_1, '21', 'top')">
@@ -714,7 +648,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="22" class="item" type="primary">
+                                            <el-badge :value="'F'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g22_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g22_1')" @change="createGroupSetting(group_form.g22_1, '22', 'top')">
@@ -736,7 +670,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="23" class="item" type="primary">
+                                            <el-badge :value="'G'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g23_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g23_1')" @change="createGroupSetting(group_form.g23_1, '23', 'top')">
@@ -754,7 +688,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="24" class="item" type="primary">
+                                            <el-badge :value="'H'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <el-select class="team-selector-N" v-model="group_form.g24_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g24_1')" @change="createGroupSetting(group_form.g24_1, '24', 'top')">
@@ -780,7 +714,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="25" class="item" type="danger">
+                                            <el-badge :value="'I'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g25_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g25_1')" @change="createGroupSetting(group_form.g25_1, '25', 'top')">
@@ -798,7 +732,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="26" class="item" type="danger">
+                                            <el-badge :value="'J'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g26_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g26_1')" @change="createGroupSetting(group_form.g26_1, '26', 'top')">
@@ -820,7 +754,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="27" class="item" type="danger">
+                                            <el-badge :value="'K'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g27_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g27_1')" @change="createGroupSetting(group_form.g27_1, '27', 'top')">
@@ -838,7 +772,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="28" class="item" type="danger">
+                                            <el-badge :value="'L'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g28_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g28_1')" @change="createGroupSetting(group_form.g28_1, '28', 'top')">
@@ -862,7 +796,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="29" class="item" type="danger">
+                                            <el-badge :value="'M'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g29_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g29_1')" @change="createGroupSetting(group_form.g29_1, '29', 'top')">
@@ -880,7 +814,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="30" class="item" type="danger">
+                                            <el-badge :value="'N'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g30_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g30_1')" @change="createGroupSetting(group_form.g30_1, '30', 'top')">
@@ -902,7 +836,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="31" class="item" type="danger">
+                                            <el-badge :value="'O'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g31_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g31_1')" @change="createGroupSetting(group_form.g31_1, '31', 'top')">
@@ -920,7 +854,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="32" class="item" type="danger">
+                                            <el-badge :value="'P'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <el-select class="team-selector-N" v-model="group_form.g32_1" clearable filterable 
                                                     :disabled="groupSettingDisabled('g32_1')" @change="createGroupSetting(group_form.g32_1, '32', 'top')">
@@ -1011,11 +945,13 @@
 </template>
 <script>
 import teamManage from "./team_manage.vue";
+import scoreBoard from "./score_board.vue";
 import { eventService } from "@/_services";
 export default {
     name:"TS_setting_32",
     components: {
-        teamManage
+        teamManage,
+        scoreBoard
     },
 
     data(){
@@ -1030,20 +966,7 @@ export default {
             editDestinationGroup:"",
             editDestinationRound:null,
             editDestinationPosition:"",
-            selectGroup_disabled:false,
             unknown_value:[null, "", undefined], 
-            show_scoreboard_form:{
-                title:"",
-                status:"",
-                left:{ top:"", btm:"", },
-                right:{ top:"", btm:"", },
-                center:{ top:"", btm:"", }
-            },
-            select_scoreboard:{
-                left:"",
-                right:"",
-                center:"",
-            },
             group_disabled:true,
             group_lock:true,
             group_form:{},
@@ -1077,10 +1000,8 @@ export default {
     },
 
     created(){
-        this.getTitle();
         this.getGroupSetting();
         this.refreshMatchData();
-        this.getScoreBoard();
     },
 
     methods:{
@@ -1163,6 +1084,7 @@ export default {
                             this.refreshMatchData();
                             this.$message.success(res.msg);
                             this.group_lock=true;
+                            this.group_disabled=true;
                             this.cancelEditScore();
                         }else{
                             this.$message.warning(res.msg);
@@ -1209,16 +1131,6 @@ export default {
             return false;
         },
 
-        async getTitle(){
-            await eventService.get_title({match_id:this.match_id}).then(res => {
-                if(res.code==1){
-                    this.options.title = res.title;
-                }else{
-                    this.$message.warning(res.msg);
-                }
-            })
-        },
-
         refreshMatchData(){
             const loading = this.startLoading('.match-data');
             eventService.get_match_map({match_id:this.match_id}).then(res => {
@@ -1252,101 +1164,6 @@ export default {
                 return {win:this.match_form[game].is_win&&this.match_form[game].process=="F", lose:!this.match_form[game].is_win&&this.match_form[game].process=="F"};
             }
             return ;
-        },
-
-        disabledScoreBoard(){
-            if(this.unknown_value.includes(this.show_scoreboard_form.title)) return true;
-            if(this.show_scoreboard_form.status=="N"){
-                if(this.unknown_value.includes(this.show_scoreboard_form.left.top)) return true;
-                if(this.unknown_value.includes(this.show_scoreboard_form.left.btm)) return true;
-                if(this.unknown_value.includes(this.show_scoreboard_form.right.top)) return true;
-                if(this.unknown_value.includes(this.show_scoreboard_form.right.btm)) return true;
-            }
-            if(this.show_scoreboard_form.status=="F"){
-                if(this.unknown_value.includes(this.show_scoreboard_form.center.top)) return true;
-                if(this.unknown_value.includes(this.show_scoreboard_form.center.btm)) return true;
-            }
-            return false;
-        },
-
-        async getScoreBoard(){
-            await eventService.get_scoreboard_setting({match_id:this.match_id}).then(res => {
-                if(res.code==1){
-                    this.show_scoreboard_form = res.scoreboard;
-                    this.select_scoreboard = res.select;
-                    if(!this.unknown_value.includes(this.show_scoreboard_form.title)){
-                        this.getGroups();
-                    }
-                }else{
-                    this.$message.warning(res.msg);
-                }
-            })
-        },
-
-        saveScoreBoard(status){
-            eventService.save_scoreboard_setting({match_id:this.match_id, scoreboard:this.show_scoreboard_form, is_reset:status}).then(res => {
-                if(res.code==1){
-                    this.$message.success(res.msg);
-                    if(status){
-                        this.resetScoreboard();
-                        this.show_scoreboard_form.title = "";
-                        this.show_scoreboard_form.status = "";
-                    }
-                }else{
-                    this.$message.warning(res.msg);
-                }
-            })
-        },
-
-        resetScoreboard(){
-            this.show_scoreboard_form.left = { top:"", btm:"" };
-            this.show_scoreboard_form.right = { top:"", btm:"" };
-            this.show_scoreboard_form.center = { top:"", btm:"" };
-            this.select_scoreboard = {
-                left:"",
-                right:"",
-                center:"",
-            };
-        },
-
-        async scoreboardChange(){
-            this.resetScoreboard();
-            this.show_scoreboard_form.status = (this.unknown_value.includes(this.show_scoreboard_form.title))?"":this.options.title[this.show_scoreboard_form.title].status;
-            if(!this.unknown_value.includes(this.show_scoreboard_form.title)){
-                await this.getGroups();
-            }
-        },
-
-        async getGroups(){
-            this.selectGroup_disabled=true;
-            await eventService.get_group_option({match_id:this.match_id, title_id:this.show_scoreboard_form.title}).then(res => {
-                if(res.code==1){
-                    this.options.group = res.group;
-                }else{
-                    this.$message.warning(res.msg);
-                }
-            })
-            this.selectGroup_disabled=false;
-        },
-
-        selectScoreboardChange(pos){
-            if(pos=="left"){
-                this.show_scoreboard_form.left.top = this.options.group[this.select_scoreboard.left].top;
-                this.show_scoreboard_form.left.btm = this.options.group[this.select_scoreboard.left].btm;
-            }else if(pos=="right"){
-                this.show_scoreboard_form.right.top = this.options.group[this.select_scoreboard.right].top;
-                this.show_scoreboard_form.right.btm = this.options.group[this.select_scoreboard.right].btm;
-            }else if(pos=="center"){
-                this.show_scoreboard_form.center.top = this.options.group[this.select_scoreboard.center].top;
-                this.show_scoreboard_form.center.btm = this.options.group[this.select_scoreboard.center].btm;
-            }
-        },
-
-        selectGroupDisabled(id){
-            if(id==this.select_scoreboard.left) return true;
-            if(id==this.select_scoreboard.right) return true;
-            if(id==this.select_scoreboard.center) return true;
-            return false;
         },
 
         teamSelectDisabled(id){
@@ -1417,16 +1234,6 @@ export default {
         position:relative;
         float:right;
         margin:-10px 10px 0 0;
-    }
-    .scoreboard-stauts-N >>> .el-divider--vertical{
-        width:1px;
-        height:105px;
-    }
-    .scoreboard-stauts-N >>> .el-divider--horizontal{
-        margin:0;
-    }
-    .scoreboard-stauts-F >>> .el-divider--horizontal{
-        margin:0;
     }
     .team-selector-N{
         width:90%;

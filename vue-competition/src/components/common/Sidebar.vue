@@ -145,6 +145,7 @@ export default {
                     title: this.$t("menus.event_box_taipei_20201025"),
                     show: this.includeSubMenu([
                         "TS_setting",
+                        "TS_setting_16",
                         "TS_setting_32",
                         "DT_setting",
                         "OK_setting",
@@ -155,6 +156,12 @@ export default {
                             index: "TS_setting",
                             title: this.$t("menus.TS_setting"),
                             show: this.hasThisMenu("TS_setting")
+                        },
+                        {
+                            icon: "el-icon-loading",
+                            index: "TS_setting_16",
+                            title: this.$t("menus.TS_setting_16"),
+                            show: this.hasThisMenu("TS_setting_16")
                         },
                         {
                             icon: "el-icon-loading",

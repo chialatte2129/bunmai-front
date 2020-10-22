@@ -16,7 +16,12 @@ export default new Router({
             meta: { title: 'Box Taipei 20201025 Match' }
         },
         {
-            path: '/public/event/box_taipei/score/:match_id',
+            path: '/public/event/box_taipei/match_32/:match_id',
+            component: () => import('../components/page/event/box_taipei_20201025/show/match_32'),
+            meta: { title: 'Box Taipei 20201025 Match 32' }
+        },
+        {
+            path: '/public/event/box_taipei/scoreboard/:match_id/:screen',
             component: () => import('../components/page/event/box_taipei_20201025/show/score'),
             meta: { title: 'Box Taipei 20201025 Score' }
         },
@@ -72,6 +77,11 @@ export default new Router({
                 {
                     path: '/ts_setting',
                     component: () => import('../components/page/event/box_taipei_20201025/back/TS_setting'),
+                    meta: { title: 'Test Setting' }
+                },
+                {
+                    path: '/ts_setting_16',
+                    component: () => import('../components/page/event/box_taipei_20201025/back/TS_setting_16'),
                     meta: { title: 'Box Taipei 20201025 [16] Test Setting' }
                 },
                 {

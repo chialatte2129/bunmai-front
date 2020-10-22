@@ -104,7 +104,8 @@ export const messages = {
 
 
             event_box_taipei_20201025:"Box Taipei 2020 錦標賽",
-            TS_setting:"TEST 設定 16",
+            TS_setting:"TEST 設定",
+            TS_setting_16:"TEST 設定 16",
             TS_setting_32:"TEST 設定 32",
             DT_setting:"DoubleTap 設定",
             OK_setting:"OverKill  設定",
@@ -482,7 +483,8 @@ export const messages = {
 
             
             event_box_taipei_20201025:"Box Taipei 2020 championship",
-            TS_setting:"TEST Setting 16",
+            TS_setting:"TEST Setting",
+            TS_setting_16:"TEST Setting 16",
             TS_setting_32:"TEST Setting 32",
             DT_setting:"DoubleTap Setting",
             OK_setting:"OverKill  Setting",
