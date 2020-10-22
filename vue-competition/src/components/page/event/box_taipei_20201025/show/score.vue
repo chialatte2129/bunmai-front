@@ -99,12 +99,11 @@ export default {
                 const ws = new WebSocket("wss://gaming-ws.varlivebox.com/");
                 this.setSocket(ws);
             }catch(err){ 
-                console.log(err); 
-                this.setSocket(ws);
-            } 
+                console.log(err);
+            }
         },
 
-        setSocket(websocket) {
+        setSocket(websocket){
             var heartCheck = {
                 timeout: 5000, //重連時間
                 timeoutObj: null,
@@ -127,10 +126,10 @@ export default {
             };
             websocket.onclose = function(evnt) {
                 console.log('斷線');
-                //连接关闭启动定时任务 五秒后在创建
+                //連接關閉啟動定時任務 五秒後在創建
                 heartCheck.start();
             }
-        },   
+        },
         
         async getData(){
             if(this.$route.params.match_id&&this.$route.params.screen){
