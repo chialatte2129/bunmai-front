@@ -96,15 +96,41 @@ export default {
     methods:{
         connect_websocket(){ 
             try{ 
-                const ws = new WebSocket("wss://gaming-ws.varlivebox.com/"); 
-                ws.onmessage = ({data}) => { 
-                    console.log("new message");
-                    this.getData();
-                }
+                const ws = new WebSocket("wss://gaming-ws.varlivebox.com/");
+                this.setSocket(ws);
             }catch(err){ 
                 console.log(err); 
+                this.setSocket(ws);
             } 
         },
+
+        setSocket(websocket) {
+            var heartCheck = {
+                timeout: 5000, //重連時間
+                timeoutObj: null,
+                start: ()=>{
+                    this.timeoutObj = setTimeout(()=>{
+                        console.log("斷線重連");
+                        this.connect_websocket(); //重新創建連線 websocket
+                    }, this.timeout)
+                }
+            }
+            websocket.onopen = function(evnt) {
+                console.log('連線建立');
+            };
+            websocket.onmessage = ({data}) => { 
+                console.log("new message");
+                this.getData();
+            }
+            websocket.onerror = function(evnt) {
+                console.log('錯誤');
+            };
+            websocket.onclose = function(evnt) {
+                console.log('斷線');
+                //连接关闭启动定时任务 五秒后在创建
+                heartCheck.start();
+            }
+        },   
         
         async getData(){
             if(this.$route.params.match_id&&this.$route.params.screen){
