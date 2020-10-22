@@ -85,6 +85,7 @@ export default {
 
     created(){
         this.getData();
+        this.connect_websocket();
         // this.refresh();
     },
 
@@ -93,6 +94,18 @@ export default {
     },
 
     methods:{
+        connect_websocket(){ 
+            try{ 
+                const ws = new WebSocket("wss://gaming-ws.varlivebox.com/"); 
+                ws.onmessage = ({data}) => { 
+                    console.log("new message");
+                    this.getData();
+                }
+            }catch(err){ 
+                console.log(err); 
+            } 
+        },
+        
         async getData(){
             if(this.$route.params.match_id&&this.$route.params.screen){
                 await eventService.show_scoreboard({match_id:this.$route.params.match_id, screen:this.$route.params.screen}).then(res => {
