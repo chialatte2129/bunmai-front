@@ -12,7 +12,7 @@
                     <el-option
                     v-for="item in options.matchs"
                     :key="item.keystr"
-                    :label="item.keystr"
+                    :label="item.keystr+' , '+item.description"
                     :value="item.keystr">
                     </el-option>
                 </el-select>
