@@ -24,13 +24,13 @@
                 </el-button>
             </div>
             <div class="mgt10">
-                <testTree16 v-if="team_count==16" :match_id="match_id"></testTree16>
-                <testTree32 v-if="team_count==32" :match_id="match_id" ></testTree32>
+                <testTree16 v-if="confirm_count==16" :match_id="confirm_match"></testTree16>
+                <testTree32 v-if="confirm_count==32" :match_id="confirm_match" ></testTree32>
             </div>
         </div>
         <el-dialog title="新增競賽" :visible.sync="createView" width="500px" center :close-on-click-modal="false" class="edit-Dialog">
             <div style="margin-top:10px;">
-                <el-form label-position="left" label-width="80px">
+                <el-form label-position="left" label-width="150px">
                     <el-form-item label="競賽名稱">
                         <el-input type="text" v-model="form.match_name"></el-input>
                     </el-form-item>
@@ -39,6 +39,16 @@
                             <el-option :key="32" label="32組" :value="32"></el-option>
                             <el-option :key="16" label="16組" :value="16"></el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="自動新增隊伍">
+                        <el-switch
+                        style="display: block"
+                        v-model="form.is_auto_gen_team"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949"
+                        active-text="自動"
+                        inactive-text="手動">
+                        </el-switch>
                     </el-form-item>
                 </el-form>
             </div>
@@ -65,12 +75,15 @@ export default {
             createView:false,
             match_id:"",
             team_count:0,
+            confirm_match:"",
+            confirm_count:0,
             options:{
                 matchs:[]
             },
             form:{
                 match_type:"",
-                match_name:""
+                match_name:"",
+                is_auto_gen_team:true,
             }
         }
     },
@@ -97,11 +110,13 @@ export default {
                 return this.$message.warning("請輸入選擇賽制");
             };
             eventService
-            .create_test_match(this.form.match_name,this.form.match_type)
+            .create_test_match(this.form.match_name,this.form.match_type,this.form.is_auto_gen_team)
             .then(res => {
                 if(res.code==1){
                     this.match_id = res.match_name;
                     this.team_count = res.match_type;
+                    this.confirm_match = res.match_name;
+                    this.confirm_count = res.match_type;
                     this.getOptions();
                     this.createView=false;
                 }else{
@@ -112,16 +127,25 @@ export default {
         handleClean(){
             this.team_count = 0;
             this.match_id = "";
+            this.confirm_match = 0;
+            this.confirm_count = "";
         },
         handleCreate(){
+            this.handleClean();
             this.form.match_name="";
             this.form.match_type="";
             this.createView=true;
         },
         handleSelectMatch(){
             console.log("change");
+            this.confirm_match = "";
+            this.confirm_count = 0;
+
             var select_index = this.options.matchs.map(function(e) { return e.keystr }).indexOf(this.match_id);
             this.team_count = this.options.matchs[select_index].content.max_teams;
+
+            this.confirm_match = this.match_id;
+            this.confirm_count = this.team_count;
         },
         getOptions(){
             eventService
