@@ -952,7 +952,6 @@ export default {
     },
     data(){
         return {
-            match_id:"MATCH-TS-2020-10-25-32",
             scoreFormKey:0,
             scoreboardKey:0,
             thirtyTwoKey:0,
