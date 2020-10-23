@@ -201,7 +201,7 @@ export default {
         margin: 0;
         width: 1920px;
         height: 1080px;
-        background: url("board/bg.jpg") no-repeat top center;
+        // background: url("board/bg.jpg") no-repeat top center;
         background-size: contain;
         background-position: center;
         display: block;
