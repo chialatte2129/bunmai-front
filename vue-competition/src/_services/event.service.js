@@ -174,10 +174,11 @@ function get_match_options(){
 	})
 }
 
-function create_test_match(match_name,match_type){
+function create_test_match(match_name,match_type,is_gen_teams){
 	var params={
 		"match_name":match_name,
-		"match_type":match_type
+		"match_type":match_type,
+		"is_gen_teams":is_gen_teams
 	}
     return new Promise((resolve, reject) => {
 		axios.post(process.env.VUE_APP_API+'/gaming/v1/event/test/create_new_match', params).then((resp) => {
