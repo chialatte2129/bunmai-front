@@ -33,23 +33,27 @@
                     <div class="cell g21-1" :class="game_result_status('g21_1')">{{show_name('g21_1')}}</div>
                     <div class="cell g22-1" :class="game_result_status('g22_1')">{{show_name('g22_1')}}</div>
                     <div class="space-l"></div>
-                    <div class="cell g25-1" :class="game_result_status('g25_1')">{{show_name('g25_1')}}</div>
-                    <div class="cell g26-1" :class="game_result_status('g26_1')">{{show_name('g26_1')}}</div>
+                  
+                    <div class="cell g27-1" :class="game_result_status('g27_1')">{{show_name('g27_1')}}</div>
+                    <div class="cell g28-1" :class="game_result_status('g28_1')">{{show_name('g28_1')}}</div>
                     <div class="space-s"></div>
-                    <div class="cell g29-1" :class="game_result_status('g29_1')">{{show_name('g29_1')}}</div>
-                    <div class="cell g30-1" :class="game_result_status('g30_1')">{{show_name('g30_1')}}</div>
+                  
+                          <div class="cell g31-1" :class="game_result_status('g31_1')">{{show_name('g31_1')}}</div>
+                    <div class="cell g32-1" :class="game_result_status('g32_1')">{{show_name('g32_1')}}</div>
                     <div style="clear: both;"></div>
                     <div class="cell g17-2" :class="game_result_status('g17_2')">{{show_name('g17_2')}}</div>
                     <div class="cell g18-2" :class="game_result_status('g18_2')">{{show_name('g18_2')}}</div>
                     <div class="space-s"></div>
-                    <div class="cell g21-2" :class="game_result_status('g22_2')">{{show_name('g22_2')}}</div>
+                    <div class="cell g21-2" :class="game_result_status('g21_2')">{{show_name('g21_2')}}</div>
                     <div class="cell g22-2" :class="game_result_status('g22_2')">{{show_name('g22_2')}}</div>
                     <div class="space-l"></div>
-                    <div class="cell g25-2" :class="game_result_status('g25_2')">{{show_name('g25_2')}}</div>
-                    <div class="cell g26-2" :class="game_result_status('g26_2')">{{show_name('g26_2')}}</div>
+                    <div class="cell g27-2" :class="game_result_status('g27_2')">{{show_name('g27_2')}}</div>
+                    <div class="cell g28-2" :class="game_result_status('g28_2')">{{show_name('g28_2')}}</div>
+                    
                     <div class="space-s"></div>
-                    <div class="cell g29-2" :class="game_result_status('g29_2')">{{show_name('g29_2')}}</div>
-                    <div class="cell g30-2" :class="game_result_status('g30_2')">{{show_name('g30_2')}}</div>
+                  
+                        <div class="cell g31-2" :class="game_result_status('g31_2')">{{show_name('g31_2')}}</div>
+                     <div class="cell g32-2" :class="game_result_status('g32_2')">{{show_name('g32_2')}}</div>
                 </div>
                 <div class="round-32 round-32-down">
                     <div class="cell g19-1" :class="game_result_status('g19_1')">{{show_name('g19_1')}}</div>
@@ -58,11 +62,12 @@
                     <div class="cell g23-1" :class="game_result_status('g23_1')">{{show_name('g23_1')}}</div>
                     <div class="cell g24-1" :class="game_result_status('g24_1')">{{show_name('g24_1')}}</div>
                     <div class="space-l"></div>
-                    <div class="cell g27-1" :class="game_result_status('g27_1')">{{show_name('g27_1')}}</div>
-                    <div class="cell g28-1" :class="game_result_status('g28_1')">{{show_name('g28_1')}}</div>
+                      <div class="cell g25-1" :class="game_result_status('g25_1')">{{show_name('g25_1')}}</div>
+                       <div class="cell g26-1" :class="game_result_status('g26_1')">{{show_name('g26_1')}}</div>
+                   
                     <div class="space-s"></div>
-                    <div class="cell g31-1" :class="game_result_status('g31_1')">{{show_name('g31_1')}}</div>
-                    <div class="cell g32-1" :class="game_result_status('g32_1')">{{show_name('g32_1')}}</div>
+                <div class="cell g29-1" :class="game_result_status('g29_1')">{{show_name('g29_1')}}</div>
+                    <div class="cell g30-1" :class="game_result_status('g30_1')">{{show_name('g30_1')}}</div>
                     <div style="clear: both;"></div>
                     <div class="cell g19-2" :class="game_result_status('g19_2')">{{show_name('g19_2')}}</div>
                     <div class="cell g20-2" :class="game_result_status('g20_2')">{{show_name('g20_2')}}</div>
@@ -70,11 +75,13 @@
                     <div class="cell g23-2" :class="game_result_status('g23_2')">{{show_name('g23_2')}}</div>
                     <div class="cell g24-2" :class="game_result_status('g24_2')">{{show_name('g24_2')}}</div>
                     <div class="space-l"></div>
-                    <div class="cell g27-2" :class="game_result_status('g27_2')">{{show_name('g27_2')}}</div>
-                    <div class="cell g28-2" :class="game_result_status('g28_2')">{{show_name('g28_2')}}</div>
+                    
+                    <div class="cell g25-2" :class="game_result_status('g25_2')">{{show_name('g25_2')}}</div>
+                    <div class="cell g26-2" :class="game_result_status('g26_2')">{{show_name('g26_2')}}</div>
                     <div class="space-s"></div>
-                    <div class="cell g31-2" :class="game_result_status('g31_2')">{{show_name('g31_2')}}</div>
-                    <div class="cell g32-2" :class="game_result_status('g32_2')">{{show_name('g32_2')}}</div>
+                  <div class="cell g29-2" :class="game_result_status('g29_2')">{{show_name('g29_2')}}</div>
+                  <div class="cell g30-2" :class="game_result_status('g30_2')">{{show_name('g30_2')}}</div>
+                   
                 </div>
             </div>
             <div class="bottom-line"></div>
