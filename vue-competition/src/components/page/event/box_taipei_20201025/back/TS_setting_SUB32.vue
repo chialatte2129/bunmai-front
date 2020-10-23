@@ -280,7 +280,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'A'" class="item" type="primary">
+                                            <el-badge :value="'17 [ A ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g17_1')">{{show_name('g17_1')}}</span>
                                                 </el-row>
@@ -293,7 +293,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'B'" class="item" type="primary">
+                                            <el-badge :value="'18 [ B ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g18_1')">{{show_name('g18_1')}}</span>
                                                 </el-row>
@@ -310,7 +310,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'C'" class="item" type="primary">
+                                            <el-badge :value="'19 [ C ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g19_1')">{{show_name('g19_1')}}</span>
                                                 </el-row>
@@ -323,7 +323,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'D'" class="item" type="primary">
+                                            <el-badge :value="'20 [ D ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g20_1')">{{show_name('g20_1')}}</span>
                                                 </el-row>
@@ -342,7 +342,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'E'" class="item" type="primary">
+                                            <el-badge :value="'21 [ E ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g21_1')">{{show_name('g21_1')}}</span>
                                                 </el-row>
@@ -355,7 +355,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'F'" class="item" type="primary">
+                                            <el-badge :value="'22 [ F ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g22_1')">{{show_name('g22_1')}}</span>
                                                 </el-row>
@@ -372,7 +372,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'G'" class="item" type="primary">
+                                            <el-badge :value="'23 [ G ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g23_1')">{{show_name('g23_1')}}</span>
                                                 </el-row>
@@ -385,7 +385,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'H'" class="item" type="primary">
+                                            <el-badge :value="'24 [ H ]'" class="item" type="primary">
                                                 <el-row class="bg-blue">
                                                     <span class="match-final-name" :class="result_status('g24_1')">{{show_name('g24_1')}}</span>
                                                 </el-row>
@@ -406,7 +406,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'I'" class="item" type="danger">
+                                            <el-badge :value="'25 [ I ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g25_1')">{{show_name('g25_1')}}</span>
                                                 </el-row>
@@ -419,7 +419,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'J'" class="item" type="danger">
+                                            <el-badge :value="'26 [ J ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g26_1')">{{show_name('g26_1')}}</span>
                                                 </el-row>
@@ -436,7 +436,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'K'" class="item" type="danger">
+                                            <el-badge :value="'27 [ K ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g27_1')">{{show_name('g27_1')}}</span>
                                                 </el-row>
@@ -449,7 +449,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'L'" class="item" type="danger">
+                                            <el-badge :value="'28 [ L ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g28_1')">{{show_name('g28_1')}}</span>
                                                 </el-row>
@@ -468,7 +468,7 @@
                                 <el-col :span="11">
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'M'" class="item" type="danger">
+                                            <el-badge :value="'29 [ M ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g29_1')">{{show_name('g29_1')}}</span>
                                                 </el-row>
@@ -481,7 +481,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'N'" class="item" type="danger">
+                                            <el-badge :value="'30 [ N ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g30_1')">{{show_name('g30_1')}}</span>
                                                 </el-row>
@@ -498,7 +498,7 @@
                                     </el-col>
                                     <el-col :span="11">
                                         <div style="position:relative;">
-                                            <el-badge :value="'O'" class="item" type="danger">
+                                            <el-badge :value="'31 [ O ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g31_1')">{{show_name('g31_1')}}</span>
                                                 </el-row>
@@ -511,7 +511,7 @@
                                         </div>
                                         </br>
                                         <div style="position:relative;">
-                                            <el-badge :value="'P'" class="item" type="danger">
+                                            <el-badge :value="'32 [ P ]'" class="item" type="danger">
                                                 <el-row class="bg-red">
                                                     <span class="match-final-name" :class="result_status('g32_1')">{{show_name('g32_1')}}</span>
                                                 </el-row>
