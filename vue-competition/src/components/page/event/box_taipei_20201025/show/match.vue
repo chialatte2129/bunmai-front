@@ -93,7 +93,7 @@ export default {
     methods:{
         connect_websocket(){ 
             try{ 
-                const ws = new WebSocket("wss://gaming-ws.varlivebox.com/");
+                const ws = new WebSocket(process.env.VUE_APP_WS);
                 this.setSocket(ws);
             }catch(err){ 
                 console.log(err);
