@@ -10,7 +10,7 @@
     </div>
     <div class="container">
       <div class="handle-box">
-        <el-button type="success" icon="search" @click="new_user" style="margin-right:20px;">{{$t('btn.new')}}</el-button>
+        <!-- <el-button type="success" icon="search" @click="new_user" style="margin-right:20px;">{{$t('btn.new')}}</el-button> -->
         <el-input clearable v-model="filter.account" :placeholder="$t('account.input_account')" class="handle-filter-account mr10"></el-input>
         <el-input clearable v-model="filter.alias" :placeholder="$t('account.input_alias')" class="handle-filter-alias mr10"></el-input>
         <el-button type="primary" icon="search" @click="search">{{$t('btn.search')}}</el-button>
@@ -69,16 +69,16 @@
       :show-close="false">
       <el-form ref="form" :model="form" label-width="auto" :rules="computed_rules()">
         <el-form-item :label="$t('table_title.account')" prop="username">
-          <el-input v-model="form.username" :readonly="!is_newdata" autocomplete="off"></el-input>
+          <el-input v-model="form.username" :disabled="form.is_odoo_user==1" :readonly="!is_newdata" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item :label="$t('table_title.last_name')" prop="last_name">
-          <el-input v-model="form.last_name" autocomplete="off"></el-input>
+          <el-input v-model="form.last_name" :disabled="form.is_odoo_user==1" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item :label="$t('table_title.info')">
-          <el-input v-model="form.info" autocomplete="off"></el-input>
+          <el-input v-model="form.info" :disabled="form.is_odoo_user==1" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item :label="$t('table_title.email')">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
+          <el-input v-model="form.email" :disabled="form.is_odoo_user==1" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item :label="$t('account.input_new_pass')" prop="new_pass" v-if="is_newdata">
           <el-input type="password" v-model="form.new_pass" autocomplete="off"></el-input>
@@ -152,7 +152,8 @@ export default {
         last_name: "",
         new_pass: "",
         confirm_pass: "",
-        info:""
+        info:"",
+        is_odoo_user:0
       },
       idx: -1,
       local_settings: "/local_settings.json",
@@ -372,7 +373,8 @@ export default {
         last_name: item.last_name,
         email: item.email,
         roles: item.roles_id,
-        info: item.info
+        info: item.info,
+        is_odoo_user:item.is_odoo_user
       };
       if (this.form.roles.trim() != "") {
         this.roles_select = this.form.roles.split(",");

@@ -71,15 +71,20 @@ export default {
             .login(this.ruleForm.username,scr_pass)
             .then(function(result) {
               if (result.msg_code == 1) {
+                var menus = ["dictionary_setting","role_edit","user_edit"];
                 localStorage.setItem("ms_user_id", result.data.account_id);
+                localStorage.setItem("ms_odoo_token",scr_pass);
                 localStorage.setItem("ms_user_token", result.data.token);
                 localStorage.setItem("ms_username", result.data.username);
                 localStorage.setItem("ms_user_fullname", result.data.user_full_name);
                 localStorage.setItem("ms_is_admin", result.data.is_admin);  
+                localStorage.setItem("ms_is_odoo", result.data.is_odoo_user);  
+                localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);  
                 localStorage.setItem("ms_user_menus", result.data.user_menus); 
                 localStorage.setItem("ms_user_actions", result.data.user_actions);
                 console.log('menus =',result.data.user_menus)
                 console.log('actions =',result.data.user_actions)
+                console.log("is_odoo_user = ",result.data.is_odoo_user==1)
                 if (result.data.user_menus.length > 0) {
                   localStorage.setItem(
                     "ms_user_home",
@@ -87,11 +92,8 @@ export default {
                   );
                 } else {
                   localStorage.setItem("ms_user_home", "/");
-                }
-                // if (myFun.isMobile()) {                  
-                //    localStorage.setItem("ms_user_home","/mobile/home");                   
-                // }
-                // console.log("isMobile=",myFun.isMobile(),"go home=", localStorage.getItem("ms_user_home"));           
+                } 
+                
                 console.log('go home =',localStorage.getItem("ms_user_home"))                                 
                 router.push(localStorage.getItem("ms_user_home"));
               } else {
@@ -115,7 +117,7 @@ export default {
           return false;
         }
       });
-    },
+    }
   }
 };
 </script>

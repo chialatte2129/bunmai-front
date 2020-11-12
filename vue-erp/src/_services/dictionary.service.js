@@ -14,7 +14,7 @@ function get_category_tree() {
       'action': 'get_dict_category_tree'
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/dict_tree', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/dict_tree', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -29,7 +29,7 @@ function update_dict_content(token,dict_content) {
       'content': dict_content
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/save_dictionary', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/save_dictionary', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -44,7 +44,7 @@ function delete_dict_by_key(token,keystr) {
       'keystr' : keystr
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/delete_dictionary', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/delete_dictionary', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -59,7 +59,7 @@ function get_setting_by_key(keystr) {
       'keystr' : keystr
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/get_dictionary', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/get_dictionary', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)

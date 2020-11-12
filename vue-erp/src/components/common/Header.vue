@@ -4,19 +4,12 @@
     <div class="collapse-btn" @click="collapseChage">
        <el-image
       style="width: 50px; height: 50px; margin-top:10px;"
-      src="/image/logo/VARBOX-logo-w.png"
+      src="/image/logo/vrlive_logo_nobg.png"
       fit='scale-down'></el-image>
     </div>
-    <div class="logo">{{$t('app.title_short')}}</div>
+    <div class="logo">VAR <b>ERP</b></div>
     <div class="header-right">
       <div class="header-user-con">
-        <!-- 全屏显示 
-        <div class="btn-fullscreen" @click="handleFullScreen">
-          <el-tooltip effect="dark" :content="fullscreen? $t('app.not_full_screen'):$t('app.full_screen')" placement="bottom">
-            <i class="el-icon-rank"></i>
-          </el-tooltip>
-        </div>
-        -->
             <i v-if="isadmin" class="el-icon-lx-crown" ></i>   
         <!-- 語言下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand_lang">
@@ -40,7 +33,7 @@
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item divided command="opendialog">{{$t('account.change_password')}}</el-dropdown-item>
+            <el-dropdown-item v-show="isodoo" divided command="opendialog">{{$t('account.change_password')}}</el-dropdown-item>
             <el-dropdown-item divided command="loginout">{{$t('account.logout')}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -81,6 +74,7 @@ export default {
       formLabelWidth: "150px",
       dialogFormVisible: false,
       isadmin:localStorage.getItem("ms_is_admin")=='true' ? true:false,
+      isodoo:localStorage.getItem('ms_is_odoo')==0 ? true:false,
       form: {
         old_pass: "",
         new_pass: "",
@@ -224,7 +218,7 @@ export default {
   height: 70px;
   font-size: 22px;
   color: #fff;
-  background-color: #000000;
+  background-color: #875a7b;
 }
 .collapse-btn {
   float: left;

@@ -25,7 +25,7 @@ function login (uname,passwd) {
       'passwd' : passwd
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/login', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/login', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -42,7 +42,7 @@ function change_password (token_id,old_pass,new_pass) {
       'new_pass' : new_pass
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/change_password', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/change_password', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -58,7 +58,7 @@ function check_token (token_id) {
       'token_id': token_id
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/check_token', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/check_token', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -77,7 +77,7 @@ function list_by_page (token_id,page_count,filter) {
       'alias':filter.alias
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/list_account', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/list_account', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -98,7 +98,7 @@ function update_account (token_id,is_new,username,email,roles,last_name,info,new
       'new_pass': new_pass
   }  
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/save_account', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/save_account', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
@@ -113,7 +113,7 @@ function delete_account(token_id,username) {
       'username':username
   }    
   return new Promise((resolve, reject) => {
-    axios.post(process.env.VUE_APP_API+ '/gaming/v1/delete_account', param).then((resp) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/delete_account', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
