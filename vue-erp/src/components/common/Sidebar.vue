@@ -51,6 +51,25 @@ export default {
                 // Authority management
                 {
                     icon: "el-icon-lx-lock",
+                    index: "project",
+                    title: this.$t("menus.project_manage"),
+                    show: this.includeSubMenu(["person_day_item","work_items"]),
+                    subs: [            
+                       
+                        {
+                            index: "work_items",
+                            title: this.$t("menus.work_items"),
+                            show: this.hasThisMenu("work_items")
+                        },
+                        {
+                            index: "person_day_item",
+                            title: this.$t("menus.person_day_item"),
+                            show: this.hasThisMenu("person_day_item")
+                        }
+                    ]
+                },
+                {
+                    icon: "el-icon-lx-lock",
                     index: "acl",
                     title: this.$t("menus.acl"),
                     show: this.includeSubMenu(["user_edit","role_edit","dictionary_setting"]),

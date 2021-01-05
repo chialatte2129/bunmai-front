@@ -76,7 +76,11 @@ export const messages = {
             role_edit: '角色管理',         
             user_edit: '帳號管理',
             dict_setting: '字典檔設定',
-            dictionary_setting: '字典檔設定'
+            dictionary_setting: '字典檔設定',
+            project_manage: '專案管理系統',
+            work_items: '專案管理',
+            person_day_item: '專案工時',
+
         },
         table_title:{
             role :'角色代號',
@@ -312,6 +316,9 @@ export const messages = {
             user_edit: 'Account Control',
             dict_setting: 'Dictionary Setting',
             dictionary_setting: 'Dictionary Setting',
+            project_manage: 'Project Manage',
+            work_items: 'Project',
+            person_day_item: 'Daily Work Time',
             
         },
         table_title :{

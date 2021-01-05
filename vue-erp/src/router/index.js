@@ -41,6 +41,16 @@ export default new Router({
                     component: resolve => require(['../components/page/403.vue'], resolve),
                     meta: { title: '403' }
                 },
+                {
+                    path: '/person_day_item',
+                    component: resolve => require(['../components/page/project_manage/person_day_item.vue'], resolve),
+                    meta: { title:  'menus.person_day_item' }
+                },            
+                {
+                    path: '/work_items',
+                    component: resolve => require(['../components/page/project_manage/work_items.vue'], resolve),
+                    meta: { title: 'menus.work_items' }
+                }, 
             ]
         },
         {
