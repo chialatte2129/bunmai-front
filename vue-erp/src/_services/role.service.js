@@ -9,13 +9,12 @@ export const roleService = {
 }
 
 
-function list_by_page(token_id,page_count, filter) {
+function list_by_page(token_id, page_count, filter){
   
   var param = {       
       'token_id': token_id,
       'page_count':page_count,
-      'role_id':filter.role,
-      'description':filter.description,
+      'filter':filter,
   }  
   return new Promise((resolve, reject) => {
     axios.post(process.env.VUE_APP_API+ '/api/v1/list_role', param).then((resp) => {
