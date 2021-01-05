@@ -1,9 +1,7 @@
 
-vue-varlive/\.env
-vue-aws/\.env
-vue-swarm-varlive\.yml
-vue-swarm-aws\.yml
-vue-swarm-competition\.yml
+vue-erp/\.env
+vue-swarm-erp\.yml
+
 
 # Created by https://www.gitignore.io/api/vuejs
 # Edit at https://www.gitignore.io/?templates=vuejs
@@ -45,4 +43,4 @@ yarn-error.log*
 # key ignore
 *.pem
 
-vue-competition/package-lock.json
+vue-erp/package-lock.json
