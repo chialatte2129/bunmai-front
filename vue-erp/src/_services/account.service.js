@@ -69,21 +69,23 @@ function check_token (token_id) {
 
 
 
-function list_by_page (token_id,page_count,filter) {  
+function list_by_page (token_id, page_count, account_filter, last_name_filter, roles_filter){  
   var param = {       
-      'token_id': token_id,
-      'page_count':page_count,
-      'account':filter.account,
-      'alias':filter.alias
-  }  
+    'token_id': token_id,
+    'page_count':page_count,
+    "filter":{
+      "user_name":account_filter,
+      "last_name":last_name_filter,
+      "roles_id":roles_filter
+    }
+  }
   return new Promise((resolve, reject) => {
     axios.post(process.env.VUE_APP_API+ '/api/v1/list_account', param).then((resp) => {
       resolve(resp.data)
     }).catch((error) => {
       reject(error)
     })
-   })
-
+  })
 }
 
 function update_account (token_id,is_new,username,email,roles,last_name,info,new_pass) {  

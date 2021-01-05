@@ -51,28 +51,5 @@ export default new Router({
             path: '*',
             redirect: '/404'
         },
-        {
-            path: '/registration',  
-            component: resolve => require(['@/components/registration/Home.vue'], resolve),
-            meta: {
-                title: ''
-            },
-            children: [
-                {
-                    path: 'signup_form',
-                    component: resolve => require(['@/components/registration/SignupForm.vue'], resolve),
-                    meta: {
-                        title: ''
-                    }
-                }
-            ]
-        },
-        {
-            path: '/registration/finish',
-            component: resolve => require(['@/components/registration/Finish.vue'], resolve),
-            meta: {
-                title: ''
-            }
-        }
     ]
 })

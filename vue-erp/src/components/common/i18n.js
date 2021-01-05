@@ -88,6 +88,7 @@ export const messages = {
             actions :'動作權限清單',
             info:"說明",
             action:"動作權限",
+            has_selected:'已選擇',
         },
         dict:{
             category_quantity: '分類數量 : ',
@@ -324,6 +325,7 @@ export const messages = {
             actions :'Actions',
             info:"Information",
             action:"Action",
+            has_selected:'Has Selected',
         },
         dict: {
             category_quantity: 'Category Quantity : ',
