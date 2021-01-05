@@ -12,7 +12,7 @@
         <el-row :gutter="10">
           <el-col :span="6">
             <el-row :gutter="10">
-              <el-card shadow="hover" class="mgb10 mgr20" style="min-height:693px;height:auto">
+              <el-card shadow="hover" class="mgb10 mgr20" :body-style="{ padding:'10px'}" style="min-height:693px;height:auto">
                 <div slot="header" class="clearfix">
                   <div>
                     <span><b>{{$t('dict.dict_list')}}</b></span>
@@ -23,18 +23,20 @@
                   </div>
                 </div>
                 <div class="scrollBar">
+                  <el-input class="tree_filter" :placeholder="$t('btn.key_word')" v-model="filterText" clearable/>
                   <el-scrollbar
                   ref="scroll" 
                   wrap-class="list" 
                   view-class="view-box" 
                   :native="false" 
-                  style="height:610px;">
+                  style="height:600px;">
                     <el-tree
                       id="dictionary"
                       node-key="id"
                       ref="dict_tree"
                       :data="dict_tree"
                       :props="dictTreeProps"
+                      :filter-node-method="filterNode"
                       :default-expanded-keys="this.expand_key"
                       highlight-current
                       @node-expand="handleNodeExpand"
@@ -44,7 +46,7 @@
                           <span class="node_label_2" v-if="node.level===2" @click="dict_edit_click(data)">{{data.label_show}}</span>
                           <span class="node_icon">
                             <span class="node_plus">
-                              <el-button size=mini type=primary icon="el-icon-info" circle v-if="node.level==2" @click="dict_edit_click(data)"></el-button>
+                              <el-button size=mini type=warning icon="el-icon-edit" circle v-if="node.level==2" @click="dict_edit_click(data)"></el-button>
                               <el-button size=mini type=danger icon="el-icon-delete" circle v-if="node.level==2" @click="dict_delete_click(data)"></el-button>
                             </span>
                           </span>
@@ -60,20 +62,14 @@
              <el-card shadow="hover" class="mgb10" style="min-height:690px;height:auto">
                 <div slot="header" class="clearfix">
                   <span><b>{{$t('dict.dict_setting')}}</b></span>
+                  <el-button size="large" type="primary" class="card-header-r-btn" @click="dict_save_click('dict_content')" icon="el-icon-files">{{$t('btn.save')}}</el-button>
+                  <el-button size="large" type="info" class="card-header-btn" @click="dict_clear_click">{{$t('btn.clean')}}</el-button>
                 </div>
                 <el-form
                   ref="dict_content"
                   :model="dict_content"
                   label-width="120px"
                   :rules="computed_rules">
-                  <el-form-item>
-                    <el-button type="info" plain @click="dict_clear_click">{{$t('btn.clean')}}</el-button>
-                    <el-button
-                      type="primary"
-                      plain
-                      @click="dict_save_click('dict_content')"
-                    >{{$t('btn.save')}}</el-button>
-                  </el-form-item>
                   <el-form-item :label="$t('dict.key_title')" prop="keystr">
                     <el-input :disabled="!dict_content.is_new" v-model="dict_content.keystr" maxlength="50"></el-input>
                   </el-form-item>
@@ -84,7 +80,7 @@
                     <el-input v-model="dict_content.description" maxlength="50"></el-input>
                   </el-form-item>
                   <el-form-item :label="$t('dict.content_title')" prop="jsonvalue">
-                    <el-input type="textarea" :rows="19" v-model="dict_content.jsonvalue"></el-input>
+                    <el-input type="textarea" :rows="21" v-model="dict_content.jsonvalue"></el-input>
                   </el-form-item>
                 </el-form>
             </el-card>
@@ -112,6 +108,7 @@ export default {
       test_select:"",
       dialogVisible: false,
       summary_info: {},
+      filterText:"",
       category_quantity:"",
       setting_quantity:"",
       dict_content: { is_new: true },
@@ -166,6 +163,10 @@ export default {
     }
   },
   methods: {
+    filterNode(value, data){
+      if(!value.toUpperCase()) return true;
+      return `${data.label_show}${data.id}`.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+    },
     handleNodeExpand(data){
         let flag = false
         this.expand_key.some(item => {
@@ -192,6 +193,7 @@ export default {
          this.test_select=param
     },
     dict_clear_click() {
+      this.$refs.dict_content.clearValidate();
       this.dict_content = { is_new: true };
     },
     dict_save_click(formName) {
@@ -333,6 +335,7 @@ export default {
     },
     dict_edit_click(data) {
       if (data["level"] == 2) {
+        this.$refs.dict_content.clearValidate();
         dictService
           .get_setting_by_key(data["id"])
           .then(result => {
@@ -379,6 +382,10 @@ export default {
     }
   },
   watch: {
+    filterText(val){
+        this.$refs.dict_tree.filter(val);
+    },
+
     dict_tree(newValue) {
       if (newValue != undefined) {
         var children_arr = newValue;
@@ -451,7 +458,7 @@ export default {
   position:relative
 }
 .scrollBar{ 
-  height:593px; 
+  height:615px; 
   overflow:hidden; 
 } 
 .list{ 
@@ -460,12 +467,12 @@ export default {
 .node_icon >>> .el-button--danger.el-button--mini.is-circle{
   padding: 5px;
   position:absolute;
-  right:10%;
+  right:4%;
 }
-.node_icon >>> .el-button--primary.el-button--mini.is-circle{
+.node_icon >>> .el-button--warning.el-button--mini.is-circle{
   padding: 5px;
   position:absolute;
-  right:calc(10% + 30px);
+  right:calc(4% + 30px);
 }
 .custom-tree-node >>> .node_label_1{
   width:150px; 
@@ -486,10 +493,24 @@ export default {
   margin-right:10px;
   z-index:2;
 }
-</style>
-<style>
-.el-breadcrumb {
-  font-size: 20px;
-  height: 25px;
+.tree_filter{
+  min-width:100px;
+}
+.crumbs >>> .el-breadcrumb{
+    font-size: 20px;
+    height: 25px;
+}
+.clearfix{
+  line-height:1.23;
+}
+.card-header-r-btn{
+  position:relative;
+  float:right;
+  margin:-10px -10px 0 0;
+}
+.card-header-btn{
+  position:relative;
+  float:right;
+  margin:-10px 10px 0 0;
 }
 </style>

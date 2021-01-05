@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Public from './Public.vue'
 import router from './router'
 import axios from 'axios';
 import ElementUI from 'element-ui';
@@ -48,34 +47,24 @@ router.beforeEach((to, from, next) => {
     var path_array=to.path.split("/")
     console.log(to.path, ' >>> ',path_id);
 
-    if(path_array[1]=="public" || path_array[1]=="registration"){
-        if(path_array[1]=="registration"){
-            localStorage.clear();
-            localStorage.setItem("register_lang",false);
-        }
-        
-        next();
-    }else{
-        if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限     
-             
-            localStorage.removeItem('ms_username');               
-            next('/login');
-        }
-        const ms_username= localStorage.getItem('ms_username');
-        if (!ms_username && to.path !== '/login') {
+    if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限     
             
-            next('/login');
-        }  else {
-            // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
-            if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
-                Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
-                    confirmButtonText: '确定'
-                });
-            } else {
-                next();
-            }
+        localStorage.removeItem('ms_username');               
+        next('/login');
+    }
+    const ms_username= localStorage.getItem('ms_username');
+    if (!ms_username && to.path !== '/login') {
+        
+        next('/login');
+    }  else {
+        if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
+            Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
+                confirmButtonText: '确定'
+            });
+        } else {
+            next();
         }
-    }    
+    }
 })
 
 

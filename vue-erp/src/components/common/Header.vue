@@ -33,7 +33,7 @@
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-show="isodoo" divided command="opendialog">{{$t('account.change_password')}}</el-dropdown-item>
+            <el-dropdown-item divided command="opendialog">{{$t('account.change_password')}}</el-dropdown-item>
             <el-dropdown-item divided command="loginout">{{$t('account.logout')}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

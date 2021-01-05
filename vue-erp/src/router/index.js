@@ -4,6 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+    mode: "history",
     routes: [
         {
             path: '/public',
@@ -40,6 +41,16 @@ export default new Router({
                     component: resolve => require(['../components/page/403.vue'], resolve),
                     meta: { title: '403' }
                 },
+                {
+                    path: '/person_day_item',
+                    component: resolve => require(['../components/page/project_manage/person_day_item.vue'], resolve),
+                    meta: { title:  'menus.person_day_item' }
+                },            
+                {
+                    path: '/work_items',
+                    component: resolve => require(['../components/page/project_manage/work_items.vue'], resolve),
+                    meta: { title: 'menus.work_items' }
+                }, 
             ]
         },
         {
@@ -50,28 +61,5 @@ export default new Router({
             path: '*',
             redirect: '/404'
         },
-        {
-            path: '/registration',  
-            component: resolve => require(['@/components/registration/Home.vue'], resolve),
-            meta: {
-                title: ''
-            },
-            children: [
-                {
-                    path: 'signup_form',
-                    component: resolve => require(['@/components/registration/SignupForm.vue'], resolve),
-                    meta: {
-                        title: ''
-                    }
-                }
-            ]
-        },
-        {
-            path: '/registration/finish',
-            component: resolve => require(['@/components/registration/Finish.vue'], resolve),
-            meta: {
-                title: ''
-            }
-        }
     ]
 })

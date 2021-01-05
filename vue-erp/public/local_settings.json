@@ -1,16 +1,24 @@
 { 
     "menus":[
-    {
-        "index": "user_edit",
-        "title": "menus.user_edit"
-    },
-    {
-        "index": "role_edit",
-        "title": "menus.role_edit"
-    },
-    {
-        "index": "dictionary_setting",
-        "title": "menus.dict_setting"
-    }
+        {
+            "index": "user_edit",
+            "title": "menus.user_edit"
+        },
+        {
+            "index": "role_edit",
+            "title": "menus.role_edit"
+        },
+        {
+            "index": "dictionary_setting",
+            "title": "menus.dict_setting"
+        },
+        {
+            "index": "work_items",
+            "title": "menus.work_items"
+        },
+        {
+            "index": "person_day_item",
+            "title": "menus.person_day_item"
+        }
     ]
 }
