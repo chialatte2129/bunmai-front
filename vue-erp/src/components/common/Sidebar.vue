@@ -50,7 +50,7 @@ export default {
             items: [                
                 // Authority management
                 {
-                    icon: "el-icon-lx-lock",
+                    icon: "el-icon-collection",
                     index: "project",
                     title: this.$t("menus.project_manage"),
                     show: this.includeSubMenu(["person_day_item","work_items"]),

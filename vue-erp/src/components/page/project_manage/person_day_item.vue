@@ -2,26 +2,27 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-s-shop"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.person_day_item')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="mgb10">
                 <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">{{$t('btn.new')}}</el-button>
-                <el-select size="large" v-model="filter.country_id" filterable clearable :placeholder="$t('shop_manage.country_name')" @change="search">
-                    <el-option v-for="item in option.country" :key="item.id" :label="item.name" :value="item.id"/>
+                <el-select size="large" v-model="filter.item_id" filterable clearable :placeholder="$t('project.name')" @change="search" class="mgr10">
+                    <el-option v-for="item in option.project" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgr10 mgl10 handle-input" :placeholder="$t('shop_manage.area_name')" @change="search"/>
-                <el-button size="large" type="info" class="mgr10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
+                <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" 
+                size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
+                <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" :key="tbKey">
-                <el-table-column prop="id" label="ID" width="100" sortable="custom" align="right" header-align="center"/>
-                <el-table-column prop="name" :label="$t('shop_manage.area_name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="multi_lang_code" :label="$t('shop_manage.i18n_key')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="country_id" :label="$t('shop_manage.country_name')" width="auto" sortable="custom" show-overflow-tooltip>
-                    <template slot-scope="scope">{{scope.row.country_name}}</template>
+                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="item_id" :label="$t('project.name')" width="300" sortable="custom" show-overflow-tooltip>
+                    <template slot-scope="scope" v-html="scope.row.item_name"/>
                 </el-table-column>
+                <el-table-column prop="work_hour" :label="$t('employee.work_hour')" width="150" sortable="custom" align="right" header-align="left" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('employee.description')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -36,14 +37,14 @@
         </div>
         
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
-            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('deploy.ask_for_delete')}} ?</div>
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="500px" :before-close="cancelDialog" :close-on-click-modal="false" class="edit-Dialog">
+        <!-- <el-dialog :title="showTitle" :visible.sync="showVisible" width="500px" :before-close="cancelDialog" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-form-item :label="$t('shop_manage.area_name')" prop="name">
                     <el-input v-model="form.name" clearable style="width:100%;"/>
@@ -66,33 +67,38 @@
                 <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
             </div>
-        </el-dialog>
+        </el-dialog> -->
     </div>
 </template>
 <script>
-import { shopManageService } from "@/_services";
+import { dayItemService } from "@/_services";
 export default {
-    name: "shop_areas_show",
+    name: "person_day_item",
     data(){
         return {
+            odoo_user_id:localStorage.getItem("ms_odoo_user_id"),
             tbKey:0,
             tableData: [],
             totalRow:0,
             cur_page: 1,
             page_size:10,
-            page_size_list:[5, 10],
+            page_size_list:[5, 10, 20, 50],
             start_row:0,
             sort_column:"id",
             sort:"desc",
-            deleteID:null,
+            deleteInfo:{
+                pid:localStorage.getItem("ms_odoo_user_id"),
+                item_id:null,
+                work_date:"",
+            },
             deleteView:false,
             createView:false,
             updateView:false,
             prefix:"AREA_",
             lang:localStorage.getItem("ms_user_lang"),
             filter:{
-                name:"",
-                country_id:null,
+                item_id:null,
+                work_date:[],
             },
             edit_idx:null,
             form:{
@@ -102,9 +108,39 @@ export default {
                 multi_lang_code:"",
                 note:"",
             },
-
             option:{
-                country:[]
+                project:[]
+            },
+            pickerOptions:{
+                shortcuts:[
+                    {
+                    text: this.$i18n.t('employee.week'),
+                    onClick(picker){
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                    text: this.$i18n.t('employee.month'),
+                    onClick(picker){
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.$emit('pick', [start, end]);
+                        }
+                    },
+                    {
+                    text: this.$i18n.t('employee.three_months'),
+                    onClick(picker){
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.$emit('pick', [start, end]);
+                        }
+                    }
+                ]
             },
             
             rules: {
@@ -123,6 +159,7 @@ export default {
     },
 
     async created(){
+        // console.log(this.odoo_user_id)
         // await this.getOption();
         // await this.getData();
     },
@@ -158,7 +195,11 @@ export default {
         },
 
         handleDelete(index, row){
-            this.deleteID=row.id;
+            this.deleteInfo={
+                pid:this.odoo_user_id,
+                item_id:row.item_id,
+                work_date:row.work_date,
+            };
             this.deleteView=true;
         },
 
@@ -168,7 +209,11 @@ export default {
         },
 
         cancelDelete(){
-            this.deleteID=null;
+            this.deleteInfo={
+                pid:this.odoo_user_id,
+                item_id:null,
+                work_date:"",
+            };
             this.deleteView=false;
         },
 
@@ -176,13 +221,13 @@ export default {
             this.form.id = this.deleteID; 
             var param = {
                 action:"delete",
-                form:this.form
+                form:this.deleteInfo
             }
-            this.update_areas(param);
+            this.update_day_item(param);
         },
 
-        update_areas(param){ 
-            shopManageService.update_areas_renew(param).then(res =>{ 
+        update_day_item(param){ 
+            dayItemService.update_day_item(param).then(res =>{ 
                 if(res.code==1){ 
                     this.$message.success(this.$t(res.msg)); 
                     if(param.action=="create"){
@@ -214,7 +259,7 @@ export default {
                         action:this.createView?"create":"update",
                         form:temp_form
                     }
-                    this.update_areas(param);
+                    this.update_day_item(param);
                 }
             })
         },
@@ -253,18 +298,6 @@ export default {
             this.sort = order;
             this.handleCurrentChange(1);
         },
-
-        async getCountryName(source){
-            await this.option.country.every(
-                function(row, index, array){
-                    if(source.country_id==row.id){
-                        source.country_name=row.name;
-                        return false;
-                    }
-                    return true;
-                }
-            )
-        },
         
         async getData(){
             var param = {
@@ -274,18 +307,15 @@ export default {
                 page_size:this.page_size,
                 filter:this.filter
             }
-            await shopManageService.get_areas_renew(param).then(res =>{ 
-                this.tableData=res.shop_areas;
-                this.tableData.map(
-                    row=>this.getCountryName(row)
-                );
+            await dayItemService.person_day_list(param).then(res =>{ 
+                this.tableData=res.day_items;
                 this.totalRow=res.total;
             })
         },
         
         async getOption(){
-            await shopManageService.get_option_list({action:["country"]}).then(res =>{ 
-                this.option.country=res.countries; 
+            await dayItemService.get_option_list({action:["project"]}).then(res =>{ 
+                this.option.project=res.project; 
             }) 
         },
 
@@ -295,8 +325,8 @@ export default {
         
         cancelSearch(){
             this.filter={
-                name:"",
-                country_id:null,
+                item_id:null,
+                work_date:[],
             };
             this.handleCurrentChange(1);
         },

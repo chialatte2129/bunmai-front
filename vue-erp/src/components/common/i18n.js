@@ -79,7 +79,7 @@ export const messages = {
             dictionary_setting: '字典檔設定',
             project_manage: '專案管理系統',
             work_items: '專案管理',
-            person_day_item: '專案工時',
+            person_day_item: '每日工時填寫',
 
         },
         table_title:{
@@ -241,8 +241,23 @@ export const messages = {
             only_three_characters:'長度限制3字元',
             only_numbers:'只支援數字字元',
             invalidate_email:'請輸入正確電子郵件形式'
-
-        }
+        },
+        employee:{
+            name:"員工名稱",
+            dept:"部門名稱",
+            work_hour:"工作時數",
+            work_date:"工作日期",
+            description:"內容簡述",
+            start_date:"開始時間",
+            end_date:"結束時間",
+            date_range:"至",
+            week:"一周",
+            month:"一個月",
+            three_months:"三個月",
+        },
+        project:{
+            name:"專案名稱",
+        },
     },
     'en_US': {
         ...enLocale,
@@ -481,6 +496,22 @@ export const messages = {
             only_three_characters:'Only 3 Characters Allow',
             only_numbers:'Only Allow Numbers',
             invalidate_email:'Please enter validate email'      
+        },
+        employee:{
+            name:"EE. Name",
+            dept:"Dept. Name",
+            work_hour:"Working Hour",
+            work_date:"Working Date",
+            description:"Description",
+            start_date:"Start Date",
+            end_date:"End Date",
+            date_range:"To",
+            week:"Week",
+            month:"Month",
+            three_months:"3 Months",
+        },
+        project:{
+            name:"Project Name",
         },
     },
     'ja_JP':{
