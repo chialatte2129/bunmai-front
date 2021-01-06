@@ -17,8 +17,12 @@
             "title": "menus.work_items"
         },
         {
-            "index": "person_day_item",
-            "title": "menus.person_day_item"
+            "index": "day_item_person",
+            "title": "menus.day_item_person"
+        },
+        {
+            "index": "day_item_review",
+            "title": "menus.day_item_review"
         }
     ]
 }

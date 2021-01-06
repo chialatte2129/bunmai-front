@@ -2,7 +2,7 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-s-shop"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.work_items')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
