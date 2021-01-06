@@ -42,13 +42,18 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    path: '/person_day_item',
-                    component: resolve => require(['../components/page/project_manage/person_day_item.vue'], resolve),
-                    meta: { title:  'menus.person_day_item' }
-                },            
+                    path: '/day_item_person',
+                    component: () => import('../components/page/project_manage/day_item_person.vue'),
+                    meta: { title:  'menus.day_item_person' }
+                },   
+                {
+                    path: '/day_item_review',
+                    component: () => import('../components/page/project_manage/day_item_review.vue'),
+                    meta: { title:  'menus.day_item_review' }
+                },         
                 {
                     path: '/work_items',
-                    component: resolve => require(['../components/page/project_manage/work_items.vue'], resolve),
+                    component: () => import('../components/page/project_manage/work_items.vue'),
                     meta: { title: 'menus.work_items' }
                 }, 
             ]

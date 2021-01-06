@@ -79,8 +79,9 @@ export const messages = {
             dictionary_setting: '字典檔設定',
             project_manage: '專案管理系統',
             work_items: '專案管理',
-            person_day_item: '專案工時',
-
+            daily_report:"每日工作彙報",
+            day_item_person:"填寫工作彙報",
+            day_item_review:"檢視工作彙報",
         },
         table_title:{
             role :'角色代號',
@@ -199,6 +200,7 @@ export const messages = {
             not_working:"目前無功能",
             team_delete_ng_tips:"無法刪除，因有細項設定已設定",
             go_to_foreign_url:"即將前往外部連結",
+            action_error:"操作動作錯誤",
         },
         account:{
             login: '登入', 
@@ -241,8 +243,33 @@ export const messages = {
             only_three_characters:'長度限制3字元',
             only_numbers:'只支援數字字元',
             invalidate_email:'請輸入正確電子郵件形式'
-
-        }
+        },
+        employee:{
+            name:"員工名稱",
+            dept:"部門名稱",
+            work_hour:"工作時數",
+            work_date:"工作日期",
+            description:"內容簡述",
+            start_date:"開始時間",
+            end_date:"結束時間",
+            date_range:"至",
+            week:"一周",
+            month:"一個月",
+            three_months:"三個月",
+            create_day_item:"建立每日工作彙報",
+            update_day_item:"編輯每日工作彙報",
+            duplicated_project_same_day:"同一天重複的彙報",
+            pid_invalid:"無效的會員編號",
+            p_name_invalid:"無效的會員名稱",
+            dept_name_invalid:"無效的部門名稱",
+            item_id_invalid:"無效的專案",
+            work_date_invalid:"無效的工作日期",
+            work_hour_invalid:"無效的工作時數",
+            over_24_hours:"同一天超過 24 小時",
+        },
+        project:{
+            name:"專案名稱",
+        },
     },
     'en_US': {
         ...enLocale,
@@ -319,8 +346,9 @@ export const messages = {
             dictionary_setting: 'Dictionary Setting',
             project_manage: 'Project Manage',
             work_items: 'Project',
-            person_day_item: 'Daily Work Time',
-            
+            daily_report:"Daily Report",
+            day_item_person:"Fill In",
+            day_item_review:"Review",
         },
         table_title :{
             role :'Role id',
@@ -439,6 +467,7 @@ export const messages = {
             not_working:"Not Working Now",
             team_delete_ng_tips:"Delete Failed, detail settings have already used",
             go_to_foreign_url:"Go to foreign URL",
+            action_error:"Action Error",
         },
         account: {
             login: 'Login', 
@@ -481,6 +510,32 @@ export const messages = {
             only_three_characters:'Only 3 Characters Allow',
             only_numbers:'Only Allow Numbers',
             invalidate_email:'Please enter validate email'      
+        },
+        employee:{
+            name:"EE. Name",
+            dept:"Dept. Name",
+            work_hour:"Working Hour",
+            work_date:"Working Date",
+            description:"Description",
+            start_date:"Start Date",
+            end_date:"End Date",
+            date_range:"To",
+            week:"Week",
+            month:"Month",
+            three_months:"3 Months",
+            create_day_item:"Create Daily Report",
+            update_day_item:"Update Daily Report",
+            duplicated_project_same_day:"Duplicated report project at same day",
+            pid_invalid:"Invalid ee. id",
+            p_name_invalid:"Invalid ee. name",
+            dept_name_invalid:"Invalid dept. name",
+            item_id_invalid:"Invalid project",
+            work_date_invalid:"Invalid work date",
+            work_hour_invalid:"Invalid work hour",
+            over_24_hours:"Over 24 hours",
+        },
+        project:{
+            name:"Project Name",
         },
     },
     'ja_JP':{
