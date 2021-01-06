@@ -82,11 +82,11 @@ export default {
                 localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);  
                 localStorage.setItem("ms_user_menus", result.data.user_menus); 
                 localStorage.setItem("ms_user_actions", result.data.user_actions);
-                localStorage.setItem("is_dept_manager", result.data.is_dept_manager);
+                localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);
+                localStorage.setItem("ms_odoo_employee_id", result.data.odoo_employee_id);
                 console.log('menus =',result.data.user_menus)
                 console.log('actions =',result.data.user_actions)
                 console.log("is_odoo_user = ",result.data.is_odoo_user==1)
-                console.log("is_dept_manager = ",result.data.is_dept_manager)
                 if (result.data.user_menus.length > 0) {
                   localStorage.setItem(
                     "ms_user_home",
