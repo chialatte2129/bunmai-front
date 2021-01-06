@@ -55,7 +55,6 @@ export default {
                     title: this.$t("menus.project_manage"),
                     show: this.includeSubMenu(["person_day_item","work_items"]),
                     subs: [            
-                       
                         {
                             index: "work_items",
                             title: this.$t("menus.work_items"),

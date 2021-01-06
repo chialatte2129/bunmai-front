@@ -106,8 +106,7 @@ export default {
             edit_idx:null,
             form:{
                 pid:localStorage.getItem("ms_odoo_user_id"),
-                p_name:localStorage.getItem("ms_username"),
-                dept_name:"",
+                p_name:localStorage.getItem("ms_user_fullname"),
                 item_id:"",
                 work_date:"",
                 work_hours:"",
@@ -308,7 +307,6 @@ export default {
             this.form={
                 pid:this.odoo_user_id,
                 p_name:this.fullname,
-                dept_name:this.deptname,
                 item_id:"",
                 work_date:"",
                 work_hours:"",
@@ -349,8 +347,6 @@ export default {
                 this.tableData=res.day_items;
                 this.totalRow=res.total;
                 this.getSpanArr(this.tableData);
-                this.deptname=res.dept_name;
-                this.form.dept_name=res.dept_name;
             })
             this.table_loading=false;
         },
