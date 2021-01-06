@@ -3,6 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.daily_report')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.day_item_person')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
