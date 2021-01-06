@@ -44,7 +44,8 @@
 <script>
 import bus from "../common/bus";
 export default {
-    data() {
+    data(){
+        var odoo_is_dept_manager = localStorage.getItem("ms_odoo_is_dept_manager");
         return {
             collapse: false,        
             items: [                
@@ -76,7 +77,7 @@ export default {
                                 {
                                     index: "day_item_review",
                                     title: this.$t("menus.day_item_review"),
-                                    show: this.hasThisMenu("day_item_review")
+                                    show: this.hasThisMenu("day_item_review")|odoo_is_dept_manager,
                                 },
                             ]
                         },

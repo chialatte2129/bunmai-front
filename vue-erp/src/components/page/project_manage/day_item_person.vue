@@ -3,6 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.daily_report')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.day_item_person')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -74,7 +75,7 @@ export default {
     name: "day_item_person",
     data(){
         return {
-            odoo_user_id:localStorage.getItem("ms_odoo_user_id"),
+            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
             deptname:"",
             tbKey:0,
@@ -91,7 +92,7 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             deleteInfo:{
-                pid:localStorage.getItem("ms_odoo_user_id"),
+                pid:localStorage.getItem("ms_odoo_employee_id"),
                 item_id:null,
                 work_date:"",
             },
@@ -101,11 +102,11 @@ export default {
             filter:{
                 item_id:null,
                 work_date:[],
-                pid:localStorage.getItem("ms_odoo_user_id"),
+                pid:localStorage.getItem("ms_odoo_employee_id"),
             },
             edit_idx:null,
             form:{
-                pid:localStorage.getItem("ms_odoo_user_id"),
+                pid:localStorage.getItem("ms_odoo_employee_id"),
                 p_name:localStorage.getItem("ms_user_fullname"),
                 item_id:"",
                 work_date:"",
@@ -231,7 +232,7 @@ export default {
 
         handleDelete(index, row){
             this.deleteInfo={
-                pid:this.odoo_user_id,
+                pid:this.odoo_employee_id,
                 item_id:row.item_id,
                 work_date:row.work_date,
             };
@@ -245,7 +246,7 @@ export default {
 
         cancelDelete(){
             this.deleteInfo={
-                pid:this.odoo_user_id,
+                pid:this.odoo_employee_id,
                 item_id:null,
                 work_date:"",
             };
@@ -305,7 +306,7 @@ export default {
         resetForm(){
             this.dlKey++;
             this.form={
-                pid:this.odoo_user_id,
+                pid:this.odoo_employee_id,
                 p_name:this.fullname,
                 item_id:"",
                 work_date:"",
@@ -365,7 +366,7 @@ export default {
             this.filter={
                 item_id:null,
                 work_date:[],
-                pid:this.odoo_user_id
+                pid:this.odoo_employee_id
             };
             this.tbKey++;
             this.sort_column="work_date";

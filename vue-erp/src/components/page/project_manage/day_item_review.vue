@@ -3,69 +3,35 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.daily_report')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.day_item_review')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="mgb10">
-                <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
-                <el-select size="large" v-model="filter.item_id" filterable clearable :placeholder="$t('project.name')" @change="search" class="mgr10 mgl10" :disabled="table_loading">
-                    <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id" :disabled="table_loading"/>
-                </el-select>
-                <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
-                size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
-                <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
-            </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :span-method="dateCellMerge" :key="tbKey">
-                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip :disabled="table_loading"/>
-                <el-table-column prop="item_id" :label="$t('project.name')" width="300" sortable="custom" show-overflow-tooltip :disabled="table_loading">
-                    <template slot-scope="scope">{{scope.row.item_name}}</template>
-                </el-table-column>
-                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left" :disabled="table_loading"/>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
-                    <template slot-scope="scope">
-                        <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
-                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.delete')}}</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :disabled="table_loading"
-                :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
-            </div>
+            <el-row>
+                <el-col :span="5">
+                    <el-card shadow="hover" body-style="padding:10px" class="mgb10 mgr10" style="height:705px;">
+                        <div slot="header" class="clearfix">
+                            <span>{{$t('employee.dept_tree')}}</span>
+                        </div>
+                        <div class="tree_filter">
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" clearable/>
+                        </div>
+                        <div class="scrollBar">
+                            <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:605px;">
+                                <el-tree class="filter-tree" node-key="label" ref="tree_data" highlight-current default-expand-all :expand-on-click-node="false"
+                                :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key"
+                                @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse">
+                                    <span class="custom-tree-node" slot-scope="{node, data}">
+                                        <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
+                                    </span>
+                                </el-tree>
+                            </el-scrollbar>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
         </div>
-        
-        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
-            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-        
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-form-item :label="$t('employee.work_date')" prop="work_date">
-                    <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select_date')" class="handle-input" :disabled="updateView"/>
-                </el-form-item>
-                <el-form-item :label="$t('project.name')" prop="item_id">
-                    <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView">
-                        <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
-                    </el-select>
-                </el-form-item>
-                <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
-                    <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input"/>
-                </el-form-item>
-                <el-form-item :label="$t('employee.description')" prop="description">
-                    <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
-            </div>
-        </el-dialog>
     </div>
 </template>
 <script>
@@ -74,6 +40,15 @@ export default {
     name: "day_item_review",
     data(){
         return {
+            expand_key:[],
+            tree_data:[],
+            filterText:"",
+            defaultProps: {
+                children:"children",
+                label:"label",
+                level:"level",
+            },
+
             odoo_user_id:localStorage.getItem("ms_odoo_user_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
             deptname:"",
@@ -163,137 +138,45 @@ export default {
     },
 
     async created(){
-        await this.getOption();
-        await this.getData();
+        // await this.getOption();
+        // await this.getData();
     },
 
     computed: {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
-
-        showTitle(){
-            if(this.createView) return this.$t("employee.create_day_item");
-            else if(this.updateView) return this.$t("employee.update_day_item");
-            else return "";
-        },
-
-        showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
-            else return false;
-        },
     },    
     
     methods: {
-        getSpanArr(data){
-            this.resetSpanArr();
-            for(var i=0;i<data.length;i++){
-                if(i===0){ 
-                    this.spanArr.push(1);
-                    this.pos=0;
-                }else{
-                    if(data[i].work_date===data[i-1].work_date){
-                        this.spanArr[this.pos]+=1;
-                        this.spanArr.push(0);
-                    }else{ 
-                        this.spanArr.push(1); 
-                        this.pos=i;
-                    }
-                }
-            }
+        filterNode(value, data){
+            if(!value) return true;
+            return data.label.indexOf(value) !== -1;
         },
 
-        resetSpanArr(){
-            this.spanArr=[];
-            this.pos=null;
-        },
-
-        dateCellMerge({row, column, rowIndex, columnIndex}){
-            if(column.property==="work_date"){
-                const _row=this.spanArr[rowIndex];
-                const _col=_row>0?1:0;
-                return { rowspan:_row, colspan:_col }
-            }
-        },
-
-        handleCreate(){
-            var today = new Date();
-            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-            this.createView=true;
-        },
-
-        handleEdit(index, row){
-            this.form=Object.assign({}, row);
-            this.edit_idx=index;
-            this.updateView=true;
-        },
-
-        handleDelete(index, row){
-            this.deleteInfo={
-                pid:this.odoo_user_id,
-                item_id:row.item_id,
-                work_date:row.work_date,
-            };
-            this.deleteView=true;
-        },
-
-        handleDeleteChange(){
-            if(this.start_row==(this.totalRow-1)&&this.start_row!=0){ this.start_row-=this.page_size }
-            this.getData();
-        },
-
-        cancelDelete(){
-            this.deleteInfo={
-                pid:this.odoo_user_id,
-                item_id:null,
-                work_date:"",
-            };
-            this.deleteView=false;
-        },
-
-        confirmDelete(){
-            this.form.id = this.deleteID; 
-            var param = {
-                action:"delete",
-                form:this.deleteInfo
-            }
-            this.update_day_item(param);
-        },
-
-        update_day_item(param){ 
-            dayItemService.update_day_item(param).then(res =>{ 
-                if(res.code==1){ 
-                    this.$message.success(this.$t(res.msg)); 
-                    if(param.action=="create"){
-                        this.getData();
-                    }else if(param.action=="update"){
-                        this.tableData[this.edit_idx]=param.form;
-                        this.tbKey++;
-                    }else if(param.action=="delete"){
-                        this.cancelDelete()
-                        this.handleDeleteChange();
-                    }
-                    this.cancelDialog();
-                }else if(res.code==0){ 
-                    this.$message.warning(this.$t(res.msg)); 
-                }else{ 
-                    this.$message.error(this.$t(res.msg)); 
-                } 
-            }) 
-        },
-
-        confirmDialog(){
-            this.$refs.form.validate(valid => {
-                if(valid){
-                    var temp_form = Object.assign({}, this.form);
-                    var param = {
-                        action:this.createView?"create":"update",
-                        form:temp_form
-                    }
-                    this.update_day_item(param);
+        handleNodeExpand(data){
+            let flag = false
+            this.expand_key.some(item => {
+                if(item === data.label){
+                    flag = true;
+                    return true
                 }
             })
+            if(!flag){
+                this.expand_key.push(data.label);
+            }
+        },
+
+        handleNodeCollapse(data){
+            this.expand_key.some((item, i) => {
+                if (item === data.label) {
+                    this.expand_key.splice(i, 1);
+                }
+            })
+        },
+
+        handleNodeClick(data){
+
         },
 
         cancelDialog(){
@@ -376,6 +259,10 @@ export default {
 }
 </script>
 <style scoped>
+    .container{
+        background-color:#f0f0f0;
+        padding:15px;
+    }
     .handle-input{
         width: 300px;
         display:inline-block;
@@ -401,5 +288,55 @@ export default {
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
+    }
+    .clearfix{
+        position:relative;
+        line-height:1.23;
+        font-size: 16px;
+    }
+    .custom-tree-node{
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        padding-right: 15px;
+    }
+    .scrollBar{ 
+        height:588px; 
+        overflow:hidden; 
+    } 
+    .list{ 
+        max-height:10px; 
+    }
+    .custom-tree-node >>> .node_label_1{
+        width:150px; 
+    }
+    .custom-tree-node >>> .node_label_2{
+        width:100px; 
+    }
+    .node_icon >>> .el-button--mini.is-circle{
+        padding: 4px;
+    }
+    .custom-tree-node >>> .node_label_1{
+        width:150px; 
+    }
+    .custom-tree-node >>> .node_icon{
+        justify-content: flex-end;
+    }
+    .node_plus{
+        margin-right:-5px;
+        z-index:2;
+    }
+    .filter-tree{
+        z-index:1;
+    }
+    .filter-tree >>> .el-tree-node__content{
+        height: 40px;
+    }
+    .tree_filter{
+        margin:0px 0px 10px 10px;
+        min-width:100px;
+        width:95%;
     }
 </style>

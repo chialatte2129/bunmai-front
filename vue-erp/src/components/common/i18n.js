@@ -266,6 +266,7 @@ export const messages = {
             work_date_invalid:"無效的工作日期",
             work_hour_invalid:"無效的工作時數",
             over_24_hours:"同一天超過 24 小時",
+            dept_tree:"部門分類",
         },
         project:{
             name:"專案名稱",
@@ -533,6 +534,7 @@ export const messages = {
             work_date_invalid:"Invalid work date",
             work_hour_invalid:"Invalid work hour",
             over_24_hours:"Over 24 hours",
+            dept_tree:"Dept. Tree",
         },
         project:{
             name:"Project Name",
