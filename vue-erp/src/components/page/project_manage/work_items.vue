@@ -9,8 +9,11 @@
         <div class="container">
             <div class="mgb10">
                 <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">{{$t('btn.new')}}</el-button>
-                <el-select size="large" v-model="filter.country_id" filterable clearable placeholder="專案類別" @change="search">
-                    <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
+                <el-select size="large" v-model="filter.category" filterable clearable placeholder="專案類別" @change="search">
+                    <el-option v-for="category in option.categories" :key="category" :label="category" :value="category"/>
+                </el-select>
+                <el-select size="large" v-model="filter.status" filterable clearable placeholder="專案狀態" @change="search">
+                    <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 mgl10 handle-input" placeholder="專案名稱關鍵字" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
@@ -18,12 +21,12 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" :key="tbKey">
                 <el-table-column prop="id" label="ID" width="100" sortable="custom" align="right" header-align="center"/>
                 <el-table-column prop="name" label="名稱" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="catgegory" label="類別" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="category" label="類別" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="is_project" label="是否專案" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="status" label="狀態" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="status" label="起始日期" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="status" label="結束日期" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="status" label="專案說明" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="start_date" label="起始日期" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="end_date" label="結束日期" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="description" label="專案說明" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -47,20 +50,23 @@
         
         <el-dialog :title="showTitle" :visible.sync="showVisible" width="500px" :before-close="cancelDialog" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-form-item :label="$t('shop_manage.area_name')" prop="name">
+                <el-form-item label="專案名稱" prop="name">
                     <el-input v-model="form.name" clearable style="width:100%;"/>
                 </el-form-item>
-                <el-form-item :label="$t('shop_manage.country_name')" prop="country_id">
+                <el-form-item label="類別" prop="country_id">
                     <el-select v-model="form.country_id" filterable clearable style="width:100%;">
                         <el-option v-for="item in option.country" :key="item.id" :label="item.name" :value="item.id"/>
                     </el-select>
                 </el-form-item>
-                <el-form-item :label="$t('shop_manage.i18n_key')" prop="multi_lang_code">
+                <el-form-item label="狀態" prop="multi_lang_code">
                     <el-input v-model="form.multi_lang_code" maxlength="50" clearable show-word-limit>
                         <template slot="prepend">{{prefix}}</template>
                     </el-input>
                 </el-form-item>
-                <el-form-item :label="$t('shop_manage.note')" prop="note">
+                <el-form-item label="起始日期" prop="note">
+                    <el-input v-model="form.note" type="textarea" style="width:100%;"/>
+                </el-form-item>
+                <el-form-item label="結束日期" prop="note">
                     <el-input v-model="form.note" type="textarea" style="width:100%;"/>
                 </el-form-item>
             </el-form>
@@ -72,7 +78,7 @@
     </div>
 </template>
 <script>
-import { shopManageService } from "@/_services";
+import { workItemService } from "@/_services";
 export default {
     name: "shop_areas_show",
     data(){
@@ -106,7 +112,8 @@ export default {
             },
 
             option:{
-                categories:[]
+                categories:[],
+                status:[]
             },
             
             rules: {
@@ -125,8 +132,8 @@ export default {
     },
 
     async created(){
-        // await this.getOption();
-        // await this.getData();
+        await this.getOption();
+        await this.getData();
     },
 
     computed: {
@@ -153,8 +160,7 @@ export default {
         },
 
         handleEdit(index, row){
-            row.multi_lang_code = row.multi_lang_code.replace(/^AREA_/, "");
-            this.form=Object.assign({}, row);
+            this.form=row;
             this.edit_idx=index;
             this.updateView=true;
         },
@@ -273,21 +279,21 @@ export default {
                 sort_column:this.sort_column,
                 sort:this.sort,
                 start_row:this.start_row,
-                page_size:this.page_size,
-                filter:this.filter
+                pagesize:this.page_size,
+                key_word:"",
+                status:["D"],
+                category:[]
             }
-            await shopManageService.get_areas_renew(param).then(res =>{ 
-                this.tableData=res.shop_areas;
-                this.tableData.map(
-                    row=>this.getCountryName(row)
-                );
+            await workItemService.get_work_items(param).then(res =>{ 
+                this.tableData=res.data;
                 this.totalRow=res.total;
             })
         },
         
         async getOption(){
-            await shopManageService.get_option_list({action:["country"]}).then(res =>{ 
-                this.option.country=res.countries; 
+            await workItemService.get_options({}).then(res =>{ 
+                this.option.categories=res.categories; 
+                this.option.status=res.status; 
             }) 
         },
 
