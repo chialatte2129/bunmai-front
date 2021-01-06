@@ -53,7 +53,7 @@ export default {
                     icon: "el-icon-collection",
                     index: "project",
                     title: this.$t("menus.project_manage"),
-                    show: this.includeSubMenu(["person_day_item","work_items"]),
+                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items"]),
                     subs: [            
                         {
                             index: "work_items",
@@ -61,10 +61,25 @@ export default {
                             show: this.hasThisMenu("work_items")
                         },
                         {
-                            index: "person_day_item",
-                            title: this.$t("menus.person_day_item"),
-                            show: this.hasThisMenu("person_day_item")
-                        }
+                            index: "daily_report",
+                            title: this.$t("menus.daily_report"),
+                            show: this.includeSubMenu([
+                                "day_item_person", 
+                                "day_item_review"
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "day_item_person",
+                                    title: this.$t("menus.day_item_person"),
+                                    show: this.hasThisMenu("day_item_person")
+                                },
+                                {
+                                    index: "day_item_review",
+                                    title: this.$t("menus.day_item_review"),
+                                    show: this.hasThisMenu("day_item_review")
+                                },
+                            ]
+                        },
                     ]
                 },
                 {
@@ -113,12 +128,12 @@ export default {
         };
     },
     computed: {
-        onRoutes() {
+        onRoutes(){
             return this.$route.path.replace("/", "");
         }
     },
     methods: {
-        hasThisMenu(menu_path) {
+        hasThisMenu(menu_path){
             var my_menus = localStorage.getItem("ms_user_menus").split(",");
             if (my_menus.includes(menu_path)) {
                 return true;
@@ -126,7 +141,8 @@ export default {
                 return false;
             }
         },
-        includeSubMenu(sys_menus) {
+
+        includeSubMenu(sys_menus){
             var find_flag = false;
             var arrayLength = sys_menus.length;
             var my_menus = localStorage.getItem("ms_user_menus").split(",");
@@ -137,15 +153,13 @@ export default {
                     break;
                 }
             }
-            //console.log(sys_menus,find_flag)
             return find_flag;
         }
     },
 
-    created() {
-        // 通过 Event Bus 进行组件间通信，来折叠侧边栏
+    created(){
         bus.$on("collapse", msg => {
-        this.collapse = msg;
+            this.collapse = msg;
         });
     }
 };

@@ -79,8 +79,9 @@ export const messages = {
             dictionary_setting: '字典檔設定',
             project_manage: '專案管理系統',
             work_items: '專案管理',
-            person_day_item: '每日工作彙報',
-
+            daily_report:"每日工作彙報",
+            day_item_person:"填寫工作彙報",
+            day_item_review:"檢視工作彙報",
         },
         table_title:{
             role :'角色代號',
@@ -345,8 +346,9 @@ export const messages = {
             dictionary_setting: 'Dictionary Setting',
             project_manage: 'Project Manage',
             work_items: 'Project',
-            person_day_item: 'Daily Work Report',
-            
+            daily_report:"Daily Report",
+            day_item_person:"Fill In",
+            day_item_review:"Review",
         },
         table_title :{
             role :'Role id',

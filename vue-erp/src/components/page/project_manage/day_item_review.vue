@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t('menus.person_day_item')}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t('menus.day_item_review')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -71,7 +71,7 @@
 <script>
 import { dayItemService } from "@/_services";
 export default {
-    name: "person_day_item",
+    name: "day_item_review",
     data(){
         return {
             odoo_user_id:localStorage.getItem("ms_odoo_user_id"),
