@@ -9,19 +9,21 @@
         <div class="container">
             <div class="mgb10">
                 <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">{{$t('btn.new')}}</el-button>
-                <el-select size="large" v-model="filter.country_id" filterable clearable :placeholder="$t('shop_manage.country_name')" @change="search">
-                    <el-option v-for="item in option.country" :key="item.id" :label="item.name" :value="item.id"/>
+                <el-select size="large" v-model="filter.country_id" filterable clearable placeholder="專案類別" @change="search">
+                    <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgr10 mgl10 handle-input" :placeholder="$t('shop_manage.area_name')" @change="search"/>
+                <el-input v-model="filter.name" clearable size="large" class="mgr10 mgl10 handle-input" placeholder="專案名稱關鍵字" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" :key="tbKey">
                 <el-table-column prop="id" label="ID" width="100" sortable="custom" align="right" header-align="center"/>
-                <el-table-column prop="name" :label="$t('shop_manage.area_name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="multi_lang_code" :label="$t('shop_manage.i18n_key')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="country_id" :label="$t('shop_manage.country_name')" width="auto" sortable="custom" show-overflow-tooltip>
-                    <template slot-scope="scope">{{scope.row.country_name}}</template>
-                </el-table-column>
+                <el-table-column prop="name" label="名稱" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="catgegory" label="類別" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="is_project" label="是否專案" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status" label="狀態" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status" label="起始日期" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status" label="結束日期" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status" label="專案說明" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -104,7 +106,7 @@ export default {
             },
 
             option:{
-                country:[]
+                categories:[]
             },
             
             rules: {
