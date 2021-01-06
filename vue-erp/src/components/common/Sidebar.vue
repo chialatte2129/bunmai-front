@@ -45,7 +45,6 @@
 import bus from "../common/bus";
 export default {
     data(){
-        var odoo_is_dept_manager = localStorage.getItem("ms_odoo_is_dept_manager");
         return {
             collapse: false,        
             items: [                
@@ -77,7 +76,7 @@ export default {
                                 {
                                     index: "day_item_review",
                                     title: this.$t("menus.day_item_review"),
-                                    show: this.hasThisMenu("day_item_review")|odoo_is_dept_manager,
+                                    show: this.hasThisMenuOrMgr("day_item_review"),
                                 },
                             ]
                         },
@@ -141,6 +140,19 @@ export default {
             } else {
                 return false;
             }
+        },
+
+        hasThisMenuOrMgr(menu_path){
+            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            if (my_menus.includes(menu_path)) {
+                return true;
+            } else {
+                if (localStorage.getItem("ms_odoo_is_dept_manager")=="true") {
+                    localStorage.setItem("ms_user_menus", `${localStorage.getItem('ms_user_menus')}, ${menu_path}`); 
+                    return true;
+                }
+            }
+            return false;
         },
 
         includeSubMenu(sys_menus){

@@ -153,6 +153,8 @@ export const messages = {
             auto_apply:"自動套用",
             download_excel_file:"下載成excel檔",
             download_excel:"下載 Excel 檔案",
+            reset:"重置",
+            all_select:"全選",
         },
         common_msg:{
             tip:'提示',
@@ -201,6 +203,10 @@ export const messages = {
             team_delete_ng_tips:"無法刪除，因有細項設定已設定",
             go_to_foreign_url:"即將前往外部連結",
             action_error:"操作動作錯誤",
+            odoo_user_reader_err:"[Odoo] 取得使用者讀取權限異常",
+            odoo_dept_info_err:"[Odoo] 取得員工部門資訊異常",
+            odoo_dept_tree_err:"[Odoo] 取得部門資訊異常",
+            dict_error:"字典檔異常",
         },
         account:{
             login: '登入', 
@@ -421,6 +427,8 @@ export const messages = {
             auto_apply:"Auto Apply",
             download_excel_file:"Download as excel",
             download_excel:"Download as Excel",
+            reset:"Reset",
+            all_select:"All",
         },
         common_msg:{
             tip:'Tip',
@@ -469,6 +477,10 @@ export const messages = {
             team_delete_ng_tips:"Delete Failed, detail settings have already used",
             go_to_foreign_url:"Go to foreign URL",
             action_error:"Action Error",
+            odoo_user_reader_err:"[Odoo] Get User Reader Error",
+            odoo_dept_info_err:"[Odoo] Get EE. Dept. Information Error",
+            odoo_dept_tree_err:"[Odoo] Get Dept. Information Error",
+            dict_error:"Dictionary Setting Error",
         },
         account: {
             login: 'Login', 

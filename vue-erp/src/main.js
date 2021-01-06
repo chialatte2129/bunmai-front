@@ -39,7 +39,6 @@ router.beforeEach((to, from, next) => {
     var path_id=to.path.replace("/","");
     var path_array=to.path.split("/")
     console.log(to.path, ' >>> ',path_id);
-
     if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限     
             
         localStorage.removeItem('ms_username');               
