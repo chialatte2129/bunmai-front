@@ -57,7 +57,7 @@
                             <!-- <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/> -->
                             <el-table-column :label="$t('btn.action')" width="105" align="center">
                                 <template slot-scope="scope">
-                                    <el-button type="info" size="mini" icon="el-icon-view" @click="" :disabled="table_loading">{{$t('btn.view')}}</el-button>
+                                    <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.view')}}</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -69,6 +69,19 @@
                 </el-col>
             </el-row>
         </div>
+        <el-dialog :title="`${$t('btn.view')} [${form.work_date}] ${form.p_name} - ${form.item_name}`" width="600px"
+        :visible.sync="infoView"  :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
+            <el-form :model="form" ref="form" label-position="right" label-width="auto" style="padding:0 20px;">
+                <el-form-item :label="$t('employee.work_date')">{{form.work_date}}</el-form-item>
+                <el-form-item :label="$t('employee.name')">{{form.p_name}}</el-form-item>
+                <el-form-item :label="$t('employee.dept')">{{form.dept_name}}</el-form-item>
+                <el-form-item :label="$t('project.name')">{{form.item_id}} - {{form.item_name}}</el-form-item>
+                <el-form-item :label="$t('employee.work_hour')">{{form.work_hours}}</el-form-item>
+                <el-form-item :label="$t('employee.description')">
+                    <el-input v-model="form.description" type="textarea" :readonly="true" :rows="5" style="width:95%;"/>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -92,6 +105,7 @@ export default {
             table_loading:false,
             tableData:[],
             totalRow:0,
+            dlKey:0,
             tbKey:0,
             spanArr:[],
             pos:0,
@@ -111,6 +125,8 @@ export default {
                 work_item:[],
                 employee:[],
             },
+            infoView:false,
+            form:{},
             pickerOptions:{
                 shortcuts:[
                     {
@@ -142,19 +158,6 @@ export default {
                     }
                 ]
             },
-            
-            rules: {
-                work_date: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                item_id: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur", "change"]},
-                ],
-                work_hours: [
-                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-            },
         }
     },
 
@@ -164,6 +167,7 @@ export default {
         },
 
         "filter.dept_id"(val){
+            this.filter.pid=[];
             this.getData();
         }
     },
@@ -232,6 +236,17 @@ export default {
                     this.expand_key.splice(i, 1);
                 }
             })
+        },
+
+        handleView(index, row){
+            this.form=Object.assign({}, row);
+            this.infoView=true;
+        },
+
+        cancelDialog(){
+            this.dlKey++;
+            this.form={};
+            this.infoView=false;
         },
 
         async get_dept_tree(){
