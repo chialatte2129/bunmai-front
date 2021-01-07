@@ -182,7 +182,7 @@ export default {
                 start_date:null,
                 end_date:null,
                 description:"",
-                employ_id:localStorage.getItem("ms_employee_id"),
+                employ_id:localStorage.getItem("ms_odoo_employee_id"),
             },
 
             option:{
@@ -296,10 +296,9 @@ export default {
         },
 
         handleEdit(index, row){
-            row["employ_id"] = localStorage.getItem("ms_employee_id");
             console.log(row);
             this.form=Object.assign({}, row);
-            // this.form.date_period = [row.start_date,row.end_date]
+            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
             this.edit_idx=index;
             this.updateView=true;
         },
@@ -381,7 +380,7 @@ export default {
                 is_project:"",
                 start_date:"",
                 end_date:"",
-                employ_id:localStorage.getItem("ms_employee_id"),
+                employ_id:localStorage.getItem("ms_odoo_employee_id"),
             };
             this.edit_idx=null;
             this.$refs.form.clearValidate();
