@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"/>
+          <i class="el-icon-lx-lock"/>
           {{$t('menus.role_edit')}}
         </el-breadcrumb-item>
       </el-breadcrumb>
