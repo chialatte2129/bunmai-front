@@ -8,8 +8,14 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">{{$t('btn.new')}}</el-button>
-                <el-button v-if="allowProjectCreate" size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleProjectCreate">新增外部專案</el-button>
+                <el-button v-if="allowCreate" size="large" type="success" 
+                icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">
+                    {{$t('btn.new')}}
+                </el-button>
+                <el-button v-if="allowProjectCreate" size="large" type="success" 
+                icon="el-icon-circle-plus-outline" class="mgr10" @click="handleProjectCreate">
+                    {{$t('project.create_outter_project')}}
+                    </el-button>
                 <el-select 
                 size="large" 
                 v-model="filter.category" 
@@ -17,7 +23,7 @@
                 collapse-tags
                 filterable 
                 clearable 
-                placeholder="專案類別"
+                :placeholder="$t('project.category')"
                 @change="search">
                     <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
                 </el-select>
@@ -29,31 +35,31 @@
                 collapse-tags
                 filterable 
                 clearable 
-                placeholder="專案狀態" 
+                :placeholder="$t('project.status')"
                 @change="search">
                     <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgl10 handle-input" placeholder="專案名稱關鍵字" @change="search"/>
+                <el-input v-model="filter.name" clearable size="large" class="mgl10 handle-input" :placeholder="$t('project.keyword')" @change="search"/>
                 <el-button size="large" type="info" class="mgl10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" :key="tbKey">
-                <el-table-column prop="id" label="ID" width="100" sortable="custom" align="left" header-align="center"/>
-                <el-table-column prop="name" label="名稱" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="category" label="類別" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left"/>
+                <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <!-- <el-table-column prop="is_project" label="是否專案" width="120px" sortable="custom" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.is_project==0">否</span>
                         <span v-if="scope.row.is_project==1">是</span>
                     </template>
                 </el-table-column> -->
-                <el-table-column prop="status_name" label="狀態" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="start_date" label="起始日期" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="end_date" label="結束日期" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" label="專案說明" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
-                        <el-button :disabled="allowDelete(scope.row)" type="info" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">作廢</el-button>
+                        <el-button :disabled="allowDelete(scope.row)" type="info" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">{{$t('project.delete')}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -64,7 +70,7 @@
         </div>
         
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
-            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 您要作廢此專案嗎 ?</div>
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('project.ask_delete')}}</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
@@ -78,40 +84,40 @@
         :close-on-click-modal="false" 
         class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-form-item v-if="createView" label="專案編號" prop="id">
+                <el-form-item v-if="createView" :label="$t('project.id')" prop="id">
                     <el-input  v-model="form.id" clearable style="width:100%;">
                         <template v-if="form.is_project==0" slot="prepend">INTER-</template>
                     </el-input>
                 </el-form-item>
-                <el-form-item v-if="updateView" label="專案編號" prop="id">
+                <el-form-item v-if="updateView" :label="$t('project.id')" prop="id">
                     <span >{{form.id}}</span>
                 </el-form-item>
-                <el-form-item label="專案名稱" prop="name">
+                <el-form-item :label="$t('project.name')" prop="name">
                     <el-input :readonly="setReadOnly" v-model="form.name" clearable style="width:100%;"/>
                 </el-form-item>
-                <el-form-item label="類別" prop="category">
+                <el-form-item :label="$t('project.category')" prop="category">
                     <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable style="width:100%;">
                         <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
                     </el-select>
                     <span v-if="form.is_project==1">{{form.category}}</span>
                 </el-form-item>
-                <el-form-item label="狀態" prop="status">
+                <el-form-item :label="$t('project.status')" prop="status">
                      <el-select :disabled="setReadOnly" v-model="form.status" filterable style="width:100%;">
                         <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="專案日期" prop="date_period">
+                <el-form-item :label="$t('project.date')" prop="date_period">
                     <el-date-picker
                     v-model="form.date_period"
                     :readonly="setReadOnly"
                     type="daterange"
                     value-format="yyyy-MM-dd"
-                    range-separator="至"
-                    start-placeholder="開始日期"
-                    end-placeholder="结束日期">
+                    :range-separator="$t('employee.date_range')"
+                    :start-placeholder="$t('common_column.start_date')"
+                    :end-placeholder="$t('common_column.end_date')">
                     </el-date-picker>
                 </el-form-item>
-                <el-form-item label="備註" prop="description">
+                <el-form-item :label="$t('project.description')" prop="description">
                     <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:100%;"/>
                 </el-form-item>
             </el-form>
@@ -199,10 +205,10 @@ export default {
         },
 
         showTitle(){
-            if(this.createView && this.form.is_project) return "新建外部專案";
-            else if(this.createView && !this.form.is_project) return "新建專案";
-            else if(this.updateView && this.form.is_project) return "編輯外部專案";
-            else if(this.updateView && !this.form.is_project) return "新建專案";
+            if(this.createView && this.form.is_project) return this.$t("project.create_outter_project");
+            else if(this.createView && !this.form.is_project) return this.$t("project.create_inner_project");
+            else if(this.updateView && this.form.is_project) return this.$t("project.edit_outter_project");
+            else if(this.updateView && !this.form.is_project) return this.$t("project.edit_inner_project");
             else return "";
         },
 
