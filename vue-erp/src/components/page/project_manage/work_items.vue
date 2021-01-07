@@ -106,17 +106,27 @@
                         <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                     </el-select>
                 </el-form-item>
-                <el-form-item :label="$t('project.date')" prop="date_period">
+
+                <el-form-item :label="$t('common_column.start_date')" prop="date_period">
                     <el-date-picker
-                    v-model="form.date_period"
-                    :readonly="setReadOnly"
-                    type="daterange"
+                    v-model="form.start_date"
+                    :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}"
+                    type="date"
                     value-format="yyyy-MM-dd"
-                    :range-separator="$t('employee.date_range')"
-                    :start-placeholder="$t('common_column.start_date')"
-                    :end-placeholder="$t('common_column.end_date')">
+                    placeholder="選擇日期">
                     </el-date-picker>
                 </el-form-item>
+
+                <el-form-item :label="$t('common_column.end_date')" prop="date_period">
+                    <el-date-picker
+                    v-model="form.end_date"
+                    :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="選擇日期">
+                    </el-date-picker>
+                </el-form-item>
+
                 <el-form-item :label="$t('project.description')" prop="description">
                     <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:100%;"/>
                 </el-form-item>
@@ -148,12 +158,15 @@ export default {
             deleteView:false,
             createView:false,
             updateView:false,
+            check_start_time:"",
+            check_end_time:"",
             filter:{
                 name:"",
                 status:[],
                 category:[]
             },
             edit_idx:null,
+            a:"",
             
             form:{
                 date_period:[],
@@ -163,8 +176,8 @@ export default {
                 category:"",
                 status:"",
                 is_project:"",
-                start_date:"",
-                end_date:"",
+                start_date:null,
+                end_date:null,
                 description:"",
                 employ_id:localStorage.getItem("ms_employee_id"),
             },
@@ -173,7 +186,7 @@ export default {
                 categories:[],
                 status:[]
             },
-            
+           
             rules: {
                 name: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
@@ -186,10 +199,8 @@ export default {
                 ],
                 category: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                date_period: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ]
+                
             },
         }
     },
@@ -253,9 +264,10 @@ export default {
             }
         },
         
-    },    
+    }, 
     
     methods: {
+        
         allowDelete(row){
             if(row.status == 'A'){
                 return true
@@ -284,7 +296,7 @@ export default {
             row["employ_id"] = localStorage.getItem("ms_employee_id");
             console.log(row);
             this.form=Object.assign({}, row);
-            this.form.date_period = [row.start_date,row.end_date]
+            // this.form.date_period = [row.start_date,row.end_date]
             this.edit_idx=index;
             this.updateView=true;
         },
@@ -338,8 +350,6 @@ export default {
         confirmDialog(){
             this.$refs.form.validate(valid => {
                 if(valid){
-                    this.form.start_date = this.form.date_period[0];
-                    this.form.end_date = this.form.date_period[1];
                     var temp_form = Object.assign({}, this.form);
                     var param = {
                         type:this.createView?"create":"update",
