@@ -21,7 +21,7 @@
                         </div>
                         <div class="scrollBar" v-loading="tree_loading">
                             <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:610px;">
-                                <el-tree class="filter-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
+                                <el-tree class="filtered-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
                                 :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key"
                                 @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse" @check-change="handleCheckChange">
                                     <span class="custom-tree-node" slot-scope="{node, data}">
@@ -33,39 +33,49 @@
                     </el-card>
                 </el-col>
                 <el-col :span="18">
-                    <el-card shadow="hover" body-style="padding:10px" style="height:710px;">
-                        <el-select size="large" class="mgr10 handle-input" v-model="filter.item_id" filterable clearable multiple collapse-tags
-                        :placeholder="$t('project.name')" :disabled="table_loading" @change="search">
-                            <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id" :disabled="table_loading"/>
-                        </el-select>
-                        <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
-                        :placeholder="$t('employee.name')" :disabled="table_loading" @change="search">
-                            <el-option v-for="item in option.employee" :key="item.id" :label="item.name" :value="item.id" :disabled="table_loading"/>
-                        </el-select>
-                        <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
-                        :disabled="table_loading" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
-                        @change="search" class="mgr10" size="large"/>
-                        <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
-                        <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey" height="592">
-                            <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip :disabled="table_loading"/>
-                            <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip :disabled="table_loading"/>
-                            <el-table-column prop="dept_name" :label="$t('employee.dept')" width="auto" sortable="custom" show-overflow-tooltip :disabled="table_loading"/>
-                            <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip :disabled="table_loading">
-                                <template slot-scope="scope">{{scope.row.item_name}}</template>
-                            </el-table-column>
-                            <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left" :disabled="table_loading"/>
-                            <!-- <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/> -->
-                            <el-table-column :label="$t('btn.action')" width="105" align="center">
-                                <template slot-scope="scope">
-                                    <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.view')}}</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <div class="pagination">
-                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :disabled="table_loading"
-                            :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
-                        </div>
-                    </el-card>
+                    <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
+                        <el-tab-pane :label="$t('employee.daily_details')" name="daily_details">
+                            <div v-if="activeTabs=='daily_details'">
+                            <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
+                            :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
+                                <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                        <span class="mgl10">{{item.name}}</span>
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+                            <el-select size="large" class="mgr10 handle-input" v-model="filter.item_id" filterable clearable multiple collapse-tags
+                            :placeholder="$t('project.name')" :disabled="table_loading||tree_loading" @change="search">
+                                <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                            </el-select>
+                            <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
+                            :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
+                            :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
+                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
+                            <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" 
+                            @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey" height="500">
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="auto" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                                    <template slot-scope="scope">{{scope.row.item_name}}</template>
+                                </el-table-column>
+                                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
+                                <el-table-column :label="$t('btn.action')" width="105" align="center">
+                                    <template slot-scope="scope">
+                                        <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">
+                                            {{$t('btn.view')}}
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <div class="pagination">
+                                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                                :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                            </div>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-col>
             </el-row>
         </div>
@@ -102,6 +112,11 @@ export default {
                 level:"level",
             },
 
+            activeTabs:"daily_details",
+            get_data_sig:false,
+            node_click_sig:false,
+            reset_sig:false,
+
             table_loading:false,
             tableData:[],
             totalRow:0,
@@ -128,32 +143,35 @@ export default {
             infoView:false,
             form:{},
             pickerOptions:{
+                disabledDate(time){
+                    return time.getTime() > Date.now();
+                },
                 shortcuts:[
                     {
-                    text: this.$i18n.t('employee.week'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$i18n.t('employee.week'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
                         }
                     }, 
                     {
-                    text: this.$i18n.t('employee.month'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$i18n.t('employee.month'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
                         }
                     },
                     {
-                    text: this.$i18n.t('employee.three_months'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$i18n.t('employee.three_months'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
                         }
                     }
                 ]
@@ -168,14 +186,21 @@ export default {
 
         "filter.dept_id"(val){
             this.filter.pid=[];
-            this.getData();
-        }
+        },
+
+        get_data_sig(val){
+            if(val){
+                this.getData();
+            }
+            this.get_data_sig=false;
+            this.node_click_sig=false;
+            this.reset_sig=false;
+        },
     },
 
     async created(){
         await this.get_dept_tree();
         await this.getOption();
-        await this.getData();
     },
 
     computed: {
@@ -185,31 +210,56 @@ export default {
     },    
     
     methods: {
+        async handleTabClick(tab, event){
+            // if(this.activeTabs!=tab.name) this.activeTabs=tab.name;
+        },
+
         resetCheckBox(){
             this.filterText="";
-            this.$refs.tree_data.setCheckedKeys([])
-            this.filter.dept_id=[];
+            this.$refs.tree_data.setCheckedKeys([]);
+            this.reset_sig=true;
         },
 
         allCheckBox(){
+            this.filterText="";
             for(var item of this.$refs.tree_data.data){
                 if(!this.$refs.tree_data.getNode(item).checked){
                     this.$refs.tree_data.setChecked(item, true);
-                    this.filter.dept_id.push(item.id);
                 }
-            }
+            };
         },
 
         handleCheckChange(data, checked, indeterminate){
-            if(checked) this.filter.dept_id.push(data.id);
-            else{
+            if(checked){
+                if(!this.filter.dept_id.includes(data.id)){
+                    this.filter.dept_id.push(data.id);
+                };
+                if(data.members.length==0) data.members.push({id:"-100", name:this.$t("employee.nobody"), disabled:true});
+                this.option.employee.push(data);
+                this.option.employee.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+            }else{
                 var pos = this.filter.dept_id.indexOf(data.id);
-                if(pos != -1) this.filter.dept_id.splice(pos,1);
+                if(pos != -1) this.filter.dept_id.splice(pos, 1);
+                var pos = this.option.employee.indexOf(data);
+                if(pos != -1) this.option.employee.splice(pos, 1);
+                if(!this.reset_sig){
+                    this.get_data_sig=true;
+                };
             };
+            if(this.filter.dept_id.length==this.tree_data.length){
+                this.get_data_sig=true;
+            };
+            if(this.node_click_sig){
+                this.get_data_sig=true;
+            };
+            if(this.reset_sig&&this.filter.dept_id.length==0){
+                this.get_data_sig=true;
+            }
         },
 
         handleNodeClick(data){
             this.$refs.tree_data.setChecked(data, !this.$refs.tree_data.getNode(data).checked);
+            this.node_click_sig=true;
         },
 
         filterNode(value, data){
@@ -225,16 +275,12 @@ export default {
                     return true
                 }
             })
-            if(!flag){
-                this.expand_key.push(data.id);
-            }
+            if(!flag) this.expand_key.push(data.id);
         },
 
         handleNodeCollapse(data){
             this.expand_key.some((item, i) => {
-                if(item === data.id){
-                    this.expand_key.splice(i, 1);
-                }
+                if(item === data.id) this.expand_key.splice(i, 1);
             })
         },
 
@@ -257,12 +303,17 @@ export default {
             }
             await dayItemService.get_dept_tree(param).then(res =>{ 
                 this.tree_data=res.tree_data;
+                this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+                // for(var dept of this.tree_data){
+                //     dept.disabled=true;
+                // };
             })
-            // await this.allCheckBox();
+            await this.allCheckBox();
             this.tree_loading=false;
         },
         
         async getData(){
+            console.log("getData")
             this.table_loading=true;
             var param = {
                 action:"table",
@@ -283,7 +334,7 @@ export default {
         
         async getOption(){
             await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
-                this.option.work_item=res.work_item; 
+                this.option.work_item=res.work_item;
             }) 
         },
 
@@ -381,10 +432,10 @@ export default {
         width:150px;
         line-height:26px;
     }
-    .filter-tree >>> .el-tree-node__expand-icon.is-leaf{
+    .filtered-tree >>> .el-tree-node__expand-icon.is-leaf{
         display:none;
     }
-    .filter-tree{
+    .filtered-tree{
         margin-left:3px;
     }
     .tree_filter{
