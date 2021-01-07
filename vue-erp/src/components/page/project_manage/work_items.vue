@@ -9,7 +9,7 @@
         <div class="container">
             <div class="mgb10">
                 <el-button v-if="allowCreate" size="large" type="success" 
-                icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">
+                icon="el-icon-circle-plus-outline"  @click="handleCreate">
                     {{$t('btn.new')}}
                 </el-button>
                 <el-button v-if="allowProjectCreate" size="large" type="success" 
@@ -165,6 +165,7 @@ export default {
                 is_project:"",
                 start_date:"",
                 end_date:"",
+                description:"",
                 employ_id:localStorage.getItem("ms_employee_id"),
             },
 
