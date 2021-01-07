@@ -9,7 +9,15 @@
         <div class="container">
             <div class="mgb10">
                 <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate">{{$t('btn.new')}}</el-button>
-                <el-select size="large" v-model="filter.category" filterable clearable placeholder="專案類別" @change="search">
+                <el-select 
+                size="large" 
+                v-model="filter.category" 
+                multiple
+                collapse-tags
+                filterable 
+                clearable 
+                placeholder="專案類別"
+                @change="search">
                     <el-option v-for="category in option.categories" :key="category" :label="category" :value="category"/>
                 </el-select>
                 <el-select size="large" v-model="filter.status" filterable clearable placeholder="專案狀態" @change="search">
