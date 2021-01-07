@@ -13,12 +13,13 @@
                     {{$t('btn.new')}}
                 </el-button>
                 <el-button v-if="allowProjectCreate" size="large" type="success" 
-                icon="el-icon-circle-plus-outline" class="mgr10" @click="handleProjectCreate">
+                icon="el-icon-circle-plus-outline"  @click="handleProjectCreate">
                     {{$t('project.create_outter_project')}}
                     </el-button>
                 <el-select 
                 size="large" 
                 v-model="filter.category" 
+                class="mgl10"
                 multiple
                 collapse-tags
                 filterable 
@@ -112,6 +113,7 @@
                     v-model="form.start_date"
                     :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}"
                     type="date"
+                    :readonly="setReadOnly"
                     value-format="yyyy-MM-dd"
                     placeholder="選擇日期">
                     </el-date-picker>
@@ -122,6 +124,7 @@
                     v-model="form.end_date"
                     :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}"
                     type="date"
+                    :readonly="setReadOnly"
                     value-format="yyyy-MM-dd"
                     placeholder="選擇日期">
                     </el-date-picker>
