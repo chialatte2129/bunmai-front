@@ -46,25 +46,27 @@
         </el-dialog>
         
         <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-form-item :label="$t('employee.work_date')" prop="work_date">
-                    <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select_date')" class="handle-input" :disabled="updateView"/>
-                </el-form-item>
-                <el-form-item :label="$t('project.name')" prop="item_id">
-                    <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView">
-                        <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
-                    </el-select>
-                </el-form-item>
-                <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
-                    <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input"/>
-                </el-form-item>
-                <el-form-item :label="$t('employee.description')" prop="description">
-                    <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
+            <div v-loading.lock="dialog_loading">
+                <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                    <el-form-item :label="$t('employee.work_date')" prop="work_date">
+                        <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select_date')" class="handle-input" :disabled="updateView"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('project.name')" prop="item_id">
+                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView">
+                            <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
+                        <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('employee.description')" prop="description">
+                        <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer-loading">
+                    <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
+                    <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
+                </div>
             </div>
         </el-dialog>
     </div>
@@ -77,11 +79,11 @@ export default {
         return {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
-            deptname:"",
             tbKey:0,
             dlKey:0,
             table_loading:false,
-            tableData: [],
+            dialog_loading:false,
+            tableData:[],
             totalRow:0,
             spanArr:[],
             pos:0,
@@ -254,7 +256,6 @@ export default {
         },
 
         confirmDelete(){
-            this.form.id = this.deleteID; 
             var param = {
                 action:"delete",
                 form:this.deleteInfo
@@ -262,26 +263,29 @@ export default {
             this.update_day_item(param);
         },
 
-        update_day_item(param){ 
-            dayItemService.update_day_item(param).then(res =>{ 
+        async update_day_item(param){ 
+            this.dialog_loading=true;
+            await dayItemService.update_day_item(param).then(res =>{ 
                 if(res.code==1){ 
                     this.$message.success(this.$t(res.msg)); 
                     if(param.action=="create"){
                         this.getData();
+                        this.cancelDialog();
                     }else if(param.action=="update"){
                         this.tableData[this.edit_idx]=param.form;
                         this.tbKey++;
+                        this.cancelDialog();
                     }else if(param.action=="delete"){
                         this.cancelDelete()
                         this.handleDeleteChange();
                     }
-                    this.cancelDialog();
                 }else if(res.code==0){ 
                     this.$message.warning(this.$t(res.msg)); 
                 }else{ 
                     this.$message.error(this.$t(res.msg)); 
                 } 
             }) 
+            this.dialog_loading=false;
         },
 
         confirmDialog(){
@@ -402,5 +406,9 @@ export default {
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
+    }
+    .dialog-footer-loading{
+        text-align:right;
+        margin:40px 0 -10px 0;
     }
 </style>

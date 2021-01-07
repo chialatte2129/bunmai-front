@@ -9,19 +9,21 @@
         </div>
         <div class="container">
             <el-row>
-                <el-col :span="5">
-                    <el-card shadow="hover" body-style="padding:10px" class="mgb10 mgr10" style="height:705px;">
+                <el-col :span="6">
+                    <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
                         <div slot="header" class="clearfix">
-                            <span>{{$t('employee.dept_tree')}}</span>
+                            <span><b>{{$t('employee.dept_tree')}}</b></span>
                         </div>
                         <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" clearable/>
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:60%;" clearable :disabled="tree_loading"/>
+                            <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
+                            <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
                         </div>
-                        <div class="scrollBar">
-                            <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:605px;">
-                                <el-tree class="filter-tree" node-key="label" ref="tree_data" highlight-current default-expand-all :expand-on-click-node="false"
+                        <div class="scrollBar" v-loading="tree_loading">
+                            <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:610px;">
+                                <el-tree class="filter-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
                                 :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key"
-                                @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse">
+                                @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse" @check-change="handleCheckChange">
                                     <span class="custom-tree-node" slot-scope="{node, data}">
                                         <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
                                     </span>
@@ -30,8 +32,56 @@
                         </div>
                     </el-card>
                 </el-col>
+                <el-col :span="18">
+                    <el-card shadow="hover" body-style="padding:10px" style="height:710px;">
+                        <el-select size="large" class="mgr10 handle-input" v-model="filter.item_id" filterable clearable multiple collapse-tags
+                        :placeholder="$t('project.name')" :disabled="table_loading" @change="search">
+                            <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id" :disabled="table_loading"/>
+                        </el-select>
+                        <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
+                        :placeholder="$t('employee.name')" :disabled="table_loading" @change="search">
+                            <el-option v-for="item in option.employee" :key="item.id" :label="item.name" :value="item.id" :disabled="table_loading"/>
+                        </el-select>
+                        <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
+                        :disabled="table_loading" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
+                        @change="search" class="mgr10" size="large"/>
+                        <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                        <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey" height="592">
+                            <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip :disabled="table_loading"/>
+                            <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip :disabled="table_loading"/>
+                            <el-table-column prop="dept_name" :label="$t('employee.dept')" width="auto" sortable="custom" show-overflow-tooltip :disabled="table_loading"/>
+                            <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip :disabled="table_loading">
+                                <template slot-scope="scope">{{scope.row.item_name}}</template>
+                            </el-table-column>
+                            <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left" :disabled="table_loading"/>
+                            <!-- <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/> -->
+                            <el-table-column :label="$t('btn.action')" width="105" align="center">
+                                <template slot-scope="scope">
+                                    <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.view')}}</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <div class="pagination">
+                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :disabled="table_loading"
+                            :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                        </div>
+                    </el-card>
+                </el-col>
             </el-row>
         </div>
+        <el-dialog :title="`${$t('btn.view')} [${form.work_date}] ${form.p_name} - ${form.item_name}`" width="600px"
+        :visible.sync="infoView"  :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
+            <el-form :model="form" ref="form" label-position="right" label-width="auto" style="padding:0 20px;">
+                <el-form-item :label="$t('employee.work_date')">{{form.work_date}}</el-form-item>
+                <el-form-item :label="$t('employee.name')">{{form.p_name}}</el-form-item>
+                <el-form-item :label="$t('employee.dept')">{{form.dept_name}}</el-form-item>
+                <el-form-item :label="$t('project.name')">{{form.item_id}} - {{form.item_name}}</el-form-item>
+                <el-form-item :label="$t('employee.work_hour')">{{form.work_hours}}</el-form-item>
+                <el-form-item :label="$t('employee.description')">
+                    <el-input v-model="form.description" type="textarea" :readonly="true" :rows="5" style="width:95%;"/>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -40,56 +90,43 @@ export default {
     name: "day_item_review",
     data(){
         return {
+            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            username:localStorage.getItem("ms_username"),
+            tree_loading:false,
             expand_key:[],
             tree_data:[],
             filterText:"",
             defaultProps: {
                 children:"children",
-                label:"label",
+                label:"complete_name",
                 level:"level",
             },
 
-            odoo_user_id:localStorage.getItem("ms_odoo_user_id"),
-            fullname:localStorage.getItem("ms_user_fullname"),
-            deptname:"",
-            tbKey:0,
-            dlKey:0,
             table_loading:false,
-            tableData: [],
+            tableData:[],
             totalRow:0,
+            dlKey:0,
+            tbKey:0,
             spanArr:[],
             pos:0,
-            cur_page: 1,
-            page_size:10,
-            page_size_list:[5, 10, 20, 50],
+            cur_page:1,
+            page_size:20,
+            page_size_list:[20, 50, 100],
             start_row:0,
             sort_column:"work_date",
             sort:"desc",
-            deleteInfo:{
-                pid:localStorage.getItem("ms_odoo_user_id"),
-                item_id:null,
-                work_date:"",
-            },
-            deleteView:false,
-            createView:false,
-            updateView:false,
             filter:{
                 item_id:null,
                 work_date:[],
-                pid:localStorage.getItem("ms_odoo_user_id"),
-            },
-            edit_idx:null,
-            form:{
-                pid:localStorage.getItem("ms_odoo_user_id"),
-                p_name:localStorage.getItem("ms_user_fullname"),
-                item_id:"",
-                work_date:"",
-                work_hours:"",
-                description:"",
+                dept_id:[],
+                pid:[],
             },
             option:{
-                work_item:[]
+                work_item:[],
+                employee:[],
             },
+            infoView:false,
+            form:{},
             pickerOptions:{
                 shortcuts:[
                     {
@@ -121,25 +158,24 @@ export default {
                     }
                 ]
             },
-            
-            rules: {
-                work_date: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                item_id: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur", "change"]},
-                ],
-                work_hours: [
-                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-            },
+        }
+    },
+
+    watch:{
+        filterText(val){
+            this.$refs.tree_data.filter(val);
+        },
+
+        "filter.dept_id"(val){
+            this.filter.pid=[];
+            this.getData();
         }
     },
 
     async created(){
-        // await this.getOption();
-        // await this.getData();
+        await this.get_dept_tree();
+        await this.getOption();
+        await this.getData();
     },
 
     computed: {
@@ -149,54 +185,106 @@ export default {
     },    
     
     methods: {
+        resetCheckBox(){
+            this.filterText="";
+            this.$refs.tree_data.setCheckedKeys([])
+            this.filter.dept_id=[];
+        },
+
+        allCheckBox(){
+            for(var item of this.$refs.tree_data.data){
+                if(!this.$refs.tree_data.getNode(item).checked){
+                    this.$refs.tree_data.setChecked(item, true);
+                    this.filter.dept_id.push(item.id);
+                }
+            }
+        },
+
+        handleCheckChange(data, checked, indeterminate){
+            if(checked) this.filter.dept_id.push(data.id);
+            else{
+                var pos = this.filter.dept_id.indexOf(data.id);
+                if(pos != -1) this.filter.dept_id.splice(pos,1);
+            };
+        },
+
+        handleNodeClick(data){
+            this.$refs.tree_data.setChecked(data, !this.$refs.tree_data.getNode(data).checked);
+        },
+
         filterNode(value, data){
             if(!value) return true;
-            return data.label.indexOf(value) !== -1;
+            return data.complete_name.indexOf(value) !== -1;
         },
 
         handleNodeExpand(data){
             let flag = false
             this.expand_key.some(item => {
-                if(item === data.label){
+                if(item === data.id){
                     flag = true;
                     return true
                 }
             })
             if(!flag){
-                this.expand_key.push(data.label);
+                this.expand_key.push(data.id);
             }
         },
 
         handleNodeCollapse(data){
             this.expand_key.some((item, i) => {
-                if (item === data.label) {
+                if(item === data.id){
                     this.expand_key.splice(i, 1);
                 }
             })
         },
 
-        handleNodeClick(data){
-
+        handleView(index, row){
+            this.form=Object.assign({}, row);
+            this.infoView=true;
         },
 
         cancelDialog(){
-            this.resetForm();
-            this.createView=false;
-            this.updateView=false;
+            this.dlKey++;
+            this.form={};
+            this.infoView=false;
         },
 
-        resetForm(){
-            this.dlKey++;
-            this.form={
-                pid:this.odoo_user_id,
-                p_name:this.fullname,
-                item_id:"",
-                work_date:"",
-                work_hours:"",
-                description:"",
-            };
-            this.edit_idx=null;
-            this.$refs.form.clearValidate();
+        async get_dept_tree(){
+            this.tree_loading=true;
+            var param = {
+                odoo_employee_id:this.odoo_employee_id,
+                username:this.username,
+            }
+            await dayItemService.get_dept_tree(param).then(res =>{ 
+                this.tree_data=res.tree_data;
+            })
+            // await this.allCheckBox();
+            this.tree_loading=false;
+        },
+        
+        async getData(){
+            this.table_loading=true;
+            var param = {
+                action:"table",
+                sort_column:this.sort_column,
+                sort:this.sort,
+                start_row:this.start_row,
+                page_size:this.page_size,
+                username:this.username,
+                odoo_employee_id:this.odoo_employee_id,
+                filter:this.filter
+            }
+            await dayItemService.review_day_list(param).then(res =>{ 
+                this.tableData=res.day_items;
+                this.totalRow=res.total;
+            })
+            this.table_loading=false;
+        },
+        
+        async getOption(){
+            await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
+                this.option.work_item=res.work_item; 
+            }) 
         },
 
         handleCurrentChange(currentPage){
@@ -215,30 +303,6 @@ export default {
             this.sort = order;
             this.handleCurrentChange(1);
         },
-        
-        async getData(){
-            this.table_loading=true;
-            var param = {
-                action:"table",
-                sort_column:this.sort_column,
-                sort:this.sort,
-                start_row:this.start_row,
-                page_size:this.page_size,
-                filter:this.filter
-            }
-            await dayItemService.person_day_list(param).then(res =>{ 
-                this.tableData=res.day_items;
-                this.totalRow=res.total;
-                this.getSpanArr(this.tableData);
-            })
-            this.table_loading=false;
-        },
-        
-        async getOption(){
-            await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
-                this.option.work_item=res.work_item; 
-            }) 
-        },
 
         search(){
             this.handleCurrentChange(1);
@@ -248,7 +312,8 @@ export default {
             this.filter={
                 item_id:null,
                 work_date:[],
-                pid:this.odoo_user_id
+                dept_id:this.filter.dept_id,
+                pid:[],
             };
             this.tbKey++;
             this.sort_column="work_date";
@@ -264,7 +329,7 @@ export default {
         padding:15px;
     }
     .handle-input{
-        width: 300px;
+        width: 280px;
         display:inline-block;
     }
     .del-dialog-cnt{
@@ -285,6 +350,9 @@ export default {
     .mgl10{
         margin-left:10px;
     }
+    .mgt10{
+        margin-top:10px;
+    }
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
@@ -295,48 +363,33 @@ export default {
         font-size: 16px;
     }
     .custom-tree-node{
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 14px;
-        padding-right: 15px;
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        font-size:14px;
+        padding-right:15px;
     }
     .scrollBar{ 
-        height:588px; 
+        height:593px; 
         overflow:hidden; 
     } 
     .list{ 
         max-height:10px; 
     }
     .custom-tree-node >>> .node_label_1{
-        width:150px; 
+        width:150px;
+        line-height:26px;
     }
-    .custom-tree-node >>> .node_label_2{
-        width:100px; 
-    }
-    .node_icon >>> .el-button--mini.is-circle{
-        padding: 4px;
-    }
-    .custom-tree-node >>> .node_label_1{
-        width:150px; 
-    }
-    .custom-tree-node >>> .node_icon{
-        justify-content: flex-end;
-    }
-    .node_plus{
-        margin-right:-5px;
-        z-index:2;
+    .filter-tree >>> .el-tree-node__expand-icon.is-leaf{
+        display:none;
     }
     .filter-tree{
-        z-index:1;
-    }
-    .filter-tree >>> .el-tree-node__content{
-        height: 40px;
+        margin-left:3px;
     }
     .tree_filter{
-        margin:0px 0px 10px 10px;
+        margin:0px 0px 10px 2px;
         min-width:100px;
-        width:95%;
+        width:100%;
     }
 </style>
