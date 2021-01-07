@@ -21,7 +21,7 @@
                         </div>
                         <div class="scrollBar" v-loading="tree_loading">
                             <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:610px;">
-                                <el-tree class="filter-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
+                                <el-tree class="filtered-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
                                 :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key"
                                 @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse" @check-change="handleCheckChange">
                                     <span class="custom-tree-node" slot-scope="{node, data}">
@@ -51,13 +51,13 @@
                         @change="search" class="mgr10" size="large"/>
                         <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
                         <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey" height="592">
-                            <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip :disabled="table_loading"/>
-                            <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip :disabled="table_loading"/>
-                            <el-table-column prop="dept_name" :label="$t('employee.dept')" width="auto" sortable="custom" show-overflow-tooltip :disabled="table_loading"/>
-                            <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip :disabled="table_loading">
+                            <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
+                            <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
+                            <el-table-column prop="dept_name" :label="$t('employee.dept')" width="auto" sortable="custom" show-overflow-tooltip/>
+                            <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
                                 <template slot-scope="scope">{{scope.row.item_name}}</template>
                             </el-table-column>
-                            <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left" :disabled="table_loading"/>
+                            <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
                             <el-table-column :label="$t('btn.action')" width="105" align="center">
                                 <template slot-scope="scope">
                                     <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.view')}}</el-button>
@@ -65,8 +65,8 @@
                             </el-table-column>
                         </el-table>
                         <div class="pagination">
-                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :disabled="table_loading||tree_loading"
-                            :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                            :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
                         </div>
                     </el-card>
                 </el-col>
@@ -394,10 +394,10 @@ export default {
         width:150px;
         line-height:26px;
     }
-    .filter-tree >>> .el-tree-node__expand-icon.is-leaf{
+    .filtered-tree >>> .el-tree-node__expand-icon.is-leaf{
         display:none;
     }
-    .filter-tree{
+    .filtered-tree{
         margin-left:3px;
     }
     .tree_filter{
