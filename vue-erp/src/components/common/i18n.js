@@ -274,6 +274,7 @@ export const messages = {
             over_24_hours:"同一天超過 24 小時",
             dept_tree:"部門分類",
             nobody:"沒有部門成員",
+            daily_details:"每日細節",
         },
         project:{
             name:"專案名稱",
@@ -549,6 +550,7 @@ export const messages = {
             over_24_hours:"Over 24 hours",
             dept_tree:"Dept. Tree",
             nobody:"Nobody",
+            daily_details:"Daily Details",
         },
         project:{
             name:"Project Name",
