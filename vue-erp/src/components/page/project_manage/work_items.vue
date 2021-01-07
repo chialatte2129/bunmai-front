@@ -283,7 +283,7 @@ export default {
         handleEdit(index, row){
             row["employ_id"] = localStorage.getItem("ms_employee_id");
             console.log(row);
-            this.form=row;
+            this.form=Object.assign({}, row);
             this.form.date_period = [row.start_date,row.end_date]
             this.edit_idx=index;
             this.updateView=true;
