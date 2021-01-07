@@ -116,6 +116,15 @@ export const messages = {
                 delete: '刪除字典檔'
             },
             
+
+        },
+        actions:{
+            create_outer_project:"創建外部專案",
+            edit_outer_project:"編輯外部專案",
+            delete_outer_project:"作廢外部專案",
+            create_inner_project:"創建專案",
+            edit_inner_project:"編輯專案",
+            delete_inner_project:"作廢專案",
         },
         btn:{
             key_word:"關鍵字查詢",
@@ -208,6 +217,15 @@ export const messages = {
             odoo_dept_tree_err:"[Odoo] 取得部門資訊異常",
             dict_error:"字典檔異常",
         },
+        common_column:{
+            id:"ID",
+            name:"名稱",
+            category:"類別",
+            status:"狀態",
+            start_date:"起始日期",
+            end_date:"結束日期",
+            action:"操作"
+        },
         account:{
             login: '登入', 
             logout: '登出',
@@ -276,6 +294,19 @@ export const messages = {
         },
         project:{
             name:"專案名稱",
+            description:"專案說明",
+            category:"專案類別",
+            status:"專案狀態",
+            keyword:"專案名稱關鍵字",
+            create_outter_project:"新增外部專案",
+            id:"專案編號",
+            date:"專案日期",
+            delete:"作廢",
+            ask_delete: "您要作廢此專案嗎 ?",
+            create_outter_project:"新建外部專案",
+            edit_outter_project:"編輯外部專案",
+            create_inner_project:"新建專案",
+            edit_inner_project:"編輯專案"
         },
     },
     'en_US': {
@@ -482,6 +513,15 @@ export const messages = {
             odoo_dept_tree_err:"[Odoo] Get Dept. Information Error",
             dict_error:"Dictionary Setting Error",
         },
+        common_column:{
+            id:"ID",
+            name:"Name",
+            category:"CAT",
+            status:"Status",
+            start_date:"Start Date",
+            end_date:"End Date",
+            action:"Action"
+        },
         account: {
             login: 'Login', 
             logout: 'Logout',
@@ -549,7 +589,20 @@ export const messages = {
             dept_tree:"Dept. Tree",
         },
         project:{
-            name:"Project Name",
+            name:"Name",
+            description:"Description",
+            category:"Category",
+            status:"Status",
+            keyword:"Project Keyword",
+            create_outter_project:"Outter Project",
+            id:"ID",
+            date:"Date",
+            delete:"Delete",
+            ask_delete:"Do you want to delete this project ? ",
+            create_outter_project:"Create Outter Project",
+            edit_outter_project:"Edit Outter Project",
+            create_inner_project:"Create Project",
+            edit_inner_project:"Edit Project"
         },
     },
     'ja_JP':{
