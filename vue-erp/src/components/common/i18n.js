@@ -116,6 +116,15 @@ export const messages = {
                 delete: '刪除字典檔'
             },
             
+
+        },
+        actions:{
+            create_outer_project:"創建外部專案",
+            edit_outer_project:"編輯外部專案",
+            delete_outer_project:"作廢外部專案",
+            create_inner_project:"創建專案",
+            edit_inner_project:"編輯專案",
+            delete_inner_project:"作廢專案",
         },
         btn:{
             key_word:"關鍵字查詢",
