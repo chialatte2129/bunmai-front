@@ -119,6 +119,9 @@ export default {
                 work_item:[]
             },
             pickerOptions:{
+                disabledDate(time){
+                    return time.getTime() > Date.now();
+                },
                 shortcuts:[
                     {
                     text: this.$i18n.t('employee.week'),
