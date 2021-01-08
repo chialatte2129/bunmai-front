@@ -116,6 +116,7 @@ export default {
             get_data_sig:false,
             node_click_sig:false,
             reset_sig:false,
+            all_sig:false,
 
             table_loading:false,
             tableData:[],
@@ -195,6 +196,7 @@ export default {
             this.get_data_sig=false;
             this.node_click_sig=false;
             this.reset_sig=false;
+            this.all_sig=false;
         },
     },
 
@@ -222,6 +224,7 @@ export default {
 
         allCheckBox(){
             this.filterText="";
+            this.all_sig=true;
             for(var item of this.$refs.tree_data.data){
                 if(!this.$refs.tree_data.getNode(item).checked){
                     this.$refs.tree_data.setChecked(item, true);
@@ -234,7 +237,12 @@ export default {
                 if(!this.filter.dept_id.includes(data.id)){
                     this.filter.dept_id.push(data.id);
                 };
-                if(data.members.length==0) data.members.push({id:"-100", name:this.$t("employee.nobody"), disabled:true});
+                if(data.members.length==0){
+                    data.members.push({id:"-100", name:this.$t("employee.nobody"), disabled:true});
+                };
+                if(!this.all_sig){
+                    this.get_data_sig=true;
+                };
                 this.option.employee.push(data);
                 this.option.employee.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
             }else{
@@ -246,7 +254,7 @@ export default {
                     this.get_data_sig=true;
                 };
             };
-            if(this.filter.dept_id.length==this.tree_data.length){
+            if(this.all_sig&&this.filter.dept_id.length==this.tree_data.length){
                 this.get_data_sig=true;
             };
             if(this.node_click_sig){

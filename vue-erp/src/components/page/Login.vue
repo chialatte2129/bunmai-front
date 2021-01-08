@@ -161,6 +161,9 @@ export default {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
+  background: #f56c6c;
+  border-color: #f56c6c;
+  color: #FFF;
 }
 .login-tips {
   font-size: 12px;
