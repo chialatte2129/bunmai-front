@@ -10,7 +10,7 @@
             <div class="mgb10">
                 <el-button v-if="allowCreate" size="large" type="success" 
                 icon="el-icon-circle-plus-outline"  @click="handleCreate">
-                    {{$t('btn.new')}}
+                    {{$t('project.create_inner_project')}}
                 </el-button>
                 <el-button v-if="allowProjectCreate" size="large" type="success" 
                 icon="el-icon-circle-plus-outline"  @click="handleProjectCreate">
@@ -47,12 +47,6 @@
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left"/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <!-- <el-table-column prop="is_project" label="是否專案" width="120px" sortable="custom" align="center" show-overflow-tooltip>
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.is_project==0">否</span>
-                        <span v-if="scope.row.is_project==1">是</span>
-                    </template>
-                </el-table-column> -->
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>

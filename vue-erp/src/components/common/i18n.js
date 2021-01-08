@@ -305,9 +305,8 @@ export const messages = {
             date:"專案日期",
             delete:"作廢",
             ask_delete: "您要作廢此專案嗎 ?",
-            create_outter_project:"新建外部專案",
             edit_outter_project:"編輯外部專案",
-            create_inner_project:"新建專案",
+            create_inner_project:"新增專案",
             edit_inner_project:"編輯專案"
         },
     },
