@@ -161,8 +161,8 @@ export default {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
-  background: #f56c6c;
-  border-color: #f56c6c;
+  background: #875a7b;
+  border-color: #875a7b;
   color: #FFF;
 }
 .login-tips {
