@@ -262,7 +262,7 @@ export default {
             };
             if(this.reset_sig&&this.filter.dept_id.length==0){
                 this.get_data_sig=true;
-            }
+            };
         },
 
         handleNodeClick(data){
