@@ -53,7 +53,7 @@
                     </el-form-item>
                     <el-form-item :label="$t('project.name')" prop="item_id">
                         <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView">
-                            <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                            <el-option v-for="item in option.work_item_now" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
@@ -116,7 +116,8 @@ export default {
                 description:"",
             },
             option:{
-                work_item:[]
+                work_item:[],
+                work_item_now:[],
             },
             pickerOptions:{
                 disabledDate(time){
@@ -360,8 +361,9 @@ export default {
         },
         
         async getOption(){
-            await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
-                this.option.work_item=res.work_item; 
+            await dayItemService.get_option_list({action:["work_item", "work_item_now"]}).then(res =>{ 
+                this.option.work_item=res.work_item;
+                this.option.work_item_now=res.work_item_now;
             }) 
         },
 

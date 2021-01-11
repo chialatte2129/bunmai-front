@@ -307,7 +307,8 @@ export const messages = {
             ask_delete: "您要作廢此專案嗎 ?",
             edit_outter_project:"編輯外部專案",
             create_inner_project:"新增專案",
-            edit_inner_project:"編輯專案"
+            edit_inner_project:"編輯專案",
+            owner:"專案負責人",
         },
     },
     'en_US': {
@@ -604,7 +605,8 @@ export const messages = {
             ask_delete:"Do you want to delete this project ? ",
             edit_outter_project:"Edit Outter Project",
             create_inner_project:"Create Project",
-            edit_inner_project:"Edit Project"
+            edit_inner_project:"Edit Project",
+            owner:"Project Owner",
         },
     },
     'ja_JP':{
