@@ -8,49 +8,30 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button v-if="allowCreate" size="large" type="success" 
-                icon="el-icon-circle-plus-outline"  @click="handleCreate">
+                <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline"  @click="handleCreate">
                     {{$t('project.create_inner_project')}}
                 </el-button>
-                <el-button v-if="allowProjectCreate" size="large" type="success" 
-                icon="el-icon-circle-plus-outline"  @click="handleProjectCreate">
+                <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" @click="handleProjectCreate">
                     {{$t('project.create_outter_project')}}
-                    </el-button>
-                <el-select 
-                size="large" 
-                v-model="filter.category" 
-                class="mgl10"
-                multiple
-                collapse-tags
-                filterable 
-                clearable 
-                :placeholder="$t('project.category')"
-                @change="search">
+                </el-button>
+                <el-select size="large" v-model="filter.category" class="mgr10" multiple collapse-tags filterable clearable v-if="false"
+                :placeholder="$t('project.category')" @change="search">
                     <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
                 </el-select>
-                <el-select 
-                class="mgl10"
-                size="large" 
-                v-model="filter.status" 
-                multiple
-                collapse-tags
-                filterable 
-                clearable 
-                :placeholder="$t('project.status')"
-                @change="search">
+                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"@change="search">
                     <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgl10 handle-input" :placeholder="$t('project.keyword')" @change="search"/>
-                <el-button size="large" type="info" class="mgl10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
+                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" @change="search"/>
+                <el-button size="large" type="info" class="mgr10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" :key="tbKey">
-                <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left"/>
+                <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -90,7 +71,7 @@
                 <el-form-item :label="$t('project.name')" prop="name">
                     <el-input :readonly="setReadOnly" v-model="form.name" clearable style="width:100%;"/>
                 </el-form-item>
-                <el-form-item :label="$t('project.category')" prop="category">
+                <el-form-item :label="$t('project.category')" prop="category" v-if="false">
                     <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable style="width:100%;">
                         <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
                     </el-select>
@@ -236,11 +217,12 @@ export default {
         },
 
         allowCreate(){
-            if (this.action_list.includes("create_inner_project")){
-                return true
-            }else{
-                return false
-            }
+            // if (this.action_list.includes("create_inner_project")){
+            //     return true
+            // }else{
+            //     return false
+            // }
+            return false
         },
 
         setReadOnly(){
@@ -285,7 +267,7 @@ export default {
 
         handleProjectCreate(){
             this.form.is_project = 1;
-            this.form.category = "外部專案";
+            this.form.category = "預設";
             this.createView=true;
         },
 
@@ -374,6 +356,7 @@ export default {
                 is_project:"",
                 start_date:"",
                 end_date:"",
+                description:"",
                 employ_id:localStorage.getItem("ms_odoo_employee_id"),
             };
             this.edit_idx=null;
