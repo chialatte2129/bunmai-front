@@ -8,23 +8,34 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline"  @click="handleCreate">
+                <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
                     {{$t('project.create_inner_project')}}
                 </el-button>
-                <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" @click="handleProjectCreate">
+                <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
+                @click="handleProjectCreate">
                     {{$t('project.create_outter_project')}}
                 </el-button>
+                <el-select size="large" class="mgr10" v-model="filter.pid" filterable clearable multiple collapse-tags
+                :placeholder="$t('project.owner')" :disabled="loading" @change="search">
+                    <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
+                        <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
+                            <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
+                            <span v-else class="mgl10">{{item.name}}</span>
+                        </el-option>
+                    </el-option-group>
+                </el-select>
                 <el-select size="large" v-model="filter.category" class="mgr10" multiple collapse-tags filterable clearable v-if="false"
-                :placeholder="$t('project.category')" @change="search">
+                :placeholder="$t('project.category')" :disabled="loading" @change="search">
                     <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
                 </el-select>
-                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"@change="search">
+                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"
+                :disabled="loading" @change="search">
                     <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" @change="search"/>
-                <el-button size="large" type="info" class="mgr10" plain @click="cancelSearch">{{$t('btn.clean')}}</el-button>
+                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
+                <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" :key="tbKey">
+            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="loading":key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
@@ -41,7 +52,7 @@
             </el-table>
             <div class="pagination">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
-                :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                :disabled="loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
             </div>
         </div>
         
@@ -80,6 +91,16 @@
                 <el-form-item :label="$t('project.status')" prop="status">
                      <el-select :disabled="setReadOnly" v-model="form.status" filterable style="width:100%;">
                         <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
+                    </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('project.owner')" prop="owner">
+                     <el-select :disabled="setReadOnly" v-model="form.owner" filterable clearable style="width:100%;">
+                        <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
+                            <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
+                                <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
+                                <span v-else class="mgl10">{{item.name}}</span>
+                            </el-option>
+                    </el-option-group>
                     </el-select>
                 </el-form-item>
 
@@ -132,6 +153,7 @@ export default {
             sort_column:"id",
             sort:"desc",
             action_list:localStorage.getItem("ms_user_actions"),
+            loading:false,
             deleteID:null,
             deleteView:false,
             createView:false,
@@ -141,10 +163,11 @@ export default {
             filter:{
                 name:"",
                 status:[],
-                category:[]
+                category:[],
+                owner:[],
             },
+            tree_data:[],
             edit_idx:null,
-            a:"",
             
             form:{
                 date_period:[],
@@ -157,6 +180,7 @@ export default {
                 start_date:null,
                 end_date:null,
                 description:"",
+                owner:"",
                 employ_id:localStorage.getItem("ms_odoo_employee_id"),
             },
 
@@ -184,12 +208,12 @@ export default {
     },
 
     async created(){
+        await this.get_dept_employee();
         await this.getOption();
         await this.getData();
     },
 
     computed: {
-       
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
@@ -246,6 +270,13 @@ export default {
     }, 
     
     methods: {
+        async get_dept_employee(){
+            this.loading=true;
+            await workItemService.get_dept_employee({}).then(res =>{ 
+                this.tree_data=res.tree_data;
+                this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+            })
+        },
         
         allowDelete(row){
             if(row.status == 'A'){
@@ -357,6 +388,7 @@ export default {
                 start_date:"",
                 end_date:"",
                 description:"",
+                owner:"",
                 employ_id:localStorage.getItem("ms_odoo_employee_id"),
             };
             this.edit_idx=null;
@@ -381,6 +413,7 @@ export default {
         },
         
         async getData(){
+            this.loading=true;
             var param = {
                 sort_column:this.sort_column,
                 sort:this.sort,
@@ -388,12 +421,14 @@ export default {
                 pagesize:this.page_size,
                 key_word:this.filter.name,
                 status:this.filter.status,
-                category:this.filter.category
+                category:this.filter.category,
+                owner:this.filter.owner,
             }
             await workItemService.get_work_items(param).then(res =>{ 
                 this.tableData=res.data;
                 this.totalRow=res.total;
             })
+            this.loading=false;
         },
         
         async getOption(){
@@ -411,7 +446,8 @@ export default {
             this.filter={
                 name:"",
                 status:[],
-                category:[]
+                category:[],
+                owner:[],
             };
             this.handleCurrentChange(1);
         },

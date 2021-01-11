@@ -3,8 +3,8 @@ import axios from 'axios';
 export const workItemService = { 
 	get_work_items,
 	get_options,
-	update_work_items
-   
+	update_work_items,
+    get_dept_employee,   
 }
 
 function get_work_items(param){
@@ -30,6 +30,16 @@ function get_options(param){
 function update_work_items(param){
     return new Promise((resolve, reject) => {
 		axios.post(`${process.env.VUE_APP_API}/api/v1/project/update/work_items`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function get_dept_employee(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/dept/employee/list`, param).then((resp) => {
 			resolve(resp.data)}).catch((error) => {
 				reject(error)
 			}
