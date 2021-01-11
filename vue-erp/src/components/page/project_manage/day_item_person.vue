@@ -27,7 +27,8 @@
                 <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
-                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.delete')}}</el-button>
+                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" 
+                        :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -57,15 +58,15 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
-                        <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input"/>
+                        <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input" :readonly="ban_status.includes(form.status)"/>
                     </el-form-item>
                     <el-form-item :label="$t('employee.description')" prop="description">
-                        <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
+                        <el-input v-model="form.description" type="textarea" :rows="5" :readonly="ban_status.includes(form.status)" style="width:95%;"/>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
                     <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                    <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
+                    <el-button type="primary" @click="confirmDialog" :disabled="ban_status.includes(form.status)">{{$t('btn.confirm')}}</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -106,6 +107,7 @@ export default {
                 work_date:[],
                 pid:localStorage.getItem("ms_odoo_employee_id"),
             },
+            ban_status:["F"],
             edit_idx:null,
             form:{
                 pid:localStorage.getItem("ms_odoo_employee_id"),
