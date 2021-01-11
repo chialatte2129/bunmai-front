@@ -15,7 +15,7 @@
                 @click="handleProjectCreate">
                     {{$t('project.create_outter_project')}}
                 </el-button>
-                <el-select size="large" class="mgr10" v-model="filter.pid" filterable clearable multiple collapse-tags
+                <el-select size="large" class="mgr10" v-model="filter.owner" filterable clearable multiple collapse-tags
                 :placeholder="$t('project.owner')" :disabled="loading" @change="search">
                     <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
                         <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
@@ -41,8 +41,9 @@
                 <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150px" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -303,7 +304,6 @@ export default {
         },
 
         handleEdit(index, row){
-            console.log(row);
             this.form=Object.assign({}, row);
             this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
             this.edit_idx=index;
@@ -316,7 +316,7 @@ export default {
         },
 
         cancelDelete(){
-            console.log("cancel delete");
+            // console.log("cancel delete");
             this.deleteID=null;
             this.deleteView=false;
         },
@@ -341,8 +341,7 @@ export default {
                         this.getData();
                         this.cancelDialog();
                     }else if(param.type=="delete"){
-                        console.log("finish delete");
-                        
+                        // console.log("finish delete");
                         this.cancelDelete();
                         this.getData();
                     }else{
