@@ -300,6 +300,7 @@ export default {
         handleProjectCreate(){
             this.form.is_project = 1;
             this.form.category = "預設";
+            this.form.status = "D";
             this.createView=true;
         },
 
