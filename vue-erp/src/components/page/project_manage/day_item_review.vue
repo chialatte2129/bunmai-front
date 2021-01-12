@@ -149,7 +149,7 @@ export default {
                 },
                 shortcuts:[
                     {
-                        text: this.$i18n.t('employee.week'),
+                        text: this.$t('employee.week'),
                         onClick(picker){
                             const end = new Date();
                             const start = new Date();
@@ -158,7 +158,7 @@ export default {
                         }
                     }, 
                     {
-                        text: this.$i18n.t('employee.month'),
+                        text: this.$t('employee.month'),
                         onClick(picker){
                             const end = new Date();
                             const start = new Date();
@@ -167,7 +167,7 @@ export default {
                         }
                     },
                     {
-                        text: this.$i18n.t('employee.three_months'),
+                        text: this.$t('employee.three_months'),
                         onClick(picker){
                             const end = new Date();
                             const start = new Date();
@@ -321,7 +321,6 @@ export default {
         },
         
         async getData(){
-            console.log("getData")
             this.table_loading=true;
             var param = {
                 action:"table",
