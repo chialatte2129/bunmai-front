@@ -24,9 +24,11 @@
                 </el-table-column>
                 <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="185" align="center" fixed="right">
+                <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                        <el-button type="primary" size="mini" icon="el-icon-document" @click="handleCopy(scope.$index, scope.row)" 
+                        :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.copy')}}</el-button>
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" 
                         :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.delete')}}</el-button>
                     </template>
@@ -50,10 +52,24 @@
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
-                        <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select_date')" class="handle-input" :disabled="updateView"/>
+                        <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
+                        :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
+                            disabledDate(time){ 
+                                return time.getTime()>Date.now();
+                            }
+                        }"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('employee.copy_date')" prop="copy_date" v-if="copyView">
+                        <el-date-picker v-model="form.copy_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input"
+                        :placeholder="$t('common_msg.select_date')" :picker-options="{
+                            disabledDate(time){
+                                return time.getTime()>Date.now()||
+                                time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')==form.work_date;
+                            }
+                        }"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.name')" prop="item_id">
-                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView">
+                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView||copyView">
                             <el-option v-for="item in option.work_item_now" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                         </el-select>
                     </el-form-item>
@@ -102,6 +118,7 @@ export default {
             deleteView:false,
             createView:false,
             updateView:false,
+            copyView:false,
             filter:{
                 item_id:null,
                 work_date:[],
@@ -160,6 +177,9 @@ export default {
                 work_date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
+                copy_date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
                 item_id: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur", "change"]},
                 ],
@@ -184,12 +204,14 @@ export default {
         showTitle(){
             if(this.createView) return this.$t("employee.create_day_item");
             else if(this.updateView) return this.$t("employee.update_day_item");
+            else if(this.copyView) return this.$t("employee.copy_day_item");
             else return "";
         },
 
         showVisible(){
             if(this.createView) return this.createView;
             else if(this.updateView) return this.updateView;
+            else if(this.copyView) return this.copyView;
             else return false;
         },
     },    
@@ -224,6 +246,18 @@ export default {
                 const _col=_row>0?1:0;
                 return { rowspan:_row, colspan:_col }
             }
+        },
+
+        handleCopy(index, row){
+            var today = new Date();
+            var temp_form=Object.assign({}, row);
+            temp_form.copy_date=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2, "0")+'-'+String(today.getDate()).padStart(2, "0");
+            if(temp_form.work_date==temp_form.copy_date){
+                temp_form.copy_date="";
+            };
+            this.form = temp_form;
+            this.edit_idx=index;
+            this.copyView=true;
         },
 
         handleCreate(){
@@ -274,7 +308,7 @@ export default {
             await dayItemService.update_day_item(param).then(res =>{ 
                 if(res.code==1){ 
                     this.$message.success(this.$t(res.msg)); 
-                    if(param.action=="create"){
+                    if(["create", "copy"].includes(param.action)){
                         this.getData();
                         this.cancelDialog();
                     }else if(param.action=="update"){
@@ -299,7 +333,7 @@ export default {
                 if(valid){
                     var temp_form = Object.assign({}, this.form);
                     var param = {
-                        action:this.createView?"create":"update",
+                        action:this.createView?"create":(this.updateView?"update":"copy"),
                         form:temp_form
                     }
                     this.update_day_item(param);
@@ -311,6 +345,7 @@ export default {
             this.resetForm();
             this.createView=false;
             this.updateView=false;
+            this.copyView=false;
         },
 
         resetForm(){
