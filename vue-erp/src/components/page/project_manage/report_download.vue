@@ -102,7 +102,7 @@
             :before-generate="startDownload" 
             :before-finish="finishDownload"
             :fetch="fetchData"
-            :name="download_name">{{$t('btn.download_excel')}}</download-excel>
+            :name="getToday()+'_'+download_name">{{$t('btn.download_excel')}}</download-excel>
             <el-table
             :data="tableData"
             @sort-change="sortChange"
@@ -115,7 +115,6 @@
                 <el-table-column prop="Work Hours" label="工作時數"  align="right" width="100"></el-table-column>
                 <el-table-column prop="Description" label="備註"  width="auto"></el-table-column>
             </el-table>
-
         </el-dialog>
     </div>
 </template>
@@ -218,10 +217,14 @@ export default {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
+        
     },    
     
     methods: {
-        
+        getToday(){
+            var Today=new Date();
+            return  Today.getFullYear()+"-"+(Today.getMonth()+1)+"-"+Today.getDate() 
+        },
         //排序触发事件
         sortChange(column){
             if(column.prop){
