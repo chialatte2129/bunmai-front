@@ -78,6 +78,11 @@ export default {
                                     title: this.$t("menus.day_item_review"),
                                     show: this.hasThisMenuOrMgr("day_item_review"),
                                 },
+                                {
+                                    index: "project_report_download",
+                                    title: this.$t("menus.project_report_download"),
+                                    show: this.hasThisMenuOrMgr("project_report_download"),
+                                },
                             ]
                         },
                     ]

@@ -55,9 +55,15 @@ export default new Router({
                     path: '/work_items',
                     component: () => import('../components/page/project_manage/work_items.vue'),
                     meta: { title: 'menus.work_items' }
+                },
+                {
+                    path: 'project_report_download',
+                    component: () => import('../components/page/project_manage/report_download.vue'),
+                    meta: { title: 'menus.project_report_download' }
                 }, 
             ]
         },
+        
         {
             path: '/login',
             component: resolve => require(['../components/page/Login.vue'], resolve)

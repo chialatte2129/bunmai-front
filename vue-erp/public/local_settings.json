@@ -23,6 +23,10 @@
         {
             "index": "day_item_review",
             "title": "menus.day_item_review"
+        },
+        {
+            "index": "project_report_download",
+            "title": "menus.project_report_download"
         }
     ]
 }
