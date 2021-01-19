@@ -82,6 +82,7 @@ export const messages = {
             daily_report:"每日工作彙報",
             day_item_person:"填寫工作彙報",
             day_item_review:"檢視工作彙報",
+            project_report_download:"下載工作彙報"
         },
         table_title:{
             role :'角色代號',
@@ -389,6 +390,7 @@ export const messages = {
             daily_report:"Daily Report",
             day_item_person:"Fill In",
             day_item_review:"Review",
+            project_report_download:"Downlaod Report"
         },
         table_title :{
             role :'Role id',
