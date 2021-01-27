@@ -22,7 +22,7 @@
                         <div class="scrollBar" v-loading="tree_loading">
                             <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:610px;">
                                 <el-tree class="filtered-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
-                                :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key"
+                                :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key" @check="handleCheck"
                                 @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse" @check-change="handleCheckChange">
                                     <span class="custom-tree-node" slot-scope="{node, data}">
                                         <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
@@ -103,6 +103,7 @@ export default {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             username:localStorage.getItem("ms_username"),
             tree_loading:false,
+            checked_id:[],
             expand_key:[],
             tree_data:[],
             filterText:"",
@@ -218,46 +219,48 @@ export default {
 
         resetCheckBox(){
             this.filterText="";
+            this.checked_id=[];
             this.$refs.tree_data.setCheckedKeys([]);
             this.reset_sig=true;
         },
 
         allCheckBox(){
             this.filterText="";
-            this.all_sig=true;
-            for(var item of this.$refs.tree_data.data){
-                if(!this.$refs.tree_data.getNode(item).checked){
-                    this.$refs.tree_data.setChecked(item, true);
+            for(var row of this.$refs.tree_data.data){
+                if(!this.$refs.tree_data.getNode(row).checked){
+                    this.checked_id.push(row.id);
+                    this.$refs.tree_data.setChecked(row, true);
                 }
             };
+            this.all_sig=true;
         },
 
         handleCheckChange(data, checked, indeterminate){
+            // console.log("check change");
             if(checked){
+                if(!this.checked_id.includes(data.id)){
+                    this.checked_id.push(data.id);
+                };
                 if(!this.filter.dept_id.includes(data.id)){
                     this.filter.dept_id.push(data.id);
                 };
                 if(data.members.length==0){
                     data.members.push({id:"-100", name:this.$t("employee.nobody"), disabled:true});
                 };
-                if(!this.all_sig){
-                    this.get_data_sig=true;
-                };
                 this.option.employee.push(data);
                 this.option.employee.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
             }else{
+                var pos = this.checked_id.indexOf(data.id);
+                if(pos!=-1) this.checked_id.splice(pos, 1);
                 var pos = this.filter.dept_id.indexOf(data.id);
-                if(pos != -1) this.filter.dept_id.splice(pos, 1);
+                if(pos!=-1) this.filter.dept_id.splice(pos, 1);
                 var pos = this.option.employee.indexOf(data);
-                if(pos != -1) this.option.employee.splice(pos, 1);
-                if(!this.reset_sig){
-                    this.get_data_sig=true;
-                };
+                if(pos!=-1) this.option.employee.splice(pos, 1);
             };
             if(this.all_sig&&this.filter.dept_id.length==this.tree_data.length){
                 this.get_data_sig=true;
             };
-            if(this.node_click_sig){
+            if(this.node_click_sig&&this.filter.dept_id.length==this.checked_id.length){
                 this.get_data_sig=true;
             };
             if(this.reset_sig&&this.filter.dept_id.length==0){
@@ -265,8 +268,42 @@ export default {
             };
         },
 
-        handleNodeClick(data){
-            this.$refs.tree_data.setChecked(data, !this.$refs.tree_data.getNode(data).checked);
+        async handleCheck(data){
+            console.log("check")
+            var flag = !this.$refs.tree_data.getNode(data).checked;
+            await this.$refs.tree_data.setChecked(data, flag);
+            await this.handleNodeClick(data);
+        },
+
+        async handleNodeClick(data){
+            console.log("node click");
+            var flag = !this.$refs.tree_data.getNode(data).checked;
+            await this.handleClickSig(flag, data);
+        },
+
+        handleClickSig(flag, data){
+            var complete_name = data.complete_name;
+            var real_data = [];
+            for(var row of this.$refs.tree_data.data){
+                if(row.complete_name.includes(complete_name)){
+                    if(flag){
+                        if(!this.checked_id.includes(row.id)){
+                            this.checked_id.push(row.id);
+                        };
+                    }else{
+                        var pos = this.checked_id.indexOf(row.id);
+                        if(pos!=-1) this.checked_id.splice(pos, 1);
+                    };
+                };
+            };
+            for(var row of this.tree_data){
+                if(row.complete_name.includes(complete_name)){
+                    real_data.push(row);
+                };
+            };
+            for(var row of real_data){
+                this.$refs.tree_data.setChecked(row, flag);
+            };
             this.node_click_sig=true;
         },
 
@@ -321,6 +358,7 @@ export default {
         },
         
         async getData(){
+            console.log("get data !")
             this.table_loading=true;
             var param = {
                 action:"table",
