@@ -191,7 +191,7 @@ export default {
 
         get_data_sig(val){
             if(val){
-                this.getData();
+                this.handleCurrentChange(1);
             }
             this.get_data_sig=false;
             this.node_click_sig=false;
