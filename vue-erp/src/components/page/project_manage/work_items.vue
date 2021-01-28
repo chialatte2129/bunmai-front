@@ -121,7 +121,8 @@
                     </el-form-item>
                     <el-divider/>
                     <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
-                        <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
+                        <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
+                        :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.tags')" prop="tags">
                         <el-button type="info" plain size="medium" @click="tag_form.tags=[]">{{$t("btn.clear")}}</el-button>
@@ -233,7 +234,7 @@ export default {
         showTitle(){
             if(this.createView && this.form.is_project) return this.$t("project.create_outter_project");
             else if(this.createView && !this.form.is_project) return this.$t("project.create_inner_project");
-            else if(this.updateView && this.form.is_project) return this.$t("project.edit_outter_project");
+            else if(this.updateView && this.form.is_project) return this.$t("project.edit_project");
             else if(this.updateView && !this.form.is_project) return this.$t("project.edit_inner_project");
             else return "";
         },
@@ -340,6 +341,11 @@ export default {
         handleEdit(index, row){
             this.form=Object.assign({}, row);
             this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
+            this.tag_form=Object.assign({}, {
+                item_id:this.form.id,
+                pid:"",
+                tags:this.form.tags,
+            });
             this.updateView=true;
         },
 
@@ -349,7 +355,6 @@ export default {
         },
 
         cancelDelete(){
-            // console.log("cancel delete");
             this.deleteID=null;
             this.deleteView=false;
         },
@@ -405,11 +410,10 @@ export default {
         },
 
         cancelDialog(){
-            this.resetForm();
-            this.resetTagForm();
-            this.showVisible=false;
             this.createView=false;
             this.updateView=false;
+            this.resetForm();
+            this.resetTagForm();
         },
 
         resetForm(){
