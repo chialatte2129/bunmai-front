@@ -23,6 +23,7 @@
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
                 <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
+                <el-table-column prop="tag1" :label="$t('project.tag1')" width="180" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
                     <template slot-scope="scope">
@@ -55,7 +56,7 @@
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
                         :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
                             disabledDate(time){ 
-                                return time.getTime()>Date.now();
+                                return time.getTime()>Date.now()+day_mileseconds*30;
                             }
                         }"/>
                     </el-form-item>
@@ -63,14 +64,20 @@
                         <el-date-picker v-model="form.copy_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input"
                         :placeholder="$t('common_msg.select_date')" :picker-options="{
                             disabledDate(time){
-                                return time.getTime()>Date.now()||
+                                return time.getTime()>Date.now()+day_mileseconds*30||
                                 time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')==form.work_date;
                             }
                         }"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.name')" prop="item_id">
-                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView||copyView">
+                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView||copyView" @change="handleChangeProj">
                             <el-option v-for="item in option.work_item_now" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item :label="$t('project.tag1')" prop="tag1">
+                        <el-select v-model="form.tag1" filterable clearable allow-create default-first-option class="handle-input" 
+                        :disabled="updateView||copyView||form.item_id==''">
+                            <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
@@ -114,6 +121,7 @@ export default {
                 pid:localStorage.getItem("ms_odoo_employee_id"),
                 item_id:null,
                 work_date:"",
+                tag1:"",
             },
             deleteView:false,
             createView:false,
@@ -133,14 +141,17 @@ export default {
                 work_date:"",
                 work_hours:"",
                 description:"",
+                tag1:"",
             },
             option:{
                 work_item:[],
                 work_item_now:[],
+                tags:[],
             },
+            day_mileseconds:86400000,
             pickerOptions:{
                 disabledDate(time){
-                    return time.getTime() > Date.now();
+                    return time.getTime() > Date.now()+86400000*30;
                 },
                 shortcuts:[
                     {
@@ -248,6 +259,12 @@ export default {
             }
         },
 
+        async handleChangeProj(){
+            this.form.tag1="";
+            this.option.tags=[];
+            await this.get_filter_tag();
+        },
+
         handleCopy(index, row){
             var today = new Date();
             var temp_form=Object.assign({}, row);
@@ -277,6 +294,7 @@ export default {
                 pid:this.odoo_employee_id,
                 item_id:row.item_id,
                 work_date:row.work_date,
+                tag1:row.tag1,
             };
             this.deleteView=true;
         },
@@ -291,6 +309,7 @@ export default {
                 pid:this.odoo_employee_id,
                 item_id:null,
                 work_date:"",
+                tag1:"",
             };
             this.deleteView=false;
         },
@@ -357,7 +376,9 @@ export default {
                 work_date:"",
                 work_hours:"",
                 description:"",
+                tag1:"",
             };
+            this.option.tags=[];
             this.edit_idx=null;
             this.$refs.form.clearValidate();
         },
@@ -401,7 +422,15 @@ export default {
             await dayItemService.get_option_list({action:["work_item", "work_item_now"]}).then(res =>{ 
                 this.option.work_item=res.work_item;
                 this.option.work_item_now=res.work_item_now;
-            }) 
+            });
+        },
+
+        async get_filter_tag(){
+            this.dialog_loading=true;
+            await dayItemService.get_option_list({action:["tags"], param:{item_id:this.form.item_id, pid:this.odoo_employee_id}}).then(res =>{ 
+                this.option.tags=res.tags;
+            });
+            this.dialog_loading=false;
         },
 
         search(){

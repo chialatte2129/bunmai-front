@@ -312,6 +312,7 @@ export const messages = {
             create_inner_project:"新增專案",
             edit_inner_project:"編輯專案",
             owner:"專案負責人",
+            tag1:"分類標籤",
         },
     },
     'en_US': {
@@ -613,6 +614,7 @@ export const messages = {
             create_inner_project:"Create Project",
             edit_inner_project:"Edit Project",
             owner:"Project Owner",
+            tag1:"Category Tag",
         },
     },
     'ja_JP':{
