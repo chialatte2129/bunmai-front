@@ -49,7 +49,8 @@
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" left="0px" :before-close="cancelDialog" :close-on-click-modal="false"
+        :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
@@ -74,17 +75,19 @@
                             <el-option v-for="item in option.work_item_now" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                         </el-select>
                     </el-form-item>
-                    <el-form-item :label="$t('project.tag1')" prop="tag1">
-                        <el-select v-model="form.tag1" filterable clearable allow-create default-first-option class="handle-input" 
-                        :disabled="updateView||copyView||form.item_id==''">
-                            <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
-                        </el-select>
-                    </el-form-item>
                     <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
                         <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input" :readonly="ban_status.includes(form.status)"/>
                     </el-form-item>
                     <el-form-item :label="$t('employee.description')" prop="description">
                         <el-input v-model="form.description" type="textarea" :rows="5" :readonly="ban_status.includes(form.status)" style="width:95%;"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('project.tag1')" prop="tag1">
+                        <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="updateView||copyView||form.item_id==''">
+                            <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
+                        </el-select>
+                        <el-tooltip effect="light" :content="$t('common_msg.non_essential')" placement="right">
+                            <i style="font-size:20px;vertical-align:middle;" class="el-icon-warning-outline mgl10"></i>
+                        </el-tooltip>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">

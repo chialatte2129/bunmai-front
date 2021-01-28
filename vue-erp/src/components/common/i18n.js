@@ -167,6 +167,8 @@ export const messages = {
             all_select:"全選",
         },
         common_msg:{
+            yes:"是",
+            no:"否",
             tip:'提示',
             warning:'警示',
             select_date:"選擇日期",
@@ -217,6 +219,8 @@ export const messages = {
             odoo_dept_info_err:"[Odoo] 取得員工部門資訊異常",
             odoo_dept_tree_err:"[Odoo] 取得部門資訊異常",
             dict_error:"字典檔異常",
+            non_essential:"選填非必要",
+            select:"請選擇",
         },
         common_column:{
             id:"ID",
@@ -312,7 +316,10 @@ export const messages = {
             create_inner_project:"新增專案",
             edit_inner_project:"編輯專案",
             owner:"專案負責人",
+            is_open_tags:"是否啟用分類標籤",
             tag1:"分類標籤",
+            tags:"分類標籤",
+            add_tags:"新增標籤",
         },
     },
     'en_US': {
@@ -469,6 +476,8 @@ export const messages = {
             all_select:"All",
         },
         common_msg:{
+            yes:"Yes",
+            no:"No",
             tip:'Tip',
             warning:'Warning',
             select_date:"Select Date",
@@ -519,6 +528,8 @@ export const messages = {
             odoo_dept_info_err:"[Odoo] Get EE. Dept. Information Error",
             odoo_dept_tree_err:"[Odoo] Get Dept. Information Error",
             dict_error:"Dictionary Setting Error",
+            non_essential:"Non-essential",
+            select:"Select",
         },
         common_column:{
             id:"ID",
@@ -614,7 +625,10 @@ export const messages = {
             create_inner_project:"Create Project",
             edit_inner_project:"Edit Project",
             owner:"Project Owner",
+            is_open_tags:"Active Category Tag",
             tag1:"Category Tag",
+            tags:"Category Tag",
+            add_tags:"Add Tags",
         },
     },
     'ja_JP':{
