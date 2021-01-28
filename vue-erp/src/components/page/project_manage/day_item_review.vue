@@ -144,9 +144,10 @@ export default {
             },
             infoView:false,
             form:{},
+            day_mileseconds:86400000,
             pickerOptions:{
                 disabledDate(time){
-                    return time.getTime() > Date.now();
+                    return time.getTime() > Date.now()+86400000*31;
                 },
                 shortcuts:[
                     {
