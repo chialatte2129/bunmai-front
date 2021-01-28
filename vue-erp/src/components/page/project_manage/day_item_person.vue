@@ -56,7 +56,7 @@
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
                         :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
                             disabledDate(time){ 
-                                return time.getTime()>Date.now()+day_mileseconds*30;
+                                return time.getTime()>Date.now()+day_mileseconds*31;
                             }
                         }"/>
                     </el-form-item>
@@ -64,7 +64,7 @@
                         <el-date-picker v-model="form.copy_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input"
                         :placeholder="$t('common_msg.select_date')" :picker-options="{
                             disabledDate(time){
-                                return time.getTime()>Date.now()+day_mileseconds*30||
+                                return time.getTime()>Date.now()+day_mileseconds*31||
                                 time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')==form.work_date;
                             }
                         }"/>
@@ -151,7 +151,7 @@ export default {
             day_mileseconds:86400000,
             pickerOptions:{
                 disabledDate(time){
-                    return time.getTime() > Date.now()+86400000*30;
+                    return time.getTime() > Date.now()+86400000*31;
                 },
                 shortcuts:[
                     {
