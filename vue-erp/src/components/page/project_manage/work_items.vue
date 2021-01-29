@@ -119,19 +119,19 @@
                     <el-form-item :label="$t('project.description')" prop="description">
                         <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:95.5%;"/>
                     </el-form-item>
+                    <div style="font-size:12px;margin:10px;color:rgb(255, 73, 73);"> [ {{$t("common_msg.non_essential")}} ] {{$t("project.tag_tips")}}</div>
                     <el-collapse v-model="activeNames" accordion>
                         <el-collapse-item name="tags" class="tag-collapse">
                             <template slot="title">
                                 <div class="mgl10">{{$t("project.tags")}}</div>
                             </template>
-                            <div style="font-size:12px;margin:10px;color:rgb(255, 73, 73);"> [ {{$t("common_msg.non_essential")}} ] {{$t("project.tag_tips")}}</div>
                             <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
                                 <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
                                 :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
                             </el-form-item>
                             <el-form-item :label="$t('project.tags')" prop="tags">
-                                <el-button type="info" plain size="medium" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button>
-                                <el-input style="width:50%;" class="mgl10" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
+                                <!-- <el-button type="info" plain size="medium" class="mgr10" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
+                                <el-input style="width:95.5%;" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
                                 @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
                                 <!-- <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button> -->
                                 <el-divider/>

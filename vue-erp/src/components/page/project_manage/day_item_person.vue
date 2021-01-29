@@ -85,9 +85,7 @@
                         <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||form.item_id==''">
                             <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
                         </el-select>
-                        <el-tooltip effect="light" :content="`[${$t('common_msg.non_essential')}] ${$t('employee.use_tag_tip')}`" placement="bottom">
-                            <i style="font-size:20px;vertical-align:middle;" class="el-icon-warning-outline mgl10"></i>
-                        </el-tooltip>
+                        <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">{{$t("common_msg.non_essential")}} {{$t("employee.use_tag_tip")}}</div>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
@@ -105,7 +103,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="8" class="pdr10">
-                        <el-card shadow="always" style="height:557px" body-style="padding:10px">
+                        <el-card shadow="never" style="height:557px" body-style="padding:10px">
                             <div slot="header" class="clearfix">{{$t("project.list")}}</div>
                             <div class="tree_filter">
                                 <el-input :placeholder="$t('btn.search')" v-model="filterProjText" style="width:100%;" clearable/>
@@ -159,9 +157,9 @@
                                 <div class="mgt10" v-if="tag_form.item_id">{{edit_tag_info.label}}</div>
                             </div>
                             <div v-if="tag_form.item_id">
-                                <el-button type=primary size=medium @click="saveTags">{{$t("btn.save")}}</el-button>
-                                <el-button type=info plain size=medium @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button>
-                                <el-divider/>
+                                <!-- <el-button type=primary size=medium @click="saveTags">{{$t("btn.save")}}</el-button> -->
+                                <!-- <el-button type=info plain size=medium @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
+                                <!-- <el-divider/> -->
                                 <el-input style="width:100%;" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
                                 @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
                                 <!-- <el-button v-else type=warning plain size=medium @click="showInput">{{$t("project.add_tags")}}</el-button> -->
@@ -398,7 +396,7 @@ export default {
             this.tag_dl_loading=true;
                 await personTagService.save_tag(this.tag_form).then(res =>{
                     if(res.code==1){
-                        this.$message.success(this.$t("common_msg.save_ok"));
+                        // this.$message.success(this.$t("common_msg.save_ok"));
                     }else if(res.code==0){
                         this.$message.warning(this.$t(res.msg));
                     }else{
@@ -413,15 +411,17 @@ export default {
             return data.label.indexOf(value) !== -1;
         },
 
-        handleClose(tag){
-            this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
+        async handleClose(tag){
+            await this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
+            await this.saveTags();
         },
 
-        handleInputConfirm(){
+        async handleInputConfirm(){
             let inputValue=this.tagValue;
             if(inputValue){
                 if(!this.tag_form.tags.includes(inputValue)){
-                    this.tag_form.tags.push(inputValue);
+                    await this.tag_form.tags.push(inputValue);
+                    await this.saveTags();
                 };
             };
             this.tagVisible=false;
