@@ -65,7 +65,7 @@
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="800px" :before-close="cancelDialog" top="8%" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="800px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="12">

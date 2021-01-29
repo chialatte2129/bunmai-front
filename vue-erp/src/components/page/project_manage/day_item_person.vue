@@ -89,7 +89,7 @@
                         <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="right" v-if="!copyView">
                             <el-button circle size=mini type=success plain class="mgl10" icon="el-icon-plus" @click="openTagManager"/>
                         </el-tooltip>
-                        <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">{{$t("common_msg.non_essential")}} {{$t("employee.use_tag_tip")}}</div>
+                        <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">[ {{$t("common_msg.non_essential")}} ] {{$t("employee.use_tag_tip")}}</div>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
