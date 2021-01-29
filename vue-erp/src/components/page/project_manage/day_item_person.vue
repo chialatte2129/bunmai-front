@@ -16,6 +16,7 @@
                 <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                <el-button size="large" type="primary" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :span-method="dateCellMerge" :key="tbKey">
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
@@ -28,7 +29,7 @@
                 <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
-                        <el-button type="primary" size="mini" icon="el-icon-document" @click="handleCopy(scope.$index, scope.row)" 
+                        <el-button type="primary" size="mini" icon="el-icon-document" @click="handleCopy(scope.$index, scope.row)"
                         :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.copy')}}</el-button>
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" 
                         :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.delete')}}</el-button>
@@ -44,13 +45,12 @@
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
             <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
+                <el-button @click="cancelDelete">{{$t("btn.cancel")}}</el-button>
+                <el-button type="primary" @click="confirmDelete">{{$t("btn.confirm")}}</el-button>
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" left="0px" :before-close="cancelDialog" :close-on-click-modal="false"
-        :destroy-on-close="true" :key="dlKey">
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
@@ -82,24 +82,102 @@
                         <el-input v-model="form.description" type="textarea" :rows="5" :readonly="ban_status.includes(form.status)" style="width:95%;"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.tag1')" prop="tag1">
-                        <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="updateView||copyView||form.item_id==''">
+                        <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||form.item_id==''">
                             <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
                         </el-select>
-                        <el-tooltip effect="light" :content="$t('common_msg.non_essential')" placement="right">
+                        <el-tooltip effect="light" :content="`[${$t('common_msg.non_essential')}] ${$t('employee.use_tag_tip')}`" placement="bottom">
                             <i style="font-size:20px;vertical-align:middle;" class="el-icon-warning-outline mgl10"></i>
                         </el-tooltip>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
-                    <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                    <el-button type="primary" @click="confirmDialog" :disabled="ban_status.includes(form.status)">{{$t('btn.confirm')}}</el-button>
+                    <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
+                    <el-button type="primary" @click="confirmDialog" :disabled="ban_status.includes(form.status)">{{$t("btn.confirm")}}</el-button>
                 </div>
+            </div>
+        </el-dialog>
+
+        <el-dialog :title="$t('employee.edit_personal_tags')" :visible.sync="tagView" top="90px" width="1100px" 
+        :before-close="cancelTagDialog" :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="tagDlKey">
+            <div v-loading.lock="tag_dl_loading">
+                <el-row class="mgb10 mgl10">
+                    <span style="color:#FF4242;">{{$t("employee.manage_tag_tip")}}</span>
+                </el-row>
+                <el-row>
+                    <el-col :span="8" class="pdr10">
+                        <el-card shadow="always" style="height:557px" body-style="padding:10px">
+                            <div slot="header" class="clearfix">{{$t("project.list")}}</div>
+                            <div class="tree_filter">
+                                <el-input :placeholder="$t('btn.search')" v-model="filterProjText" style="width:100%;" clearable/>
+                            </div>
+                            <div class="scrollBar">
+                                <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:457px;">
+                                    <el-tree class="filtered-tree" node-key="item_id" ref="proj_tree" highlight-current :expand-on-click-node="false"
+                                    :data="proj_tree" :props="defaultProps" :filter-node-method="filterNode">
+                                        <span class="custom-tree-node" slot-scope="{node, data}" :style="activeStyle(data.is_open_tags)">
+                                            <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
+                                            <span class="node_icon">
+                                                <span class="node_plus">
+                                                    <el-button size=mini type=primary icon="el-icon-plus" circle plain @click="addToPersTree(data)"/>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </el-tree>
+                                </el-scrollbar>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8" class="pdr10">
+                        <el-card shadow="always" style="height:557px" body-style="padding:10px">
+                            <div slot="header" class="clearfix">{{$t("project.personal_tag")}}</div>
+                            <div class="tree_filter">
+                                <el-input :placeholder="$t('btn.search')" v-model="filterPersText" style="width:100%;" clearable/>
+                            </div>
+                            <div class="scrollBar">
+                                <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:457px;">
+                                    <el-tree class="filtered-tree" node-key="item_id" ref="pers_tree" highlight-current :expand-on-click-node="false"
+                                    :data="pers_tree" :props="defaultProps" :filter-node-method="filterNode" @node-click="handleNodeClick">
+                                        <span class="custom-tree-node" slot-scope="{node, data}" :style="activeStyle(data.is_open_tags)">
+                                            <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
+                                            <span class="node_icon">
+                                                <span class="node_plus">
+                                                    <el-tooltip effect="light" :content="$t('employee.clear_tag_tip')" placement="left">
+                                                        <el-button size=mini type=danger icon="el-icon-minus" circle plain @click="delToProjTree(data)"/>
+                                                    </el-tooltip>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </el-tree>
+                                </el-scrollbar>
+                            </div>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="8" class="pdr10">
+                        <el-card shadow="always" style="height:557px" body-style="padding:10px" class="tag-dialog">
+                            <div slot="header" class="clearfix">
+                                <div>{{$t("project.tags")}}</div>
+                                <div class="mgt10" v-if="tag_form.item_id">{{edit_tag_info.label}}</div>
+                            </div>
+                            <div v-if="tag_form.item_id">
+                                <el-button type=primary size=medium @click="saveTags">{{$t("btn.save")}}</el-button>
+                                <el-button type=info plain size=medium @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button>
+                                <el-divider/>
+                                <el-input style="width:100%;" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
+                                @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
+                                <!-- <el-button v-else type=warning plain size=medium @click="showInput">{{$t("project.add_tags")}}</el-button> -->
+                                <el-divider class="tag-group"/>
+                                <el-tag style="margin:5px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size=large type=success closable 
+                                :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
-import { dayItemService } from "@/_services";
+import { dayItemService, personTagService } from "@/_services";
 export default {
     name: "day_item_person",
     data(){
@@ -108,8 +186,10 @@ export default {
             fullname:localStorage.getItem("ms_user_fullname"),
             tbKey:0,
             dlKey:0,
+            tagDlKey:1000,
             table_loading:false,
             dialog_loading:false,
+            tag_dl_loading:false,
             tableData:[],
             totalRow:0,
             spanArr:[],
@@ -130,6 +210,9 @@ export default {
             createView:false,
             updateView:false,
             copyView:false,
+            tagView:false,
+            tagVisible:false,
+            tagValue:"",
             filter:{
                 item_id:null,
                 work_date:[],
@@ -145,6 +228,24 @@ export default {
                 work_hours:"",
                 description:"",
                 tag1:"",
+            },
+            tag_form:{
+                item_id:"",
+                pid:localStorage.getItem("ms_odoo_employee_id"),
+                tags:[],
+            },
+            edit_tag_info:{
+                label:"",
+            },
+            isRemove:false,
+            filterProjText:"",
+            filterPersText:"",
+            proj_tree:[],
+            pers_tree:[],            
+            defaultProps: {
+                children:"children",
+                label:"label",
+                level:"level",
             },
             option:{
                 work_item:[],
@@ -210,7 +311,17 @@ export default {
         await this.getData();
     },
 
-    computed: {
+    watch:{
+        filterProjText(val){
+            this.$refs.proj_tree.filter(val);
+        },
+
+        filterPersText(val){
+            this.$refs.pers_tree.filter(val);
+        },
+    },
+
+    computed:{
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
@@ -230,7 +341,136 @@ export default {
         },
     },    
     
-    methods: {
+    methods:{
+        async handleNodeClick(data){
+            if(!this.isRemove){
+                this.tag_dl_loading=true;
+                this.resetTagForm();
+                await personTagService.get_tag({pid:this.odoo_employee_id, item_id:data.item_id}).then(res =>{
+                    if(res.code==1){
+                        this.tag_form=res.tag_form;
+                        this.edit_tag_info.label=data.item_name;
+                    }else{
+                        this.$message.error(this.$t("common_msg.contact_maintainer"));
+                    }
+                });
+                this.tag_dl_loading=false;
+            };
+        },
+
+        async addToPersTree(data){
+            this.tag_dl_loading=true;
+            await personTagService.add_tag({pid:this.odoo_employee_id, item_id:data.item_id}).then(res =>{
+                if(res.code==1){
+                    this.pers_tree.push(data);
+                    this.pers_tree.sort((a, b) => a.item_id.localeCompare(b.item_id));
+                    var pos = this.proj_tree.indexOf(data);
+                    if(pos!=-1) this.proj_tree.splice(pos, 1);
+                    this.handleNodeClick(data);
+                }else{
+                    this.$message.error(this.$t("common_msg.contact_maintainer"));
+                }
+            });
+            this.tag_dl_loading=false;
+        },
+
+        async delToProjTree(data){
+            this.isRemove=true;
+            this.tag_dl_loading=true;
+            await personTagService.remove_tag({pid:this.odoo_employee_id, item_id:data.item_id}).then(res =>{
+                if(res.code==1){
+                    this.proj_tree.push(data);
+                    this.proj_tree.sort((a, b) => a.item_id.localeCompare(b.item_id));
+                    var pos = this.pers_tree.indexOf(data);
+                    if(pos!=-1) this.pers_tree.splice(pos, 1);
+                    if(data.item_id==this.tag_form.item_id){
+                        this.resetTagForm();
+                    };
+                }else{
+                    this.$message.error(this.$t("common_msg.contact_maintainer"));
+                }
+            });
+            this.isRemove=false;
+            this.tag_dl_loading=false;
+        },
+
+        async saveTags(){
+            this.tag_dl_loading=true;
+                await personTagService.save_tag(this.tag_form).then(res =>{
+                    if(res.code==1){
+                        this.$message.success(this.$t("common_msg.save_ok"));
+                    }else if(res.code==0){
+                        this.$message.warning(this.$t(res.msg));
+                    }else{
+                        this.$message.error(this.$t(res.msg));
+                    };
+                });
+            this.tag_dl_loading=false;
+        },
+
+        filterNode(value, data){
+            if(!value) return true;
+            return data.label.indexOf(value) !== -1;
+        },
+
+        handleClose(tag){
+            this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
+        },
+
+        handleInputConfirm(){
+            let inputValue=this.tagValue;
+            if(inputValue){
+                if(!this.tag_form.tags.includes(inputValue)){
+                    this.tag_form.tags.push(inputValue);
+                };
+            };
+            this.tagVisible=false;
+            this.tagValue="";
+        },
+
+        showInput(){
+            this.tagVisible=true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
+
+        async openTagManager(){
+            await personTagService.get_tag_tree({pid:this.odoo_employee_id}).then(res =>{
+                if(res.code==1){
+                    this.proj_tree=res.proj_tree;
+                    this.pers_tree=res.pers_tree;
+                    this.tagView=true;
+                }else{
+                    this.$message.error(this.$t("common_msg.contact_maintainer"));
+                    this.tagView=false;
+                }
+            });
+        },
+
+        resetTagForm(){
+            this.tag_form={
+                item_id:"",
+                pid:localStorage.getItem("ms_odoo_employee_id"),
+                tags:[],
+            };
+            this.edit_tag_info={
+                label:"",
+            };
+        },
+
+        cancelTagDialog(){
+            this.tagView=false;
+            this.resetTagForm();
+        },
+        
+        activeStyle(status){
+            if(status==1){
+                return "background:#FFEDED;";
+            }
+            return "background:#FCFFF7;";
+        },
+
         getSpanArr(data){
             this.resetSpanArr();
             for(var i=0;i<data.length;i++){
@@ -286,8 +526,10 @@ export default {
             this.createView=true;
         },
 
-        handleEdit(index, row){
+        async handleEdit(index, row){
             this.form=Object.assign({}, row);
+            this.form.org_tag1=row.tag1;
+            await this.get_filter_tag();
             this.edit_idx=index;
             this.updateView=true;
         },
@@ -334,6 +576,7 @@ export default {
                         this.getData();
                         this.cancelDialog();
                     }else if(param.action=="update"){
+                        delete param.form["org_tag1"];
                         this.tableData[this.edit_idx]=param.form;
                         this.tbKey++;
                         this.cancelDialog();
@@ -357,7 +600,7 @@ export default {
                     var param = {
                         action:this.createView?"create":(this.updateView?"update":"copy"),
                         form:temp_form
-                    }
+                    };
                     this.update_day_item(param);
                 }
             })
@@ -477,6 +720,9 @@ export default {
     .mgl10{
         margin-left:10px;
     }
+    .pdr10{
+        padding-right:10px;
+    }
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
@@ -484,5 +730,61 @@ export default {
     .dialog-footer-loading{
         text-align:right;
         margin:40px 0 -10px 0;
+    }
+    .clearfix{
+        position:relative;
+        line-height:1.23;
+        font-size: 16px;
+    }
+    .custom-tree-node{
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        font-size:14px;
+        padding-right:15px;
+    }
+    .scrollBar{ 
+        height:440px; 
+        overflow:hidden; 
+    } 
+    .list{ 
+        max-height:10px; 
+    }
+    .custom-tree-node >>> .node_label_1{
+        width:150px;
+        line-height:26px;
+    }
+    .custom-tree-node >>> .node_plus{
+        line-height:20px;
+    }
+    .filtered-tree >>> .el-tree-node__expand-icon.is-leaf{
+        display:none;
+    }
+    .filtered-tree{
+        margin-left:3px;
+    }
+    .tree_filter{
+        margin:0px 0px 10px 2px;
+        min-width:100px;
+        width:100%;
+    }
+    .node_icon >>> .el-button--primary.el-button--mini.is-circle{
+        padding:3px;
+        position:absolute;
+    }
+    .node_icon >>> .el-button--danger.el-button--mini.is-circle{
+        padding:3px;
+        position:absolute;
+    }
+    .node_plus{
+        margin-right:20px;
+        z-index:2;
+    }
+    .tag-dialog >>> .el-divider--horizontal{
+        margin:10px 0;
+    }
+    .tag-dialog >>> .el-divider--horizontal.tag-group{
+        margin:10px 0 5px 0;
     }
 </style>

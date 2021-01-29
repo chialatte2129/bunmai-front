@@ -119,20 +119,27 @@
                     <el-form-item :label="$t('project.description')" prop="description">
                         <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:95.5%;"/>
                     </el-form-item>
-                    <el-divider/>
-                    <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
-                        <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
-                        :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
-                    </el-form-item>
-                    <el-form-item :label="$t('project.tags')" prop="tags">
-                        <el-button type="info" plain size="medium" @click="tag_form.tags=[]">{{$t("btn.clear")}}</el-button>
-                        <el-input style="width:50%;" class="mgl10" v-if="tagVisible" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
-                        @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
-                        <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button>
-                        <div class="mgt10">
-                            <el-tag style="margin:2px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size="medium" closable :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
-                        </div>
-                    </el-form-item>
+                    <el-collapse v-model="activeNames" accordion>
+                        <el-collapse-item name="tags" class="tag-collapse">
+                            <template slot="title">
+                                <div class="mgl10">{{$t("project.tags")}}</div>
+                            </template>
+                            <div style="font-size:12px;margin:10px;color:rgb(255, 73, 73);"> [ {{$t("common_msg.non_essential")}} ] {{$t("project.tag_tips")}}</div>
+                            <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
+                                <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
+                                :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
+                            </el-form-item>
+                            <el-form-item :label="$t('project.tags')" prop="tags">
+                                <el-button type="info" plain size="medium" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button>
+                                <el-input style="width:50%;" class="mgl10" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
+                                @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
+                                <!-- <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button> -->
+                                <el-divider/>
+                                <el-tag style="margin:5px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size=large type=success closable 
+                                :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
+                            </el-form-item>
+                        </el-collapse-item>
+                    </el-collapse>
                 </el-row>
             </el-form>
             <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
@@ -148,6 +155,7 @@ export default {
     name: "work_item_manage",
     data(){
         return {
+            activeNames:"",
             tbKey:0,
             tableData: [],
             totalRow:0,
@@ -436,6 +444,7 @@ export default {
         },
 
         resetTagForm(){
+            this.activeNames="";
             this.tag_form={
                 item_id:"",
                 pid:"",
@@ -534,5 +543,8 @@ export default {
     }
     .wd80pa{
         width:90%;
+    }
+    .tag-collapse >>> .el-divider--horizontal{
+        margin:10px 0 5px 0;
     }
 </style>

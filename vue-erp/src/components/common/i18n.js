@@ -165,6 +165,7 @@ export const messages = {
             download_excel:"下載 Excel 檔案",
             reset:"重置",
             all_select:"全選",
+            close:"關閉",
         },
         common_msg:{
             yes:"是",
@@ -221,6 +222,7 @@ export const messages = {
             dict_error:"字典檔異常",
             non_essential:"選填非必要",
             select:"請選擇",
+            contact_maintainer:"發生未知錯誤請聯絡維護工程師，謝謝您"
         },
         common_column:{
             id:"ID",
@@ -279,7 +281,7 @@ export const messages = {
             work_hour:"工作時數",
             work_date:"工作日期",
             copy_date:"複製日期",
-            description:"內容簡述",
+            description:"內容敘述",
             start_date:"開始時間",
             end_date:"結束時間",
             date_range:"至",
@@ -290,6 +292,7 @@ export const messages = {
             update_day_item:"編輯每日工作彙報",
             copy_day_item:"複製每日工作彙報",
             duplicated_project_same_day:"同一天重複的彙報",
+            duplicated_tag:"重複的標籤",
             pid_invalid:"無效的會員編號",
             p_name_invalid:"無效的會員名稱",
             dept_name_invalid:"無效的部門名稱",
@@ -300,6 +303,10 @@ export const messages = {
             dept_tree:"部門分類",
             nobody:"沒有部門成員",
             daily_details:"每日細節",
+            edit_personal_tags:"個人標籤管理",
+            use_tag_tip:"填寫可幫助日後統計專案細項",
+            clear_tag_tip:"會刪除已設定的標籤，請注意",
+            manage_tag_tip:"背景為紅色代表此專案有被啟用專案標籤管理，盡管有設定個人標籤但標籤結果仍然為專案標籤",
         },
         project:{
             name:"專案名稱",
@@ -321,6 +328,10 @@ export const messages = {
             tag1:"分類標籤",
             tags:"分類標籤",
             add_tags:"新增標籤",
+            tag_tips:"如果開啟則工作彙報分類標籤會使用專案預設標籤，反之則使用專案個人標籤",
+            list:"專案清單",
+            personal_tag:"專案個人標籤",
+            unknown_item_id:"未知專案",
         },
     },
     'en_US': {
@@ -475,6 +486,7 @@ export const messages = {
             download_excel:"Download as Excel",
             reset:"Reset",
             all_select:"All",
+            close:"Close",
         },
         common_msg:{
             yes:"Yes",
@@ -531,6 +543,7 @@ export const messages = {
             dict_error:"Dictionary Setting Error",
             non_essential:"Non-essential",
             select:"Select",
+            contact_maintainer:"Unknown Error happened, contact maintainer please, thanks for your help"
         },
         common_column:{
             id:"ID",
@@ -600,6 +613,7 @@ export const messages = {
             update_day_item:"Update Daily Report",
             copy_day_item:"Copy Daily Report",
             duplicated_project_same_day:"Duplicated report project at same day",
+            duplicated_tag:"Duplicated tag",
             pid_invalid:"Invalid ee. id",
             p_name_invalid:"Invalid ee. name",
             dept_name_invalid:"Invalid dept. name",
@@ -610,6 +624,10 @@ export const messages = {
             dept_tree:"Dept. Tree",
             nobody:"Nobody",
             daily_details:"Daily Details",
+            edit_personal_tags:"Personal Tags",
+            use_tag_tip:"Fill in the tag that can help future statistics of the project",
+            clear_tag_tip:"Delete tags that you set",
+            manage_tag_tip:"The background is red, which means that the project has been actived for project tag management. Although the personal tag is set, the tag result is still the project tag",
         },
         project:{
             name:"Name",
@@ -631,6 +649,10 @@ export const messages = {
             tag1:"Category Tag",
             tags:"Category Tag",
             add_tags:"Add Tags",
+            tag_tips:"If open tags manager, tags category defaulted by project, else by project-employee",
+            list:"Project List",
+            personal_tag:"Personal Project Tag",
+            unknown_item_id:"Unknown Project",
         },
     },
     'ja_JP':{
