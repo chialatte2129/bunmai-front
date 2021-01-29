@@ -164,7 +164,7 @@
                                 <!-- <el-button type=primary size=medium @click="saveTags">{{$t("btn.save")}}</el-button> -->
                                 <!-- <el-button type=info plain size=medium @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
                                 <!-- <el-divider/> -->
-                                <el-input style="width:100%;" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
+                                <el-input style="width:100%;" v-model="tagValue" clearable ref="saveTagInput" size=medium show-word-limit maxlength="20"
                                 @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
                                 <!-- <el-button v-else type=warning plain size=medium @click="showInput">{{$t("project.add_tags")}}</el-button> -->
                                 <el-divider class="tag-group"/>

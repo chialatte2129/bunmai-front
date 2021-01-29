@@ -131,7 +131,7 @@
                             </el-form-item>
                             <el-form-item :label="$t('project.tags')" prop="tags">
                                 <!-- <el-button type="info" plain size="medium" class="mgr10" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
-                                <el-input style="width:95.5%;" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
+                                <el-input style="width:50%;" v-model="tagValue" clearable ref="saveTagInput" size=medium show-word-limit maxlength="20"
                                 @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
                                 <!-- <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button> -->
                                 <el-divider/>
