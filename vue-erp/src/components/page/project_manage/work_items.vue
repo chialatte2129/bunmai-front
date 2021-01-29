@@ -65,71 +65,82 @@
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" 
-        :visible.sync="showVisible" 
-        width="500px" 
-        :before-close="cancelDialog" 
-        :close-on-click-modal="false" 
-        class="edit-Dialog">
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="800px" :before-close="cancelDialog" top="8%" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-form-item v-if="createView" :label="$t('project.id')" prop="id">
-                    <el-input  v-model="form.id" clearable style="width:100%;">
-                        <template v-if="form.is_project==0" slot="prepend">INTER-</template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item v-if="updateView" :label="$t('project.id')" prop="id">
-                    <span >{{form.id}}</span>
-                </el-form-item>
-                <el-form-item :label="$t('project.name')" prop="name">
-                    <el-input :readonly="setReadOnly" v-model="form.name" clearable style="width:100%;"/>
-                </el-form-item>
-                <el-form-item :label="$t('project.category')" prop="category" v-if="false">
-                    <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable style="width:100%;">
-                        <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
-                    </el-select>
-                    <span v-if="form.is_project==1">{{form.category}}</span>
-                </el-form-item>
-                <el-form-item :label="$t('project.status')" prop="status">
-                     <el-select :disabled="setReadOnly" v-model="form.status" filterable style="width:100%;">
-                        <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
-                    </el-select>
-                </el-form-item>
-                <el-form-item :label="$t('project.owner')" prop="owner">
-                     <el-select :disabled="setReadOnly" v-model="form.owner" filterable clearable style="width:100%;">
-                        <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                            <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
-                                <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                                <span v-else class="mgl10">{{item.name}}</span>
-                            </el-option>
-                    </el-option-group>
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item :label="$t('common_column.start_date')" prop="date_period">
-                    <el-date-picker
-                    v-model="form.start_date"
-                    :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}"
-                    type="date"
-                    :readonly="setReadOnly"
-                    value-format="yyyy-MM-dd"
-                    placeholder="選擇日期">
-                    </el-date-picker>
-                </el-form-item>
-
-                <el-form-item :label="$t('common_column.end_date')" prop="date_period">
-                    <el-date-picker
-                    v-model="form.end_date"
-                    :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}"
-                    type="date"
-                    :readonly="setReadOnly"
-                    value-format="yyyy-MM-dd"
-                    placeholder="選擇日期">
-                    </el-date-picker>
-                </el-form-item>
-
-                <el-form-item :label="$t('project.description')" prop="description">
-                    <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:100%;"/>
-                </el-form-item>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item v-if="createView" :label="$t('project.id')" prop="id">
+                            <el-input v-model="form.id" clearable class="wd80pa">
+                                <template v-if="form.is_project==0" slot="prepend">INTER-</template>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item v-if="updateView" :label="$t('project.id')" prop="id">
+                            <span >{{form.id}}</span>
+                        </el-form-item>
+                        <el-form-item :label="$t('project.name')" prop="name">
+                            <el-input :readonly="setReadOnly" v-model="form.name" clearable class="wd80pa"/>
+                        </el-form-item>
+                        <el-form-item :label="$t('project.category')" prop="category" v-if="false">
+                            <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable class="wd80pa">
+                                <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
+                            </el-select>
+                            <span v-if="form.is_project==1">{{form.category}}</span>
+                        </el-form-item>
+                        <el-form-item :label="$t('project.status')" prop="status">
+                            <el-select :disabled="setReadOnly" v-model="form.status" filterable class="wd80pa">
+                                <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item :label="$t('project.owner')" prop="owner">
+                            <el-select :disabled="setReadOnly" v-model="form.owner" filterable clearable class="wd80pa">
+                                <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
+                                        <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
+                                        <span v-else class="mgl10">{{item.name}}</span>
+                                    </el-option>
+                            </el-option-group>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item :label="$t('common_column.start_date')" prop="date_period">
+                            <el-date-picker v-model="form.start_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
+                            :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item :label="$t('common_column.end_date')" prop="date_period">
+                            <el-date-picker v-model="form.end_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
+                            :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-form-item :label="$t('project.description')" prop="description">
+                        <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:95.5%;"/>
+                    </el-form-item>
+                    <div style="font-size:12px;margin:10px;color:rgb(255, 73, 73);"> [ {{$t("common_msg.non_essential")}} ] {{$t("project.tag_tips")}}</div>
+                    <el-collapse v-model="activeNames" accordion>
+                        <el-collapse-item name="tags" class="tag-collapse">
+                            <template slot="title">
+                                <div class="mgl10">{{$t("project.tags")}}</div>
+                            </template>
+                            <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
+                                <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
+                                :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
+                            </el-form-item>
+                            <el-form-item :label="$t('project.tags')" prop="tags">
+                                <!-- <el-button type="info" plain size="medium" class="mgr10" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
+                                <el-input style="width:95.5%;" v-model="tagValue" clearable ref="saveTagInput" size="medium" 
+                                @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
+                                <!-- <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button> -->
+                                <el-divider/>
+                                <el-tag style="margin:5px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size=large type=success closable 
+                                :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
+                            </el-form-item>
+                        </el-collapse-item>
+                    </el-collapse>
+                </el-row>
             </el-form>
             <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
                 <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
@@ -144,6 +155,7 @@ export default {
     name: "work_item_manage",
     data(){
         return {
+            activeNames:"",
             tbKey:0,
             tableData: [],
             totalRow:0,
@@ -159,6 +171,8 @@ export default {
             deleteView:false,
             createView:false,
             updateView:false,
+            tagVisible:false,
+            tagValue:"",
             check_start_time:"",
             check_end_time:"",
             filter:{
@@ -168,7 +182,6 @@ export default {
                 owner:[],
             },
             tree_data:[],
-            edit_idx:null,
             
             form:{
                 date_period:[],
@@ -183,6 +196,13 @@ export default {
                 description:"",
                 owner:"",
                 employ_id:localStorage.getItem("ms_odoo_employee_id"),
+                is_open_tags:false,
+            },
+
+            tag_form:{
+                item_id:"",
+                pid:"",
+                tags:[],
             },
 
             option:{
@@ -222,7 +242,7 @@ export default {
         showTitle(){
             if(this.createView && this.form.is_project) return this.$t("project.create_outter_project");
             else if(this.createView && !this.form.is_project) return this.$t("project.create_inner_project");
-            else if(this.updateView && this.form.is_project) return this.$t("project.edit_outter_project");
+            else if(this.updateView && this.form.is_project) return this.$t("project.edit_project");
             else if(this.updateView && !this.form.is_project) return this.$t("project.edit_inner_project");
             else return "";
         },
@@ -271,6 +291,28 @@ export default {
     }, 
     
     methods: {
+        handleClose(tag){
+            this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
+        },
+
+        handleInputConfirm(){
+            let inputValue=this.tagValue;
+            if(inputValue){
+                if(!this.tag_form.tags.includes(inputValue)){
+                    this.tag_form.tags.push(inputValue);
+                };
+            };
+            this.tagVisible=false;
+            this.tagValue="";
+        },
+
+        showInput(){
+            this.tagVisible=true;
+            this.$nextTick(_ => {
+                this.$refs.saveTagInput.$refs.input.focus();
+            });
+        },
+
         async get_dept_employee(){
             this.loading=true;
             await workItemService.get_dept_employee({}).then(res =>{ 
@@ -307,7 +349,11 @@ export default {
         handleEdit(index, row){
             this.form=Object.assign({}, row);
             this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
-            this.edit_idx=index;
+            this.tag_form=Object.assign({}, {
+                item_id:this.form.id,
+                pid:"",
+                tags:this.form.tags,
+            });
             this.updateView=true;
         },
 
@@ -317,7 +363,6 @@ export default {
         },
 
         cancelDelete(){
-            // console.log("cancel delete");
             this.deleteID=null;
             this.deleteView=false;
         },
@@ -360,9 +405,12 @@ export default {
             this.$refs.form.validate(valid => {
                 if(valid){
                     var temp_form = Object.assign({}, this.form);
+                    var temp_tag_form = Object.assign({}, this.tag_form);
+                    temp_tag_form.item_id = temp_form.id;
                     var param = {
                         type:this.createView?"create":"update",
-                        form:temp_form
+                        form:temp_form,
+                        tag_form:temp_tag_form,
                     }
                     this.update_work_items(param);
                 }
@@ -370,10 +418,10 @@ export default {
         },
 
         cancelDialog(){
-            this.resetForm();
-            this.showVisible-false;
             this.createView=false;
             this.updateView=false;
+            this.resetForm();
+            this.resetTagForm();
         },
 
         resetForm(){
@@ -390,9 +438,18 @@ export default {
                 description:"",
                 owner:"",
                 employ_id:localStorage.getItem("ms_odoo_employee_id"),
+                is_open_tags:false,
             };
-            this.edit_idx=null;
             this.$refs.form.clearValidate();
+        },
+
+        resetTagForm(){
+            this.activeNames="";
+            this.tag_form={
+                item_id:"",
+                pid:"",
+                tags:[],
+            };
         },
 
         handleCurrentChange(currentPage){
@@ -477,8 +534,17 @@ export default {
     .mgl10{
         margin-left:10px;
     }
+    .mgt10{
+        margin-top:10px;
+    }
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
+    }
+    .wd80pa{
+        width:90%;
+    }
+    .tag-collapse >>> .el-divider--horizontal{
+        margin:10px 0 5px 0;
     }
 </style>
