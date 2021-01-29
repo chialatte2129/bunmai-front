@@ -50,7 +50,8 @@
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
+        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
@@ -85,6 +86,9 @@
                         <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||form.item_id==''">
                             <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
                         </el-select>
+                        <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="right" v-if="!copyView">
+                            <el-button circle size=mini type=success plain class="mgl10" icon="el-icon-plus" @click="openTagManager"/>
+                        </el-tooltip>
                         <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">{{$t("common_msg.non_essential")}} {{$t("employee.use_tag_tip")}}</div>
                     </el-form-item>
                 </el-form>
