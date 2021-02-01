@@ -90,7 +90,7 @@
                             <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
                         </el-tooltip>
                         <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="bottom" v-if="!copyView">
-                            <el-button circle size=mini type=success plain style="margin-left:5px;" icon="el-icon-plus" @click="openTagManager"/>
+                            <el-button circle size=mini type=success plain style="margin-left:5px;" icon="el-icon-plus" @click="regetTag=true, openTagManager()"/>
                         </el-tooltip>
                         <!-- <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">[ {{$t("common_msg.non_essential")}} ] {{$t("employee.use_tag_tip")}}</div> -->
                     </el-form-item>
@@ -225,6 +225,7 @@ export default {
             tagView:false,
             tagVisible:false,
             tagValue:"",
+            regetTag:false,
             filter:{
                 item_id:null,
                 work_date:[],
@@ -479,9 +480,11 @@ export default {
             };
         },
 
-        cancelTagDialog(){
+        async cancelTagDialog(){
+            if(this.regetTag) await this.get_filter_tag();
             this.tagView=false;
             this.resetTagForm();
+            this.regetTag=false;
         },
         
         activeStyle(status){
