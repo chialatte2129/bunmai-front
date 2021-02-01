@@ -86,10 +86,20 @@
                         <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||form.item_id==''">
                             <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
                         </el-select>
-                        <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="right" v-if="!copyView">
-                            <el-button circle size=mini type=success plain class="mgl10" icon="el-icon-plus" @click="openTagManager"/>
+                        <el-tooltip effect="light" :content="$t('employee.use_tag_tip')" placement="bottom" v-if="!copyView">
+                            <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
                         </el-tooltip>
-                        <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">[ {{$t("common_msg.non_essential")}} ] {{$t("employee.use_tag_tip")}}</div>
+                        <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="bottom" v-if="!copyView">
+                            <el-button circle size=mini type=success plain style="margin-left:5px;" icon="el-icon-plus" @click="openTagManager"/>
+                        </el-tooltip>
+                        <!-- <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">[ {{$t("common_msg.non_essential")}} ] {{$t("employee.use_tag_tip")}}</div> -->
+                    </el-form-item>
+                    <el-form-item :label="$t('overtime.comp_time')" prop="comp_time">
+                        <el-input v-model="form.comp_time" maxlength="5" :min="0"
+                        show-word-limit class="handle-input" :readonly="overtime_ban_status.includes(form.overtime_status)"/>
+                        <el-tooltip effect="light" :content="$t('overtime.comp_time_tips')" placement="bottom" v-if="!copyView">
+                            <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
+                        </el-tooltip>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
@@ -221,6 +231,7 @@ export default {
                 pid:localStorage.getItem("ms_odoo_employee_id"),
             },
             ban_status:["F"],
+            overtime_ban_status:["Reviewed", "Registered"],
             edit_idx:null,
             form:{
                 pid:localStorage.getItem("ms_odoo_employee_id"),
@@ -230,6 +241,8 @@ export default {
                 work_hours:"",
                 description:"",
                 tag1:"",
+                comp_time:0.0,
+                overtime_status:null,
             },
             tag_form:{
                 item_id:"",
@@ -303,6 +316,9 @@ export default {
                 work_hours: [
                     {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                comp_time:[
+                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
                 ],
             },
         }
@@ -627,6 +643,8 @@ export default {
                 work_hours:"",
                 description:"",
                 tag1:"",
+                comp_time:0.0,
+                overtime_status:null,
             };
             this.option.tags=[];
             this.edit_idx=null;

@@ -275,6 +275,10 @@ export const messages = {
             only_numbers:'只支援數字字元',
             invalidate_email:'請輸入正確電子郵件形式'
         },
+        overtime:{
+            comp_time:"補休時數",
+            comp_time_tips:"加班時數 * 加班倍率",
+        },
         employee:{
             name:"員工名稱",
             dept:"部門名稱",
@@ -595,6 +599,10 @@ export const messages = {
             only_three_characters:'Only 3 Characters Allow',
             only_numbers:'Only Allow Numbers',
             invalidate_email:'Please enter validate email'      
+        },
+        overtime:{
+            comp_time:"Comp. Time",
+            comp_time_tips:"Overtime Hours * Overtime Rate",
         },
         employee:{
             name:"EE. Name",
