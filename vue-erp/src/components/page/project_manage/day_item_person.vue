@@ -30,9 +30,9 @@
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
                         <el-button type="primary" size="mini" icon="el-icon-document" @click="handleCopy(scope.$index, scope.row)"
-                        :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.copy')}}</el-button>
+                        :disabled="table_loading||ban_status.includes(scope.row.status)||overtime_ban_status.includes(scope.row.overtime_status)">{{$t('btn.copy')}}</el-button>
                         <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" 
-                        :disabled="table_loading||ban_status.includes(scope.row.status)">{{$t('btn.delete')}}</el-button>
+                        :disabled="table_loading||ban_status.includes(scope.row.status)||overtime_ban_status.includes(scope.row.overtime_status)">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -77,13 +77,16 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item :label="$t('employee.work_hour')" prop="work_hours">
-                        <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input" :readonly="ban_status.includes(form.status)"/>
+                        <el-input v-model="form.work_hours" clearable maxlength="4" show-word-limit class="handle-input" 
+                        :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                     </el-form-item>
-                    <el-form-item :label="$t('employee.description')" prop="description">
-                        <el-input v-model="form.description" type="textarea" :rows="5" :readonly="ban_status.includes(form.status)" style="width:95%;"/>
+                    <el-form-item :label="$t('employee.description')" prop="description" :key="desKey">
+                        <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"
+                        :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.tag1')" prop="tag1">
-                        <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||form.item_id==''">
+                        <el-select v-model="form.tag1" filterable clearable class="handle-input" 
+                        :disabled="copyView||form.item_id==''||overtime_ban_status.includes(form.overtime_status)">
                             <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
                         </el-select>
                         <el-tooltip effect="light" :content="$t('employee.use_tag_tip')" placement="bottom" v-if="!copyView">
@@ -92,11 +95,10 @@
                         <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="bottom" v-if="!copyView">
                             <el-button circle size=mini type=success plain style="margin-left:5px;" icon="el-icon-plus" @click="regetTag=true, openTagManager()"/>
                         </el-tooltip>
-                        <!-- <div style="font-size:12px;color:rgb(255, 73, 73);" v-if="!copyView">[ {{$t("common_msg.non_essential")}} ] {{$t("employee.use_tag_tip")}}</div> -->
                     </el-form-item>
-                    <el-form-item :label="$t('overtime.comp_time')" prop="comp_time">
-                        <el-input v-model="form.comp_time" maxlength="5" :min="0"
-                        show-word-limit class="handle-input" :readonly="overtime_ban_status.includes(form.overtime_status)"/>
+                    <el-form-item :label="$t('overtime.comp_time')" prop="comp_time" v-if="!copyView">
+                        <el-input v-model="form.comp_time" maxlength="5" @input="compTimeInput" show-word-limit class="handle-input"
+                        :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                         <el-tooltip effect="light" :content="$t('overtime.comp_time_tips')" placement="bottom" v-if="!copyView">
                             <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
                         </el-tooltip>
@@ -104,7 +106,8 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
                     <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
-                    <el-button type="primary" @click="confirmDialog" :disabled="ban_status.includes(form.status)">{{$t("btn.confirm")}}</el-button>
+                    <el-button type="primary" @click="confirmDialog" 
+                    :disabled="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)">{{$t("btn.confirm")}}</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -198,6 +201,7 @@ export default {
             fullname:localStorage.getItem("ms_user_fullname"),
             tbKey:0,
             dlKey:0,
+            desKey:0,
             tagDlKey:1000,
             table_loading:false,
             dialog_loading:false,
@@ -217,6 +221,7 @@ export default {
                 item_id:null,
                 work_date:"",
                 tag1:"",
+                overtime_application_id:null,
             },
             deleteView:false,
             createView:false,
@@ -226,13 +231,14 @@ export default {
             tagVisible:false,
             tagValue:"",
             regetTag:false,
+            des_flag:false,
             filter:{
                 item_id:null,
                 work_date:[],
                 pid:localStorage.getItem("ms_odoo_employee_id"),
             },
             ban_status:["F"],
-            overtime_ban_status:["Reviewed", "Registered"],
+            overtime_ban_status:["Accepted", "Registered"],
             edit_idx:null,
             form:{
                 pid:localStorage.getItem("ms_odoo_employee_id"),
@@ -242,8 +248,9 @@ export default {
                 work_hours:"",
                 description:"",
                 tag1:"",
-                comp_time:0.0,
-                overtime_status:null,
+                comp_time:null,
+                overtime_status:"",
+                overtime_application_id:null,
             },
             tag_form:{
                 item_id:"",
@@ -304,7 +311,7 @@ export default {
                 ]
             },
             
-            rules: {
+            rules_org: {
                 work_date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
@@ -322,6 +329,12 @@ export default {
                     {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
                 ],
             },
+
+            rules_com:{
+                description:[
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+            }
         }
     },
 
@@ -341,6 +354,22 @@ export default {
     },
 
     computed:{
+        rules(){
+            var output_rules = this.rules_org;
+            var com_key = Object.keys(this.rules_com);
+            if(this.des_flag){
+                for(var key of com_key){
+                    output_rules[key] = this.rules_com[key];
+                };
+            }else{
+                for(var key of com_key){
+                    delete output_rules[key];
+                };
+            };
+            this.desKey++;
+            return output_rules;
+        },
+
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
@@ -361,6 +390,13 @@ export default {
     },    
     
     methods:{
+        compTimeInput(){
+            if((/^[0-9.]+$/.test(this.form.comp_time))&&parseFloat(this.form.comp_time)>0){
+                return this.des_flag=true;
+            };
+            return this.des_flag=false;
+        },
+
         async handleNodeClick(data){
             if(!this.isRemove){
                 this.tag_dl_loading=true;
@@ -563,6 +599,7 @@ export default {
                 item_id:row.item_id,
                 work_date:row.work_date,
                 tag1:row.tag1,
+                overtime_application_id:row.overtime_application_id,
             };
             this.deleteView=true;
         },
@@ -578,6 +615,7 @@ export default {
                 item_id:null,
                 work_date:"",
                 tag1:"",
+                overtime_application_id:null,
             };
             this.deleteView=false;
         },
@@ -602,6 +640,7 @@ export default {
                         delete param.form["org_tag1"];
                         this.tableData[this.edit_idx]=param.form;
                         this.tbKey++;
+                        this.getData();
                         this.cancelDialog();
                     }else if(param.action=="delete"){
                         this.cancelDelete()
@@ -646,8 +685,9 @@ export default {
                 work_hours:"",
                 description:"",
                 tag1:"",
-                comp_time:0.0,
-                overtime_status:null,
+                comp_time:null,
+                overtime_status:"",
+                overtime_application_id:null,
             };
             this.option.tags=[];
             this.edit_idx=null;

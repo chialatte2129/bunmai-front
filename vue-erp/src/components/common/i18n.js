@@ -217,8 +217,10 @@ export const messages = {
             go_to_foreign_url:"即將前往外部連結",
             action_error:"操作動作錯誤",
             odoo_user_reader_err:"[Odoo] 取得使用者讀取權限異常",
+            odoo_user_editor_err:"[Odoo] 取得使用者編輯權限異常",
+            odoo_user_dept_mgr_err:"[Odoo] 取得使用者主管資訊權限異常",
             odoo_dept_info_err:"[Odoo] 取得員工部門資訊異常",
-            odoo_dept_tree_err:"[Odoo] 取得部門資訊異常",
+            odoo_dept_tree_err:"[Odoo] 取得部門資訊異常",            
             dict_error:"字典檔異常",
             non_essential:"選填非必要",
             select:"請選擇",
@@ -278,6 +280,7 @@ export const messages = {
         overtime:{
             comp_time:"補休時數",
             comp_time_tips:"加班時數 * 加班倍率",
+            delete_status_err:"此補休表單已審核，無法刪除",
         },
         employee:{
             name:"員工名稱",
@@ -542,6 +545,8 @@ export const messages = {
             go_to_foreign_url:"Go to foreign URL",
             action_error:"Action Error",
             odoo_user_reader_err:"[Odoo] Get User Reader Error",
+            odoo_user_editor_err:"[Odoo] Get User Editor Error",
+            odoo_user_dept_mgr_err:"[Odoo] Get User Dept. Manager Info Editor",
             odoo_dept_info_err:"[Odoo] Get EE. Dept. Information Error",
             odoo_dept_tree_err:"[Odoo] Get Dept. Information Error",
             dict_error:"Dictionary Setting Error",
@@ -603,6 +608,7 @@ export const messages = {
         overtime:{
             comp_time:"Comp. Time",
             comp_time_tips:"Overtime Hours * Overtime Rate",
+            delete_status_err:"The comp time has been reviewed",
         },
         employee:{
             name:"EE. Name",
