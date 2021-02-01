@@ -392,6 +392,9 @@ export default {
     methods:{
         compTimeInput(){
             if((/^[0-9.]+$/.test(this.form.comp_time))&&parseFloat(this.form.comp_time)>0){
+                if(parseFloat(this.form.comp_time)>100){
+                    this.form.comp_time=99.99;
+                };
                 return this.des_flag=true;
             };
             return this.des_flag=false;
