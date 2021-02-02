@@ -279,7 +279,7 @@ export const messages = {
         },
         overtime:{
             comp_time:"申請補休",
-            comp_time_placeholder:"加班時數 * 加班倍率",
+            comp_time_placeholder:"請填入申請補休時數",
             comp_time_tips:"如有申請，需填寫內容敘述",
             delete_status_err:"此補休表單已審核，無法刪除",
         },

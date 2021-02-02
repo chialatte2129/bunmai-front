@@ -221,7 +221,7 @@ export default {
                 item_id:null,
                 work_date:"",
                 tag1:"",
-                overtime_application_id:null,
+                overtime_application_udid:null,
             },
             deleteView:false,
             createView:false,
@@ -238,7 +238,7 @@ export default {
                 pid:localStorage.getItem("ms_odoo_employee_id"),
             },
             ban_status:["F"],
-            overtime_ban_status:["Accepted", "Registered"],
+            overtime_ban_status:["F", "A"],
             edit_idx:null,
             form:{
                 pid:localStorage.getItem("ms_odoo_employee_id"),
@@ -250,7 +250,7 @@ export default {
                 tag1:"",
                 comp_time:null,
                 overtime_status:"",
-                overtime_application_id:null,
+                overtime_application_udid:null,
             },
             tag_form:{
                 item_id:"",
@@ -602,7 +602,7 @@ export default {
                 item_id:row.item_id,
                 work_date:row.work_date,
                 tag1:row.tag1,
-                overtime_application_id:row.overtime_application_id,
+                overtime_application_udid:row.overtime_application_udid,
             };
             this.deleteView=true;
         },
@@ -618,7 +618,7 @@ export default {
                 item_id:null,
                 work_date:"",
                 tag1:"",
-                overtime_application_id:null,
+                overtime_application_udid:null,
             };
             this.deleteView=false;
         },
@@ -690,7 +690,7 @@ export default {
                 tag1:"",
                 comp_time:null,
                 overtime_status:"",
-                overtime_application_id:null,
+                overtime_application_udid:null,
             };
             this.option.tags=[];
             this.edit_idx=null;
