@@ -97,7 +97,7 @@
                         </el-tooltip>
                     </el-form-item>
                     <el-form-item :label="$t('overtime.comp_time')" prop="comp_time" v-if="!copyView">
-                        <el-input v-model="form.comp_time" maxlength="5" @input="compTimeInput" show-word-limit class="handle-input"
+                        <el-input v-model="form.comp_time" maxlength="5" @input="compTimeInput" show-word-limit class="handle-input" :placeholder="$t('overtime.comp_time_placeholder')"
                         :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                         <el-tooltip effect="light" :content="$t('overtime.comp_time_tips')" placement="bottom" v-if="!copyView">
                             <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
