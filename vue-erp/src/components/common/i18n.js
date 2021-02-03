@@ -173,6 +173,8 @@ export const messages = {
             close:"關閉",
         },
         common_msg:{
+            pass:"通過",
+            reject:"退回",
             yes:"是",
             no:"否",
             tip:'提示',
@@ -192,8 +194,6 @@ export const messages = {
             isdigit : '請輸入機台ID (數字型別)',
             open: '開',
             close: '關',
-            yes: '是',
-            no: '否',
             return: '返回',
             max_len: '最大長度 : ',
             min_len: '最小長度 : ',
@@ -283,10 +283,14 @@ export const messages = {
             invalidate_email:'請輸入正確電子郵件形式'
         },
         overtime:{
-            comp_time:"申請補休",
+            apply_comp_time:"申請補休",
+            comp_time:"補休時數",
             comp_time_placeholder:"請填入申請補休時數",
             comp_time_tips:"如有申請，需填寫內容敘述",
             delete_status_err:"此補休表單已審核，無法刪除",
+            form_id:"申請單號",
+            to_be_processed:"待審核",
+            processed:"已審核",
 
             status:{
                 D:"草稿",
@@ -516,6 +520,8 @@ export const messages = {
             close:"Close",
         },
         common_msg:{
+            pass:"Pass",
+            reject:"Reject",
             yes:"Yes",
             no:"No",
             tip:'Tip',
@@ -535,8 +541,6 @@ export const messages = {
             isdigit : 'Please Input Machine ID (digit)',
             open: 'True',
             close: 'False',
-            yes: 'True',
-            no: 'False',
             return: 'Return',
             max_len: 'Max Length : ',
             min_len: 'Min Length : ',
@@ -626,10 +630,14 @@ export const messages = {
             invalidate_email:'Please enter validate email'      
         },
         overtime:{
+            apply_comp_time:"Comp. Time",
             comp_time:"Comp. Time",
             comp_time_placeholder:"Overtime Hours * Overtime Rate",
             comp_time_tips:"Description must be required if applying",
             delete_status_err:"The comp time has been reviewed",
+            form_id:"Form ID",
+            to_be_processed:"To be processed",
+            processed:"Processed",
 
             status:{
                 D:"Draft",
@@ -674,7 +682,7 @@ export const messages = {
             manage_tag_tip:"The background is red, which means that the project has been actived for project tag management. Although the personal tag is set, the tag result is still the project tag",
         },
         project:{
-            name:"Name",
+            name:"Proj. Name",
             description:"Description",
             category:"Category",
             status:"Status",
