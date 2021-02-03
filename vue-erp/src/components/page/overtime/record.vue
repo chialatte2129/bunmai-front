@@ -16,33 +16,59 @@
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :span-method="dateCellMerge" :key="tbKey">
-                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
+            <el-table :data="tableData" border class="table" ref="multipleTable" 
+            tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item :label="$t('employee.work_date')">
+                                <span>{{ props.row.work_date }}</span>
+                            </el-form-item>
+                            <el-form-item :label="$t('project.id')">
+                                <span>{{ props.row.item_id }}</span>
+                            </el-form-item>
+                            <el-form-item :label="$t('project.name')">
+                                <span>{{ props.row.item_name }}</span>
+                            </el-form-item>
+                            <el-form-item :label="$t('overtime.comp_time')">
+                                <span>{{ props.row.comp_time }}</span>
+                            </el-form-item>
+                            <el-form-item :label="$t('overtime.process_status')">
+                                <span>{{$t("overtime.status."+props.row.status)}}</span>
+                            </el-form-item>
+                            <el-form-item :label="$t('employee.description')">
+                                <el-input type="textarea" :rows=4 :readonly="true" style="width:400px;" v-model="props.row.description"></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
+                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="200" sortable="custom" align="center" show-overflow-tooltip/>
+                <el-table-column prop="item_name" :label="$t('project.name')" width="auto" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="150" sortable="custom" align="right" header-align="center"/>
                 <el-table-column prop="status" :label="$t('overtime.process_status')" width="150" sortable="custom" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">{{$t("overtime.status."+scope.row.status)}}</template>
                 </el-table-column>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
+                <!-- <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/> -->
+                <!-- <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.view')}}</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <div class="pagination">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
                 :disabled="table_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
             </div>
         </div>
-        <el-dialog title="View Overtime" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
+        <el-dialog :title="form.form_id" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
         :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
-                    <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
+                    <el-button type="info" @click="cancelDialog">{{$t("btn.close")}}</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -62,7 +88,7 @@ export default {
             tagDlKey:1000,
             table_loading:false,
             dialog_loading:false,
-            tag_dl_loading:false,
+            showVisible:false,
             tableData:[],
             totalRow:0,
             spanArr:[],
@@ -73,13 +99,6 @@ export default {
             start_row:0,
             sort_column:"work_date",
             sort:"desc",
-            deleteInfo:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
-                item_id:null,
-                work_date:"",
-                tag1:"",
-                overtime_application_udid:null,
-            },
             deleteView:false,
             createView:false,
             updateView:false,
@@ -98,26 +117,6 @@ export default {
             overtime_ban_status:["F", "A"],
             edit_idx:null,
             form:{},
-            // form:{
-            //     pid:localStorage.getItem("ms_odoo_employee_id"),
-            //     p_name:localStorage.getItem("ms_user_fullname"),
-            //     item_id:"",
-            //     work_date:"",
-            //     work_hours:"",
-            //     description:"",
-            //     tag1:"",
-            //     comp_time:null,
-            //     overtime_status:"",
-            //     overtime_application_udid:null,
-            // },
-            // tag_form:{
-            //     item_id:"",
-            //     pid:localStorage.getItem("ms_odoo_employee_id"),
-            //     tags:[],
-            // },
-            // edit_tag_info:{
-            //     label:"",
-            // },
             isRemove:false,
             filterProjText:"",
             filterPersText:"",
@@ -236,79 +235,13 @@ export default {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
-
-
-        showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
-            else if(this.copyView) return this.copyView;
-            else return false;
-        },
     },    
     
     methods:{
-        handleView(){
-
+        handleView(index,row){
+            this.showVisible = true;
+            this.form = row;
         },
-        // compTimeInput(){
-        //     if((/^[0-9.]+$/.test(this.form.comp_time))&&parseFloat(this.form.comp_time)>0){
-        //         if(parseFloat(this.form.comp_time)>100){
-        //             this.form.comp_time=99.99;
-        //         };
-        //         return this.des_flag=true;
-        //     };
-        //     return this.des_flag=false;
-        // },
-
-
-        // async handleClose(tag){
-        //     await this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
-        //     await this.saveTags();
-        // },
-
-        // async handleInputConfirm(){
-        //     let inputValue=this.tagValue;
-        //     if(inputValue){
-        //         if(!this.tag_form.tags.includes(inputValue)){
-        //             await this.tag_form.tags.push(inputValue);
-        //             await this.saveTags();
-        //         };
-        //     };
-        //     this.tagVisible=false;
-        //     this.tagValue="";
-        // },
-
-        // showInput(){
-        //     this.tagVisible=true;
-        //     this.$nextTick(_ => {
-        //         this.$refs.saveTagInput.$refs.input.focus();
-        //     });
-        // },
-
-        // resetTagForm(){
-        //     this.tag_form={
-        //         item_id:"",
-        //         pid:localStorage.getItem("ms_odoo_employee_id"),
-        //         tags:[],
-        //     };
-        //     this.edit_tag_info={
-        //         label:"",
-        //     };
-        // },
-
-        // async cancelTagDialog(){
-        //     if(this.regetTag) await this.get_filter_tag();
-        //     this.tagView=false;
-        //     this.resetTagForm();
-        //     this.regetTag=false;
-        // },
-        
-        // activeStyle(status){
-        //     if(status==1){
-        //         return "background:#FFEDED;";
-        //     }
-        //     return "background:#FCFFF7;";
-        // },
 
         getSpanArr(data){
             this.resetSpanArr();
@@ -357,46 +290,9 @@ export default {
             this.deleteView=false;
         },
 
-        // confirmDelete(){
-        //     var param = {
-        //         action:"delete",
-        //         form:this.deleteInfo
-        //     }
-        //     this.update_day_item(param);
-        // },
-
-        // async update_day_item(param){ 
-        //     this.dialog_loading=true;
-        //     await dayItemService.update_day_item(param).then(res =>{ 
-        //         if(res.code==1){ 
-        //             this.$message.success(this.$t(res.msg)); 
-        //             if(["create", "copy"].includes(param.action)){
-        //                 this.getData();
-        //                 this.cancelDialog();
-        //             }else if(param.action=="update"){
-        //                 delete param.form["org_tag1"];
-        //                 this.tableData[this.edit_idx]=param.form;
-        //                 this.tbKey++;
-        //                 this.getData();
-        //                 this.cancelDialog();
-        //             }else if(param.action=="delete"){
-        //                 this.cancelDelete()
-        //                 this.handleDeleteChange();
-        //             }
-        //         }else if(res.code==0){ 
-        //             this.$message.warning(this.$t(res.msg)); 
-        //         }else{ 
-        //             this.$message.error(this.$t(res.msg)); 
-        //         } 
-        //     }) 
-        //     this.dialog_loading=false;
-        // },
-
         cancelDialog(){
             this.resetForm();
-            this.createView=false;
-            this.updateView=false;
-            this.copyView=false;
+            this.showVisible=false;
         },
 
         resetForm(){
@@ -537,27 +433,20 @@ export default {
     .filtered-tree{
         margin-left:3px;
     }
-    .tree_filter{
-        margin:0px 0px 10px 2px;
-        min-width:100px;
-        width:100%;
+  
+</style>
+<style>
+    .demo-table-expand {
+        font-size: 0;
     }
-    .node_icon >>> .el-button--primary.el-button--mini.is-circle{
-        padding:3px;
-        position:absolute;
+    .demo-table-expand label {
+        width: 90px;
+        color: #99a9bf;
     }
-    .node_icon >>> .el-button--danger.el-button--mini.is-circle{
-        padding:3px;
-        position:absolute;
-    }
-    .node_plus{
-        margin-right:20px;
-        z-index:2;
-    }
-    .tag-dialog >>> .el-divider--horizontal{
-        margin:10px 0;
-    }
-    .tag-dialog >>> .el-divider--horizontal.tag-group{
-        margin:10px 0 5px 0;
+    .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        margin-top: 10px;
+        width: 100%;
     }
 </style>
