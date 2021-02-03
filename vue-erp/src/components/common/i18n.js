@@ -174,7 +174,7 @@ export const messages = {
         },
         common_msg:{
             pass:"通過",
-            reject:"退回",
+            reject:"駁回",
             yes:"是",
             no:"否",
             tip:'提示',
@@ -292,13 +292,14 @@ export const messages = {
             to_be_processed:"待審核",
             processed:"已審核",
             proccess_status:"申請狀態",
+            overtime_status:"審核狀態",
             status:{
                 D:"草稿",
-                O:"作廢",
+                O:"已作廢",
                 P:"審核中",
-                R:"退回",
-                F:"完成",
-                A:"歸檔",
+                R:"已退回",
+                F:"已完成",
+                A:"已歸檔",
             },
         },
         employee:{
@@ -640,6 +641,7 @@ export const messages = {
             processed:"Processed",
             process_status:"Status",
 
+            overtime_status:"Status",
             status:{
                 D:"Draft",
                 O:"Obsolete",

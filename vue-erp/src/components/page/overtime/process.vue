@@ -34,14 +34,12 @@
                 </el-col>
                 <el-col :span="18">
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
-                        <el-tab-pane :label="$t('overtime.to_be_processed')" name="to_be_processed">
+                        <el-tab-pane :label="$t('overtime.to_be_processed')" name="to_be_processed" :disabled="count_loading" :key="tabKey">
                             <div v-if="activeTabs=='to_be_processed'">
-                            <el-button size="large" type="success" v-html="$t('common_msg.pass')" @click="" 
-                            :disabled="table_loading||tree_loading||multipleSelection.length==0"/>
-                            <el-button size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click=""
-                            :disabled="table_loading||tree_loading||multipleSelection.length==0"/>
+                            <el-button size="large" type="success" v-html="$t('common_msg.pass')" @click="handlePass" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click="handleReject" :disabled="count_loading||multipleSelection.length==0"/>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
-                            :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
+                            :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
                                     <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
                                         <span class="mgl10">{{item.name}}</span>
@@ -49,13 +47,13 @@
                                 </el-option-group>
                             </el-select>
                             <el-select size="large" class="mgr10 handle-input-item_id" v-model="filter.item_id" filterable clearable multiple collapse-tags
-                            :placeholder="$t('project.name')" :disabled="table_loading||tree_loading" @change="search">
+                            :placeholder="$t('project.name')" :disabled="count_loading" @change="search">
                                 <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                             </el-select>
                             <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
-                            :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
-                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
+                            :disabled="count_loading" @change="search" class="mgr10" size="large"/>
+                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
                                 <el-table-column type="selection" width="40" align="center"/>
@@ -77,32 +75,59 @@
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
-                                :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                                :disabled="count_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
                             </div>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane :label="$t('overtime.processed')" name="processed">
+                        <el-tab-pane :label="$t('overtime.processed')" name="processed" :disabled="count_loading" :key="tabKey+1000">
                             <div v-if="activeTabs=='processed'">
+                            <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
+                            :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
+                                <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                        <span class="mgl10">{{item.name}}</span>
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+                            <el-select size="large" class="mgr10 handle-input-item_id" v-model="filter.item_id" filterable clearable multiple collapse-tags
+                            :placeholder="$t('project.name')" :disabled="count_loading" @change="search">
+                                <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                            </el-select>
+                            <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
+                            :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
+                            :disabled="count_loading" @change="search" class="mgr10" size="large"/>
+                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
+                            <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
+                            :row-class-name="tableRowClassName" @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                                    <template slot-scope="scope">{{scope.row.item_name}}</template>
+                                </el-table-column>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="125" sortable="custom" align="right" header-align="left"/>
+                                <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="110" sortable="custom" show-overflow-tooltip>
+                                    <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
+                                </el-table-column>
+                                <el-table-column type="expand" width="40">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" label-width="85px">
+                                            <el-form-item :label="$t('employee.description')">{{props.row.description}}</el-form-item>
+                                        </el-form >
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <div class="pagination">
+                                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                                :disabled="count_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                            </div>
                             </div>
                         </el-tab-pane>
                     </el-tabs>
                 </el-col>
             </el-row>
         </div>
-        <el-dialog :title="`${$t('btn.view')} [${form.work_date}] ${form.p_name} - ${form.item_name}`" width="600px"
-        :visible.sync="infoView"  :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
-            <el-form :model="form" ref="form" label-position="right" label-width="auto" style="padding:0 20px;">
-                <el-form-item :label="$t('employee.work_date')">{{form.work_date}}</el-form-item>
-                <el-form-item :label="$t('employee.name')">{{form.p_name}}</el-form-item>
-                <el-form-item :label="$t('employee.dept')">{{form.dept_name}}</el-form-item>
-                <el-form-item :label="$t('project.name')">{{form.item_id}} - {{form.item_name}}</el-form-item>
-                <el-form-item :label="$t('employee.work_hour')">{{form.work_hours}}</el-form-item>
-                <el-form-item :label="$t('employee.description')">
-                    <el-input v-model="form.description" type="textarea" :readonly="true" :rows="5" style="width:95%;"/>
-                </el-form-item>
-                <el-form-item :label="$t('project.tag1')">{{form.tag1}}</el-form-item>
-            </el-form>
-        </el-dialog>
     </div>
 </template>
 <script>
@@ -133,8 +158,8 @@ export default {
             table_loading:false,
             tableData:[],
             totalRow:0,
-            dlKey:0,
             tbKey:0,
+            tabKey:0,
             spanArr:[],
             pos:0,
             cur_page:1,
@@ -148,7 +173,7 @@ export default {
                 work_date:[],
                 dept_id:[],
                 pid:[],
-                status:["P"],
+                status:[],
                 source:["project"],
                 category:["compensatory rest"],
             },
@@ -156,8 +181,6 @@ export default {
                 work_item:[],
                 employee:[],
             },
-            infoView:false,
-            form:{},
             multipleSelection:[],
             day_mileseconds:86400000,
             pickerOptions:{
@@ -227,9 +250,32 @@ export default {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
+
+        count_loading(){
+            return  this.table_loading||this.tree_loading;
+        }
     },    
     
     methods: {
+        async handlePass(){
+            this.table_loading=true;
+            this.table_loading=false;
+        },
+
+        async handleReject(){
+            this.table_loading=true;
+            this.table_loading=false;
+        },
+
+        tableRowClassName({row, rowIndex}){
+            if(row.status==="A"){
+                return "warning-row";
+            }else if(row.status==="F") {
+                return "success-row";
+            }
+            return "";
+        },
+
         handleSelectionChange(val){
             this.multipleSelection=val;
         },
@@ -242,6 +288,9 @@ export default {
 
         handleTabClick(tab, event){
             this.activeTabs=tab.name;
+            this.tabKey++;
+            this.tbKey++;
+            this.cancelSearch();
             this.$router.replace({ path:"overtime_process", query:this.getQuery() }).catch(err => {});
         },
 
@@ -357,17 +406,6 @@ export default {
             })
         },
 
-        handleView(index, row){
-            this.form=Object.assign({}, row);
-            this.infoView=true;
-        },
-
-        cancelDialog(){
-            this.dlKey++;
-            this.form={};
-            this.infoView=false;
-        },
-
         async get_dept_tree(){
             this.tree_loading=true;
             var param = {
@@ -377,9 +415,6 @@ export default {
             await dayItemService.get_dept_tree(param).then(res =>{ 
                 this.tree_data=res.tree_data;
                 this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
-                // for(var dept of this.tree_data){
-                //     dept.disabled=true;
-                // };
             })
             await this.allCheckBox();
             this.tree_loading=false;
@@ -388,6 +423,7 @@ export default {
         async getData(){
             console.log("get data !")
             this.table_loading=true;
+            this.filter.status=this.activeTabs=="to_be_processed"?["p"]:["A", "R"];
             var param = {
                 sort_column:this.sort_column,
                 sort:this.sort,
@@ -437,7 +473,7 @@ export default {
                 work_date:[],
                 dept_id:this.filter.dept_id,
                 pid:[],
-                status:["p"],
+                status:this.activeTabs=="to_be_processed"?["p"]:["A", "R"],
                 source:["project"],
                 category:["compensatory rest"],
             };
@@ -524,6 +560,12 @@ export default {
     }
     .table >>> .el-table-column--selection .cell{
         padding-right:10px;
+    }
+    .table >>> .warning-row{
+        background:#FCFFF7;
+    }
+    .table >>> .success-row{
+        background:#FFEDED;
     }
     .pagination{
         margin:10px 0;
