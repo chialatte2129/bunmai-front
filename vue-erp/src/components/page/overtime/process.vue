@@ -36,8 +36,8 @@
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane :label="$t('overtime.to_be_processed')" name="to_be_processed" :disabled="count_loading" :key="tabKey">
                             <div v-if="activeTabs=='to_be_processed'">
-                            <el-button size="large" type="success" v-html="$t('common_msg.pass')" @click="handlePass" :disabled="count_loading||multipleSelection.length==0"/>
-                            <el-button size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click="handleReject" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button size="large" type="success" v-html="$t('common_msg.pass')" @click="passVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click="rejectVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -132,6 +132,17 @@
                 </el-col>
             </el-row>
         </div>
+        <el-dialog center width="500px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
+            <div class="dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 
+                <span v-if="passVisible"> {{$t('common_msg.ask_for_pass')}} ?</span>
+                <span v-else> {{$t('common_msg.ask_for_reject')}} ?</span>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">{{$t('btn.cancel')}}</el-button>
+                <el-button v-if="passVisible" type="primary" @click="handlePass">{{$t('btn.confirm')}}</el-button>
+                <el-button v-else type="primary" @click="handleReject">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -160,6 +171,8 @@ export default {
             all_sig:false,
 
             table_loading:false,
+            passVisible:false,
+            rejectVisible:false,
             tableData:[],
             totalRow:0,
             tbKey:0,
@@ -261,10 +274,21 @@ export default {
 
         count_loading(){
             return  this.table_loading||this.tree_loading;
-        }
+        },
+
+        show_visible(){
+            if(this.passVisible) return true;
+            else if(this.rejectVisible) return true;
+            return false;
+        },
     },    
     
     methods: {
+        handleClose(){
+            this.passVisible=false;
+            this.rejectVisible=false;
+        },
+
         async handlePass(){
             this.table_loading=true;
             var form_id_list=[];
@@ -276,6 +300,7 @@ export default {
                     this.$message.success(this.$t("common_msg.pass")); 
                     this.multipleSelection=[];
                     this.handleCurrentChange(1);
+                    this.handleClose();
                 }else{
                     this.$message.success(this.$t(res.msg)); 
                 };
@@ -294,6 +319,7 @@ export default {
                     this.$message.success(this.$t("common_msg.reject")); 
                     this.multipleSelection=[];
                     this.handleCurrentChange(1);
+                    this.handleClose();
                 }else{
                     this.$message.error(this.$t(res.msg)); 
                 };
@@ -539,7 +565,7 @@ export default {
         width: 280px;
         display:inline-block;
     }
-    .del-dialog-cnt{
+    .dialog-cnt{
         font-size:16px;
         text-align:center;
         color:#FF4242;
