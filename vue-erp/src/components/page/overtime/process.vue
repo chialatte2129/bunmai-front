@@ -41,7 +41,7 @@
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled||parseInt(odoo_employee_id)==item.id">
                                         <span class="mgl10">{{item.name}}</span>
                                     </el-option>
                                 </el-option-group>
@@ -84,7 +84,7 @@
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled||parseInt(odoo_employee_id)==item.id">
                                         <span class="mgl10">{{item.name}}</span>
                                     </el-option>
                                 </el-option-group>
@@ -451,6 +451,7 @@ export default {
             this.table_loading=true;
             this.filter.status=this.activeTabs=="to_be_processed"?["p"]:["A", "F", "R"];
             var param = {
+                action_type:"processing",
                 sort_column:this.sort_column,
                 sort:this.sort,
                 start_row:this.start_row,
