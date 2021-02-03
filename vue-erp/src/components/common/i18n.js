@@ -295,7 +295,7 @@ export const messages = {
             status:{
                 D:"草稿",
                 O:"作廢",
-                P:"流程",
+                P:"審核中",
                 R:"退回",
                 F:"完成",
                 A:"歸檔",

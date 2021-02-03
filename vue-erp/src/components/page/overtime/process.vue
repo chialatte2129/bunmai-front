@@ -124,7 +124,7 @@ export default {
                 level:"level",
             },
 
-            activeTabs:"to_be_processed",
+            activeTabs:("tabs" in this.$route.query)?this.$route.query.tabs:"to_be_processed",
             get_data_sig:false,
             node_click_sig:false,
             reset_sig:false,
@@ -218,6 +218,7 @@ export default {
     },
 
     async created(){
+        this.$router.replace({ path:"overtime_process", query:this.getQuery() }).catch(err => {});
         await this.get_dept_tree();
         await this.getOption();
     },
@@ -233,8 +234,15 @@ export default {
             this.multipleSelection=val;
         },
 
-        async handleTabClick(tab, event){
-            if(this.activeTabs!=tab.name) this.activeTabs=tab.name;
+        getQuery(){
+            var query = Object.assign({}, this.$route.query);
+            query.tabs = this.activeTabs;
+            return query
+        },
+
+        handleTabClick(tab, event){
+            this.activeTabs=tab.name;
+            this.$router.replace({ path:"overtime_process", query:this.getQuery() }).catch(err => {});
         },
 
         resetCheckBox(){
