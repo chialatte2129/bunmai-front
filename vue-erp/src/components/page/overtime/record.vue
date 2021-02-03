@@ -38,7 +38,7 @@
                                     <span>{{$t("overtime.status."+props.row.status)}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('employee.description')">
-                                    <el-input type="textarea" :rows=4 :readonly="true" style="width:400px;" v-model="props.row.description"></el-input>
+                                    <p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p>
                                 </el-form-item>
                             </el-form>
                         </div>
