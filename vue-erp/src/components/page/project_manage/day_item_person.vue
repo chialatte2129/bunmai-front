@@ -24,7 +24,7 @@
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
                 <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
-                <el-table-column prop="tag1" :label="$t('project.tag1')" width="180" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="tag1" :label="$t('project.tag1')" width="135" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
                     <template slot-scope="scope">
