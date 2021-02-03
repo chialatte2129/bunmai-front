@@ -259,11 +259,37 @@ export default {
     methods: {
         async handlePass(){
             this.table_loading=true;
+            var form_id_list=[];
+            for(var row of this.multipleSelection){
+                form_id_list.push(row.form_id);
+            };
+            await overtimeService.handle_pass({form_id_list:form_id_list}).then(res =>{ 
+                if(res.code==1){
+                    this.$message.success(this.$t("common_msg.pass")); 
+                    this.multipleSelection=[];
+                    this.handleCurrentChange(1);
+                }else{
+                    this.$message.success(this.$t(res.msg)); 
+                };
+            })
             this.table_loading=false;
         },
 
         async handleReject(){
             this.table_loading=true;
+            var form_id_list=[];
+            for(var row of this.multipleSelection){
+                form_id_list.push(row.form_id);
+            };
+            await overtimeService.handle_reject({form_id_list:form_id_list}).then(res =>{ 
+                if(res.code==1){
+                    this.$message.success(this.$t("common_msg.reject")); 
+                    this.multipleSelection=[];
+                    this.handleCurrentChange(1);
+                }else{
+                    this.$message.error(this.$t(res.msg)); 
+                };
+            })
             this.table_loading=false;
         },
 
