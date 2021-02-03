@@ -68,7 +68,7 @@
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('employee.description')">{{props.row.description}}</el-form-item>
+                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
                                         </el-form >
                                     </template>
                                 </el-table-column>
@@ -81,6 +81,10 @@
                         </el-tab-pane>
                         <el-tab-pane :label="$t('overtime.processed')" name="processed" :disabled="count_loading" :key="tabKey+1000">
                             <div v-if="activeTabs=='processed'">
+                            <el-select size="large" class="mgr10 handle-input-pid" v-model="temp_status" filterable clearable multiple collapse-tags
+                            :placeholder="$t('overtime.overtime_status')" :disabled="count_loading" @change="search">
+                                <el-option v-for="item in option.status" :key="item.key" :label="$t(`overtime.status.${item.key}`)" :value="item.key" :style="activeStyle(item.key)"/>
+                            </el-select>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -177,9 +181,13 @@ export default {
                 source:["project"],
                 category:["compensatory rest"],
             },
+            temp_status:[],
             option:{
                 work_item:[],
                 employee:[],
+                status:[
+                    {key:"A"}, {key:"F"}, {key:"R"},
+                ]
             },
             multipleSelection:[],
             day_mileseconds:86400000,
@@ -291,6 +299,11 @@ export default {
                 };
             })
             this.table_loading=false;
+        },
+
+        activeStyle(status){
+            if(status==="A"||status==="F") return "background:#FCFFF7;";
+            return "background:#FFEDED;";
         },
 
         tableRowClassName({row, rowIndex}){
@@ -449,7 +462,7 @@ export default {
         async getData(){
             console.log("get data !")
             this.table_loading=true;
-            this.filter.status=this.activeTabs=="to_be_processed"?["p"]:["A", "F", "R"];
+            this.filter.status=this.activeTabs=="processed"?(this.temp_status.length==0?["A", "F", "R"]:this.temp_status):["p"];
             var param = {
                 action_type:"processing",
                 sort_column:this.sort_column,
@@ -504,6 +517,7 @@ export default {
                 source:["project"],
                 category:["compensatory rest"],
             };
+            this.temp_status=[];
             this.tbKey++;
             this.sort_column="work_date";
             this.sort="desc";

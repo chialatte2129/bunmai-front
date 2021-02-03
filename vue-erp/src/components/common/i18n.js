@@ -175,6 +175,7 @@ export const messages = {
         common_msg:{
             pass:"通過",
             reject:"駁回",
+            archive:"歸檔",
             yes:"是",
             no:"否",
             tip:'提示',
@@ -291,6 +292,8 @@ export const messages = {
             form_id:"申請單號",
             to_be_processed:"待審核",
             processed:"已審核",
+            to_be_archive:"待歸檔",
+            archived:"已歸檔",
             process_status:"申請狀態",
             overtime_status:"審核狀態",
             status:{
@@ -298,7 +301,7 @@ export const messages = {
                 O:"已作廢",
                 P:"審核中",
                 R:"已退回",
-                F:"已完成",
+                F:"已通過",
                 A:"已歸檔",
             },
         },
@@ -523,6 +526,7 @@ export const messages = {
         common_msg:{
             pass:"Pass",
             reject:"Reject",
+            archive:"Archive",
             yes:"Yes",
             no:"No",
             tip:'Tip',
@@ -639,8 +643,9 @@ export const messages = {
             form_id:"Form ID",
             to_be_processed:"To be processed",
             processed:"Processed",
+            to_be_archive:"To be Archived",
+            archived:"Archived",
             process_status:"Status",
-
             overtime_status:"Status",
             status:{
                 D:"Draft",
