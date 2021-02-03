@@ -81,7 +81,7 @@ export default {
                                 {
                                     index: "project_report_download",
                                     title: this.$t("menus.project_report_download"),
-                                    show: this.hasThisMenuOrMgr("project_report_download"),
+                                    show: this.hasThisMenu("project_report_download"),
                                 },
                             ]
                         },
