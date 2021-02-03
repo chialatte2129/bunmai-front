@@ -85,6 +85,36 @@ export default {
                                 },
                             ]
                         },
+                        {
+                            index: "overtime_manage",
+                            title: this.$t("menus.overtime_manage"),
+                            show: this.includeSubMenu([
+                                "day_item_person", 
+                                "day_item_review"
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "day_item_person",
+                                    title: this.$t("menus.overtime_person_record"),
+                                    show: this.hasThisMenu("day_item_person")
+                                },
+                                {
+                                    index: "day_item_person",
+                                    title: this.$t("menus.overtime_process"),
+                                    show: this.hasThisMenu("day_item_person")
+                                },
+                                {
+                                    index: "day_item_person",
+                                    title: this.$t("menus.overtime_filing"),
+                                    show: this.hasThisMenu("day_item_person")
+                                },
+                                {
+                                    index: "day_item_person",
+                                    title: this.$t("menus.overtime_report"),
+                                    show: this.hasThisMenu("day_item_person")
+                                }
+                            ]
+                        },
                     ]
                 },
                 {

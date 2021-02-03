@@ -82,7 +82,12 @@ export const messages = {
             daily_report:"每日工作彙報",
             day_item_person:"填寫工作彙報",
             day_item_review:"檢視工作彙報",
-            project_report_download:"下載工作彙報"
+            project_report_download:"下載工作彙報",
+            overtime_manage:"補休管理",
+            overtime_person_record:"個人補休紀錄",
+            overtime_process:"補休審核",
+            overtime_filing:"補休歸檔",
+            overtime_report:"補休紀錄下載",
         },
         table_title:{
             role :'角色代號',
@@ -420,7 +425,12 @@ export const messages = {
             daily_report:"Daily Report",
             day_item_person:"Fill In",
             day_item_review:"Review",
-            project_report_download:"Downlaod Report"
+            project_report_download:"Downlaod Report",
+            overtime_manage:"Overtime Manage",
+            overtime_person_record:"Personal Record",
+            overtime_process:"Process ",
+            overtime_filing:"Filing",
+            overtime_report:"Download Report",
         },
         table_title :{
             role :'Role id',
