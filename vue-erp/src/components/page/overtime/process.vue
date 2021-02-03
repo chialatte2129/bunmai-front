@@ -268,9 +268,9 @@ export default {
         },
 
         tableRowClassName({row, rowIndex}){
-            if(row.status==="A"){
+            if(row.status==="R"){
                 return "warning-row";
-            }else if(row.status==="F") {
+            }else if(row.status==="A"||row.status==="F"){
                 return "success-row";
             }
             return "";
@@ -423,7 +423,7 @@ export default {
         async getData(){
             console.log("get data !")
             this.table_loading=true;
-            this.filter.status=this.activeTabs=="to_be_processed"?["p"]:["A", "R"];
+            this.filter.status=this.activeTabs=="to_be_processed"?["p"]:["A", "F", "R"];
             var param = {
                 sort_column:this.sort_column,
                 sort:this.sort,
@@ -473,7 +473,7 @@ export default {
                 work_date:[],
                 dept_id:this.filter.dept_id,
                 pid:[],
-                status:this.activeTabs=="to_be_processed"?["p"]:["A", "R"],
+                status:this.activeTabs=="to_be_processed"?["p"]:["A", "F", "R"],
                 source:["project"],
                 category:["compensatory rest"],
             };
@@ -562,10 +562,10 @@ export default {
         padding-right:10px;
     }
     .table >>> .warning-row{
-        background:#FCFFF7;
+        background:#FFEDED;
     }
     .table >>> .success-row{
-        background:#FFEDED;
+        background:#FCFFF7;
     }
     .pagination{
         margin:10px 0;
