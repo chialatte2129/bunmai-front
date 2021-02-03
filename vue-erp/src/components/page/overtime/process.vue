@@ -117,7 +117,7 @@
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('employee.description')">{{props.row.description}}</el-form-item>
+                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
                                         </el-form >
                                     </template>
                                 </el-table-column>
