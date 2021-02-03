@@ -298,7 +298,7 @@ export const messages = {
                 O:"已作廢",
                 P:"審核中",
                 R:"已退回",
-                F:"已完成",
+                F:"已通過",
                 A:"已歸檔",
             },
         },
@@ -640,7 +640,6 @@ export const messages = {
             to_be_processed:"To be processed",
             processed:"Processed",
             process_status:"Status",
-
             overtime_status:"Status",
             status:{
                 D:"Draft",
