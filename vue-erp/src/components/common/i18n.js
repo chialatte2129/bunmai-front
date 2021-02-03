@@ -287,6 +287,15 @@ export const messages = {
             comp_time_placeholder:"請填入申請補休時數",
             comp_time_tips:"如有申請，需填寫內容敘述",
             delete_status_err:"此補休表單已審核，無法刪除",
+
+            status:{
+                D:"草稿",
+                O:"作廢",
+                P:"流程",
+                R:"退回",
+                F:"完成",
+                A:"歸檔",
+            },
         },
         employee:{
             name:"員工名稱",
@@ -621,6 +630,15 @@ export const messages = {
             comp_time_placeholder:"Overtime Hours * Overtime Rate",
             comp_time_tips:"Description must be required if applying",
             delete_status_err:"The comp time has been reviewed",
+
+            status:{
+                D:"Draft",
+                O:"Obsolete",
+                P:"Processing",
+                R:"Reject",
+                F:"Finish",
+                A:"Archive",
+            },
         },
         employee:{
             name:"EE. Name",

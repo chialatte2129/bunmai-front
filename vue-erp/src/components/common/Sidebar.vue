@@ -89,29 +89,31 @@ export default {
                             index: "overtime_manage",
                             title: this.$t("menus.overtime_manage"),
                             show: this.includeSubMenu([
-                                "day_item_person", 
-                                "day_item_review"
+                                "overtime_person_record", 
+                                "overtime_process",
+                                "overtime_filing",
+                                "overtime_report",
                             ]),
                             subs: [ 
                                 {
-                                    index: "day_item_person",
+                                    index: "overtime_person_record",
                                     title: this.$t("menus.overtime_person_record"),
-                                    show: this.hasThisMenu("day_item_person")
+                                    show: this.hasThisMenu("overtime_person_record")
                                 },
                                 {
-                                    index: "day_item_person",
+                                    index: "overtime_process",
                                     title: this.$t("menus.overtime_process"),
-                                    show: this.hasThisMenu("day_item_person")
+                                    show: this.hasThisMenuOrMgr("overtime_process")
                                 },
                                 {
-                                    index: "day_item_person",
+                                    index: "overtime_filing",
                                     title: this.$t("menus.overtime_filing"),
-                                    show: this.hasThisMenu("day_item_person")
+                                    show: this.hasThisMenu("overtime_filing")
                                 },
                                 {
-                                    index: "day_item_person",
+                                    index: "overtime_report",
                                     title: this.$t("menus.overtime_report"),
-                                    show: this.hasThisMenu("day_item_person")
+                                    show: this.hasThisMenu("overtime_report")
                                 }
                             ]
                         },
