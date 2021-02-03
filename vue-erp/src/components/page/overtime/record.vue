@@ -17,29 +17,34 @@
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" 
-            tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey">
+            tooltip-effect="light" @sort-change="handleSortChange" :row-class-name="tableRowClassName" v-loading="table_loading" :key="tbKey">
                 <el-table-column type="expand">
                     <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item :label="$t('employee.work_date')">
-                                <span>{{ props.row.work_date }}</span>
-                            </el-form-item>
-                            <el-form-item :label="$t('project.id')">
-                                <span>{{ props.row.item_id }}</span>
-                            </el-form-item>
-                            <el-form-item :label="$t('project.name')">
-                                <span>{{ props.row.item_name }}</span>
-                            </el-form-item>
-                            <el-form-item :label="$t('overtime.comp_time')">
-                                <span>{{ props.row.comp_time }}</span>
-                            </el-form-item>
-                            <el-form-item :label="$t('overtime.process_status')">
-                                <span>{{$t("overtime.status."+props.row.status)}}</span>
-                            </el-form-item>
-                            <el-form-item :label="$t('employee.description')">
-                                <el-input type="textarea" :rows=4 :readonly="true" style="width:400px;" v-model="props.row.description"></el-input>
-                            </el-form-item>
-                        </el-form>
+                        <div style="width:50%;float:left;">
+                            <el-form label-position="left" inline class="demo-table-expand">
+                                <el-form-item :label="$t('employee.work_date')">
+                                    <span>{{ props.row.work_date }}</span>
+                                </el-form-item>
+                                <el-form-item :label="$t('project.id')">
+                                    <span>{{ props.row.item_id }}</span>
+                                </el-form-item>
+                                <el-form-item :label="$t('project.name')">s
+                                    <span>{{ props.row.item_name }}</span>
+                                </el-form-item>
+                                <el-form-item :label="$t('overtime.comp_time')">
+                                    <span>{{ props.row.comp_time }}</span>
+                                </el-form-item>
+                                <el-form-item :label="$t('overtime.process_status')">
+                                    <span>{{$t("overtime.status."+props.row.status)}}</span>
+                                </el-form-item>
+                                <el-form-item :label="$t('employee.description')">
+                                    <el-input type="textarea" :rows=4 :readonly="true" style="width:400px;" v-model="props.row.description"></el-input>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                        <div style="width:50%;float:left;">
+                            <el-button style="float:right;" type="primary" @click="handlePersonProject(props.row)">開啟專案設定</el-button>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
@@ -216,6 +221,7 @@ export default {
     },
 
     computed:{
+
         rules(){
             var output_rules = this.rules_org;
             var com_key = Object.keys(this.rules_com);
@@ -238,9 +244,12 @@ export default {
     },    
     
     methods:{
-        handleView(index,row){
-            this.showVisible = true;
-            this.form = row;
+        handlePersonProject(row){
+            console.log(row);
+            window.open(`${process.env.VUE_APP_HOST}day_item_person?pjid=${row.item_id}&&date=${row.work_date}`);
+        },
+        tableRowClassName({row, rowIndex}) {
+            return row.status+'-row';
         },
 
         getSpanArr(data){
@@ -433,7 +442,6 @@ export default {
     .filtered-tree{
         margin-left:3px;
     }
-  
 </style>
 <style>
     .demo-table-expand {
@@ -448,5 +456,23 @@ export default {
         margin-bottom: 0;
         margin-top: 10px;
         width: 100%;
+    }
+    .el-table .D-row {
+        background: white;
+    }
+    .el-table .O-row {
+        background: gainsboro;
+    }
+    .el-table .P-row {
+        background: aliceblue;
+    }
+    .el-table .R-row {
+        background: #FFEFEE;
+    }
+    .el-table .F-row {
+        background: #FCFFF7;
+    }
+    .el-table .A-row {
+        background: #FCFFF7;
     }
 </style>

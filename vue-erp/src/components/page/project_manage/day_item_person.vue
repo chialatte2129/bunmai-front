@@ -339,6 +339,7 @@ export default {
     },
 
     async created(){
+        await this.connectFromOtherPlace();
         await this.getOption();
         await this.getData();
     },
@@ -351,6 +352,7 @@ export default {
         filterPersText(val){
             this.$refs.pers_tree.filter(val);
         },
+
     },
 
     computed:{
@@ -390,6 +392,15 @@ export default {
     },    
     
     methods:{
+        connectFromOtherPlace(){
+            if(this.$route.query.pjid){
+                this.filter.item_id = this.$route.query.pjid
+            };
+            if(this.$route.query.date){
+                this.filter.work_date = [this.$route.query.date,this.$route.query.date]
+            };
+            this.$router.replace("day_item_person")
+        },
         compTimeInput(){
             if((/^[0-9.]+$/.test(this.form.comp_time))&&parseFloat(this.form.comp_time)>0){
                 if(parseFloat(this.form.comp_time)>100){
