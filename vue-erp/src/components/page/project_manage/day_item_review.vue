@@ -90,6 +90,7 @@
                 <el-form-item :label="$t('employee.description')">
                     <el-input v-model="form.description" type="textarea" :readonly="true" :rows="5" style="width:95%;"/>
                 </el-form-item>
+                <el-form-item :label="$t('project.tag1')">{{form.tag1}}</el-form-item>
             </el-form>
         </el-dialog>
     </div>
