@@ -291,7 +291,7 @@ export const messages = {
             form_id:"申請單號",
             to_be_processed:"待審核",
             processed:"已審核",
-            proccess_status:"申請狀態",
+            process_status:"申請狀態",
             overtime_status:"審核狀態",
             status:{
                 D:"草稿",
