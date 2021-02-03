@@ -36,7 +36,7 @@
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane :label="$t('overtime.to_be_archive')" name="to_be_archive" :disabled="count_loading" :key="tabKey">
                             <div v-if="activeTabs=='to_be_archive'">
-                            <el-button size="large" type="success" v-html="$t('common_msg.archive')" class="mgr10" @click="handleArchive" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button size="large" type="success" v-html="$t('common_msg.archive')" class="mgr10" @click="archiveVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -124,6 +124,13 @@
                 </el-col>
             </el-row>
         </div>
+        <el-dialog center width="500px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
+            <div class="dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/><span> {{$t('common_msg.ask_for_archive')}} ?</span></div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="handleArchive">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -152,6 +159,7 @@ export default {
             all_sig:false,
 
             table_loading:false,
+            archiveVisible:false,
             tableData:[],
             totalRow:0,
             tbKey:0,
@@ -249,10 +257,19 @@ export default {
 
         count_loading(){
             return  this.table_loading||this.tree_loading;
-        }
+        },
+
+        show_visible(){
+            if(this.archiveVisible) return true;
+            return false;
+        },
     },    
     
     methods: {
+        handleClose(){
+            this.archiveVisible=false;
+        },
+
         async handleArchive(){
             this.table_loading=true;
             var form_id_list=[];
@@ -264,6 +281,7 @@ export default {
                     this.$message.success(this.$t("common_msg.archive")); 
                     this.multipleSelection=[];
                     this.handleCurrentChange(1);
+                    this.handleClose();
                 }else{
                     this.$message.success(this.$t(res.msg)); 
                 };
@@ -493,7 +511,7 @@ export default {
         width: 280px;
         display:inline-block;
     }
-    .del-dialog-cnt{
+    .dialog-cnt{
         font-size:16px;
         text-align:center;
         color:#FF4242;
