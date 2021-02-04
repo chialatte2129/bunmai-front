@@ -284,7 +284,8 @@ export const messages = {
             only_two_characters:'長度限制2字元',
             only_three_characters:'長度限制3字元',
             only_numbers:'只支援數字字元',
-            invalidate_email:'請輸入正確電子郵件形式'
+            invalidate_email:'請輸入正確電子郵件形式',
+            project_id:"只允許輸入大小寫英文、中文、點號、空白、小括號、連接號",
         },
         overtime:{
             apply_comp_time:"申請補休",
@@ -363,7 +364,7 @@ export const messages = {
             add_tags:"新增標籤",
             tag_tips:"如果開啟則工作彙報分類標籤會使用專案預設標籤，反之則使用專案個人標籤",
             list:"專案清單",
-            personal_tag:"專案個人標籤",
+            personal_tag:"個人標籤",
             unknown_item_id:"未知專案",
         },
     },
@@ -638,7 +639,8 @@ export const messages = {
             only_two_characters:'Only 2 Characters Allow',
             only_three_characters:'Only 3 Characters Allow',
             only_numbers:'Only Allow Numbers',
-            invalidate_email:'Please enter validate email'      
+            invalidate_email:'Please enter validate email',
+            project_id:"Only english、chinese、dot、space、small bracket、dash",
         },
         overtime:{
             apply_comp_time:"Comp. Time",
@@ -717,7 +719,7 @@ export const messages = {
             add_tags:"Add Tags",
             tag_tips:"If open tags manager, tags category defaulted by project, else by project-employee",
             list:"Project List",
-            personal_tag:"Personal Project Tag",
+            personal_tag:"Personal Tag",
             unknown_item_id:"Unknown Project",
         },
     },

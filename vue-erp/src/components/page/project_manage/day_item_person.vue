@@ -23,7 +23,7 @@
                 <el-table-column prop="item_id" :label="$t('project.name')" width="300" sortable="custom" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
-                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
+                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" align="right" header-align="left"/>
                 <el-table-column prop="tag1" :label="$t('project.tag1')" width="135" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
@@ -154,7 +154,7 @@
                                     :data="pers_tree" :props="defaultProps" :filter-node-method="filterNode" @node-click="handleNodeClick">
                                         <span class="custom-tree-node" slot-scope="{node, data}" :style="activeStyle(data.is_open_tags)">
                                             <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
-                                            <span class="node_icon">
+                                            <span class="node_icon" v-if="!/^[_]+/.test(node.label)">
                                                 <span class="node_plus">
                                                     <el-tooltip effect="light" :content="$t('employee.clear_tag_tip')" placement="left">
                                                         <el-button size=mini type=danger icon="el-icon-minus" circle plain @click="delToProjTree(data)"/>

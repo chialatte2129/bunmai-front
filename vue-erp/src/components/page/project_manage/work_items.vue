@@ -65,7 +65,7 @@
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="800px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="900px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="12">
@@ -215,6 +215,7 @@ export default {
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
                 id: [
+                    {pattern: /^[\u4e00-\u9fa5A-Za-z0-9. ()-]+$/, message: this.$t("rules.project_id"), trigger: ["blur", "change"]},
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
                 status: [

@@ -28,7 +28,7 @@
                                 <el-form-item :label="$t('project.id')">
                                     <span>{{ props.row.item_id }}</span>
                                 </el-form-item>
-                                <el-form-item :label="$t('project.name')">s
+                                <el-form-item :label="$t('project.name')">
                                     <span>{{ props.row.item_name }}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('overtime.comp_time')">
