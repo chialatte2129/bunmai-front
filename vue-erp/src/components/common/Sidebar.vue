@@ -61,11 +61,12 @@ export default {
                             show: this.hasThisMenu("work_items")
                         },
                         {
-                            index: "daily_report",
-                            title: this.$t("menus.daily_report"),
+                            index: "task_report",
+                            title: this.$t("menus.task_report"),
                             show: this.includeSubMenu([
                                 "day_item_person", 
-                                "day_item_review"
+                                "day_item_review",
+                                "project_report_download"
                             ]),
                             subs: [ 
                                 {
