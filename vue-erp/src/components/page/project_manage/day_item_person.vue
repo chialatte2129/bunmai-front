@@ -873,4 +873,7 @@ export default {
     .tag-dialog >>> .el-divider--horizontal.tag-group{
         margin:10px 0 5px 0;
     }
+    .container{
+        margin-right:150px;
+    }
 </style>
