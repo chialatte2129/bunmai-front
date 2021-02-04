@@ -19,13 +19,18 @@
                 <el-button size="large" type="success" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :span-method="dateCellMerge" :key="tbKey">
-                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                <el-table-column prop="item_id" :label="$t('project.name')" width="300" sortable="custom" show-overflow-tooltip>
+                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
+                <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
-                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
-                <el-table-column prop="tag1" :label="$t('project.tag1')" width="135" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.comp_time">{{scope.row.comp_time}}</span><span v-else>-</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="105" align="right" header-align="left"/>
+                <el-table-column prop="tag1" :label="$t('project.tag1')" width="135" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>

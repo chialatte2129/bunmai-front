@@ -56,18 +56,18 @@
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
                                 <el-table-column type="selection" width="40" align="center"/>
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="125" sortable="custom" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('employee.description')">{{props.row.description}}</el-form-item>
+                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
                                         </el-form >
                                     </template>
                                 </el-table-column>
@@ -98,14 +98,14 @@
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange" :key="tbKey">
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="150" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="125" sortable="custom" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">

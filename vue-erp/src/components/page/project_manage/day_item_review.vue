@@ -53,19 +53,21 @@
                             :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" 
-                            @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey" height="500">
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="auto" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                            @sort-change="handleSortChange" v-loading="table_loading" :key="tbKey" height="532">
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
-                                <el-table-column :label="$t('btn.action')" width="105" align="center">
-                                    <template slot-scope="scope">
-                                        <el-button type="info" size="mini" icon="el-icon-view" @click="handleView(scope.$index, scope.row)" :disabled="table_loading">
-                                            {{$t('btn.view')}}
-                                        </el-button>
+                                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="100" align="right" header-align="left"/>
+                                <el-table-column type="expand" width="40">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" label-width="85px">
+                                            <el-form-item :label="$t('project.tag1')">{{props.row.tag1}}</el-form-item>
+                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
+                                        </el-form >
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -79,20 +81,6 @@
                 </el-col>
             </el-row>
         </div>
-        <el-dialog :title="`${$t('btn.view')} [${form.work_date}] ${form.p_name} - ${form.item_name}`" width="600px"
-        :visible.sync="infoView"  :before-close="cancelDialog" :close-on-click-modal="false" :key="dlKey">
-            <el-form :model="form" ref="form" label-position="right" label-width="auto" style="padding:0 20px;">
-                <el-form-item :label="$t('employee.work_date')">{{form.work_date}}</el-form-item>
-                <el-form-item :label="$t('employee.name')">{{form.p_name}}</el-form-item>
-                <el-form-item :label="$t('employee.dept')">{{form.dept_name}}</el-form-item>
-                <el-form-item :label="$t('project.name')">{{form.item_id}} - {{form.item_name}}</el-form-item>
-                <el-form-item :label="$t('employee.work_hour')">{{form.work_hours}}</el-form-item>
-                <el-form-item :label="$t('employee.description')">
-                    <el-input v-model="form.description" type="textarea" :readonly="true" :rows="5" style="width:95%;"/>
-                </el-form-item>
-                <el-form-item :label="$t('project.tag1')">{{form.tag1}}</el-form-item>
-            </el-form>
-        </el-dialog>
     </div>
 </template>
 <script>
@@ -123,10 +111,7 @@ export default {
             table_loading:false,
             tableData:[],
             totalRow:0,
-            dlKey:0,
             tbKey:0,
-            spanArr:[],
-            pos:0,
             cur_page:1,
             page_size:20,
             page_size_list:[20, 50, 100],
@@ -143,8 +128,6 @@ export default {
                 work_item:[],
                 employee:[],
             },
-            infoView:false,
-            form:{},
             day_mileseconds:86400000,
             pickerOptions:{
                 disabledDate(time){
@@ -331,17 +314,6 @@ export default {
             })
         },
 
-        handleView(index, row){
-            this.form=Object.assign({}, row);
-            this.infoView=true;
-        },
-
-        cancelDialog(){
-            this.dlKey++;
-            this.form={};
-            this.infoView=false;
-        },
-
         async get_dept_tree(){
             this.tree_loading=true;
             var param = {
@@ -489,5 +461,9 @@ export default {
         margin:0px 0px 10px 2px;
         min-width:100px;
         width:100%;
+    }
+    .pagination{
+        margin:10px 0;
+        text-align:right;
     }
 </style>
