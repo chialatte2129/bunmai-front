@@ -318,5 +318,3 @@ export default {
         background: #FCFFF7;
     }
 </style>
-<style>
-</style>

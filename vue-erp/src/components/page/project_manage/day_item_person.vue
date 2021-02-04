@@ -31,12 +31,12 @@
                 </el-table-column>
                 <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="105" align="right" header-align="left"/>
                 <el-table-column prop="tag1" :label="$t('project.tag1')" width="135" sortable="custom" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
+                <el-table-column :label="$t('btn.action')" width="230" align="center" fixed="right">
                     <template slot-scope="scope">
-                        <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
-                        <el-button type="primary" size="mini" icon="el-icon-document" @click="handleCopy(scope.$index, scope.row)"
+                        <el-button type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                        <el-button type="primary" size="mini" @click="handleCopy(scope.$index, scope.row)"
                         :disabled="table_loading||ban_status.includes(scope.row.status)||overtime_ban_status.includes(scope.row.overtime_status)">{{$t('btn.copy')}}</el-button>
-                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" 
+                        <el-button type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)" 
                         :disabled="table_loading||ban_status.includes(scope.row.status)||overtime_ban_status.includes(scope.row.overtime_status)">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>

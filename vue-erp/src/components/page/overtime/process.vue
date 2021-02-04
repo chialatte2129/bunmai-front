@@ -15,7 +15,7 @@
                             <span><b>{{$t('employee.dept_tree')}}</b></span>
                         </div>
                         <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:55%;" clearable :disabled="tree_loading"/>
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:50%;" clearable :disabled="tree_loading"/>
                             <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
                             <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
                         </div>

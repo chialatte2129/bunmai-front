@@ -15,7 +15,7 @@
                             <span><b>{{$t('employee.dept_tree')}}</b></span>
                         </div>
                         <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:55%;" clearable :disabled="tree_loading"/>
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:50%;" clearable :disabled="tree_loading"/>
                             <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
                             <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
                         </div>
@@ -52,7 +52,7 @@
                             </el-select>
                             <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
-                            :disabled="count_loading" @change="search" class="mgr10" size="large"/>
+                            :disabled="count_loading" @change="search" class="mgr10" style="width:280px;" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
