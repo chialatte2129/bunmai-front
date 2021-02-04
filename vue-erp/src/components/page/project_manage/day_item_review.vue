@@ -9,13 +9,13 @@
         </div>
         <div class="container">
             <el-row>
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
                         <div slot="header" class="clearfix">
                             <span><b>{{$t('employee.dept_tree')}}</b></span>
                         </div>
                         <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:60%;" clearable :disabled="tree_loading"/>
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:55%;" clearable :disabled="tree_loading"/>
                             <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
                             <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
                         </div>
@@ -32,7 +32,7 @@
                         </div>
                     </el-card>
                 </el-col>
-                <el-col :span="18">
+                <el-col :span="19">
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane :label="$t('employee.daily_details')" name="daily_details">
                             <div v-if="activeTabs=='daily_details'">

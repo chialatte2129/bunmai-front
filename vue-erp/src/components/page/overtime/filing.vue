@@ -9,13 +9,13 @@
         </div>
         <div class="container">
             <el-row>
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
                         <div slot="header" class="clearfix">
                             <span><b>{{$t('employee.dept_tree')}}</b></span>
                         </div>
                         <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:60%;" clearable :disabled="tree_loading"/>
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:55%;" clearable :disabled="tree_loading"/>
                             <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
                             <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
                         </div>
@@ -32,11 +32,12 @@
                         </div>
                     </el-card>
                 </el-col>
-                <el-col :span="18">
+                <el-col :span="19">
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane :label="$t('overtime.to_be_archive')" name="to_be_archive" :disabled="count_loading" :key="tabKey">
                             <div v-if="activeTabs=='to_be_archive'">
                             <el-button size="large" type="success" v-html="$t('common_msg.archive')" class="mgr10" @click="archiveVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-input size="large" v-model="filter.form_id" :placeholder="$t('overtime.form_id')" clearable @change="search" class="mgr10 handle-input-form_id" :disabled="count_loading"/>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -57,7 +58,7 @@
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
                                 <el-table-column type="selection" width="40" align="center"/>
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
@@ -80,6 +81,7 @@
                         </el-tab-pane>
                         <el-tab-pane :label="$t('overtime.archived')" name="archived" :disabled="count_loading" :key="tabKey+1000">
                             <div v-if="activeTabs=='archived'">
+                            <el-input size="large" v-model="filter.form_id" :placeholder="$t('overtime.form_id')" clearable @change="search" class="mgr10 handle-input-form_id" :disabled="count_loading"/>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -99,7 +101,7 @@
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange" :key="tbKey">
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" sortable="custom" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="150" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
@@ -173,6 +175,7 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             filter:{
+                form_id:"",
                 item_id:null,
                 work_date:[],
                 dept_id:[],
@@ -482,6 +485,7 @@ export default {
         
         cancelSearch(){
             this.filter={
+                form_id:"",
                 item_id:null,
                 work_date:[],
                 dept_id:this.filter.dept_id,
@@ -503,12 +507,16 @@ export default {
         background-color:#f0f0f0;
         padding:15px;
     }
+    .handle-input-form_id{
+        width:160px;
+        display:inline-block;
+    }
     .handle-input-pid{
-        width: 175px;
+        width:175px;
         display:inline-block;
     }
     .handle-input-item_id{
-        width: 280px;
+        width:280px;
         display:inline-block;
     }
     .dialog-cnt{

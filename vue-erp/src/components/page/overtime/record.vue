@@ -9,6 +9,7 @@
         </div>
         <div class="container">
             <div class="mgb10">
+                <el-input size="large" v-model="filter.form_id" :placeholder="$t('overtime.form_id')" clearable @change="search" class="mgr10 handle-input-form_id" :disabled="table_loading"/>
                 <el-select size="large" v-model="filter.status" filterable clearable multiple :placeholder="$t('overtime.process_status')" @change="search" class="mgr10" :disabled="table_loading">
                     <el-option v-for="item in option.status" :key="item.value" :label="item.label" :value="item.value" :disabled="table_loading"/>
                 </el-select>
@@ -30,15 +31,14 @@
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('project.name')" width="250" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                 <el-table-column prop="status" :label="$t('overtime.process_status')" width="100" show-overflow-tooltip>
                     <template slot-scope="scope">{{$t("overtime.status."+scope.row.status)}}</template>
                 </el-table-column>
-                <!-- <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/> -->
-                <el-table-column :label="$t('btn.action')" width="130" align="center">
+                <el-table-column label="開啟專案" width="80" align="center">
                     <template slot-scope="scope">
-                        <el-button type=primary size=mini @click="handlePersonProject(scope.row)" :disabled="table_loading">開啟專案設定</el-button>
+                        <el-button type=text size=mini icon="el-icon-edit" @click="handlePersonProject(scope.row)" :disabled="table_loading||['A', 'F'].includes(scope.row.status)"/>
                     </template>
                 </el-table-column>
             </el-table>
@@ -71,6 +71,7 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             filter:{
+                form_id:"",
                 status:[],
                 work_date:[],
                 pid:[localStorage.getItem("ms_odoo_employee_id")],
@@ -214,6 +215,7 @@ export default {
         
         cancelSearch(){
             this.filter={
+                form_id:"",
                 status:[],
                 work_date:[],
                 pid:[this.odoo_employee_id]
@@ -228,7 +230,11 @@ export default {
 </script>
 <style scoped>
     .handle-input{
-        width: 300px;
+        width:300px;
+        display:inline-block;
+    }
+    .handle-input-form_id{
+        width:160px;
         display:inline-block;
     }
     .del-dialog-cnt{
