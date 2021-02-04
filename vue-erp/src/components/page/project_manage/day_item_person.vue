@@ -288,30 +288,49 @@ export default {
                 },
                 shortcuts:[
                     {
-                    text: this.$t('employee.week'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$t('employee.today'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 0);
+                            picker.$emit('pick', [start, end]);
                         }
                     }, 
                     {
-                    text: this.$t('employee.month'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$t('employee.yesterday'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.week'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.month'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
                         }
                     },
                     {
-                    text: this.$t('employee.three_months'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$t('employee.three_months'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
                         }
                     }
                 ]
