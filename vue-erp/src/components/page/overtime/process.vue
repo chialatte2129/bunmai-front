@@ -9,13 +9,13 @@
         </div>
         <div class="container">
             <el-row>
-                <el-col :span="6">
+                <el-col :span="5">
                     <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
                         <div slot="header" class="clearfix">
                             <span><b>{{$t('employee.dept_tree')}}</b></span>
                         </div>
                         <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:60%;" clearable :disabled="tree_loading"/>
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:55%;" clearable :disabled="tree_loading"/>
                             <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
                             <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
                         </div>
@@ -32,7 +32,7 @@
                         </div>
                     </el-card>
                 </el-col>
-                <el-col :span="18">
+                <el-col :span="19">
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane :label="$t('overtime.to_be_processed')" name="to_be_processed" :disabled="count_loading" :key="tabKey">
                             <div v-if="activeTabs=='to_be_processed'">
@@ -57,14 +57,15 @@
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
                                 <el-table-column type="selection" width="40" align="center"/>
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="125" sortable="custom" align="right" header-align="left"/>
+                                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
@@ -103,15 +104,16 @@
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             :row-class-name="tableRowClassName" @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="140" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" sortable="custom" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" sortable="custom" show-overflow-tooltip>
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="115" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="125" sortable="custom" align="right" header-align="left"/>
-                                <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="110" sortable="custom" show-overflow-tooltip>
+                                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
+                                <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="80" show-overflow-tooltip>
                                     <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
                                 </el-table-column>
                                 <el-table-column type="expand" width="40">
@@ -332,13 +334,8 @@ export default {
             return "background:#FFEDED;";
         },
 
-        tableRowClassName({row, rowIndex}){
-            if(row.status==="R"){
-                return "warning-row";
-            }else if(row.status==="A"||row.status==="F"){
-                return "success-row";
-            }
-            return "";
+        tableRowClassName({row, rowIndex}) {
+            return `${row.status}-row`;
         },
 
         handleSelectionChange(val){
@@ -628,10 +625,13 @@ export default {
     .table >>> .el-table-column--selection .cell{
         padding-right:10px;
     }
-    .table >>> .warning-row{
-        background:#FFEDED;
+    .table >>> .R-row {
+        background:#FFEFEE;
     }
-    .table >>> .success-row{
+    .table >>> .F-row {
+        background:#FCFFF7;
+    }
+    .table >>> .A-row {
         background:#FCFFF7;
     }
     .pagination{
