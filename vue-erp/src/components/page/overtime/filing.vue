@@ -55,10 +55,10 @@
                             :disabled="count_loading" @change="search" class="mgr10" style="width:280px;" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
-                            @sort-change="handleSortChange" @selection-change="handleSelectionChange":key="tbKey">
+                            @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
                                 <el-table-column type="selection" width="40" align="center"/>
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
@@ -99,9 +99,9 @@
                             :disabled="count_loading" @change="search" class="mgr10" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
-                            @sort-change="handleSortChange" @selection-change="handleSelectionChange" :key="tbKey">
+                            @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="150" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
@@ -288,6 +288,17 @@ export default {
     },    
     
     methods: {
+        getCellStyle({ column }){
+            const tempWidth=column.realWidth||column.width;
+            if(column.showOverflowTooltip){
+                return {
+                    minWidth:`${tempWidth}px`,
+                    maxWidth:`${tempWidth}px`
+                }
+            };
+            return {};
+        },
+
         handleClose(){
             this.archiveVisible=false;
         },

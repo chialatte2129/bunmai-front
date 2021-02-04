@@ -35,7 +35,8 @@
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="loading":key="tbKey">
+            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
@@ -292,6 +293,17 @@ export default {
     }, 
     
     methods: {
+        getCellStyle({ column }){
+            const tempWidth=column.realWidth||column.width;
+            if(column.showOverflowTooltip){
+                return {
+                    minWidth:`${tempWidth}px`,
+                    maxWidth:`${tempWidth}px`
+                }
+            };
+            return {};
+        },
+
         handleClose(tag){
             this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
         },
@@ -547,5 +559,8 @@ export default {
     }
     .tag-collapse >>> .el-divider--horizontal{
         margin:10px 0 5px 0;
+    }
+    .container{
+        margin-right:150px;
     }
 </style>

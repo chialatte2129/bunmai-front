@@ -18,7 +18,7 @@
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="table_loading"
-            @sort-change="handleSortChange" :row-class-name="tableRowClassName" :key="tbKey">
+            @sort-change="handleSortChange" :row-class-name="tableRowClassName" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column type="expand" width="40">
                     <template slot-scope="props">
                         <el-form label-position="left" label-width="85px">
@@ -29,7 +29,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="135" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('project.name')" width="250" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
                 <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
@@ -159,6 +159,17 @@ export default {
     },    
     
     methods:{
+        getCellStyle({ column }){
+            const tempWidth=column.realWidth||column.width;
+            if(column.showOverflowTooltip){
+                return {
+                    minWidth:`${tempWidth}px`,
+                    maxWidth:`${tempWidth}px`
+                }
+            };
+            return {};
+        },
+
         handlePersonProject(row){
             window.open(`${process.env.VUE_APP_HOST}day_item_person?pjid=${row.item_id}&&date=${row.work_date}`);
         },

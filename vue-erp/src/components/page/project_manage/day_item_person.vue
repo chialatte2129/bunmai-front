@@ -18,7 +18,8 @@
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
                 <el-button size="large" type="success" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :span-method="dateCellMerge" :key="tbKey">
+            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
+            :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
@@ -416,6 +417,17 @@ export default {
     },    
     
     methods:{
+        getCellStyle({ column }){
+            const tempWidth=column.realWidth||column.width;
+            if(column.showOverflowTooltip){
+                return {
+                    minWidth:`${tempWidth}px`,
+                    maxWidth:`${tempWidth}px`
+                }
+            };
+            return {};
+        },
+
         connectFromOtherPlace(){
             if(this.$route.query.pjid){
                 this.filter.item_id=this.$route.query.pjid;
