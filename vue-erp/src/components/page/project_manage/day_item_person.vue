@@ -90,9 +90,10 @@
                         :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.tag1')" prop="tag1">
-                        <el-select v-model="form.tag1" filterable clearable class="handle-input" 
-                        :disabled="copyView||form.item_id==''||overtime_ban_status.includes(form.overtime_status)">
-                            <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
+                        <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||overtime_ban_status.includes(form.overtime_status)">
+                            <el-option-group v-for="group in option.tags" :key="group.label" :label="$t(group.label)">
+                                <el-option v-for="item in group.tags" :key="item" :label="item" :value="item"/>
+                            </el-option-group>
                         </el-select>
                         <el-tooltip effect="light" :content="$t('employee.use_tag_tip')" placement="bottom" v-if="!copyView">
                             <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
@@ -598,9 +599,10 @@ export default {
             this.copyView=true;
         },
 
-        handleCreate(){
+        async handleCreate(){
             var today = new Date();
             this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            await this.get_filter_tag();
             this.createView=true;
         },
 
