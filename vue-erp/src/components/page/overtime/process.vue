@@ -60,7 +60,6 @@
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
-                                <!-- <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/> -->
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
@@ -108,7 +107,6 @@
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
-                                <!-- <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/> -->
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
@@ -136,7 +134,7 @@
                 </el-col>
             </el-row>
         </div>
-        <el-dialog center width="500px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
+        <el-dialog center width="550px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
             <div class="dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 
                 <span v-if="passVisible"> {{$t('common_msg.ask_for_pass')}} ?</span>
                 <span v-else> {{$t('common_msg.ask_for_reject')}} ?</span>

@@ -319,7 +319,7 @@ export const messages = {
             work_hour:"工作時數",
             total_work_hour:"總工時",
             work_date:"工作日期",
-            table_work_hour:"工作日期",
+            table_work_hour:"工作時數",
             table_total_work_hour:"總工時",
             copy_date:"複製日期",
             description:"內容敘述",

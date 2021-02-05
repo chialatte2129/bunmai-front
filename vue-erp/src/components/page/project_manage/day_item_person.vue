@@ -423,10 +423,17 @@ export default {
                 return_dict["maxWidth"]=`${tempWidth}px`;
             };
             if(column.property=="total_work_hour"){
+                return_dict["fontWeight"]="700";
                 return_dict["color"]="green";
                 if(row.total_work_hour<8){
                     return_dict["color"]="red";
                 };
+            };
+            if(["total_work_hour", "work_hours"].includes(column.property)){
+                return_dict["background"]="#FAFAFA";
+            };
+            if(["total_comp_time", "comp_time"].includes(column.property)){
+                return_dict["background"]="#FFFFF5";
             };
             return return_dict;
         },
