@@ -10,7 +10,7 @@
         <div class="container">
             <div class="mgb10">
                 <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
-                <el-select size="large" v-model="filter.item_id" filterable clearable :placeholder="$t('project.name')" @change="search" class="mgr10" :disabled="table_loading">
+                <el-select size="large" v-model="filter.item_id" filterable clearable :placeholder="$t('project.name')" @change="search" class="mgr10 wd250" :disabled="table_loading">
                     <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id" :disabled="table_loading"/>
                 </el-select>
                 <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
@@ -21,17 +21,19 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
             :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
+                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left">
+                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
+                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="80" align="right" header-align="left"/>
+                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left">
                     <template slot-scope="scope">
                         <span v-if="scope.row.comp_time">{{scope.row.comp_time}}</span><span v-else>-</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="105" align="right" header-align="left"/>
-                <el-table-column prop="tag1" :label="$t('project.tag1')" width="140" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="80" align="right" header-align="left"/>
+                <el-table-column prop="tag1" :label="$t('project.tag1')" width="115" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="230" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
@@ -181,12 +183,8 @@
                                 <div class="mgt10" v-if="tag_form.item_id">{{edit_tag_info.label}}</div>
                             </div>
                             <div v-if="tag_form.item_id">
-                                <!-- <el-button type=primary size=medium @click="saveTags">{{$t("btn.save")}}</el-button> -->
-                                <!-- <el-button type=info plain size=medium @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
-                                <!-- <el-divider/> -->
                                 <el-input style="width:100%;" v-model="tagValue" clearable ref="saveTagInput" size=medium show-word-limit maxlength="20"
                                 @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
-                                <!-- <el-button v-else type=warning plain size=medium @click="showInput">{{$t("project.add_tags")}}</el-button> -->
                                 <el-divider class="tag-group"/>
                                 <el-tag style="margin:5px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size=large type=success closable 
                                 :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
@@ -417,15 +415,27 @@ export default {
     },    
     
     methods:{
-        getCellStyle({ column }){
+        getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
+            var return_dict = {};
             if(column.showOverflowTooltip){
-                return {
-                    minWidth:`${tempWidth}px`,
-                    maxWidth:`${tempWidth}px`
-                }
+                return_dict["minWidth"]=`${tempWidth}px`;
+                return_dict["maxWidth"]=`${tempWidth}px`;
             };
-            return {};
+            if(column.property=="total_work_hour"){
+                return_dict["fontWeight"]="700";
+                return_dict["color"]="green";
+                if(row.total_work_hour<8){
+                    return_dict["color"]="red";
+                };
+            };
+            if(["total_work_hour", "work_hours"].includes(column.property)){
+                return_dict["background"]="#FAFAFA";
+            };
+            if(["total_comp_time", "comp_time"].includes(column.property)){
+                return_dict["background"]="#FFFFF5";
+            };
+            return return_dict;
         },
 
         connectFromOtherPlace(){
@@ -605,7 +615,7 @@ export default {
         },
 
         dateCellMerge({row, column, rowIndex, columnIndex}){
-            if(column.property==="work_date"){
+            if(["work_date", "total_work_hour", "total_comp_time"].includes(column.property)){
                 const _row=this.spanArr[rowIndex];
                 const _col=_row>0?1:0;
                 return { rowspan:_row, colspan:_col }
@@ -685,12 +695,7 @@ export default {
             await dayItemService.update_day_item(param).then(res =>{ 
                 if(res.code==1){ 
                     this.$message.success(this.$t(res.msg)); 
-                    if(["create", "copy"].includes(param.action)){
-                        this.getData();
-                        this.cancelDialog();
-                    }else if(param.action=="update"){
-                        delete param.form["org_tag1"];
-                        this.tableData[this.edit_idx]=param.form;
+                    if(["create", "copy", "update"].includes(param.action)){
                         this.tbKey++;
                         this.getData();
                         this.cancelDialog();
@@ -711,6 +716,8 @@ export default {
             this.$refs.form.validate(valid => {
                 if(valid){
                     var temp_form = Object.assign({}, this.form);
+                    delete temp_form["total_comp_time"];
+                    delete temp_form["total_work_hour"];
                     var param = {
                         action:this.createView?"create":(this.updateView?"update":"copy"),
                         form:temp_form
@@ -839,6 +846,9 @@ export default {
     }
     .pdr10{
         padding-right:10px;
+    }
+    .wd250{
+        width:250px;
     }
     .crumbs >>> .el-breadcrumb{
         font-size:20px;

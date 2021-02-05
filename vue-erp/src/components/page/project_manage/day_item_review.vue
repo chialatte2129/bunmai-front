@@ -52,24 +52,23 @@
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
                             :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
-                            <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
-                            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
+                            <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="521" v-loading="table_loading"
+                            @sort-change="handleSortChange" :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="105" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="100" align="right" header-align="left"/>
-                                <el-table-column type="expand" width="40">
-                                    <template slot-scope="props">
-                                        <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('project.tag1')">{{props.row.tag1}}</el-form-item>
-                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
-                                        </el-form >
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left">
+                                    <template slot-scope="scope">
+                                        <span v-if="scope.row.comp_time">{{scope.row.comp_time}}</span><span v-else>-</span>
                                     </template>
                                 </el-table-column>
+                                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="80" align="right" header-align="left"/>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -111,6 +110,8 @@ export default {
             table_loading:false,
             tableData:[],
             totalRow:0,
+            spanArr:[],
+            pos:null,
             tbKey:0,
             cur_page:1,
             page_size:20,
@@ -217,15 +218,57 @@ export default {
     },    
     
     methods: {
-        getCellStyle({ column }){
-            const tempWidth=column.realWidth||column.width;
-            if(column.showOverflowTooltip){
-                return {
-                    minWidth:`${tempWidth}px`,
-                    maxWidth:`${tempWidth}px`
+        getSpanArr(data){
+            this.resetSpanArr();
+            for(var i=0;i<data.length;i++){
+                if(i===0){ 
+                    this.spanArr.push(1);
+                    this.pos=0;
+                }else{
+                    if(
+                        (data[i].work_date===data[i-1].work_date)
+                        &&
+                        (data[i].p_name===data[i-1].p_name)
+                        &&
+                        (data[i].dept_name===data[i-1].dept_name)
+                    ){
+                        this.spanArr[this.pos]+=1;
+                        this.spanArr.push(0);
+                    }else{ 
+                        this.spanArr.push(1); 
+                        this.pos=i;
+                    }
                 }
+            }
+        },
+
+        resetSpanArr(){
+            this.spanArr=[];
+            this.pos=null;
+        },
+
+        dateCellMerge({row, column, rowIndex, columnIndex}){
+            if(["work_date", "p_name", "dept_name", "total_work_hour", "total_comp_time"].includes(column.property)){
+                const _row=this.spanArr[rowIndex];
+                const _col=_row>0?1:0;
+                return { rowspan:_row, colspan:_col }
+            }
+        },
+
+        getCellStyle({row, column}){
+            const tempWidth=column.realWidth||column.width;
+            var return_dict = {};
+            if(column.showOverflowTooltip){
+                return_dict["minWidth"]=`${tempWidth}px`;
+                return_dict["maxWidth"]=`${tempWidth}px`;
             };
-            return {};
+            if(column.property=="total_work_hour"){
+                return_dict["color"]="green";
+                if(row.total_work_hour<8){
+                    return_dict["color"]="red";
+                };
+            };
+            return return_dict;
         },
 
         async handleTabClick(tab, event){
@@ -377,6 +420,7 @@ export default {
             await dayItemService.review_day_list(param).then(res =>{ 
                 this.tableData=res.day_items;
                 this.totalRow=res.total;
+                this.getSpanArr(this.tableData);
             })
             this.table_loading=false;
         },
@@ -429,7 +473,7 @@ export default {
         padding:15px;
     }
     .handle-input{
-        width: 280px;
+        width:280px;
         display:inline-block;
     }
     .del-dialog-cnt{
@@ -493,7 +537,10 @@ export default {
         width:100%;
     }
     .pagination{
-        margin:10px 0;
+        margin:15px 0;
         text-align:right;
+    }
+    .container{
+        margin-right:10px;
     }
 </style>

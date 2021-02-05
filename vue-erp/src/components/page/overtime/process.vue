@@ -59,13 +59,13 @@
                                 <el-table-column type="selection" width="40" align="center"/>
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
@@ -106,13 +106,13 @@
                             :row-class-name="tableRowClassName" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="80" show-overflow-tooltip>
                                     <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
                                 </el-table-column>
@@ -134,7 +134,7 @@
                 </el-col>
             </el-row>
         </div>
-        <el-dialog center width="500px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
+        <el-dialog center width="550px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
             <div class="dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 
                 <span v-if="passVisible"> {{$t('common_msg.ask_for_pass')}} ?</span>
                 <span v-else> {{$t('common_msg.ask_for_reject')}} ?</span>
@@ -305,15 +305,14 @@ export default {
     },    
     
     methods: {
-        getCellStyle({ column }){
+        getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
+            var return_dict = {};
             if(column.showOverflowTooltip){
-                return {
-                    minWidth:`${tempWidth}px`,
-                    maxWidth:`${tempWidth}px`
-                }
+                return_dict["minWidth"]=`${tempWidth}px`;
+                return_dict["maxWidth"]=`${tempWidth}px`;
             };
-            return {};
+            return return_dict;
         },
 
         handleClose(){

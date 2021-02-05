@@ -64,14 +64,8 @@
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
-                                <el-table-column type="expand" width="40">
-                                    <template slot-scope="props">
-                                        <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
-                                        </el-form >
-                                    </template>
-                                </el-table-column>
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -107,14 +101,8 @@
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
-                                <el-table-column type="expand" width="40">
-                                    <template slot-scope="props">
-                                        <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
-                                        </el-form >
-                                    </template>
-                                </el-table-column>
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -126,7 +114,7 @@
                 </el-col>
             </el-row>
         </div>
-        <el-dialog center width="500px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
+        <el-dialog center width="550px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
             <div class="dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/><span> {{$t('common_msg.ask_for_archive')}} ?</span></div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">{{$t('btn.cancel')}}</el-button>
@@ -288,15 +276,14 @@ export default {
     },    
     
     methods: {
-        getCellStyle({ column }){
+        getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
+            var return_dict = {};
             if(column.showOverflowTooltip){
-                return {
-                    minWidth:`${tempWidth}px`,
-                    maxWidth:`${tempWidth}px`
-                }
+                return_dict["minWidth"]=`${tempWidth}px`;
+                return_dict["maxWidth"]=`${tempWidth}px`;
             };
-            return {};
+            return return_dict;
         },
 
         handleClose(){
