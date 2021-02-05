@@ -27,6 +27,22 @@
         {
             "index": "project_report_download",
             "title": "menus.project_report_download"
+        },
+        {
+            "index": "overtime_person_record",
+            "title": "menus.overtime_person_record"
+        },
+        {
+            "index": "overtime_process",
+            "title": "menus.overtime_process"
+        },
+        {
+            "index": "overtime_filing",
+            "title": "menus.overtime_filing"
+        },
+        {
+            "index": "overtime_report",
+            "title": "menus.overtime_report"
         }
     ]
 }

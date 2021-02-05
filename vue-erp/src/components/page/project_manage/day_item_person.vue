@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item>{{$t('menus.daily_report')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.task_report')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.day_item_person')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -18,20 +18,26 @@
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
                 <el-button size="large" type="success" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" :span-method="dateCellMerge" :key="tbKey">
-                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
-                <el-table-column prop="item_id" :label="$t('project.name')" width="300" sortable="custom" show-overflow-tooltip>
+            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
+            :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
+                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
-                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="140" sortable="custom" align="right" header-align="left"/>
-                <el-table-column prop="tag1" :label="$t('project.tag1')" width="135" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="275" align="center" fixed="right">
+                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left">
                     <template slot-scope="scope">
-                        <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
-                        <el-button type="primary" size="mini" icon="el-icon-document" @click="handleCopy(scope.$index, scope.row)"
+                        <span v-if="scope.row.comp_time">{{scope.row.comp_time}}</span><span v-else>-</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="105" align="right" header-align="left"/>
+                <el-table-column prop="tag1" :label="$t('project.tag1')" width="140" sortable="custom" show-overflow-tooltip/>
+                <el-table-column :label="$t('btn.action')" width="230" align="center" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                        <el-button type="primary" size="mini" @click="handleCopy(scope.$index, scope.row)"
                         :disabled="table_loading||ban_status.includes(scope.row.status)||overtime_ban_status.includes(scope.row.overtime_status)">{{$t('btn.copy')}}</el-button>
-                        <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)" 
+                        <el-button type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)" 
                         :disabled="table_loading||ban_status.includes(scope.row.status)||overtime_ban_status.includes(scope.row.overtime_status)">{{$t('btn.delete')}}</el-button>
                     </template>
                 </el-table-column>
@@ -85,9 +91,10 @@
                         :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.tag1')" prop="tag1">
-                        <el-select v-model="form.tag1" filterable clearable class="handle-input" 
-                        :disabled="copyView||form.item_id==''||overtime_ban_status.includes(form.overtime_status)">
-                            <el-option v-for="item in option.tags" :key="item" :label="item" :value="item"/>
+                        <el-select v-model="form.tag1" filterable clearable class="handle-input" :disabled="copyView||overtime_ban_status.includes(form.overtime_status)">
+                            <el-option-group v-for="group in option.tags" :key="group.label" :label="$t(group.label)">
+                                <el-option v-for="item in group.tags" :key="item" :label="item" :value="item"/>
+                            </el-option-group>
                         </el-select>
                         <el-tooltip effect="light" :content="$t('employee.use_tag_tip')" placement="bottom" v-if="!copyView">
                             <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
@@ -96,7 +103,7 @@
                             <el-button circle size=mini type=success plain style="margin-left:5px;" icon="el-icon-plus" @click="regetTag=true, openTagManager()"/>
                         </el-tooltip>
                     </el-form-item>
-                    <el-form-item :label="$t('overtime.comp_time')" prop="comp_time" v-if="!copyView">
+                    <el-form-item :label="$t('overtime.apply_comp_time')" prop="comp_time" v-if="!copyView">
                         <el-input v-model="form.comp_time" maxlength="5" @input="compTimeInput" show-word-limit class="handle-input" :placeholder="$t('overtime.comp_time_placeholder')"
                         :readonly="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)"/>
                         <el-tooltip effect="light" :content="$t('overtime.comp_time_tips')" placement="bottom" v-if="!copyView">
@@ -154,7 +161,7 @@
                                     :data="pers_tree" :props="defaultProps" :filter-node-method="filterNode" @node-click="handleNodeClick">
                                         <span class="custom-tree-node" slot-scope="{node, data}" :style="activeStyle(data.is_open_tags)">
                                             <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
-                                            <span class="node_icon">
+                                            <span class="node_icon" v-if="!/^[_]+/.test(node.label)">
                                                 <span class="node_plus">
                                                     <el-tooltip effect="light" :content="$t('employee.clear_tag_tip')" placement="left">
                                                         <el-button size=mini type=danger icon="el-icon-minus" circle plain @click="delToProjTree(data)"/>
@@ -282,30 +289,49 @@ export default {
                 },
                 shortcuts:[
                     {
-                    text: this.$t('employee.week'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$t('employee.today'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 0);
+                            picker.$emit('pick', [start, end]);
                         }
                     }, 
                     {
-                    text: this.$t('employee.month'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$t('employee.yesterday'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.week'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.month'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
                         }
                     },
                     {
-                    text: this.$t('employee.three_months'),
-                    onClick(picker){
-                        const end = new Date();
-                        const start = new Date();
-                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                        picker.$emit('pick', [start, end]);
+                        text: this.$t('employee.three_months'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
                         }
                     }
                 ]
@@ -339,6 +365,7 @@ export default {
     },
 
     async created(){
+        await this.connectFromOtherPlace();
         await this.getOption();
         await this.getData();
     },
@@ -390,6 +417,27 @@ export default {
     },    
     
     methods:{
+        getCellStyle({ column }){
+            const tempWidth=column.realWidth||column.width;
+            if(column.showOverflowTooltip){
+                return {
+                    minWidth:`${tempWidth}px`,
+                    maxWidth:`${tempWidth}px`
+                }
+            };
+            return {};
+        },
+
+        connectFromOtherPlace(){
+            if(this.$route.query.pjid){
+                this.filter.item_id=this.$route.query.pjid;
+            };
+            if(this.$route.query.date){
+                this.filter.work_date=[this.$route.query.date, this.$route.query.date];
+            };
+            this.$router.replace("day_item_person").catch(err => {});
+        },
+
         compTimeInput(){
             if((/^[0-9.]+$/.test(this.form.comp_time))&&parseFloat(this.form.comp_time)>0){
                 if(parseFloat(this.form.comp_time)>100){
@@ -582,9 +630,10 @@ export default {
             this.copyView=true;
         },
 
-        handleCreate(){
+        async handleCreate(){
             var today = new Date();
             this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            await this.get_filter_tag();
             this.createView=true;
         },
 
@@ -854,5 +903,8 @@ export default {
     }
     .tag-dialog >>> .el-divider--horizontal.tag-group{
         margin:10px 0 5px 0;
+    }
+    .container{
+        margin-right:150px;
     }
 </style>

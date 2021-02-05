@@ -60,7 +60,27 @@ export default new Router({
                     path: 'project_report_download',
                     component: () => import('../components/page/project_manage/report_download.vue'),
                     meta: { title: 'menus.project_report_download' }
-                }, 
+                },
+                {
+                    path: 'overtime_filing',
+                    component: () => import('../components/page/overtime/filing.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_report',
+                    component: () => import('../components/page/overtime/report.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_process',
+                    component: () => import('../components/page/overtime/process.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_person_record',
+                    component: () => import('../components/page/overtime/record.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
             ]
         },
         

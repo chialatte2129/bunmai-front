@@ -61,11 +61,12 @@ export default {
                             show: this.hasThisMenu("work_items")
                         },
                         {
-                            index: "daily_report",
-                            title: this.$t("menus.daily_report"),
+                            index: "task_report",
+                            title: this.$t("menus.task_report"),
                             show: this.includeSubMenu([
                                 "day_item_person", 
-                                "day_item_review"
+                                "day_item_review",
+                                "project_report_download"
                             ]),
                             subs: [ 
                                 {
@@ -83,6 +84,38 @@ export default {
                                     title: this.$t("menus.project_report_download"),
                                     show: this.hasThisMenu("project_report_download"),
                                 },
+                            ]
+                        },
+                        {
+                            index: "overtime_manage",
+                            title: this.$t("menus.overtime_manage"),
+                            show: this.includeSubMenu([
+                                "overtime_person_record", 
+                                "overtime_process",
+                                "overtime_filing",
+                                "overtime_report",
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "overtime_person_record",
+                                    title: this.$t("menus.overtime_person_record"),
+                                    show: this.hasThisMenu("overtime_person_record")
+                                },
+                                {
+                                    index: "overtime_process",
+                                    title: this.$t("menus.overtime_process"),
+                                    show: this.hasThisMenuOrMgr("overtime_process")
+                                },
+                                {
+                                    index: "overtime_filing",
+                                    title: this.$t("menus.overtime_filing"),
+                                    show: this.hasThisMenu("overtime_filing")
+                                },
+                                {
+                                    index: "overtime_report",
+                                    title: this.$t("menus.overtime_report"),
+                                    show: this.hasThisMenu("overtime_report")
+                                }
                             ]
                         },
                     ]
@@ -196,7 +229,7 @@ export default {
     width: 0;
 }
 .sidebar-el-menu:not(.el-menu--collapse) {
-    width: 250px;
+    width: 220px;
 }
 .sidebar > ul {
     height: 100%;

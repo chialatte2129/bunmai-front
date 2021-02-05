@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item>{{$t('menus.daily_report')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.task_report')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.project_report_download')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -169,6 +169,25 @@ export default {
                     return time.getTime() > Date.now();
                 },
                 shortcuts:[
+                    {
+                        text: this.$t('employee.today'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 0);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.yesterday'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
                     {
                         text: this.$t('employee.week'),
                         onClick(picker){

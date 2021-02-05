@@ -3,8 +3,8 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item>{{$t('menus.task_report')}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t('menus.day_item_review')}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.overtime_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t('menus.overtime_process')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -34,38 +34,41 @@
                 </el-col>
                 <el-col :span="19">
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
-                        <el-tab-pane :label="$t('employee.daily_details')" name="daily_details">
-                            <div v-if="activeTabs=='daily_details'">
-                            <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
-                            :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
+                        <el-tab-pane :label="$t('overtime.to_be_processed')" name="to_be_processed" :disabled="count_loading" :key="tabKey">
+                            <div v-if="activeTabs=='to_be_processed'">
+                            <el-button size="large" type="success" v-html="$t('common_msg.pass')" @click="passVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click="rejectVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
+                            :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled||parseInt(odoo_employee_id)==item.id">
                                         <span class="mgl10">{{item.name}}</span>
                                     </el-option>
                                 </el-option-group>
                             </el-select>
-                            <el-select size="large" class="mgr10 handle-input" v-model="filter.item_id" filterable clearable multiple collapse-tags
-                            :placeholder="$t('project.name')" :disabled="table_loading||tree_loading" @change="search">
+                            <el-select size="large" class="mgr10 handle-input-item_id" v-model="filter.item_id" filterable clearable multiple collapse-tags
+                            :placeholder="$t('project.name')" :disabled="count_loading" @change="search">
                                 <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                             </el-select>
                             <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
-                            :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
-                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
+                            :disabled="count_loading" @change="search" class="mgr10" size="large"/>
+                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
-                            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
+                            @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
+                                <el-table-column type="selection" width="40" align="center"/>
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="250" show-overflow-tooltip>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
-                                <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="100" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                                 <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('project.tag1')">{{props.row.tag1}}</el-form-item>
                                             <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
                                         </el-form >
                                     </template>
@@ -73,7 +76,57 @@
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
-                                :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                                :disabled="count_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                            </div>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane :label="$t('overtime.processed')" name="processed" :disabled="count_loading" :key="tabKey+1000">
+                            <div v-if="activeTabs=='processed'">
+                            <el-select size="large" class="mgr10 handle-input-pid" v-model="temp_status" filterable clearable multiple collapse-tags
+                            :placeholder="$t('overtime.overtime_status')" :disabled="count_loading" @change="search">
+                                <el-option v-for="item in option.status" :key="item.key" :label="$t(`overtime.status.${item.key}`)" :value="item.key" :style="activeStyle(item.key)"/>
+                            </el-select>
+                            <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
+                            :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
+                                <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled||parseInt(odoo_employee_id)==item.id">
+                                        <span class="mgl10">{{item.name}}</span>
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+                            <el-select size="large" class="mgr10 handle-input-item_id" v-model="filter.item_id" filterable clearable multiple collapse-tags
+                            :placeholder="$t('project.name')" :disabled="count_loading" @change="search">
+                                <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                            </el-select>
+                            <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
+                            :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
+                            :disabled="count_loading" @change="search" class="mgr10" size="large"/>
+                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
+                            <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
+                            :row-class-name="tableRowClassName" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
+                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                                <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="130" show-overflow-tooltip/>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
+                                    <template slot-scope="scope">{{scope.row.item_name}}</template>
+                                </el-table-column>
+                                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
+                                <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="80" show-overflow-tooltip>
+                                    <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
+                                </el-table-column>
+                                <el-table-column type="expand" width="40">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" label-width="85px">
+                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
+                                        </el-form >
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <div class="pagination">
+                                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                                :disabled="count_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
                             </div>
                             </div>
                         </el-tab-pane>
@@ -81,12 +134,23 @@
                 </el-col>
             </el-row>
         </div>
+        <el-dialog center width="500px" :title="$t('common_msg.warning')" :visible.sync="show_visible" :before-close="handleClose" :close-on-click-modal="false">
+            <div class="dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 
+                <span v-if="passVisible"> {{$t('common_msg.ask_for_pass')}} ?</span>
+                <span v-else> {{$t('common_msg.ask_for_reject')}} ?</span>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">{{$t('btn.cancel')}}</el-button>
+                <el-button v-if="passVisible" type="primary" @click="handlePass">{{$t('btn.confirm')}}</el-button>
+                <el-button v-else type="primary" @click="handleReject">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
-import { dayItemService } from "@/_services";
+import { dayItemService, overtimeService } from "@/_services";
 export default {
-    name: "day_item_review",
+    name: "overtime_process",
     data(){
         return {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
@@ -102,19 +166,24 @@ export default {
                 level:"level",
             },
 
-            activeTabs:"daily_details",
+            activeTabs:("tabs" in this.$route.query)?this.$route.query.tabs:"to_be_processed",
             get_data_sig:false,
             node_click_sig:false,
             reset_sig:false,
             all_sig:false,
 
             table_loading:false,
+            passVisible:false,
+            rejectVisible:false,
             tableData:[],
             totalRow:0,
             tbKey:0,
+            tabKey:0,
+            spanArr:[],
+            pos:0,
             cur_page:1,
-            page_size:20,
-            page_size_list:[20, 50, 100],
+            page_size:50,
+            page_size_list:[50, 100],
             start_row:0,
             sort_column:"work_date",
             sort:"desc",
@@ -123,11 +192,19 @@ export default {
                 work_date:[],
                 dept_id:[],
                 pid:[],
+                status:[],
+                source:["project"],
+                category:["compensatory rest"],
             },
+            temp_status:[],
             option:{
                 work_item:[],
                 employee:[],
+                status:[
+                    {key:"A"}, {key:"F"}, {key:"R"},
+                ]
             },
+            multipleSelection:[],
             day_mileseconds:86400000,
             pickerOptions:{
                 disabledDate(time){
@@ -152,7 +229,7 @@ export default {
                             end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
                             picker.$emit('pick', [start, end]);
                         }
-                    }, 
+                    },
                     {
                         text: this.$t('employee.week'),
                         onClick(picker){
@@ -206,6 +283,7 @@ export default {
     },
 
     async created(){
+        this.$router.replace({ path:"overtime_process", query:this.getQuery() }).catch(err => {});
         await this.get_dept_tree();
         await this.getOption();
     },
@@ -213,6 +291,16 @@ export default {
     computed: {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
+        },
+
+        count_loading(){
+            return  this.table_loading||this.tree_loading;
+        },
+
+        show_visible(){
+            if(this.passVisible) return true;
+            else if(this.rejectVisible) return true;
+            return false;
         },
     },    
     
@@ -228,8 +316,75 @@ export default {
             return {};
         },
 
-        async handleTabClick(tab, event){
-            // if(this.activeTabs!=tab.name) this.activeTabs=tab.name;
+        handleClose(){
+            this.passVisible=false;
+            this.rejectVisible=false;
+        },
+
+        async handlePass(){
+            this.table_loading=true;
+            var form_id_list=[];
+            for(var row of this.multipleSelection){
+                form_id_list.push(row.form_id);
+            };
+            await overtimeService.handle_pass({form_id_list:form_id_list}).then(res =>{ 
+                if(res.code==1){
+                    this.$message.success(this.$t("common_msg.pass")); 
+                    this.multipleSelection=[];
+                    this.handleCurrentChange(1);
+                    this.handleClose();
+                }else{
+                    this.$message.success(this.$t(res.msg)); 
+                };
+            })
+            this.table_loading=false;
+        },
+
+        async handleReject(){
+            this.table_loading=true;
+            var form_id_list=[];
+            for(var row of this.multipleSelection){
+                form_id_list.push(row.form_id);
+            };
+            await overtimeService.handle_reject({form_id_list:form_id_list}).then(res =>{ 
+                if(res.code==1){
+                    this.$message.success(this.$t("common_msg.reject")); 
+                    this.multipleSelection=[];
+                    this.handleCurrentChange(1);
+                    this.handleClose();
+                }else{
+                    this.$message.error(this.$t(res.msg)); 
+                };
+            })
+            this.table_loading=false;
+        },
+
+        activeStyle(status){
+            if(status==="A"||status==="F") return "background:#FCFFF7;";
+            return "background:#FFEDED;";
+        },
+
+        tableRowClassName({row, rowIndex}){
+            return `${row.status}-row`;
+        },
+
+        handleSelectionChange(val){
+            this.multipleSelection=val;
+        },
+
+        getQuery(){
+            var query = Object.assign({}, this.$route.query);
+            query.tabs = this.activeTabs;
+            return query
+        },
+
+        handleTabClick(tab, event){
+            this.activeTabs=tab.name;
+            this.tableData=[];
+            this.tabKey++;
+            this.tbKey++;
+            this.cancelSearch();
+            this.$router.replace({ path:"overtime_process", query:this.getQuery() }).catch(err => {});
         },
 
         resetCheckBox(){
@@ -353,9 +508,6 @@ export default {
             await dayItemService.get_dept_tree(param).then(res =>{ 
                 this.tree_data=res.tree_data;
                 this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
-                // for(var dept of this.tree_data){
-                //     dept.disabled=true;
-                // };
             })
             await this.allCheckBox();
             this.tree_loading=false;
@@ -364,8 +516,9 @@ export default {
         async getData(){
             console.log("get data !")
             this.table_loading=true;
+            this.filter.status=this.activeTabs=="processed"?(this.temp_status.length==0?["A", "F", "R"]:this.temp_status):["p"];
             var param = {
-                action:"table",
+                action_type:"processing",
                 sort_column:this.sort_column,
                 sort:this.sort,
                 start_row:this.start_row,
@@ -374,8 +527,8 @@ export default {
                 odoo_employee_id:this.odoo_employee_id,
                 filter:this.filter
             }
-            await dayItemService.review_day_list(param).then(res =>{ 
-                this.tableData=res.day_items;
+            await overtimeService.get_overtime_log(param).then(res =>{ 
+                this.tableData=res.logs;
                 this.totalRow=res.total;
             })
             this.table_loading=false;
@@ -414,7 +567,11 @@ export default {
                 work_date:[],
                 dept_id:this.filter.dept_id,
                 pid:[],
+                status:this.activeTabs=="to_be_processed"?["p"]:["A", "F", "R"],
+                source:["project"],
+                category:["compensatory rest"],
             };
+            this.temp_status=[];
             this.tbKey++;
             this.sort_column="work_date";
             this.sort="desc";
@@ -428,11 +585,15 @@ export default {
         background-color:#f0f0f0;
         padding:15px;
     }
-    .handle-input{
+    .handle-input-pid{
+        width: 175px;
+        display:inline-block;
+    }
+    .handle-input-item_id{
         width: 280px;
         display:inline-block;
     }
-    .del-dialog-cnt{
+    .dialog-cnt{
         font-size:16px;
         text-align:center;
         color:#FF4242;
@@ -491,6 +652,18 @@ export default {
         margin:0px 0px 10px 2px;
         min-width:100px;
         width:100%;
+    }
+    .table >>> .el-table-column--selection .cell{
+        padding-right:10px;
+    }
+    .table >>> .R-row {
+        background:#FFEFEE;
+    }
+    .table >>> .F-row {
+        background:#FCFFF7;
+    }
+    .table >>> .A-row {
+        background:#FCFFF7;
     }
     .pagination{
         margin:10px 0;
