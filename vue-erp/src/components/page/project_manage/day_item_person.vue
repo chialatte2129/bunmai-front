@@ -24,7 +24,14 @@
                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" placement="top">
+                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
+                            <div class="one-line">{{scope.row.description}}</div>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
                 <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="80" align="right" header-align="left"/>
                 <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left">
@@ -418,10 +425,8 @@ export default {
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
-            if(column.showOverflowTooltip){
-                return_dict["minWidth"]=`${tempWidth}px`;
-                return_dict["maxWidth"]=`${tempWidth}px`;
-            };
+            return_dict["minWidth"]=`${tempWidth}px`;
+            return_dict["maxWidth"]=`${tempWidth}px`;
             if(column.property=="total_work_hour"){
                 return_dict["fontWeight"]="700";
                 return_dict["color"]="green";
@@ -916,5 +921,10 @@ export default {
     }
     .container{
         margin-right:150px;
+    }
+    .one-line{
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
     }
 </style>

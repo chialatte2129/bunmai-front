@@ -279,10 +279,8 @@ export default {
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
-            if(column.showOverflowTooltip){
-                return_dict["minWidth"]=`${tempWidth}px`;
-                return_dict["maxWidth"]=`${tempWidth}px`;
-            };
+            return_dict["minWidth"]=`${tempWidth}px`;
+            return_dict["maxWidth"]=`${tempWidth}px`;
             return return_dict;
         },
 

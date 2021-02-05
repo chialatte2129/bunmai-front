@@ -63,16 +63,23 @@
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                                    <template slot-scope="scope">
+                                        <el-tooltip effect="light" placement="top">
+                                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <div class="one-line">{{scope.row.description}}</div>
+                                        </el-tooltip>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
-                                <el-table-column type="expand" width="40">
+                                <!-- <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
                                             <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
                                         </el-form >
                                     </template>
-                                </el-table-column>
+                                </el-table-column> -->
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -110,19 +117,26 @@
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                                    <template slot-scope="scope">
+                                        <el-tooltip effect="light" placement="top">
+                                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <div class="one-line">{{scope.row.description}}</div>
+                                        </el-tooltip>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="80" show-overflow-tooltip>
                                     <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
                                 </el-table-column>
-                                <el-table-column type="expand" width="40">
+                                <!-- <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
                                             <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
                                         </el-form >
                                     </template>
-                                </el-table-column>
+                                </el-table-column> -->
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -308,10 +322,8 @@ export default {
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
-            if(column.showOverflowTooltip){
-                return_dict["minWidth"]=`${tempWidth}px`;
-                return_dict["maxWidth"]=`${tempWidth}px`;
-            };
+            return_dict["minWidth"]=`${tempWidth}px`;
+            return_dict["maxWidth"]=`${tempWidth}px`;
             return return_dict;
         },
 
@@ -667,5 +679,10 @@ export default {
     .pagination{
         margin:10px 0;
         text-align:right;
+    }
+    .one-line{
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
     }
 </style>

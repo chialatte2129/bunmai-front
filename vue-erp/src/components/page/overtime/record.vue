@@ -31,7 +31,14 @@
                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('project.name')" width="250" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                    <template slot-scope="scope">
+                        <el-tooltip effect="light" placement="top">
+                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
+                            <div class="one-line">{{scope.row.description}}</div>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="comp_time" :label="$t('overtime.comp_time')" width="105" align="right" header-align="left"/>
                 <el-table-column prop="status" :label="$t('overtime.process_status')" width="100" show-overflow-tooltip>
                     <template slot-scope="scope">{{$t("overtime.status."+scope.row.status)}}</template>
@@ -162,10 +169,8 @@ export default {
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
-            if(column.showOverflowTooltip){
-                return_dict["minWidth"]=`${tempWidth}px`;
-                return_dict["maxWidth"]=`${tempWidth}px`;
-            };
+            return_dict["minWidth"]=`${tempWidth}px`;
+            return_dict["maxWidth"]=`${tempWidth}px`;
             return return_dict;
         },
 
@@ -345,5 +350,10 @@ export default {
     }
     .table >>> .A-row {
         background: #FCFFF7;
+    }
+    .one-line{
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
     }
 </style>
