@@ -81,6 +81,11 @@ export default new Router({
                     component: () => import('../components/page/overtime/record.vue'),
                     meta: { title: 'menus.project_report_download' }
                 },
+                {
+                    path: 'view_work_hours',
+                    component: () => import('../components/page/report/view_workhours.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
             ]
         },
         

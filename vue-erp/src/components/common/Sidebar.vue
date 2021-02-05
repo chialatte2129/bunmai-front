@@ -118,6 +118,20 @@ export default {
                                 }
                             ]
                         },
+                        {
+                            index: "view_report",
+                            title: this.$t("menus.view_report"),
+                            show: this.includeSubMenu([
+                                "view_work_hours",
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "view_work_hours",
+                                    title: this.$t("menus.view_work_hours"),
+                                    show: this.hasThisMenu("view_work_hours")
+                                },
+                            ]
+                        },
                     ]
                 },
                 {

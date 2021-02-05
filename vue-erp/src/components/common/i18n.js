@@ -89,6 +89,8 @@ export const messages = {
             overtime_process:"補休審核",
             overtime_filing:"補休歸檔",
             overtime_report:"補休紀錄下載",
+            view_report:"報表總覽",
+            view_work_hours:"工作時數總覽",
         },
         table_title:{
             role :'角色代號',
@@ -464,6 +466,8 @@ export const messages = {
             overtime_process:"Process ",
             overtime_filing:"Filing",
             overtime_report:"Download Report",
+            view_report:"View Report",
+            view_work_hours:"Work Hour View",
         },
         table_title :{
             role :'Role id',
