@@ -12,16 +12,16 @@
                 <el-input v-model="filter.dept_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.dept')" :disabled="table_loading" @change="search"/>
                 <el-input v-model="filter.p_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.name')" :disabled="table_loading" @change="search"/>
                 <el-date-picker v-model="filter.work_date" class="mgr10" type="daterange" align="right" value-format="yyyy-MM-dd" size="large" unlink-panels
-                :disabled="table_loading" :picker-options="pickerOptions" @change="search" 
+                :disabled="table_loading" :picker-options="pickerOptions" :clearable="false" @change="search" 
                 :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
                 <el-button size="large" type="success" style="float:right;" plain @click="" :disabled="table_loading"
                 v-if="black_list_action" v-html="$t('actions.workhour_view_black_list')"/>
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="table_loading" 
+            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" height="657" v-loading="table_loading" 
             :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column v-if="tableData" prop="dept_name" :label="$t('employee.dept')" width="125" fixed="left" show-overflow-tooltip/>
-                <el-table-column v-if="tableData" prop="p_name" :label="$t('employee.name')" width="100" fixed="left" show-overflow-tooltip/>
+                <el-table-column v-if="tableData" prop="p_name" :label="$t('employee.name')" width="85" fixed="left" show-overflow-tooltip/>
                 <el-table-column v-if="tableData" :label="row.label" v-for="row in logCols">
                     <el-table-column :label="$t(`employee.dayofweek.${weekday_dict[row.prop]}`)" :key="row.prop" :prop="row.prop" width="100" headerAlign="center" align="right"/>
                 </el-table-column>
@@ -51,7 +51,12 @@ export default {
             filter:{
                 p_name:"",
                 dept_name:"",
-                work_date:[],
+                work_date:[
+                    new Date(new Date().getTime()-3600*1000*24*7).getFullYear()+'-'
+                    +String(new Date(new Date().getTime()-3600*1000*24*7).getMonth()+1).padStart(2, "0")+'-'
+                    +String(new Date(new Date().getTime()-3600*1000*24*7).getDate()).padStart(2, "0"),
+                    new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2, "0")+'-'+String(new Date().getDate()).padStart(2, "0")
+                ],
             },
             day_mileseconds:86400000,
             pickerOptions:{
@@ -59,15 +64,6 @@ export default {
                     return time.getTime() > Date.now()+86400000*31;
                 },
                 shortcuts:[
-                    {
-                        text: this.$t('employee.today'),
-                        onClick(picker){
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 0);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    }, 
                     {
                         text: this.$t('employee.yesterday'),
                         onClick(picker){
@@ -88,20 +84,20 @@ export default {
                         }
                     }, 
                     {
+                        text: this.$t('employee.two_week'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 14);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
                         text: this.$t('employee.month'),
                         onClick(picker){
                             const end = new Date();
                             const start = new Date();
                             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                            picker.$emit('pick', [start, end]);
-                        }
-                    },
-                    {
-                        text: this.$t('employee.three_months'),
-                        onClick(picker){
-                            const end = new Date();
-                            const start = new Date();
-                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
                             picker.$emit('pick', [start, end]);
                         }
                     }
@@ -138,13 +134,11 @@ export default {
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
-            if(["dept_name",  "dept_name","p_name", "pid"].includes(column.property)){
-                return_dict["minWidth"]=`${tempWidth}px`;
-                return_dict["maxWidth"]=`${tempWidth}px`;
-                return_dict["padding"]="4px";
-                return_dict["height"]="28px";
-                return_dict["fontSize"]="14px";
-            };
+            return_dict["minWidth"]=`${tempWidth-2}px`;
+            return_dict["maxWidth"]=`${tempWidth-2}px`;
+            return_dict["padding"]="4px";
+            return_dict["height"]="20px";
+            return_dict["fontSize"]="14px";
             if(!["dept_name",  "dept_name","p_name", "pid"].includes(column.property)){
                 if(row[column.property]>=8){
                     return_dict["background"]="#FCFFF7";
@@ -214,7 +208,12 @@ export default {
             this.filter={
                 p_name:"",
                 dept_name:"",
-                work_date:[],
+                work_date:[
+                    new Date(new Date().getTime()-3600*1000*24*7).getFullYear()+'-'
+                    +String(new Date(new Date().getTime()-3600*1000*24*7).getMonth()+1).padStart(2, "0")+'-'
+                    +String(new Date(new Date().getTime()-3600*1000*24*7).getDate()).padStart(2, "0"),
+                    new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2, "0")+'-'+String(new Date().getDate()).padStart(2, "0")
+                ],
             };
             this.sort_column="work_date";
             this.sort="desc";

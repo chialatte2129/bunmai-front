@@ -332,6 +332,7 @@ export const messages = {
             today:"今天",
             yesterday:"昨天",
             week:"一周",
+            two_week:"兩周",
             month:"一個月",
             three_months:"三個月",
             dayofweek:{
@@ -718,6 +719,7 @@ export const messages = {
             today:"Today",
             yesterday:"Yesterday",
             week:"Week",
+            two_week:"2 Weeks",
             month:"Month",
             three_months:"3 Months",
             dayofweek:{
