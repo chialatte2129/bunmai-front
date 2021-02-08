@@ -134,6 +134,7 @@ export const messages = {
             create_inner_project:"創建專案",
             edit_inner_project:"編輯專案",
             delete_inner_project:"作廢專案",
+            workhour_view_black_list:"工時總覽排除名單",
         },
         btn:{
             key_word:"關鍵字查詢",
@@ -501,6 +502,15 @@ export const messages = {
             create: 'create dictionary',
             delete: 'delete dictionary'
             }
+        },
+        actions:{
+            create_outer_project:"創建外部專案",
+            edit_outer_project:"編輯外部專案",
+            delete_outer_project:"作廢外部專案",
+            create_inner_project:"創建專案",
+            edit_inner_project:"編輯專案",
+            delete_inner_project:"作廢專案",
+            workhour_view_black_list:"Work hour view black list",
         },
         btn: {
             key_word:"Key Words",
