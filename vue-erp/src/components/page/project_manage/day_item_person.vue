@@ -20,7 +20,7 @@
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
             :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
-                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="135" sortable="custom" align="center" show-overflow-tooltip>
+                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                 </el-table-column>
                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>

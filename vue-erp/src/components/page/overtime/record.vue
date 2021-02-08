@@ -28,7 +28,7 @@
                         </el-form>
                     </template>
                 </el-table-column>
-                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="135" sortable="custom" align="center" show-overflow-tooltip>
+                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                 </el-table-column>
                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
