@@ -338,7 +338,7 @@ export const messages = {
               4:"四",
               5:"五",
               6:"六",
-              7:"七",
+              7:"日",
             },
             create_day_item:"建立每日工作彙報",
             update_day_item:"編輯每日工作彙報",
