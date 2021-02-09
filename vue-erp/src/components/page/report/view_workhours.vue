@@ -14,8 +14,8 @@
                 <el-date-picker v-model="filter.work_date" class="mgr10" type="daterange" align="right" value-format="yyyy-MM-dd" size="large" unlink-panels
                 :disabled="table_loading" :picker-options="pickerOptions" :clearable="false" @change="search" 
                 :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
-                <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
-                <el-button size="large" type="success" style="float:right;" plain @click="" :disabled="table_loading"
+                <el-button size=large type=info class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                <el-button size=large type=warning style="float:right;" plain @click="openBlackList" :disabled="table_loading"
                 v-if="black_list_action" v-html="$t('actions.workhour_view_black_list')"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" height="657" v-loading="table_loading" 
@@ -27,6 +27,18 @@
                 </el-table-column>
             </el-table>
         </div>
+        <el-dialog :title="$t('actions.workhour_view_black_list')" :visible.sync="blacklistView" :key="dlKey"
+            :before-close="closeBlackList" :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true">
+            <div v-loading.lock="dl_loading">
+                <el-select size=large class="handle-select" v-model="black_list" filterable clearable multiple :placeholder="$t('employee.name')">
+                    <el-option-group v-for="group in dept_tree" :key="group.id" :label="group.complete_name">
+                        <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                            <span class="mgl10">{{item.name}}</span>
+                        </el-option>
+                    </el-option-group>
+                </el-select>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -36,7 +48,9 @@ export default {
     data(){
         return {
             tbKey:0,
+            dlKey:0,
             table_loading:false,
+            dl_loading:false,
             logCols:[],
             tableData:[],
             totalRow:0,
@@ -45,8 +59,10 @@ export default {
             pos:0,
             sort_column:"dept_name",
             sort:"desc",
-            createView:false,
-            updateView:false,
+            blacklistView:false,
+            black_list:[],
+            bk_black_list:[],
+            dept_tree:[],
             black_list_action:localStorage.getItem("ms_user_actions").includes("workhour_view_black_list"),
             filter:{
                 p_name:"",
@@ -107,6 +123,7 @@ export default {
     },
 
     async created(){
+        this.get_dept_tree();
         await this.getData();
     },
 
@@ -115,22 +132,46 @@ export default {
     },
 
     computed:{
-        showTitle(){
-            if(this.createView) return this.$t("employee.create_day_item");
-            else if(this.updateView) return this.$t("employee.update_day_item");
-            else if(this.copyView) return this.$t("employee.copy_day_item");
-            else return "";
-        },
-
-        showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
-            else if(this.copyView) return this.copyView;
-            else return false;
-        },
+        
     },    
     
     methods:{
+        async get_dept_tree(){
+            await reportService.handle_work_hour_blacklist({action:"getDeptTree"}).then(res =>{ 
+                if(res.code==1){
+                    this.dept_tree=res.dept_list;
+                    this.dept_tree.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+                }else{
+                    this.$message.error(this.$t(res.msg));
+                };
+            });
+        },
+
+        async openBlackList(){
+            this.dl_loading=true;
+            await reportService.handle_work_hour_blacklist({action:"getData"}).then(res =>{ 
+                if(res.code==1){
+                    this.black_list=res.black_list;
+                    this.bk_black_list=res.black_list;
+                    this.blacklistView=true;
+                }else{
+                    this.$message.error(this.$t(res.msg));
+                };
+            });
+            this.dl_loading=false;
+        },
+
+        async closeBlackList(){
+            if(this.black_list.sort()!=this.bk_black_list.sort()){
+                await reportService.handle_work_hour_blacklist({action:"saveData", black_list:this.black_list}).then(res =>{});
+                await this.getData();
+            };
+            this.dlKey++;
+            this.blacklistView=false;
+            this.black_list=[];
+            this.bk_black_list=[];
+        },
+
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
@@ -141,11 +182,11 @@ export default {
             return_dict["fontSize"]="14px";
             if(!["dept_name",  "dept_name","p_name", "pid"].includes(column.property)){
                 if(row[column.property]>=8){
-                    return_dict["background"]="#FCFFF7";
+                    return_dict["background"]="#c2e7b0";
                 }else if(row[column.property]==0){
                     return_dict["background"]="white";
                 }else{
-                    return_dict["background"]="#FFEFEE";
+                    return_dict["background"]="#fbc4c4";
                 };
             };
             return return_dict;
@@ -227,6 +268,10 @@ export default {
         width:200px;
         display:inline-block;
     }
+    .handle-select{
+        width:100%;
+        margin-bottom:20px;
+    }
     .table{
         /* width:100%; */
         font-size:13px;
@@ -246,10 +291,6 @@ export default {
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
-    }
-    .dialog-footer-loading{
-        text-align:right;
-        margin:40px 0 -10px 0;
     }
     .container{
         margin-right:10px;
