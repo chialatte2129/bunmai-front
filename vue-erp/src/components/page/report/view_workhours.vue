@@ -234,6 +234,7 @@ export default {
                 this.weekday_dict=res.weekday_dict;
                 this.logCols=res.log_cols;
                 this.tableData=res.logs;
+                this.tableData.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
                 this.getSpanArr(this.tableData);
                 this.totalRow=res.total;
                 this.tbKey++;
