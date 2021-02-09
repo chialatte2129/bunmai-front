@@ -43,6 +43,10 @@
         {
             "index": "overtime_report",
             "title": "menus.overtime_report"
+        },
+        {
+            "index": "view_work_hours",
+            "title": "menus.view_work_hours"
         }
     ]
 }

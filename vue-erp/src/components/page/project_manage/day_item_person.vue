@@ -16,7 +16,7 @@
                 <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
-                <el-button size="large" type="success" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/>
+                <el-button size="large" type="warning" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
             :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
@@ -111,7 +111,7 @@
                             <i style="font-size:28px;vertical-align:middle;color:#F56C6C;border-color:#fbc4c4;" class="el-icon-question mgl10"></i>
                         </el-tooltip>
                         <el-tooltip effect="light" :content="$t('employee.edit_personal_tags')" placement="bottom" v-if="!copyView">
-                            <el-button circle size=mini type=success plain style="margin-left:5px;" icon="el-icon-plus" @click="regetTag=true, openTagManager()"/>
+                            <el-button circle size=mini type=warning plain style="margin-left:5px;" icon="el-icon-plus" @click="regetTag=true, openTagManager()"/>
                         </el-tooltip>
                     </el-form-item>
                     <el-form-item :label="$t('overtime.apply_comp_time')" prop="comp_time" v-if="!copyView">

@@ -89,6 +89,8 @@ export const messages = {
             overtime_process:"補休審核",
             overtime_filing:"補休歸檔",
             overtime_report:"補休紀錄下載",
+            view_report:"報表總覽",
+            view_work_hours:"工作時數總覽",
         },
         table_title:{
             role :'角色代號',
@@ -132,6 +134,7 @@ export const messages = {
             create_inner_project:"創建專案",
             edit_inner_project:"編輯專案",
             delete_inner_project:"作廢專案",
+            workhour_view_black_list:"工時總覽排除名單",
         },
         btn:{
             key_word:"關鍵字查詢",
@@ -329,6 +332,7 @@ export const messages = {
             today:"今天",
             yesterday:"昨天",
             week:"一周",
+            two_week:"兩周",
             month:"一個月",
             three_months:"三個月",
             dayofweek:{
@@ -473,6 +477,8 @@ export const messages = {
             overtime_process:"Process ",
             overtime_filing:"Filing",
             overtime_report:"Download Report",
+            view_report:"View Report",
+            view_work_hours:"Work Hour View",
         },
         table_title :{
             role :'Role id',
@@ -506,6 +512,15 @@ export const messages = {
             create: 'create dictionary',
             delete: 'delete dictionary'
             }
+        },
+        actions:{
+            create_outer_project:"創建外部專案",
+            edit_outer_project:"編輯外部專案",
+            delete_outer_project:"作廢外部專案",
+            create_inner_project:"創建專案",
+            edit_inner_project:"編輯專案",
+            delete_inner_project:"作廢專案",
+            workhour_view_black_list:"Work hour view black list",
         },
         btn: {
             key_word:"Key Words",
@@ -704,6 +719,7 @@ export const messages = {
             today:"Today",
             yesterday:"Yesterday",
             week:"Week",
+            two_week:"2 Weeks",
             month:"Month",
             three_months:"3 Months",
             dayofweek:{
