@@ -91,6 +91,7 @@ export const messages = {
             overtime_report:"補休紀錄下載",
             view_report:"報表總覽",
             view_work_hours:"工作時數總覽",
+            issue_work_hours:"填寫狀況總覽",
         },
         table_title:{
             role :'角色代號',
@@ -356,6 +357,8 @@ export const messages = {
             work_date_invalid:"無效的工作日期",
             work_hour_invalid:"無效的工作時數",
             over_24_hours:"同一天超過 24 小時",
+            under_8:"未滿 8 時天數",
+            total_hour:"時數加總",
             dept_tree:"部門分類",
             nobody:"沒有部門成員",
             daily_details:"每日細節",
@@ -363,6 +366,7 @@ export const messages = {
             use_tag_tip:"填寫可幫助日後統計專案細項",
             clear_tag_tip:"會刪除已設定的標籤，請注意",
             manage_tag_tip:"背景為紅色代表此專案有被啟用專案標籤管理，盡管有設定個人標籤但標籤結果仍然為專案標籤",
+            issue_work_hours_tip:"僅供參考，此處僅列出周一到週五的工時，並不代表正確工作日期",
         },
         project:{
             name:"專案名稱",
@@ -479,6 +483,7 @@ export const messages = {
             overtime_report:"Download Report",
             view_report:"View Report",
             view_work_hours:"Work Hour View",
+            issue_work_hours:"Work Hour Issue",
         },
         table_title :{
             role :'Role id',
@@ -743,6 +748,8 @@ export const messages = {
             work_date_invalid:"Invalid work date",
             work_hour_invalid:"Invalid work hour",
             over_24_hours:"Over 24 hours",
+            under_8:"Under 8 HR.",
+            total_hour:"Total HR.",
             dept_tree:"Dept. Tree",
             nobody:"Nobody",
             daily_details:"Daily Details",
@@ -750,6 +757,7 @@ export const messages = {
             use_tag_tip:"Fill in the tag that can help future statistics of the project",
             clear_tag_tip:"Delete tags that you set",
             manage_tag_tip:"The background is red, which means that the project has been actived for project tag management. Although the personal tag is set, the tag result is still the project tag",
+            issue_work_hours_tip:"For reference only, working hours from Monday to Friday are listed here, and it does not represent the correct working date.",
         },
         project:{
             name:"Proj. Name",

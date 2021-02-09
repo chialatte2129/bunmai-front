@@ -8,29 +8,64 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="mgb10">
-                <el-input v-model="filter.dept_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.dept')" :disabled="table_loading" @change="search"/>
-                <el-input v-model="filter.p_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.name')" :disabled="table_loading" @change="search"/>
-                <el-date-picker v-model="filter.work_date" class="mgr10" type="daterange" align="right" value-format="yyyy-MM-dd" size="large" unlink-panels
-                :disabled="table_loading" :picker-options="pickerOptions" :clearable="false" @change="search" 
-                :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
-                <el-button size=large type=info class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
-                <el-button size=large type=warning style="float:right;" plain @click="openBlackList" :disabled="table_loading"
-                v-if="black_list_action" v-html="$t('actions.workhour_view_black_list')"/>
-            </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" height="657" v-loading="table_loading" 
-            :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
-                <el-table-column v-if="tableData" prop="dept_name" :label="$t('employee.dept')" width="125" fixed="left" show-overflow-tooltip/>
-                <el-table-column v-if="tableData" prop="p_name" :label="$t('employee.name')" width="85" fixed="left" show-overflow-tooltip/>
-                <el-table-column v-if="tableData" :label="row.label" v-for="row in logCols">
-                    <el-table-column :label="$t(`employee.dayofweek.${weekday_dict[row.prop]}`)" :key="row.prop" :prop="row.prop" width="100" headerAlign="center" align="right"/>
-                </el-table-column>
-            </el-table>
+            <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick">
+                <el-tab-pane :label="$t('menus.view_work_hours')" name="view_work_hours" :disabled="table_loading" :key="tabKey">
+                    <div v-if="activeTabs=='view_work_hours'">
+                    <div class="mgb10">
+                        <el-input v-model="filter.dept_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.dept')" 
+                        :disabled="table_loading" @change="search"/>
+                        <el-input v-model="filter.p_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.name')" 
+                        :disabled="table_loading" @change="search"/>
+                        <el-date-picker v-model="filter.work_date" class="mgr10" type="daterange" align="right" value-format="yyyy-MM-dd" size="large" unlink-panels
+                        :disabled="table_loading" :picker-options="pickerOptions" :clearable="false" @change="search" 
+                        :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
+                        <el-button size=large type=info class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                        <el-button size=large type=warning style="float:right;" plain @click="openBlackList" :disabled="table_loading"
+                        v-if="black_list_action" v-html="$t('actions.workhour_view_black_list')"/>
+                    </div>
+                    <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" height="625" v-loading="table_loading" 
+                    :span-method="dateCellMerge" :cell-style="getCellStyle" :header-cell-style="getHeaderCellStyle" :key="tbKey">
+                        <el-table-column v-if="tableData" prop="dept_name" :label="$t('employee.dept')" width="125" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" prop="p_name" :label="$t('employee.name')" width="85" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" :label="row.label" v-for="row in logCols">
+                            <el-table-column :label="$t(`employee.dayofweek.${weekday_dict[row.prop]}`)" :key="row.prop" :prop="row.prop" width="100" headerAlign="center" align="right"/>
+                        </el-table-column>
+                    </el-table>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane :label="$t('menus.issue_work_hours')" name="issue_work_hours" :disabled="table_loading" :key="tabKey+1000">
+                    <div v-if="activeTabs=='issue_work_hours'">
+                    <div>
+                        <span style="float:left;" class="mgb10">
+                            <el-input v-model="filter.dept_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.dept')" 
+                            :disabled="table_loading" @change="search"/>
+                            <el-input v-model="filter.p_name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('employee.name')" 
+                            :disabled="table_loading" @change="search"/>
+                            <el-date-picker v-model="filter.work_date" class="mgr10" type="daterange" align="right" value-format="yyyy-MM-dd" size="large" unlink-panels
+                            :disabled="table_loading" :picker-options="pickerOptions" :clearable="false" @change="search" 
+                            :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
+                            <el-button size=large type=info class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                        </span>
+                        <span class="mgb10" style="color:red;width:400px;float:left;">{{$t("employee.issue_work_hours_tip")}}</span>
+                    </div>
+                    <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" height="625" v-loading="table_loading" 
+                    :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
+                        <el-table-column v-if="tableData" prop="dept_name" :label="$t('employee.dept')" width="125" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" prop="p_name" :label="$t('employee.name')" width="85" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" prop="total" :label="$t('employee.total_hour')" width="80" headerAlign="left" align="right" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" prop="under_8" :label="$t('employee.under_8')" width="105" headerAlign="left" align="right" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" :label="row.label" v-for="row in logCols">
+                            <el-table-column :label="$t(`employee.dayofweek.${weekday_dict[row.prop]}`)" :key="row.prop" :prop="row.prop" width="100" headerAlign="center" align="right"/>
+                        </el-table-column>
+                    </el-table>
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
         </div>
         <el-dialog :title="$t('actions.workhour_view_black_list')" :visible.sync="blacklistView" :key="dlKey"
             :before-close="closeBlackList" :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true">
             <div v-loading.lock="dl_loading">
-                <el-select size=large class="handle-select" v-model="black_list" filterable clearable multiple :placeholder="$t('employee.name')">
+                <el-select size=large class="handle-select" v-model="black_list" filterable multiple :placeholder="$t('employee.name')">
                     <el-option-group v-for="group in dept_tree" :key="group.id" :label="group.complete_name">
                         <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
                             <span class="mgl10">{{item.name}}</span>
@@ -49,6 +84,7 @@ export default {
         return {
             tbKey:0,
             dlKey:0,
+            tabKey:0,
             table_loading:false,
             dl_loading:false,
             logCols:[],
@@ -64,6 +100,7 @@ export default {
             bk_black_list:[],
             dept_tree:[],
             black_list_action:localStorage.getItem("ms_user_actions").includes("workhour_view_black_list"),
+            activeTabs:("tabs" in this.$route.query)?this.$route.query.tabs:"view_work_hours",
             filter:{
                 p_name:"",
                 dept_name:"",
@@ -123,6 +160,7 @@ export default {
     },
 
     async created(){
+        this.$router.replace({ path:"view_work_hours", query:this.getQuery() }).catch(err => {});
         this.get_dept_tree();
         await this.getData();
     },
@@ -136,6 +174,21 @@ export default {
     },    
     
     methods:{
+        getQuery(){
+            var query = Object.assign({}, this.$route.query);
+            query.tabs = this.activeTabs;
+            return query
+        },
+
+        handleTabClick(tab, event){
+            this.activeTabs=tab.name;
+            this.tableData=[];
+            this.tabKey++;
+            this.tbKey++;
+            this.cancelSearch();
+            this.$router.replace({ path:"view_work_hours", query:this.getQuery() }).catch(err => {});
+        },
+
         async get_dept_tree(){
             await reportService.handle_work_hour_blacklist({action:"getDeptTree"}).then(res =>{ 
                 if(res.code==1){
@@ -172,6 +225,14 @@ export default {
             this.bk_black_list=[];
         },
 
+        getHeaderCellStyle({row, column}){
+            var return_dict = {};
+            if([6, 7].includes(this.weekday_dict[column.property])){
+                return_dict["color"]="#FF4F4F";
+            };
+            return return_dict;
+        },
+
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
@@ -180,7 +241,7 @@ export default {
             return_dict["padding"]="4px";
             return_dict["height"]="20px";
             return_dict["fontSize"]="14px";
-            if(!["dept_name",  "dept_name","p_name", "pid"].includes(column.property)){
+            if(!["dept_name",  "dept_name","p_name", "pid", "under_8", "total"].includes(column.property)){
                 if(row[column.property]>=8){
                     return_dict["background"]="#c2e7b0";
                 }else if(row[column.property]==0){
@@ -189,6 +250,9 @@ export default {
                     return_dict["background"]="#fbc4c4";
                 };
             };
+            if(column.property=="under_8"){
+                return_dict["color"]="red";
+            }
             return return_dict;
         },
 
@@ -228,6 +292,7 @@ export default {
         async getData(){
             this.table_loading=true;
             var param = {
+                action:(this.activeTabs=="view_work_hours")?"table":"issue",
                 filter:this.filter
             }
             await reportService.get_daily_workhour(param).then(res =>{ 
@@ -294,6 +359,7 @@ export default {
         height:25px;
     }
     .container{
+        background-color:#f0f0f0;
         margin-right:10px;
         padding:15px;
     }
