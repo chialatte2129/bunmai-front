@@ -53,6 +53,7 @@
                         <el-table-column v-if="tableData" prop="dept_name" :label="$t('employee.dept')" width="125" fixed="left" show-overflow-tooltip/>
                         <el-table-column v-if="tableData" prop="p_name" :label="$t('employee.name')" width="85" fixed="left" show-overflow-tooltip/>
                         <el-table-column v-if="tableData" prop="total" :label="$t('employee.total_hour')" width="80" headerAlign="left" align="right" fixed="left" show-overflow-tooltip/>
+                        <el-table-column v-if="tableData" prop="is_0" :label="$t('employee.is_0')" width="90" headerAlign="left" align="right" fixed="left" show-overflow-tooltip/>
                         <el-table-column v-if="tableData" prop="under_8" :label="$t('employee.under_8')" width="105" headerAlign="left" align="right" fixed="left" show-overflow-tooltip/>
                         <el-table-column v-if="tableData" :label="row.label" v-for="row in logCols">
                             <el-table-column :label="$t(`employee.dayofweek.${weekday_dict[row.prop]}`)" :key="row.prop" :prop="row.prop" width="100" headerAlign="center" align="right"/>
@@ -241,7 +242,7 @@ export default {
             return_dict["padding"]="4px";
             return_dict["height"]="20px";
             return_dict["fontSize"]="14px";
-            if(!["dept_name",  "dept_name","p_name", "pid", "under_8", "total"].includes(column.property)){
+            if(!["dept_name",  "dept_name","p_name", "pid", "under_8", "is_0", "total"].includes(column.property)){
                 if(row[column.property]>=8){
                     return_dict["background"]="#c2e7b0";
                 }else if(row[column.property]==0){
@@ -250,9 +251,9 @@ export default {
                     return_dict["background"]="#fbc4c4";
                 };
             };
-            if(column.property=="under_8"){
+            if(["under_8", "is_0"].includes(column.property)){
                 return_dict["color"]="red";
-            }
+            };
             return return_dict;
         },
 
