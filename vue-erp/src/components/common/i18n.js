@@ -372,6 +372,12 @@ export const messages = {
             project_tag:"專案標籤",
             special_tag:"個人專用標籤",
             unknown_item_id:"未知專案",
+            status_tag:{
+                D:"草稿",
+                P:"進行中",
+                F:"已結案",
+                A:"未成案",
+            }
         },
     },
     'en_US': {

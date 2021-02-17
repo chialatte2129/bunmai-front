@@ -8,159 +8,218 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <el-row>
-                <el-col :span="6">
-                    <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="min-height:710px;">
-                        <div slot="header" class="clearfix">
-                            <span><b>專案清單</b></span>
-                        </div>
-                        <div class="tree_filter">
-                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:60%;" clearable :disabled="tree_loading"/>
-                            <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
-                            <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
-                        </div>
-                        <div class="scrollBar" v-loading="tree_loading">
-                            <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:610px;">
-                                <el-tree class="filtered-tree" 
-                                node-key="value" 
-                                ref="tree_data" 
-                                highlight-current 
-                                show-checkbox 
-                                :expand-on-click-node="false"
-                                :data="tree_data" 
-                                :props="defaultProps" 
-                                :filter-node-method="filterNode" 
-                                :default-expanded-keys="this.expand_key"
-                                :render-content="renderContent"
-                                @node-click="handleNodeClick" 
-                                @check-change="handleCheckChange">
-                                </el-tree>
-                            </el-scrollbar>
-                        </div>
-                    </el-card>
-                </el-col>
-                <el-col :span="18">
-                    <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="min-height:710px;">
-                        <div slot="header" class="clearfix">
-                            <span><b>專案工時報告</b></span>
-                        </div>
-                        <div style="padding:20px;">
-                            <template>
-                                <el-table
-                                    :data="tableData"
-                                    @expand-change="handleExpand"
-                                    style="width: 100%">
-                                    <el-table-column type="expand">
-                                    <template slot-scope="props">
-                                        
-                                    </template>
-                                    </el-table-column>
-                                    <el-table-column
-                                    label="商品 ID"
-                                    prop="id">
-                                    </el-table-column>
-                                    <el-table-column
-                                    label="商品名称"
-                                    prop="name">
-                                    </el-table-column>
-                                    <el-table-column
-                                    label="描述"
-                                    prop="desc">
-                                    </el-table-column>
-                                </el-table>
+            <div class="mgb10">
+                <!-- <el-input size="large" v-model="filter.form_id" :placeholder="$t('overtime.form_id')" clearable @change="search" class="mgr10 handle-input-form_id" :disabled="table_loading"/> -->
+                <el-select size="large" class="mgr10 handle-input" v-model="filter.project" filterable clearable multiple collapse-tags
+                :placeholder="$t('project.name')"  @change="search">
+                    <el-option v-for="item in option.project" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
+                </el-select>
+                <el-select size="large" v-model="filter.status" filterable clearable multiple :placeholder="$t('project.status')" @change="search" class="mgr10" :disabled="table_loading">
+                    <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id" :disabled="table_loading"/>
+                </el-select>
+                <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
+                size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
+                <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+            </div>
+            <!-- <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="table_loading"
+            @sort-change="handleSortChange" :row-class-name="tableRowClassName" :cell-style="getCellStyle" :key="tbKey"> -->
+            
+            <el-table
+            :data="tableData"
+            :row-class-name="mainTableClass"
+            :cell-style="getCellStyle"
+            border
+            @expand-change="handleExpand"
+            @sort-change="handleSortChange"
+            style="width: 100%">
+                <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-table
+                        :data="props.row.children"
+                        :row-class-name="deptTableClass" 
+                        :cell-style="getCellStyle"
+                        row-key="complete_name"
+                        v-loading="handleTableLoading(props.$index)"
+                        border
+                        style="width: 100%">
+                        <el-table-column label="部門" prop="dept_name" width="200px"></el-table-column>
+                        <el-table-column label="完整名稱" prop="complete_name" width="auto"></el-table-column>
+                        <el-table-column label="累計專案工時" prop="work_hours" align="right" width="100px">
+                            <template slot-scope="scope">
+                                <span style="font-size:16px">{{scope.row.work_hours.toFixed(1)}}</span>
                             </template>
-                        </div>
-                    </el-card>
-                </el-col>
-            </el-row>
+                        </el-table-column>
+                        <el-table-column label="操作" prop="total" align="center" width="120px">
+                            <template slot-scope="scope">
+                                <el-button  @click="handleViewClick(props.row,scope.row)">檢視細項</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+                </el-table-column>
+                <el-table-column
+                label="專案ID"
+                prop="item_id"
+                width="150px">
+                </el-table-column>
+                <el-table-column
+                label="專案名稱"
+                prop="item_name"
+                width="auto">
+                </el-table-column>
+                <el-table-column
+                label="描述"
+                prop="description"
+                width="auto">
+                </el-table-column>
+                <el-table-column
+                label="狀態"
+                prop="status"
+                align="center"
+                sortable="customer"
+                width="100px">
+                    <template slot-scope="scope">{{$t("project.status_tag."+scope.row.status)}}</template>
+                </el-table-column>
+                <el-table-column
+                label="起始日期"
+                prop="start_date"
+                align="center"
+                sortable="customer"
+                width="100px">
+                </el-table-column>
+                <el-table-column
+                label="結束日期"
+                prop="end_date"
+                align="center"
+                sortable="customer"
+                width="100px">
+                </el-table-column>
+                <el-table-column
+                label="累計專案工時"
+                prop="work_hours"
+                align="right"
+                sortable="customer"
+                width="120px">
+                    <template slot-scope="scope">
+                        <span style="font-size:16px">{{scope.row.work_hours.toFixed(1)}}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                :disabled="table_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+            </div>
         </div>
+        <el-dialog :title="handleDialogTitle()" :visible.sync="showVisible" width="80%" :before-close="cancelDialog" 
+        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
+            <el-form label-position="left" label-width="100px">
+                <el-form-item label="部門名稱"><span><b>{{select_dept_name}}</b></span></el-form-item>
+                <el-form-item v-show="filter.work_date.length==2" label="日期"><span ><b>{{filter.work_date[0]}}  至  {{filter.work_date[1]}}</b></span></el-form-item>
+            </el-form>
+            <div v-loading.lock="false">
+                <el-table :data="subTableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
+                @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
+                    <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                    <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                    <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                    <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="100" align="right" header-align="left"/>
+                    <el-table-column type="expand" width="40">
+                        <template slot-scope="props">
+                            <el-form label-position="left" label-width="85px">
+                                <el-form-item :label="$t('project.tag1')">{{props.row.tag1}}</el-form-item>
+                                <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
+                            </el-form >
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination">
+                    <el-pagination @size-change="subHandleSizeChange" @current-change="subHandleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                    :current-page="sub_cur_page" :page-sizes="sub_page_size_list" :page-size="sub_page_size" :total="subTotalRow" background/>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
 import { dayItemService } from "@/_services";
 import { workItemService } from "@/_services";
 import { Loading } from 'element-ui';
+import { overtimeService } from "@/_services";
 export default {
-    name: "day_item_review",
+    name: "day_item_person",
     data(){
         return {
-            download_name:"專案細項報表",
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             username:localStorage.getItem("ms_username"),
-            tree_loading:false,
-            expand_key:["F","P","A","D"],
-            tree_data:[],
-
-            month_options:[],
-            select_month:"",
-            select_date_range:"",
-
-            filterText:"",
-            dlKey:1,
-            defaultProps: {
-                children:"children",
-                label:"label",
-                level:"level",
-                value:"value"
-            },
-
-            activeTabs:"month",
-            get_data_sig:false,
-            node_click_sig:false,
-            reset_sig:false,
-            all_sig:false,
-            proptype:"",
+            fullname:localStorage.getItem("ms_user_fullname"),
+            tbKey:0,
+            dlKey:0,
             table_loading:false,
-            tableData: [
-                {
-                    id: '12987122',
-                    name: '好滋好味鸡蛋仔',
-                    category: '江浙小吃、小吃零食',
-                    desc: '荷兰优质淡奶，奶香浓而不腻',
-                    address: '上海市普陀区真北路',
-                    shop: '王小虎夫妻店',
-                    shopId: '10333'
-                }, {
-                    id: '12987123',
-                    name: '好滋好味鸡蛋仔',
-                    category: '江浙小吃、小吃零食',
-                    desc: '荷兰优质淡奶，奶香浓而不腻',
-                    address: '上海市普陀区真北路',
-                    shop: '王小虎夫妻店',
-                    shopId: '10333'
-                }, {
-                    id: '12987125',
-                    name: '好滋好味鸡蛋仔',
-                    category: '江浙小吃、小吃零食',
-                    desc: '荷兰优质淡奶，奶香浓而不腻',
-                    address: '上海市普陀区真北路',
-                    shop: '王小虎夫妻店',
-                    shopId: '10333'
-                }, {
-                    id: '12987126',
-                    name: '好滋好味鸡蛋仔',
-                    category: '江浙小吃、小吃零食',
-                    desc: '荷兰优质淡奶，奶香浓而不腻',
-                    address: '上海市普陀区真北路',
-                    shop: '王小虎夫妻店',
-                    shopId: '10333'
-                }
-            ],
+            dialog_loading:false,
+            showVisible:false,
+            
+            tableData:[],
             totalRow:0,
+            spanArr:[],
+            pos:0,
+            cur_page: 1,
+            page_size:10,
+            page_size_list:[10, 20, 50],
+            start_row:0,
+            sort_column:"work_hours",
+            sort:"desc",
+
+            subTableData:[],
+            subTotalRow:0,
+            sub_cur_page: 1,
+            sub_page_size:10,
+            sub_page_size_list:[10, 20, 50],
+            sub_start_row:0,
+            sub_sort_column:"work_date",
+            sub_sort:"desc",
+
+            select_dept_id:-1,
+            select_pid:-1,
+            select_pname:"",
+            select_dept_name:"",
+
+            loading:false,
+            expand_index:[],
+            expand_row_count:0,
             filter:{
-                project_id:[],
+                status:[],
+                project:[],
+                work_date:[]
             },
             option:{
-                work_item:[],
-                employee:[],
+                projects:[],
+                status:[],
             },
-            previewView:false,
-            form:{},
+            day_mileseconds:86400000,
             pickerOptions:{
                 disabledDate(time){
-                    return time.getTime() > Date.now();
+                    return time.getTime() > Date.now()+86400000*31;
                 },
                 shortcuts:[
+                    {
+                        text: this.$t('employee.today'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 0);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.yesterday'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
                     {
                         text: this.$t('employee.week'),
                         onClick(picker){
@@ -193,236 +252,236 @@ export default {
         }
     },
 
-    watch:{
-        filterText(val){
-            this.$refs.tree_data.filter(val);
-        }
-    },
-
     async created(){
-        await this.get_tree();
         await this.getOption();
-        await this.genLast12Month();
+        await this.getData();
     },
 
-    computed: {
+    watch:{
+
+    },
+
+    computed:{
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
-        
+
+        sub_count_page(){
+            this.sub_start_row=(this.sub_cur_page-1)*this.sub_page_size;
+        },
     },    
     
-    methods: {
-        handleExpand(row,expandedRows) {
-            console.log(row);
-            console.log(expandedRows,"------------------------------------");
-            
-            setTimeout(() => {console.log("ok")}, 1000)
+    methods:{
+        handleDialogTitle(){
+            return this.select_pid+" - "+this.select_pname
         },
-        
-        getToday(){
-            var Today=new Date();
-            return  Today.getFullYear()+"-"+(Today.getMonth()+1)+"-"+Today.getDate() 
-        },
-        genLast12Month(){
-            var today = new Date();
-            var month_count = 24;
-            var end_year = today.getFullYear();
-            var end_month = today.getMonth()+1;
-
-            var month_list = [];
-            for(var i=0;i<month_count;i++){
-                var year_month =String(end_year)+'-'+String(end_month).padStart(2,"0")
-                month_list.push(year_month)
-                if(end_month==1){
-                    end_month=12;
-                    end_year-=1;
+        handleTableLoading(index){
+            if(this.expand_index.includes(index)){
+                if(this.loading){
+                    return true
                 }else{
-                    end_month-=1;
+                    return false
                 }
-            };
-            this.month_options = month_list;
-        },
-       
-        fetchData(){
-            return this.tableData
-        },
-
-        handleGetReport(type){
-            if(this.filter.project_id.length){
-                this.getData(type);
             }else{
-                return this.$message.error("請選擇專案"); 
-            }
-        },
-        async handleTabClick(tab, event){
-            
-        },
-
-        resetCheckBox(){
-            console.log("reset checklist");
-            this.filterText="";
-            this.filter.project_id=[];
-            this.$refs.tree_data.setCheckedKeys([]);
-        },
-
-        allCheckBox(){
-            this.filterText="";
-            for(var item of this.$refs.tree_data.data){
-                if(!this.$refs.tree_data.getNode(item).checked){
-                    this.$refs.tree_data.setChecked(item, true);
-                    if(item.children){
-                        item.children.forEach(element => {
-                            this.$refs.tree_data.setChecked(element, true);
-                            this.handleCheckChange(element,true,"");
-                        });
-                    }
-                }
+                return false
             };
         },
-
-        handleCheckChange(data, checked, indeterminate){
-           
-            if(checked){
-                if(!this.filter.project_id.includes(data.value)){
-                    if(data.level==2 ){
-                        if(this.filterText){
-                            if(data.label.includes(this.filterText)){
-                                
-                                this.filter.project_id.push(data.value);
-                            }
-                        }else{
-                            this.filter.project_id.push(data.value);
-                        }
-                    }
-                };
-            }else{
-                var pos = this.filter.project_id.indexOf(data.value);
-                if(pos != -1) this.filter.project_id.splice(pos, 1);
-            };                        
-        },
-
-        handleNodeClick(data){
-            this.$refs.tree_data.setChecked(data, !this.$refs.tree_data.getNode(data).checked);            
-            if(data.children){
-                data.children.forEach(element => {
-                    if(this.filterText){
-                        if(data.label.includes(this.filterText)){
-                            this.$refs.tree_data.setChecked(element, !this.$refs.tree_data.getNode(element).checked);
-                        }
-                    }else{
-                        this.$refs.tree_data.setChecked(element, !this.$refs.tree_data.getNode(element).checked);
-                    }
-                });
-            }
-        },
-
-        filterNode(value, data){
-            if(!value) return true;
-            return data.label.indexOf(value) !== -1;
-        },
-
-        handleView(index, row){
-            this.form=Object.assign({}, row);
-            this.previewView=true;
-        },
-
         cancelDialog(){
             this.dlKey++;
-            this.form={};
-            this.previewView=false;
+            this.subTableData=[]
+            this.subTotalRow=0;
+            this.sub_cur_page=1;
+            this.sub_page_size=10;
+            this.sub_count_page;
+            this.showVisible = false;
         },
-
-        async get_tree(){
-            this.tree_loading=true;
-            await workItemService.get_tree().then(res =>{ 
-                this.tree_data=res.data;
-            })
-            // await this.allCheckBox();
-            this.tree_loading=false;
+        handleViewClick(project_row,dept_row){
+            this.select_dept_id = dept_row.dept_id;
+            this.select_pid = project_row.item_id;
+            this.select_pname = project_row.item_name;
+            this.select_dept_name = dept_row.complete_name;
+            this.getSubData();
+            this.showVisible = true;
         },
-        async defaultSortData(){
-            console.log("Default Sort Data");
-            await workItemService.downlaod_data(this.last_params).then(res =>{ 
-                this.tableData=res.data;
-                this.totalRow=res.total;
-            })
-        },
-        async getData(type){
-            console.log(type);
-            this.last_params={};
-            var filter = {
-                projects:this.filter.project_id
+        getCellStyle({ column }){
+            const tempWidth=column.realWidth||column.width;
+            if(column.showOverflowTooltip){
+                return {
+                    minWidth:`${tempWidth}px`,
+                    maxWidth:`${tempWidth}px`
+                }
             };
-            if(type=="month"){
-                if(this.select_month){
-                    filter.time=this.select_month;
-                }else{
-                    return this.$message.error("請選擇月份");
-                }
-            }else if(type=="custome"){
-                if(this.select_date_range.length){
-                    filter.time=this.select_date_range;
-                }else{
-                    return this.$message.error("請選擇日期");
-                }
-            }else{
-                filter.time="";
-            }
-            console.log(this.filter.project_id);
+            return {};
+        },
+        mainTableClass({row, rowIndex}) {
+            return `main-table-row`;
+        },
+        deptTableClass({row, rowIndex}) {
+            return `dept-table-row`;
+        },
+        handlePersonProject(row){
+            window.open(`${process.env.VUE_APP_HOST}day_item_person?pjid=${row.item_id}&&date=${row.work_date}`);
+        },
 
-            let loadingInstance = Loading.service({
-                lock: true,
-                text: '產生報表中.....',
-                background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.last_params = {"type":type,"filter":filter}
-            await workItemService.downlaod_data({"type":type,"filter":filter}).then(res =>{ 
+        tableRowClassName({row, rowIndex}) {
+            return `${row.status}-row`;
+        },
+        handleExpand(row,expandedRows) {
+            console.log("row expand");
+            
+            if(expandedRows.length > this.expand_row_count){
+                console.log("get dept data");
+                
+                this.expand_row_count = expandedRows.length;
+                var working_row = this.tableData.map(x => x.item_id).indexOf(row.item_id)
+                this.loading = true;
+                this.expand_index.push(working_row);
+                
+                dayItemService.get_project_dept_totals({item_id:row.item_id,work_date:this.filter.work_date}).then(res =>{ 
+                    if(res.data){
+                        this.tableData[working_row].children = res.data
+                    }
+                    this.loading = false;
+                    this.expand_index.splice(this.expand_index.indexOf(working_row),1);
+                    console.log(row.children);
+                })
+            }else{
+                console.log("pass");
+                
+                this.expand_row_count = expandedRows.length;
+            }
+        },
+        getSpanArr(data){
+            this.resetSpanArr();
+            for(var i=0;i<data.length;i++){
+                if(i===0){ 
+                    this.spanArr.push(1);
+                    this.pos=0;
+                }else{
+                    if(data[i].work_date===data[i-1].work_date){
+                        this.spanArr[this.pos]+=1;
+                        this.spanArr.push(0);
+                    }else{ 
+                        this.spanArr.push(1); 
+                        this.pos=i;
+                    }
+                }
+            }
+        },
+
+        resetSpanArr(){
+            this.spanArr=[];
+            this.pos=null;
+        },
+
+        handleCurrentChange(currentPage){
+            this.expand_row_count = 0;
+            this.expand_index = [];
+            this.cur_page = currentPage;
+            this.count_page;
+            this.getData()
+        },
+
+        subHandleCurrentChange(currentPage){
+            this.sub_cur_page = currentPage;
+            this.sub_count_page;
+            this.getSubData()
+        },
+
+        subHandleSizeChange(size){
+            this.sub_page_size = size;
+            this.subHandleCurrentChange(1);
+        },
+
+        handleSizeChange(size){
+            this.page_size = size;
+            this.handleCurrentChange(1);
+        },
+
+        handleSortChange({prop, order}){
+            console.log(prop,order);
+            
+            this.sort_column = prop;
+            this.sort = order;
+            this.handleCurrentChange(1);
+        },
+        
+        async getData(){
+            this.table_loading=true;
+            var param = {
+                sort_column:this.sort_column,
+                sort:this.sort,
+                start_row:this.start_row,
+                page_size:this.page_size,
+                filter:this.filter
+            }
+            await dayItemService.get_project_totals(param).then(res =>{ 
                 this.tableData=res.data;
                 this.totalRow=res.total;
             })
-            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
-                loadingInstance.close();
-            });
-            this.previewView = true;
+            this.table_loading=false;
+        },
+        async getSubData(){
+            console.log("get data !")
+            this.table_loading=true;
+            var param = {
+                action:"table",
+                sort_column:this.sub_sort_column,
+                sort:this.sub_sort,
+                start_row:this.sub_start_row,
+                page_size:this.sub_page_size,
+                username:this.username,
+                odoo_employee_id:this.odoo_employee_id,
+                filter:{
+                    item_id:[this.select_pid],
+                    work_date:this.filter.work_date,
+                    dept_id:[this.select_dept_id],
+                    pid:[],
+                }
+            }
+            await dayItemService.review_day_list(param).then(res =>{ 
+                console.log(res);
+                
+                this.subTableData=res.day_items;
+                this.subTotalRow=res.total;
+            })
+            this.table_loading=false;
         },
         
         async getOption(){
+            await workItemService.get_options({}).then(res =>{ 
+                this.option.status=res.status; 
+            });
             await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
-                this.option.work_item=res.work_item;
-            }) 
+                this.option.project=res.work_item;
+            });
         },
-
-      
         search(){
             this.handleCurrentChange(1);
         },
         
-        renderContent(h, { node, data, store }) {            
-            if(node.level == 2){
-                return (
-                    <span class="custom-tree-node">
-                        <span>{data.label}</span>
-                    </span>
-                );
-            }else{
-                return (
-                    <span class="custom-tree-node">
-                        <span style="font-size:16px"><b>{data.label}</b></span>
-                    </span>
-                );
-            }
-        }
+        cancelSearch(){
+            this.filter={
+                form_id:"",
+                status:[],
+                work_date:[],
+                pid:[this.odoo_employee_id]
+            };
+            this.tbKey++;
+            this.sort_column="work_date";
+            this.sort="desc";
+            this.handleCurrentChange(1);
+        },
     }
 }
 </script>
 <style scoped>
-    .container{
-        background-color:#f0f0f0;
-        padding:15px;
-    }
     .handle-input{
-        width: 280px;
+        width:300px;
+        display:inline-block;
+    }
+    .handle-input-form_id{
+        width:160px;
         display:inline-block;
     }
     .del-dialog-cnt{
@@ -443,12 +502,16 @@ export default {
     .mgl10{
         margin-left:10px;
     }
-    .mgt10{
-        margin-top:10px;
+    .pdr10{
+        padding-right:10px;
     }
     .crumbs >>> .el-breadcrumb{
         font-size:20px;
         height:25px;
+    }
+    .dialog-footer-loading{
+        text-align:right;
+        margin:40px 0 -10px 0;
     }
     .clearfix{
         position:relative;
@@ -464,7 +527,7 @@ export default {
         padding-right:15px;
     }
     .scrollBar{ 
-        height:593px; 
+        height:440px; 
         overflow:hidden; 
     } 
     .list{ 
@@ -474,15 +537,38 @@ export default {
         width:150px;
         line-height:26px;
     }
+    .custom-tree-node >>> .node_plus{
+        line-height:20px;
+    }
     .filtered-tree >>> .el-tree-node__expand-icon.is-leaf{
         display:none;
     }
     .filtered-tree{
         margin-left:3px;
     }
-    .tree_filter{
-        margin:0px 0px 10px 2px;
-        min-width:100px;
-        width:100%;
+    /* .table >>> .D-row {
+        background: white;
     }
+    .table >>> .O-row {
+        background: gainsboro;
+    }
+    .table >>> .P-row {
+        background: aliceblue;
+    }
+    .table >>> .R-row {
+        background: #FFEFEE;
+    }
+    .table >>> .F-row {
+        background: #FCFFF7;
+    }
+    .table >>> .A-row {
+        background: #FCFFF7;
+    } */
+    .table >>> .main-table-row {
+        background: aliceblue;
+    }
+    .table >>> .dept-table-row {
+        background: #FFF8DC;
+    }
+    
 </style>
