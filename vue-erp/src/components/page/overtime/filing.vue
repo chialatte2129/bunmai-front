@@ -68,6 +68,7 @@
                                 </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -107,6 +108,8 @@
                                 </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
+                                <el-table-column prop="archiver_name" :label="$t('overtime.archiver')" width="85" show-overflow-tooltip/>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -134,6 +137,7 @@ export default {
     data(){
         return {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            fullname:localStorage.getItem("ms_user_fullname"),
             username:localStorage.getItem("ms_username"),
             tree_loading:false,
             checked_id:[],
@@ -298,14 +302,19 @@ export default {
             for(var row of this.multipleSelection){
                 form_id_list.push(row.form_id);
             };
-            await overtimeService.handle_archive({form_id_list:form_id_list}).then(res =>{ 
+            var param = {
+                form_id_list:form_id_list,
+                action_id:this.odoo_employee_id,
+                action_name:this.fullname,
+            };
+            await overtimeService.handle_archive(param).then(res =>{ 
                 if(res.code==1){
                     this.$message.success(this.$t("common_msg.archive")); 
                     this.multipleSelection=[];
                     this.handleCurrentChange(1);
                     this.handleClose();
                 }else{
-                    this.$message.success(this.$t(res.msg)); 
+                    this.$message.error(this.$t(res.msg)); 
                 };
             })
             this.table_loading=false;

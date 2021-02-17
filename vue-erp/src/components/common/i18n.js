@@ -309,6 +309,8 @@ export const messages = {
             archived:"已歸檔",
             process_status:"申請狀態",
             overtime_status:"審核狀態",
+            reviewer:"審核人",
+            archiver:"歸檔人",
             status:{
                 D:"草稿",
                 O:"已作廢",
@@ -702,6 +704,8 @@ export const messages = {
             archived:"Archived",
             process_status:"Status",
             overtime_status:"Status",
+            reviewer:"Reviewer",
+            archiver:"Archiver",
             status:{
                 D:"Draft",
                 O:"Obsolete",

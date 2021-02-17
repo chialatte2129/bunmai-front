@@ -25,6 +25,7 @@
                             <el-form-item :label="$t('employee.description')">
                                 <p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p>
                             </el-form-item>
+                            <el-form-item :label="$t('overtime.reviewer')">{{props.row.reviewer_name}}</el-form-item>
                         </el-form>
                     </template>
                 </el-table-column>

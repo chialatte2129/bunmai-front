@@ -118,7 +118,7 @@
                                 </el-table-column>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
+                                <el-table-column prop="item_id" :label="$t('project.name')" width="190" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="description" :label="$t('employee.description')" width="auto">
@@ -134,6 +134,7 @@
                                 <el-table-column prop="status" :label="$t('overtime.overtime_status')" width="80" show-overflow-tooltip>
                                     <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
                                 </el-table-column>
+                                <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
                                 <!-- <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
@@ -172,6 +173,7 @@ export default {
     data(){
         return {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            fullname:localStorage.getItem("ms_user_fullname"),
             username:localStorage.getItem("ms_username"),
             tree_loading:false,
             checked_id:[],
@@ -342,14 +344,19 @@ export default {
             for(var row of this.multipleSelection){
                 form_id_list.push(row.form_id);
             };
-            await overtimeService.handle_pass({form_id_list:form_id_list}).then(res =>{ 
+            var param = {
+                form_id_list:form_id_list,
+                action_id:this.odoo_employee_id,
+                action_name:this.fullname,
+            };
+            await overtimeService.handle_pass(param).then(res =>{ 
                 if(res.code==1){
                     this.$message.success(this.$t("common_msg.pass")); 
                     this.multipleSelection=[];
                     this.handleCurrentChange(1);
                     this.handleClose();
                 }else{
-                    this.$message.success(this.$t(res.msg)); 
+                    this.$message.error(this.$t(res.msg)); 
                 };
             })
             this.table_loading=false;
@@ -361,7 +368,12 @@ export default {
             for(var row of this.multipleSelection){
                 form_id_list.push(row.form_id);
             };
-            await overtimeService.handle_reject({form_id_list:form_id_list}).then(res =>{ 
+            var param = {
+                form_id_list:form_id_list,
+                action_id:this.odoo_employee_id,
+                action_name:this.fullname,
+            };
+            await overtimeService.handle_reject(param).then(res =>{ 
                 if(res.code==1){
                     this.$message.success(this.$t("common_msg.reject")); 
                     this.multipleSelection=[];
