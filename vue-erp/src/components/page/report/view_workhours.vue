@@ -44,7 +44,8 @@
                             <el-date-picker v-model="filter.work_date" class="mgr10" type="daterange" align="right" value-format="yyyy-MM-dd" size="large" unlink-panels
                             :disabled="table_loading" :picker-options="pickerOptions" :clearable="false" @change="search" 
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
-                            <el-button size=large type=info class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                            <el-button size=large type=info plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                            <el-button size=large type=primary class="mgr10" plain v-html="$t('btn.download')" @click="handleDownload" :disabled="table_loading"/>
                         </span>
                         <span class="mgb10" style="color:red;width:400px;float:left;">{{$t("employee.issue_work_hours_tip")}}</span>
                     </div>
@@ -175,6 +176,25 @@ export default {
     },    
     
     methods:{
+		async handleDownload(){
+            this.table_loading=true;
+            var param = {
+                action:"Downloadissue",
+                filter:this.filter
+            }
+            await reportService.get_daily_workhour(param).then(res =>{ 
+                if(res.code==1){
+					var link = document.createElement("a");
+					link.href = `${process.env.VUE_APP_API}${res.download_url}`;
+					link.download = res.filename;
+					link.click();
+                }else{
+                    this.$message.error(this.$t(res.msg));
+                };
+            })
+			this.table_loading=false;
+        },
+
         getQuery(){
             var query = Object.assign({}, this.$route.query);
             query.tabs = this.activeTabs;
