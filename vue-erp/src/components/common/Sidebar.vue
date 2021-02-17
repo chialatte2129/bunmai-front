@@ -66,7 +66,8 @@ export default {
                             show: this.includeSubMenu([
                                 "day_item_person", 
                                 "day_item_review",
-                                "project_report_download"
+                                "project_report_download",
+                                "day_item_report_project"
                             ]),
                             subs: [ 
                                 {
@@ -83,6 +84,11 @@ export default {
                                     index: "project_report_download",
                                     title: this.$t("menus.project_report_download"),
                                     show: this.hasThisMenu("project_report_download"),
+                                },
+                                {
+                                    index: "day_item_report_project",
+                                    title: this.$t("menus.day_item_report_project"),
+                                    show: this.hasThisMenu("day_item_report_project"),
                                 },
                             ]
                         },

@@ -86,6 +86,11 @@ export default new Router({
                     component: () => import('../components/page/report/view_workhours.vue'),
                     meta: { title: 'menus.project_report_download' }
                 },
+                {
+                    path: 'day_item_report_project',
+                    component: () => import('../components/page/project_manage/day_item_report_project.vue'),
+                    meta: { title: 'menus.day_item_report_project' }
+                },
             ]
         },
         

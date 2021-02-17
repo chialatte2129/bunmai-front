@@ -25,6 +25,10 @@
             "title": "menus.day_item_review"
         },
         {
+            "index": "day_item_report_project",
+            "title": "menus.day_item_report_project"
+        },
+        {
             "index": "project_report_download",
             "title": "menus.project_report_download"
         },
