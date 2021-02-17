@@ -324,6 +324,7 @@ export const messages = {
         employee:{
             name:"員工名稱",
             dept:"部門名稱",
+            complete_name:"完整部門名稱",
             work_hour:"工作時數",
             total_work_hour:"總工時",
             work_date:"工作日期",
@@ -399,6 +400,7 @@ export const messages = {
             project_tag:"專案標籤",
             special_tag:"個人專用標籤",
             unknown_item_id:"未知專案",
+            total_work_hours:"累計專案工時",
             status_tag:{
                 D:"草稿",
                 P:"進行中",
@@ -726,6 +728,7 @@ export const messages = {
         employee:{
             name:"EE. Name",
             dept:"Dept. Name",
+            complete_name:"Complete Dept. Name",
             work_hour:"Work Hour",
             total_work_hour:"Total Hour",
             table_work_hour:"W.H.",
@@ -735,7 +738,7 @@ export const messages = {
             description:"Description",
             start_date:"Start Date",
             end_date:"End Date",
-            date_range:"To",
+            date_range:"to",
             today:"Today",
             yesterday:"Yesterday",
             week:"Week",
@@ -801,6 +804,13 @@ export const messages = {
             project_tag:"Project Tags",
             special_tag:"Special Tags",
             unknown_item_id:"Unknown Project",
+            total_work_hours:"Work Hours",
+            status_tag:{
+                D:"草稿",
+                P:"進行中",
+                F:"已結案",
+                A:"未成案",
+            }
         },
     },
     'ja_JP':{

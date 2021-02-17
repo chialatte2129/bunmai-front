@@ -42,14 +42,14 @@
                         v-loading="handleTableLoading(props.$index)"
                         border
                         style="width: 100%">
-                        <el-table-column label="部門" prop="dept_name" width="200px"></el-table-column>
-                        <el-table-column label="完整名稱" prop="complete_name" width="auto"></el-table-column>
-                        <el-table-column label="累計專案工時" prop="work_hours" align="right" width="100px">
+                        <el-table-column :label="$t('employee.dept')" prop="dept_name" width="200px"></el-table-column>
+                        <el-table-column :label="$t('employee.complete_name')" prop="complete_name" width="auto"></el-table-column>
+                        <el-table-column :label="$t('project.total_work_hours')" prop="work_hours" align="right" width="100px">
                             <template slot-scope="scope">
                                 <span style="font-size:16px">{{scope.row.work_hours.toFixed(1)}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" prop="total" align="center" width="120px">
+                        <el-table-column :label="$t('common_column.action')" prop="total" align="center" width="120px">
                             <template slot-scope="scope">
                                 <el-button  @click="handleViewClick(props.row,scope.row)">檢視細項</el-button>
                             </template>
@@ -58,22 +58,22 @@
                 </template>
                 </el-table-column>
                 <el-table-column
-                label="專案ID"
+                :label="$t('project.id')"
                 prop="item_id"
                 width="150px">
                 </el-table-column>
                 <el-table-column
-                label="專案名稱"
+                :label="$t('project.name')"
                 prop="item_name"
                 width="auto">
                 </el-table-column>
                 <el-table-column
-                label="描述"
+                :label="$t('project.description')"
                 prop="description"
                 width="auto">
                 </el-table-column>
                 <el-table-column
-                label="狀態"
+                :label="$t('project.status')"
                 prop="status"
                 align="center"
                 sortable="customer"
@@ -81,21 +81,21 @@
                     <template slot-scope="scope">{{$t("project.status_tag."+scope.row.status)}}</template>
                 </el-table-column>
                 <el-table-column
-                label="起始日期"
+                :label="$t('employee.start_date')"
                 prop="start_date"
                 align="center"
                 sortable="customer"
-                width="100px">
+                width="120px">
                 </el-table-column>
                 <el-table-column
-                label="結束日期"
+                :label="$t('employee.end_date')"
                 prop="end_date"
                 align="center"
                 sortable="customer"
-                width="100px">
+                width="120px">
                 </el-table-column>
                 <el-table-column
-                label="累計專案工時"
+                :label="$t('project.total_work_hours')"
                 prop="work_hours"
                 align="right"
                 sortable="customer"
@@ -112,9 +112,9 @@
         </div>
         <el-dialog :title="handleDialogTitle()" :visible.sync="showVisible" width="80%" :before-close="cancelDialog" 
         :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
-            <el-form label-position="left" label-width="100px">
-                <el-form-item label="部門名稱"><span><b>{{select_dept_name}}</b></span></el-form-item>
-                <el-form-item v-show="filter.work_date.length==2" label="日期"><span ><b>{{filter.work_date[0]}}  至  {{filter.work_date[1]}}</b></span></el-form-item>
+            <el-form label-position="left" label-width="200px">
+                <el-form-item :label="$t('employee.complete_name')"><span><b>{{select_dept_name}}</b></span></el-form-item>
+                <el-form-item v-show="filter.work_date.length==2" :label="$t('employee.work_date')"><span ><b>{{filter.work_date[0]}}</b>  {{$t("employee.date_range")}}  <b>{{filter.work_date[1]}}</b></span></el-form-item>
             </el-form>
             <div v-loading.lock="false">
                 <el-table :data="subTableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
