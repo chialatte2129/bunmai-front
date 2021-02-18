@@ -90,7 +90,7 @@ export const messages = {
             overtime_filing:"補休歸檔",
             overtime_report:"補休紀錄下載",
             view_report:"報表總覽",
-            view_work_hours:"工作時數總覽",
+            view_work_hours:"工時填寫總覽",
             issue_work_hours:"填寫異常總覽",
             day_item_report_project:"專案工時報告",
         },
