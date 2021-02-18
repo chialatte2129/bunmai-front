@@ -26,6 +26,8 @@
                                 <p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p>
                             </el-form-item>
                             <el-form-item :label="$t('overtime.reviewer')">{{props.row.reviewer_name}}</el-form-item>
+                            <el-form-item :label="$t('overtime.reviewed_at')">{{props.row.reviewed_at}}</el-form-item>
+                            <el-form-item :label="$t('overtime.archived_at')">{{props.row.archived_at}}</el-form-item>
                         </el-form>
                     </template>
                 </el-table-column>
@@ -353,6 +355,9 @@ export default {
     }
     .table >>> .A-row {
         background: #FCFFF7;
+    }
+    .table >>> .el-form-item{
+        margin-bottom:5px;
     }
     .one-line{
         overflow:hidden;

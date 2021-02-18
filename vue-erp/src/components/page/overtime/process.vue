@@ -113,6 +113,13 @@
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             :row-class-name="tableRowClassName" @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
+                                <el-table-column type="expand" width="40">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" label-width="85px">
+                                            <el-form-item :label="$t('overtime.reviewed_at')">{{props.row.reviewed_at}}</el-form-item>
+                                        </el-form>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                                 </el-table-column>
@@ -135,13 +142,6 @@
                                     <template slot-scope="scope">{{$t(`overtime.status.${scope.row.status}`)}}</template>
                                 </el-table-column>
                                 <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
-                                <!-- <el-table-column type="expand" width="40">
-                                    <template slot-scope="props">
-                                        <el-form label-position="left" label-width="85px">
-                                            <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
-                                        </el-form >
-                                    </template>
-                                </el-table-column> -->
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -691,6 +691,9 @@ export default {
     }
     .table >>> .A-row {
         background:#FCFFF7;
+    }
+    .table >>> .el-form-item{
+        margin-bottom:5px;
     }
     .pagination{
         margin:10px 0;

@@ -85,11 +85,6 @@ export default {
                                     title: this.$t("menus.project_report_download"),
                                     show: this.hasThisMenu("project_report_download"),
                                 },
-                                {
-                                    index: "day_item_report_project",
-                                    title: this.$t("menus.day_item_report_project"),
-                                    show: this.hasThisMenu("day_item_report_project"),
-                                },
                             ]
                         },
                         {
@@ -135,6 +130,11 @@ export default {
                                     index: "view_work_hours",
                                     title: this.$t("menus.view_work_hours"),
                                     show: this.hasThisMenu("view_work_hours")
+                                },
+                                {
+                                    index: "day_item_report_project",
+                                    title: this.$t("menus.day_item_report_project"),
+                                    show: this.hasThisMenu("day_item_report_project"),
                                 },
                             ]
                         },

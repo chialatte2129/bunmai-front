@@ -62,13 +62,18 @@
                                 </el-table-column>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="150" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
                                 <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
+                                <el-table-column prop="reviewed_at" :label="$t('overtime.reviewed_at')" width="100" show-overflow-tooltip>
+                                    <template slot-scope="scope">
+                                        <span style="font-size:12px;">{{scope.row.reviewed_at}}</span>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
@@ -97,12 +102,20 @@
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="count_loading"/>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
                             @sort-change="handleSortChange" @selection-change="handleSelectionChange" :cell-style="getCellStyle" :key="tbKey">
+                                <el-table-column type="expand" width="40">
+                                    <template slot-scope="props">
+                                        <el-form label-position="left" label-width="85px">
+                                            <el-form-item :label="$t('overtime.reviewed_at')">{{props.row.reviewed_at}}</el-form-item>
+                                            <el-form-item :label="$t('overtime.archived_at')">{{props.row.archived_at}}</el-form-item>
+                                        </el-form>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" sortable="custom" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                                 </el-table-column>
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="150" show-overflow-tooltip/>
-                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="200" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('employee.name')" width="120" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="150" show-overflow-tooltip/>
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
@@ -610,6 +623,9 @@ export default {
     }
     .table >>> .el-table-column--selection .cell{
         padding-right:10px;
+    }
+    .table >>> .el-form-item{
+        margin-bottom:5px;
     }
     .pagination{
         margin:10px 0;
