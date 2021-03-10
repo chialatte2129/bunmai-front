@@ -719,9 +719,17 @@ export default {
             this.dialog_loading=false;
         },
 
+        checkWorkHours(){
+            if(parseFloat(this.form.work_hours)==0){
+                this.$message.warning(this.$t("employee.work_hour_not_0"))
+                return false;
+            };
+            return true;
+        },
+
         confirmDialog(){
             this.$refs.form.validate(valid => {
-                if(valid){
+                if(this.checkWorkHours()&&valid){
                     var temp_form = Object.assign({}, this.form);
                     delete temp_form["total_comp_time"];
                     delete temp_form["total_work_hour"];
