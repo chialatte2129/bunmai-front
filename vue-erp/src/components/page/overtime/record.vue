@@ -16,6 +16,7 @@
                 <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
+                <span style="float:right;line-height:40px;" v-html="$t('overtime.comp_time_num', {comp_time_sum:comp_time_sum})"></span>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="table_loading"
             @sort-change="handleSortChange" :row-class-name="tableRowClassName" :cell-style="getCellStyle" :key="tbKey">
@@ -48,7 +49,7 @@
                 <el-table-column prop="status" :label="$t('overtime.process_status')" width="100" show-overflow-tooltip>
                     <template slot-scope="scope">{{$t("overtime.status."+scope.row.status)}}</template>
                 </el-table-column>
-                <el-table-column label="開啟專案" width="80" align="center">
+                <el-table-column :label="$t('menus.work_items')" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button type=text size=mini icon="el-icon-edit" @click="handlePersonProject(scope.row)" :disabled="table_loading||['A', 'F'].includes(scope.row.status)"/>
                     </template>
@@ -69,6 +70,7 @@ export default {
         return {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
+            comp_time_sum:0,
             tbKey:0,
             table_loading:false,
             dialog_loading:false,
@@ -156,8 +158,8 @@ export default {
     },
 
     async created(){
-        await this.getOption();
         await this.getData();
+        await this.getCompSum();
     },
 
     watch:{
@@ -244,8 +246,15 @@ export default {
             this.table_loading=false;
         },
         
-        async getOption(){
-
+        async getCompSum(){
+            this.table_loading=true;
+            var param = {
+                pid:localStorage.getItem("ms_odoo_employee_id")
+            }
+            await overtimeService.overtime_comp_sum(param).then(res =>{ 
+                this.comp_time_sum=res.comp_time_sum;
+            })
+            this.table_loading=false;
         },
 
         search(){

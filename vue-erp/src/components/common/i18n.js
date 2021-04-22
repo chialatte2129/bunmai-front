@@ -314,6 +314,7 @@ export const messages = {
             reviewed_at:"審核時間",
             archiver:"歸檔人",
             archived_at:"歸檔時間",
+            comp_time_num:"已通過審核的補休時數<span style='color:red'> {comp_time_sum} </span>小時",
             status:{
                 D:"草稿",
                 O:"已作廢",
@@ -721,6 +722,7 @@ export const messages = {
             reviewed_at:"Reviewed",
             archiver:"Archiver",
             archived_at:"Archived",
+            comp_time_num:"passed compensatory time<span style='color:red'> {comp_time_sum} </span>hours",
             status:{
                 D:"Draft",
                 O:"Obsolete",
