@@ -39,7 +39,12 @@
                         </div>
                     </el-card>
                 </el-col>
-                <el-col :span="18">
+
+                <el-col :span="6">
+                    <varDeptTree @result_change="handleDeptChange"/>
+                </el-col>
+
+                <el-col :span="12">
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane label="月份" name="month">
                             <div style="margin-left:20px;">
@@ -103,6 +108,7 @@
             :before-finish="finishDownload"
             :fetch="fetchData"
             :name="getToday()+'_'+download_name">{{$t('btn.download_excel')}}</download-excel>
+            <el-button type="primary" plain style="margin-top:20px;width:200px;" @click="handleDownlaodCostReport()">下載成本結算表</el-button>
             <el-table
             :data="tableData"
             @sort-change="sortChange"
@@ -121,9 +127,15 @@
 <script>
 import { dayItemService } from "@/_services";
 import { workItemService } from "@/_services";
+import varDeptTree from "./var_dept_tree.vue";
 import { Loading } from 'element-ui';
+
 export default {
-    name: "day_item_review",
+    name: "report_download",
+    components:{
+        varDeptTree
+    },
+    
     data(){
         return {
             download_name:"專案細項報表",
@@ -133,6 +145,7 @@ export default {
             expand_key:["F","P","A","D"],
             tree_data:[],
 
+            current_type:"",
             month_options:[],
             select_month:"",
             select_date_range:"",
@@ -157,6 +170,7 @@ export default {
             totalRow:0,
             filter:{
                 project_id:[],
+                dept_id:[]
             },
             option:{
                 work_item:[],
@@ -240,6 +254,8 @@ export default {
     },    
     
     methods: {
+
+        
         getToday(){
             var Today=new Date();
             return  Today.getFullYear()+"-"+(Today.getMonth()+1)+"-"+Today.getDate() 
@@ -318,12 +334,13 @@ export default {
         },
 
         handleGetReport(type){
-            if(this.filter.project_id.length){
-                this.getData(type);
-            }else{
+            if(!this.filter.project_id.length){
                 return this.$message.error("請選擇專案"); 
-            }
-            
+            };
+            if(!this.filter.dept_id.length){
+                return this.$message.error("請選擇部門"); 
+            };
+            this.getData(type);
         },
         async handleTabClick(tab, event){
             // if(this.activeTabs!=tab.name) this.activeTabs=tab.name;
@@ -411,6 +428,7 @@ export default {
             // await this.allCheckBox();
             this.tree_loading=false;
         },
+        
         async defaultSortData(){
             console.log("Default Sort Data");
             await workItemService.downlaod_data(this.last_params).then(res =>{ 
@@ -420,9 +438,11 @@ export default {
         },
         async getData(type){
             console.log(type);
+            this.current_type = type;
             this.last_params={};
             var filter = {
-                projects:this.filter.project_id
+                projects:this.filter.project_id,
+                dept:this.filter.dept_id
             };
             if(type=="month"){
                 if(this.select_month){
@@ -439,7 +459,7 @@ export default {
             }else{
                 filter.time="";
             }
-            console.log(this.filter.project_id);
+            console.log(filter);
 
             let loadingInstance = Loading.service({
                 lock: true,
@@ -447,6 +467,7 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             this.last_params = {"type":type,"filter":filter}
+            console.log(this.last_params.filter.time);   
             await workItemService.downlaod_data({"type":type,"filter":filter}).then(res =>{ 
                 this.tableData=res.data;
                 this.totalRow=res.total;
@@ -455,6 +476,46 @@ export default {
                 loadingInstance.close();
             });
             this.previewView = true;
+            console.log(this.handleGenFileName());
+        },
+        handleGenFileName(){
+            var fileInfo = "";
+            if(this.current_type=="month"){
+                fileInfo = this.last_params.filter.time+"-";
+            }else if(this.current_type=="custome"){
+                fileInfo = "["+this.last_params.filter.time.join("-")+"]-";
+            }else{
+                fileInfo = "ALL-"
+            }
+            var filename = "ProjectCostReport"
+            return fileInfo+filename+".xlsx"
+        },
+        async handleDownlaodCostReport(){   
+            let loadingInstance = Loading.service({
+                lock: true,
+                text: '產生報表中.....',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            await workItemService.downlaod_cost_data(this.last_params)
+            .then(response => {
+                console.log(response);
+                const link = document.createElement('a');
+                let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'});
+                link.style.display = 'none';
+                link.href = URL.createObjectURL(blob);//创建url对象
+                link.download = this.handleGenFileName()
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);//销毁url对象
+            }).catch(err => {
+                console.log(err);
+            })
+
+            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                loadingInstance.close();
+            });
+            
         },
         
         async getOption(){
@@ -482,7 +543,10 @@ export default {
                     </span>
                 );
             }
-        }
+        },
+        handleDeptChange(data){
+            this.filter.dept_id = data.checked_id;
+        },
     }
 }
 </script>

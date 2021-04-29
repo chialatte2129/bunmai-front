@@ -6,7 +6,8 @@ export const workItemService = {
 	update_work_items,
 	get_dept_employee, 
 	get_tree,
-	downlaod_data
+	downlaod_data,
+	downlaod_cost_data
 }
 
 function get_work_items(param){
@@ -68,3 +69,15 @@ function downlaod_data(param){
 		)
 	})
 }
+
+function downlaod_cost_data(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/work_time/classifier/download`, param,{responseType: 'blob'}).then((response) => {
+			resolve(response)}).catch((error) => {
+				reject(error)
+			}
+		)		
+	})
+}
+
+
