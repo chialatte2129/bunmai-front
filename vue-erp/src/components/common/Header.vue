@@ -11,22 +11,19 @@
     <div class="header-right">
       <div class="header-user-con">
             <i v-if="isadmin" class="el-icon-lx-crown" ></i>   
-        <!-- 語言下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand_lang">
           <span class="el-dropdown-link">
             {{$t('btn.i18n_lang')}} : {{$t(user_lang)}}
             <i class="el-icon-caret-bottom"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item divided command="zh_TW">{{$t('app.lang_zh_TW')}}</el-dropdown-item>
-            <el-dropdown-item divided command="en_US">{{$t('app.lang_en_US')}}</el-dropdown-item>
+            <el-dropdown-item divided command="zh_TW" :disabled="ms_user_lang=='zh_TW'">{{$t('app.lang_zh_TW')}}</el-dropdown-item>
+            <el-dropdown-item divided command="en_US" :disabled="ms_user_lang=='en_US'">{{$t('app.lang_en_US')}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>    
-        <!-- 用户头像 -->
         <div class="user-avator">          
           <i class="el-icon-lx-people" ></i>  
         </div>
-        <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
             {{username}}  
@@ -67,6 +64,7 @@ import { Message } from "element-ui";
 export default {
   data() {
     return {
+      ms_user_lang:localStorage.getItem("ms_user_lang"),
       collapse: false,
       fullscreen: false,
       name: "linxin",
@@ -108,14 +106,12 @@ export default {
      this.isRouterAlive = false
      this.$nextTick(() => (this.isRouterAlive = true))
    }  ,
-     // 語系下拉菜单选择事件
      handleCommand_lang(command) { 
        console.log(command)              
         localStorage.setItem("ms_user_lang",command);
         this.$i18n.locale =command     
         this.$router.go(0)   //reload page
     },
-    // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == "loginout") {
         localStorage.removeItem("ms_username");

@@ -38,7 +38,7 @@
         <el-table-column prop="last_name" :label="$t('table_title.last_name')" width="auto" show-overflow-tooltip></el-table-column>
         <el-table-column prop="info" :label="$t('table_title.info')" width="auto" show-overflow-tooltip></el-table-column>
         <el-table-column prop="email" :label="$t('table_title.email')" width="300" :formatter="formatter" show-overflow-tooltip></el-table-column>
-        <el-table-column :label="$t('btn.action')" width="90" align="center">
+        <el-table-column :label="$t('btn.action')" width="105" align="center">
           <template slot-scope="scope">
             <!-- <el-button type="success" icon="el-icon-circle-check" @click="handleActive(scope.$index, scope.row)" v-if="!scope.row.is_active" :disabled="login_user==scope.row.username">
               {{$t('account.active')}}

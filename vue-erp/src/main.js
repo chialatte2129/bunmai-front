@@ -4,8 +4,7 @@ import router from './router'
 import axios from 'axios';
 import ElementUI from 'element-ui';
 import ElementLocale from 'element-ui/lib/locale';
-import Notification from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
+import 'element-ui/lib/theme-chalk/index.css';
 import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
 import './assets/css/icon.css';
@@ -14,11 +13,6 @@ import './components/common/directives';
 import "babel-polyfill";
 import { store } from './_store';
 import JsEncrypt from 'jsencrypt';
-import { Base64 } from 'js-base64';
-import enLocale from 'element-ui/lib/locale/lang/en';
-import zhLocale from 'element-ui/lib/locale/lang/zh-CN';
-import jaLocale from 'element-ui/lib/locale/lang/ja';
-import twLocale from 'element-ui/lib/locale/lang/zh-TW';
 import JsonExcel from 'vue-json-excel';
 import VueClipboard from 'vue-clipboard2';
 
@@ -37,7 +31,6 @@ const i18n = new VueI18n({
     formatFallbackMessages: true,
     messages
 })
-
 ElementLocale.i18n((key, value) => i18n.t(key, value))
 
 //使用钩子函数对路由进行权限跳转
@@ -46,7 +39,6 @@ router.beforeEach((to, from, next) => {
     var path_id=to.path.replace("/","");
     var path_array=to.path.split("/")
     console.log(to.path, ' >>> ',path_id);
-
     if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限     
             
         localStorage.removeItem('ms_username');               

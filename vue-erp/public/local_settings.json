@@ -17,8 +17,40 @@
             "title": "menus.work_items"
         },
         {
-            "index": "person_day_item",
-            "title": "menus.person_day_item"
+            "index": "day_item_person",
+            "title": "menus.day_item_person"
+        },
+        {
+            "index": "day_item_review",
+            "title": "menus.day_item_review"
+        },
+        {
+            "index": "day_item_report_project",
+            "title": "menus.day_item_report_project"
+        },
+        {
+            "index": "project_report_download",
+            "title": "menus.project_report_download"
+        },
+        {
+            "index": "overtime_person_record",
+            "title": "menus.overtime_person_record"
+        },
+        {
+            "index": "overtime_process",
+            "title": "menus.overtime_process"
+        },
+        {
+            "index": "overtime_filing",
+            "title": "menus.overtime_filing"
+        },
+        {
+            "index": "overtime_report",
+            "title": "menus.overtime_report"
+        },
+        {
+            "index": "view_work_hours",
+            "title": "menus.view_work_hours"
         }
     ]
 }

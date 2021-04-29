@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"/>
+          <i class="el-icon-lx-lock"/>
           {{$t('menus.role_edit')}}
         </el-breadcrumb-item>
       </el-breadcrumb>
@@ -230,7 +230,7 @@ export default {
                 var actions_arr = item.actions_id.split(",");
                 var actions_name_list=[]
                   actions_arr.forEach(function(item2, index2) {
-                  var actions_name = root.$t("dict.actions."+item2);
+                  var actions_name = root.$t("actions."+item2);
                   actions_name_list.push(actions_name)
                 });
               item['action_menus']=actions_name_list.join(',')

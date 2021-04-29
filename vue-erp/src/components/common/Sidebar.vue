@@ -44,28 +44,100 @@
 <script>
 import bus from "../common/bus";
 export default {
-    data() {
+    data(){
         return {
             collapse: false,        
             items: [                
                 // Authority management
                 {
-                    icon: "el-icon-lx-lock",
+                    icon: "el-icon-collection",
                     index: "project",
                     title: this.$t("menus.project_manage"),
-                    show: this.includeSubMenu(["person_day_item","work_items"]),
+                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items"]),
                     subs: [            
-                       
                         {
                             index: "work_items",
                             title: this.$t("menus.work_items"),
                             show: this.hasThisMenu("work_items")
                         },
                         {
-                            index: "person_day_item",
-                            title: this.$t("menus.person_day_item"),
-                            show: this.hasThisMenu("person_day_item")
-                        }
+                            index: "task_report",
+                            title: this.$t("menus.task_report"),
+                            show: this.includeSubMenu([
+                                "day_item_person", 
+                                "day_item_review",
+                                "project_report_download",
+                                "day_item_report_project"
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "day_item_person",
+                                    title: this.$t("menus.day_item_person"),
+                                    show: this.hasThisMenu("day_item_person")
+                                },
+                                {
+                                    index: "day_item_review",
+                                    title: this.$t("menus.day_item_review"),
+                                    show: this.hasThisMenuOrMgr("day_item_review"),
+                                },
+                                {
+                                    index: "project_report_download",
+                                    title: this.$t("menus.project_report_download"),
+                                    show: this.hasThisMenu("project_report_download"),
+                                },
+                            ]
+                        },
+                        {
+                            index: "overtime_manage",
+                            title: this.$t("menus.overtime_manage"),
+                            show: this.includeSubMenu([
+                                "overtime_person_record", 
+                                "overtime_process",
+                                "overtime_filing",
+                                "overtime_report",
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "overtime_person_record",
+                                    title: this.$t("menus.overtime_person_record"),
+                                    show: this.hasThisMenu("overtime_person_record")
+                                },
+                                {
+                                    index: "overtime_process",
+                                    title: this.$t("menus.overtime_process"),
+                                    show: this.hasThisMenuOrMgr("overtime_process")
+                                },
+                                {
+                                    index: "overtime_filing",
+                                    title: this.$t("menus.overtime_filing"),
+                                    show: this.hasThisMenu("overtime_filing")
+                                },
+                                {
+                                    index: "overtime_report",
+                                    title: this.$t("menus.overtime_report"),
+                                    show: this.hasThisMenu("overtime_report")
+                                }
+                            ]
+                        },
+                        {
+                            index: "view_report",
+                            title: this.$t("menus.view_report"),
+                            show: this.includeSubMenu([
+                                "view_work_hours",
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "view_work_hours",
+                                    title: this.$t("menus.view_work_hours"),
+                                    show: this.hasThisMenu("view_work_hours")
+                                },
+                                {
+                                    index: "day_item_report_project",
+                                    title: this.$t("menus.day_item_report_project"),
+                                    show: this.hasThisMenu("day_item_report_project"),
+                                },
+                            ]
+                        },
                     ]
                 },
                 {
@@ -114,12 +186,12 @@ export default {
         };
     },
     computed: {
-        onRoutes() {
+        onRoutes(){
             return this.$route.path.replace("/", "");
         }
     },
     methods: {
-        hasThisMenu(menu_path) {
+        hasThisMenu(menu_path){
             var my_menus = localStorage.getItem("ms_user_menus").split(",");
             if (my_menus.includes(menu_path)) {
                 return true;
@@ -127,7 +199,21 @@ export default {
                 return false;
             }
         },
-        includeSubMenu(sys_menus) {
+
+        hasThisMenuOrMgr(menu_path){
+            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            if (my_menus.includes(menu_path)) {
+                return true;
+            } else {
+                if (localStorage.getItem("ms_odoo_is_dept_manager")=="true") {
+                    localStorage.setItem("ms_user_menus", `${localStorage.getItem('ms_user_menus')}, ${menu_path}`); 
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        includeSubMenu(sys_menus){
             var find_flag = false;
             var arrayLength = sys_menus.length;
             var my_menus = localStorage.getItem("ms_user_menus").split(",");
@@ -138,15 +224,13 @@ export default {
                     break;
                 }
             }
-            //console.log(sys_menus,find_flag)
             return find_flag;
         }
     },
 
-    created() {
-        // 通过 Event Bus 进行组件间通信，来折叠侧边栏
+    created(){
         bus.$on("collapse", msg => {
-        this.collapse = msg;
+            this.collapse = msg;
         });
     }
 };
@@ -165,7 +249,7 @@ export default {
     width: 0;
 }
 .sidebar-el-menu:not(.el-menu--collapse) {
-    width: 250px;
+    width: 220px;
 }
 .sidebar > ul {
     height: 100%;

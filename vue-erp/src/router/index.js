@@ -42,17 +42,58 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    path: '/person_day_item',
-                    component: resolve => require(['../components/page/project_manage/person_day_item.vue'], resolve),
-                    meta: { title:  'menus.person_day_item' }
-                },            
+                    path: '/day_item_person',
+                    component: () => import('../components/page/project_manage/day_item_person.vue'),
+                    meta: { title:  'menus.day_item_person' }
+                },   
+                {
+                    path: '/day_item_review',
+                    component: () => import('../components/page/project_manage/day_item_review.vue'),
+                    meta: { title:  'menus.day_item_review' }
+                },         
                 {
                     path: '/work_items',
-                    component: resolve => require(['../components/page/project_manage/work_items.vue'], resolve),
+                    component: () => import('../components/page/project_manage/work_items.vue'),
                     meta: { title: 'menus.work_items' }
-                }, 
+                },
+                {
+                    path: 'project_report_download',
+                    component: () => import('../components/page/project_manage/report_download.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_filing',
+                    component: () => import('../components/page/overtime/filing.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_report',
+                    component: () => import('../components/page/overtime/report.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_process',
+                    component: () => import('../components/page/overtime/process.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'overtime_person_record',
+                    component: () => import('../components/page/overtime/record.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'view_work_hours',
+                    component: () => import('../components/page/report/view_workhours.vue'),
+                    meta: { title: 'menus.project_report_download' }
+                },
+                {
+                    path: 'day_item_report_project',
+                    component: () => import('../components/page/project_manage/day_item_report_project.vue'),
+                    meta: { title: 'menus.day_item_report_project' }
+                },
             ]
         },
+        
         {
             path: '/login',
             component: resolve => require(['../components/page/Login.vue'], resolve)
