@@ -1,0 +1,740 @@
+<template>
+    <div class="table">
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.daily_jobs')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t('menus.daily_jobs_review')}}</b></el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="container">
+            <el-row>
+                <el-col :span="5">
+                    <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
+                        <div slot="header" class="clearfix">
+                            <span><b>{{$t('employee.dept_tree')}}</b></span>
+                        </div>
+                        <div class="tree_filter">
+                            <el-input :placeholder="$t('btn.search')" v-model="filterText" style="width:50%;" clearable :disabled="tree_loading"/>
+                            <el-button type=primary plain v-html="$t('btn.all_select')" class="mgl10" :disabled="tree_loading" @click="allCheckBox"/>
+                            <el-button type=info plain v-html="$t('btn.reset')" :disabled="tree_loading" @click="resetCheckBox"/>
+                        </div>
+                        <div class="scrollBar" v-loading="tree_loading">
+                            <el-scrollbar ref="scroll" wrap-class="list" view-class="view-box" :native="false" style="height:610px;">
+                                <el-tree class="filtered-tree" node-key="id" ref="tree_data" highlight-current show-checkbox :expand-on-click-node="false"
+                                :data="tree_data" :props="defaultProps" :filter-node-method="filterNode" :default-expanded-keys="this.expand_key" @check="handleCheck"
+                                @node-click="handleNodeClick" @node-expand="handleNodeExpand" @node-collapse="handleNodeCollapse" @check-change="handleCheckChange">
+                                    <span class="custom-tree-node" slot-scope="{node, data}">
+                                        <span class="node_label_1" v-if="node.level===1">{{node.label}}</span>
+                                    </span>
+                                </el-tree>
+                            </el-scrollbar>
+                        </div>
+                    </el-card>
+                </el-col>
+                <el-col :span="19">
+                    <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
+                        <el-tab-pane label="工作執行" name="daily_details">
+                            <div v-if="activeTabs=='daily_details'">
+                            <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
+                            <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
+                            :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
+                                <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                        <span class="mgl10">{{item.name}}</span>
+                                    </el-option>
+                                </el-option-group>
+                            </el-select>
+                            <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
+                            :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
+                            :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
+                            <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
+                            <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="521" v-loading="table_loading"
+                            @sort-change="handleSortChange" :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
+                                <el-table-column prop="work_date" label="執行日期" width="150" show-overflow-tooltip>
+                                    <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
+                                </el-table-column>
+                                <el-table-column prop="p_name" label="執行人員" width="90" show-overflow-tooltip/>
+                                <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/>
+                                <el-table-column prop="description" label="工作事項" width="auto">
+                                    <template slot-scope="scope">
+                                        <el-tooltip effect="light" placement="top">
+                                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <div class="one-line">{{scope.row.description}}</div>
+                                        </el-tooltip>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="description" label="執行狀況" width="auto">
+                                    <template slot-scope="scope">
+                                        <el-tooltip effect="light" placement="top">
+                                            <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <div class="one-line">{{scope.row.note}}</div>
+                                        </el-tooltip>
+                                    </template>
+                                </el-table-column>
+                               <el-table-column prop="status" label="執行狀態" width="120" align="center" header-align="center">
+                                    <template slot-scope="scope">
+                                        <el-button v-if="scope.row.status=='F'" type="success" style="width:80px">已完成</el-button>
+                                        <el-button v-if="scope.row.status=='P' && today<=scope.row.work_date" type="primary" style="width:80px" >待辦</el-button>
+                                        <el-button v-if="scope.row.status=='P' && today>scope.row.work_date" type="danger" style="width:80px" >逾期待辦</el-button>
+                                        <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">作廢</el-button>
+                                    </template>
+                                </el-table-column>
+                                 <el-table-column :label="$t('btn.action')" width="120" align="center" fixed="right">
+                                    <template slot-scope="scope">
+                                        <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <div class="pagination">
+                                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                                :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
+                            </div>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-col>
+            </el-row>
+        </div>
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
+        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
+            <div v-loading.lock="dialog_loading">
+                <el-form :model="form" ref="form" label-position="right" label-width="auto">
+                    <el-form-item label="執行日期" prop="work_date">
+                        <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
+                        :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
+                            disabledDate(time){ 
+                                return time.getTime()>Date.now()+day_mileseconds*31;
+                            }
+                        }"/>
+                    </el-form-item>
+                    <el-form-item label="執行人員" prop="item_id">
+                        <el-select v-model="form.work_person" filterable clearable class="handle-input" :disabled="updateView||copyView" >
+                            <el-option label="許宸維" value="許宸維"/>
+                            <el-option label="巫家毅" value="巫家毅"/>
+                            <el-option label="王家得" value="王家得"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="執行事項" prop="work_hours">
+                        <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
+                    </el-form-item>
+                    <el-form-item v-if="!createView" label="執行狀況" prop="work_hours">
+                        <el-input v-model="form.note" type="textarea" :rows="5" style="width:95%;"/>
+                    </el-form-item>
+                    <el-form-item label="狀態" prop="status">
+                        <el-select v-model="form.status" class="handle-input" >
+                            <el-option value="F" label="已完成"/>
+                            <el-option value="P" label="待辦"/>
+                            <el-option value="O" label="作廢"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="建立人員" prop="status">
+                        <span>{{form.created_by}}</span>
+                    </el-form-item>
+                    <el-form-item label="建立時間" prop="status">
+                       <span>{{form.created_at}}</span>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer-loading">
+                    <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
+                    <el-button type="primary" @click="confirmDialog" >{{$t("btn.confirm")}}</el-button>
+                </div>
+            </div>
+        </el-dialog>
+    </div>
+</template>
+<script>
+import { dayItemService } from "@/_services";
+export default {
+    name: "day_item_review",
+    data(){
+        return {
+            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            username:localStorage.getItem("ms_username"),
+            fullname:localStorage.getItem("ms_user_fullname"),
+            today:"",
+            createView:false,
+            updateView:false,
+            copyView:false,
+            form:{},
+            tbKey:0,
+            dlKey:0,
+            dialog_loading:false,
+
+            tree_loading:false,
+            checked_id:[],
+            expand_key:[],
+            tree_data:[],
+            filterText:"",
+            defaultProps: {
+                children:"children",
+                label:"complete_name",
+                level:"level",
+            },
+
+            activeTabs:"daily_details",
+            get_data_sig:false,
+            node_click_sig:false,
+            reset_sig:false,
+            all_sig:false,
+
+            table_loading:false,
+            tableData:[],
+            totalRow:0,
+            spanArr:[],
+            pos:null,
+            tbKey:0,
+            cur_page:1,
+            page_size:20,
+            page_size_list:[20, 50, 100],
+            start_row:0,
+            sort_column:"work_date",
+            sort:"desc",
+            filter:{
+                item_id:null,
+                work_date:[],
+                dept_id:[],
+                pid:[],
+            },
+            option:{
+                work_item:[],
+                employee:[],
+            },
+            day_mileseconds:86400000,
+            pickerOptions:{
+                disabledDate(time){
+                    return time.getTime() > Date.now()+86400000*31;
+                },
+                shortcuts:[
+                    {
+                        text: this.$t('employee.today'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 0);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.yesterday'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1);
+                            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.week'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, 
+                    {
+                        text: this.$t('employee.month'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    },
+                    {
+                        text: this.$t('employee.three_months'),
+                        onClick(picker){
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }
+                ]
+            },
+        }
+    },
+
+    watch:{
+        filterText(val){
+            this.$refs.tree_data.filter(val);
+        },
+
+        "filter.dept_id"(val){
+            this.filter.pid=[];
+        },
+
+        get_data_sig(val){
+            if(val){
+                this.handleCurrentChange(1);
+            }
+            this.get_data_sig=false;
+            this.node_click_sig=false;
+            this.reset_sig=false;
+            this.all_sig=false;
+        },
+    },
+
+    async created(){
+        await this.get_dept_tree();
+        await this.getOption();
+        this.getToday();
+    },
+
+    computed: {
+        count_page(){
+            this.start_row=(this.cur_page-1)*this.page_size;
+        },
+        showTitle(){
+            if(this.createView) return "新增待辦事項";
+            else if(this.updateView) return "編輯待辦事項";
+            else if(this.copyView) return "複製待辦事項";
+            else return "";
+        },
+
+        showVisible(){
+            if(this.createView) return this.createView;
+            else if(this.updateView) return this.updateView;
+            else if(this.copyView) return this.copyView;
+            else return false;
+        },
+    },    
+    
+    methods: {
+        resetForm(){
+            this.dlKey++;
+            this.form={
+                pid:this.odoo_employee_id,
+                p_name:this.fullname,
+                item_id:"",
+                work_date:"",
+                work_hours:"",
+                description:"",
+                tag1:"",
+                comp_time:null,
+                overtime_status:"",
+                overtime_application_udid:null,
+            };
+            this.option.tags=[];
+            this.edit_idx=null;
+            this.$refs.form.clearValidate();
+        },
+        cancelDialog(){
+            this.resetForm();
+            this.createView=false;
+            this.updateView=false;
+            this.copyView=false;
+        },
+
+        confirmDialog(){
+            this.$refs.form.validate(valid => {
+                if(valid){
+                    var temp_form = Object.assign({}, this.form);
+                    delete temp_form["total_comp_time"];
+                    delete temp_form["total_work_hour"];
+                    var param = {
+                        action:this.createView?"create":(this.updateView?"update":"copy"),
+                        form:temp_form
+                    };
+                    this.update_day_item(param);
+                }
+            })
+        },
+
+        async update_day_item(param){ 
+            this.dialog_loading=true;
+            // await dayItemService.update_day_item(param).then(res =>{ 
+            //     if(res.code==1){ 
+            //         this.$message.success(this.$t(res.msg)); 
+            //         if(["create", "copy", "update"].includes(param.action)){
+            //             this.tbKey++;
+            //             this.getData();
+            //             this.cancelDialog();
+            //         }else if(param.action=="delete"){
+            //             this.cancelDelete()
+            //             this.handleDeleteChange();
+            //         }
+            //     }else if(res.code==0){ 
+            //         this.$message.warning(this.$t(res.msg)); 
+            //     }else{ 
+            //         this.$message.error(this.$t(res.msg)); 
+            //     } 
+            // }) 
+            this.cancelDialog();
+            this.dialog_loading=false;
+        },
+
+        cancelDialog(){
+            this.resetForm();
+            this.createView=false;
+            this.updateView=false;
+            this.copyView=false;
+        },
+
+
+        async handleCreate(){
+            var today = new Date();
+            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            this.form.work_person=this.fullname;
+            this.form.status="P";
+            this.createView=true;
+        },
+
+        async handleEdit(index, row){
+            this.form=Object.assign({}, row);
+            this.form.work_person=row.p_name;
+            this.edit_idx=index;
+            this.updateView=true;
+        },
+
+        getToday(){
+            let time =new Date();
+            this.today = time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
+        },
+        getSpanArr(data){
+            this.resetSpanArr();
+            for(var i=0;i<data.length;i++){
+                if(i===0){ 
+                    this.spanArr.push(1);
+                    this.pos=0;
+                }else{
+                    if(
+                        (data[i].work_date===data[i-1].work_date)
+                        &&
+                        (data[i].p_name===data[i-1].p_name)
+                        &&
+                        (data[i].dept_name===data[i-1].dept_name)
+                    ){
+                        this.spanArr[this.pos]+=1;
+                        this.spanArr.push(0);
+                    }else{ 
+                        this.spanArr.push(1); 
+                        this.pos=i;
+                    }
+                }
+            }
+        },
+
+        resetSpanArr(){
+            this.spanArr=[];
+            this.pos=null;
+        },
+
+        dateCellMerge({row, column, rowIndex, columnIndex}){
+            if(["work_date", "p_name", "dept_name", "total_work_hour", "total_comp_time"].includes(column.property)){
+                const _row=this.spanArr[rowIndex];
+                const _col=_row>0?1:0;
+                return { rowspan:_row, colspan:_col }
+            }
+        },
+
+        getCellStyle({row, column}){
+            const tempWidth=column.realWidth||column.width;
+            var return_dict = {};
+            return_dict["minWidth"]=`${tempWidth}px`;
+            return_dict["maxWidth"]=`${tempWidth}px`;
+            if(column.property=="total_work_hour"){
+                return_dict["color"]="green";
+                if(row.total_work_hour<8){
+                    return_dict["color"]="red";
+                };
+            };
+            return return_dict;
+        },
+
+        async handleTabClick(tab, event){
+            // if(this.activeTabs!=tab.name) this.activeTabs=tab.name;
+        },
+
+        resetCheckBox(){
+            this.filterText="";
+            this.checked_id=[];
+            this.$refs.tree_data.setCheckedKeys([]);
+            this.reset_sig=true;
+        },
+
+        allCheckBox(){
+            this.filterText="";
+            for(var row of this.$refs.tree_data.data){
+                if(!this.$refs.tree_data.getNode(row).checked){
+                    this.checked_id.push(row.id);
+                    this.$refs.tree_data.setChecked(row, true);
+                }
+            };
+            this.all_sig=true;
+        },
+
+        handleCheckChange(data, checked, indeterminate){
+            // console.log("check change");
+            if(checked){
+                if(!this.checked_id.includes(data.id)){
+                    this.checked_id.push(data.id);
+                };
+                if(!this.filter.dept_id.includes(data.id)){
+                    this.filter.dept_id.push(data.id);
+                };
+                if(data.members.length==0){
+                    data.members.push({id:"-100", name:this.$t("employee.nobody"), disabled:true});
+                };
+                this.option.employee.push(data);
+                this.option.employee.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+            }else{
+                var pos = this.checked_id.indexOf(data.id);
+                if(pos!=-1) this.checked_id.splice(pos, 1);
+                var pos = this.filter.dept_id.indexOf(data.id);
+                if(pos!=-1) this.filter.dept_id.splice(pos, 1);
+                var pos = this.option.employee.indexOf(data);
+                if(pos!=-1) this.option.employee.splice(pos, 1);
+            };
+            if(this.all_sig&&this.filter.dept_id.length==this.tree_data.length){
+                this.get_data_sig=true;
+            };
+            if(this.node_click_sig&&this.filter.dept_id.length==this.checked_id.length){
+                this.get_data_sig=true;
+            };
+            if(this.reset_sig&&this.filter.dept_id.length==0){
+                this.get_data_sig=true;
+            };
+        },
+
+        async handleCheck(data){
+            console.log("check")
+            var flag = !this.$refs.tree_data.getNode(data).checked;
+            await this.$refs.tree_data.setChecked(data, flag);
+            await this.handleNodeClick(data);
+        },
+
+        async handleNodeClick(data){
+            console.log("node click");
+            var flag = !this.$refs.tree_data.getNode(data).checked;
+            await this.handleClickSig(flag, data);
+        },
+
+        handleClickSig(flag, data){
+            var complete_name = data.complete_name;
+            var real_data = [];
+            for(var row of this.$refs.tree_data.data){
+                if(row.complete_name.includes(complete_name)){
+                    if(flag){
+                        if(!this.checked_id.includes(row.id)){
+                            this.checked_id.push(row.id);
+                        };
+                    }else{
+                        var pos = this.checked_id.indexOf(row.id);
+                        if(pos!=-1) this.checked_id.splice(pos, 1);
+                    };
+                };
+            };
+            for(var row of this.tree_data){
+                if(row.complete_name.includes(complete_name)){
+                    real_data.push(row);
+                };
+            };
+            for(var row of real_data){
+                this.$refs.tree_data.setChecked(row, flag);
+            };
+            this.node_click_sig=true;
+        },
+
+        filterNode(value, data){
+            if(!value) return true;
+            return data.complete_name.indexOf(value) !== -1;
+        },
+
+        handleNodeExpand(data){
+            let flag = false
+            this.expand_key.some(item => {
+                if(item === data.id){
+                    flag = true;
+                    return true
+                }
+            })
+            if(!flag) this.expand_key.push(data.id);
+        },
+
+        handleNodeCollapse(data){
+            this.expand_key.some((item, i) => {
+                if(item === data.id) this.expand_key.splice(i, 1);
+            })
+        },
+
+        async get_dept_tree(){
+            this.tree_loading=true;
+            var param = {
+                odoo_employee_id:this.odoo_employee_id,
+                username:this.username,
+            }
+            await dayItemService.get_dept_tree(param).then(res =>{ 
+                this.tree_data=res.tree_data;
+                this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+                // for(var dept of this.tree_data){
+                //     dept.disabled=true;
+                // };
+            })
+            await this.allCheckBox();
+            this.tree_loading=false;
+        },
+        
+        async getData(){
+            console.log("get data !")
+            this.table_loading=true;
+            var param = {
+                action:"table",
+                sort_column:this.sort_column,
+                sort:this.sort,
+                start_row:this.start_row,
+                page_size:this.page_size,
+                username:this.username,
+                odoo_employee_id:this.odoo_employee_id,
+                filter:this.filter
+            }
+            await dayItemService.review_day_list(param).then(res =>{ 
+                this.tableData=res.day_items;
+                this.totalRow=res.total;
+                console.log(res);
+                this.getSpanArr(this.tableData);
+            })
+
+            this.tableData=[
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"修正 mysql events schedule 狀況","status":"P","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"steam版本企劃內容整理","status":"P","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"王家得","dept_name":"數據分析","day_of_week":3,"note":"","description":"戰損貼圖修改，男一成年版模型製作","status":"P","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","status":"P","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增小天使與淡入淡出轉場","status":"P","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增多語言與劇本選擇流程","status":"F","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"修改遊戲流程","status":"F","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"需要支援","description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","status":"P","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"","description":"選擇UI改為砍擊模組","status":"F","owner":""},
+                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"巫家毅","dept_name":"數據分析","day_of_week":1,"note":"","description":"新增場景管理器與轉場流程","status":"F","owner":""},
+            ];
+            this.totalRow=10;
+            this.getSpanArr(this.tableData);
+            this.table_loading=false;
+        },
+        
+        async getOption(){
+            await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
+                this.option.work_item=res.work_item;
+            }) 
+        },
+
+        handleCurrentChange(currentPage){
+            this.cur_page = currentPage;
+            this.count_page;
+            this.getData()
+        },
+
+        handleSizeChange(size){
+            this.page_size = size;
+            this.handleCurrentChange(1);
+        },
+
+        handleSortChange({prop, order}){
+            this.sort_column = prop;
+            this.sort = order;
+            this.handleCurrentChange(1);
+        },
+
+        search(){
+            this.handleCurrentChange(1);
+        },
+        
+        cancelSearch(){
+            this.filter={
+                item_id:null,
+                work_date:[],
+                dept_id:this.filter.dept_id,
+                pid:[],
+            };
+            this.tbKey++;
+            this.sort_column="work_date";
+            this.sort="desc";
+            this.handleCurrentChange(1);
+        },
+    }
+}
+</script>
+<style scoped>
+    .container{
+        background-color:#f0f0f0;
+        padding:15px;
+    }
+    .handle-input{
+        width:280px;
+        display:inline-block;
+    }
+    .del-dialog-cnt{
+        font-size:16px;
+        text-align:center;
+        color:#FF4242;
+    }
+    .table{
+        width:100%;
+        font-size:14px;
+    }
+    .mgb10{
+        margin-bottom:10px;
+    }
+    .mgr10{
+        margin-right:10px;
+    }
+    .mgl10{
+        margin-left:10px;
+    }
+    .mgt10{
+        margin-top:10px;
+    }
+    .crumbs >>> .el-breadcrumb{
+        font-size:20px;
+        height:25px;
+    }
+    .clearfix{
+        position:relative;
+        line-height:1.23;
+        font-size: 16px;
+    }
+    .custom-tree-node{
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        font-size:14px;
+        padding-right:15px;
+    }
+    .scrollBar{ 
+        height:593px; 
+        overflow:hidden; 
+    } 
+    .list{ 
+        max-height:10px; 
+    }
+    .custom-tree-node >>> .node_label_1{
+        width:150px;
+        line-height:26px;
+    }
+    .filtered-tree >>> .el-tree-node__expand-icon.is-leaf{
+        display:none;
+    }
+    .filtered-tree{
+        margin-left:3px;
+    }
+    .tree_filter{
+        margin:0px 0px 10px 2px;
+        min-width:100px;
+        width:100%;
+    }
+    .pagination{
+        margin:15px 0;
+        text-align:right;
+    }
+    .container{
+        margin-right:10px;
+    }
+    .one-line{
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+    }
+</style>

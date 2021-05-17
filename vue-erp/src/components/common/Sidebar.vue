@@ -60,6 +60,7 @@ export default {
                             title: this.$t("menus.work_items"),
                             show: this.hasThisMenu("work_items")
                         },
+                        
                         {
                             index: "task_report",
                             title: this.$t("menus.task_report"),
@@ -87,6 +88,7 @@ export default {
                                 },
                             ]
                         },
+                        
                         {
                             index: "overtime_manage",
                             title: this.$t("menus.overtime_manage"),
@@ -116,6 +118,26 @@ export default {
                                     index: "overtime_report",
                                     title: this.$t("menus.overtime_report"),
                                     show: this.hasThisMenu("overtime_report")
+                                }
+                            ]
+                        },
+                        {
+                            index: "daily_jobs",
+                            title: this.$t("menus.daily_jobs"),
+                            show: this.includeSubMenu([
+                                "daily_jobs_person", 
+                                "daily_jobs_review"
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "daily_jobs_person",
+                                    title: this.$t("menus.daily_jobs_person"),
+                                    show: this.hasThisMenu("daily_jobs_person")
+                                },
+                                {
+                                    index: "daily_jobs_review",
+                                    title: this.$t("menus.daily_jobs_review"),
+                                    show: this.hasThisMenuOrMgr("daily_jobs_review"),
                                 }
                             ]
                         },

@@ -93,6 +93,9 @@ export const messages = {
             view_work_hours:"工時填寫總覽",
             issue_work_hours:"填寫異常總覽",
             day_item_report_project:"專案工時報告",
+            daily_jobs:"每日工作管理",
+            daily_jobs_person:"我的待辦事項",
+            daily_jobs_review:"成員執行狀況"
         },
         table_title:{
             role :'角色代號',
@@ -502,6 +505,9 @@ export const messages = {
             view_report:"View Report",
             view_work_hours:"Work Hour View",
             issue_work_hours:"Work Hour Issue",
+            daily_jobs:"Daily Work Manage",
+            daily_jobs_person:"My Checklist",
+            daily_jobs_review:"Review"
         },
         table_title :{
             role :'Role id',

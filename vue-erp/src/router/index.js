@@ -91,6 +91,16 @@ export default new Router({
                     component: () => import('../components/page/project_manage/day_item_report_project.vue'),
                     meta: { title: 'menus.day_item_report_project' }
                 },
+                {
+                    path: 'daily_jobs_person',
+                    component: () => import('../components/page/daily_jobs/person.vue'),
+                    meta: { title:  'menus.daily_jobs_person' }
+                },   
+                {
+                    path: 'daily_jobs_review',
+                    component: () => import('../components/page/daily_jobs/review.vue'),
+                    meta: { title:  'menus.daily_jobs_review' }
+                }
             ]
         },
         
