@@ -36,7 +36,7 @@
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane label="工作執行" name="daily_details">
                             <div v-if="activeTabs=='daily_details'">
-                            <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
+                            <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="true">{{$t('btn.new')}}</el-button>
                             <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -56,15 +56,15 @@
                                 </el-table-column>
                                 <el-table-column prop="p_name" label="執行人員" width="90" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/>
-                                <el-table-column prop="description" label="工作事項" width="auto">
+                                <el-table-column prop="content" label="工作事項" width="auto">
                                     <template slot-scope="scope">
                                         <el-tooltip effect="light" placement="top">
-                                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
-                                            <div class="one-line">{{scope.row.description}}</div>
+                                            <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <div class="one-line">{{scope.row.content}}</div>
                                         </el-tooltip>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="description" label="執行狀況" width="auto">
+                                <el-table-column prop="note" label="執行狀況" width="auto">
                                     <template slot-scope="scope">
                                         <el-tooltip effect="light" placement="top">
                                             <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div>
@@ -82,7 +82,7 @@
                                 </el-table-column>
                                  <el-table-column :label="$t('btn.action')" width="120" align="center" fixed="right">
                                     <template slot-scope="scope">
-                                        <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                                        <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="true">{{$t('btn.edit')}}</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -144,6 +144,7 @@
     </div>
 </template>
 <script>
+import { dailyJobsService } from "@/_services";
 import { dayItemService } from "@/_services";
 export default {
     name: "day_item_review",
@@ -592,27 +593,27 @@ export default {
                 odoo_employee_id:this.odoo_employee_id,
                 filter:this.filter
             }
-            await dayItemService.review_day_list(param).then(res =>{ 
+            await dailyJobsService.review_daily_jobs_list(param).then(res =>{ 
                 this.tableData=res.day_items;
                 this.totalRow=res.total;
                 console.log(res);
                 this.getSpanArr(this.tableData);
             })
 
-            this.tableData=[
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"修正 mysql events schedule 狀況","status":"P","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"steam版本企劃內容整理","status":"P","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"王家得","dept_name":"數據分析","day_of_week":3,"note":"","description":"戰損貼圖修改，男一成年版模型製作","status":"P","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","status":"P","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增小天使與淡入淡出轉場","status":"P","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增多語言與劇本選擇流程","status":"F","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"修改遊戲流程","status":"F","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"需要支援","description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","status":"P","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"","description":"選擇UI改為砍擊模組","status":"F","owner":""},
-                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"巫家毅","dept_name":"數據分析","day_of_week":1,"note":"","description":"新增場景管理器與轉場流程","status":"F","owner":""},
-            ];
-            this.totalRow=10;
-            this.getSpanArr(this.tableData);
+            // this.tableData=[
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"修正 mysql events schedule 狀況","status":"P","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"steam版本企劃內容整理","status":"P","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"王家得","dept_name":"數據分析","day_of_week":3,"note":"","description":"戰損貼圖修改，男一成年版模型製作","status":"P","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","status":"P","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增小天使與淡入淡出轉場","status":"P","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增多語言與劇本選擇流程","status":"F","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"修改遊戲流程","status":"F","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"需要支援","description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","status":"P","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"","description":"選擇UI改為砍擊模組","status":"F","owner":""},
+            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"巫家毅","dept_name":"數據分析","day_of_week":1,"note":"","description":"新增場景管理器與轉場流程","status":"F","owner":""},
+            // ];
+            // this.totalRow=10;
+            // this.getSpanArr(this.tableData);
             this.table_loading=false;
         },
         

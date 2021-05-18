@@ -2,7 +2,8 @@ import axios from 'axios';
 
 export const dailyJobsService = { 
 	person_daily_jobs_list,
-    update_daily_jobs
+    update_daily_jobs,
+	review_daily_jobs_list
 }
 
 function person_daily_jobs_list(param){
@@ -25,3 +26,12 @@ function update_daily_jobs(param){
 	})
 }
 
+function review_daily_jobs_list(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/daily_jobs/review/table`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
