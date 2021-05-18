@@ -378,6 +378,8 @@ export default {
             var today = new Date();
             this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
             this.form.work_person=this.fullname;
+            this.form.created_by=this.fullname;
+            this.form.created_at=new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
             this.form.status="P";
             this.createView=true;
         },

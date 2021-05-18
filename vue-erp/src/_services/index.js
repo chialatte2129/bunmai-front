@@ -7,3 +7,5 @@ export {workItemService} from './work_item.service'
 export {personTagService} from './person_tag.service'
 export {overtimeService} from './overtime.service'
 export {reportService} from './report.service'
+export {dailyJobsService} from './daily_jobs.service'
+

@@ -26,15 +26,15 @@
                 <el-table-column prop="description" label="工作事項" width="auto">
                     <template slot-scope="scope">
                         <el-tooltip effect="light" placement="top">
-                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
-                            <div class="one-line">{{scope.row.description}}</div>
+                            <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div>
+                            <div class="one-line">{{scope.row.content}}</div>
                         </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column prop="note" label="執行狀況" width="auto">
                     <template slot-scope="scope">
                         <el-tooltip effect="light" placement="top">
-                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
+                            <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div>
                             <div class="one-line">{{scope.row.note}}</div>
                         </el-tooltip>
                     </template>
@@ -71,10 +71,10 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="完成工作事項" :visible.sync="finishVisible" width="500px" center :before-close="canceFinish">
+        <el-dialog title="完成工作事項" :visible.sync="finishVisible" width="500px" center :before-close="cancelFinish">
             <div style="text-align:center;">您要完成這項工作嗎 ?</div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelFinish">{{$t("btn.cancel")}}</el-button>
+                <el-button @click="cancelFinish()">{{$t("btn.cancel")}}</el-button>
                 <el-button type="primary" @click="confirmFinish">{{$t("btn.confirm")}}</el-button>
             </span>
         </el-dialog>
@@ -92,16 +92,12 @@
                         }"/>
                     </el-form-item>
                     <el-form-item label="執行人員" prop="item_id">
-                        <el-select v-model="form.work_person" filterable clearable class="handle-input" :disabled="updateView||copyView" >
-                            <el-option label="許宸維" value="許宸維"/>
-                            <el-option label="巫家毅" value="巫家毅"/>
-                            <el-option label="王家得" value="王家得"/>
-                        </el-select>
+                        <span>{{form.p_name}}</span>
                     </el-form-item>
-                    <el-form-item label="執行事項" prop="work_hours">
-                        <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
+                    <el-form-item label="執行事項" prop="content">
+                        <el-input v-model="form.content" type="textarea" :rows="5" style="width:95%;"/>
                     </el-form-item>
-                    <el-form-item v-if="!createView" label="執行狀況" prop="work_hours">
+                    <el-form-item v-if="!createView" label="執行狀況" prop="note">
                         <el-input v-model="form.note" type="textarea" :rows="3" style="width:95%;"/>
                     </el-form-item>
                     <el-form-item label="狀態" prop="status">
@@ -120,17 +116,16 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
                     <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
-                    <el-button type="primary" @click="confirmDialog" 
-                    :disabled="ban_status.includes(form.status)||overtime_ban_status.includes(form.overtime_status)">{{$t("btn.confirm")}}</el-button>
+                    <el-button type="primary" @click="confirmDialog">{{$t("btn.confirm")}}</el-button>
                 </div>
             </div>
         </el-dialog>
     </div>
 </template>
 <script>
-import { dayItemService, personTagService } from "@/_services";
+import { dailyJobsService } from "@/_services";
 export default {
-    name: "day_item_person",
+    name: "daily_jobs_person",
     data(){
         return {
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
@@ -153,6 +148,10 @@ export default {
             start_row:0,
             sort_column:"work_date",
             sort:"desc",
+            finish_info:{
+                id:"",
+                status:""
+            },
             deleteInfo:{
                 pid:localStorage.getItem("ms_odoo_employee_id"),
                 item_id:null,
@@ -179,15 +178,13 @@ export default {
             form:{
                 pid:localStorage.getItem("ms_odoo_employee_id"),
                 p_name:localStorage.getItem("ms_user_fullname"),
-                item_id:"",
                 work_date:"",
-                work_person:"許宸維",
-                work_hours:"",
-                description:"",
-                tag1:"",
-                comp_time:null,
-                overtime_status:"",
-                overtime_application_udid:null,
+                content:"",
+                note:"",
+                status:"P",
+                created_by:localStorage.getItem("ms_user_fullname"),
+
+
             },
             isRemove:false,
             filterProjText:"",
@@ -266,16 +263,9 @@ export default {
                 copy_date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
-                item_id: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur", "change"]},
-                ],
-                work_hours: [
-                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
+                content: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                comp_time:[
-                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
-                ],
+                ]
             },
 
             rules_com:{
@@ -288,7 +278,7 @@ export default {
 
     async created(){
         await this.connectFromOtherPlace();
-        await this.getOption();
+        // await this.getOption();
         await this.getData();
         await this.getToday();
     },
@@ -336,37 +326,39 @@ export default {
     
     methods:{
         handleFinish(row){
+            this.finish_info={
+                id:row.id,
+                status:"F",
+                pid:row.pid,
+                work_date:row.work_date,
+                updated_by:this.odoo_employee_id
+            }
             this.finishVisible=true;
         },
+
         confirmFinish(){
+            var param = {
+                action:"Update",
+                form:this.finish_info
+            };
+            this.update_day_item(param);
             this.finishVisible=false;
-            
         },
+
         cancelFinish(){
             this.finishVisible=false;
         },
+
         getToday(){
             let time =new Date();
             this.today = time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
         },
+
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
             return_dict["minWidth"]=`${tempWidth}px`;
             return_dict["maxWidth"]=`${tempWidth}px`;
-            if(column.property=="total_work_hour"){
-                return_dict["fontWeight"]="700";
-                return_dict["color"]="green";
-                if(row.total_work_hour<8){
-                    return_dict["color"]="red";
-                };
-            };
-            if(["total_work_hour", "work_hours"].includes(column.property)){
-                return_dict["background"]="#FAFAFA";
-            };
-            if(["total_comp_time", "comp_time"].includes(column.property)){
-                return_dict["background"]="#FFFFF5";
-            };
             return return_dict;
         },
 
@@ -428,7 +420,7 @@ export default {
         },
 
         dateCellMerge({row, column, rowIndex, columnIndex}){
-            if(["work_date", "total_work_hour", "total_comp_time"].includes(column.property)){
+            if(["work_date"].includes(column.property)){
                 const _row=this.spanArr[rowIndex];
                 const _col=_row>0?1:0;
                 return { rowspan:_row, colspan:_col }
@@ -451,26 +443,25 @@ export default {
         async handleCreate(){
             var today = new Date();
             this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-            this.form.work_person=this.fullname;
+            this.form.p_name=this.fullname;
+            this.form.created_by=this.fullname;
+            this.form.updated_by=this.odoo_employee_id;
+            this.form.created_at=new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
             this.form.status="P";
             this.createView=true;
         },
 
         async handleEdit(index, row){
             this.form=Object.assign({}, row);
-            this.form.work_person=this.fullname;
+            this.form.updated_by = this.odoo_employee_id;
             this.edit_idx=index;
             this.updateView=true;
         },
 
         handleDelete(index, row){
-            this.deleteInfo={
-                pid:this.odoo_employee_id,
-                item_id:row.item_id,
-                work_date:row.work_date,
-                tag1:row.tag1,
-                overtime_application_udid:row.overtime_application_udid,
-            };
+            // this.deleteInfo={
+            //     id:row.id
+            // };
             this.deleteView=true;
         },
 
@@ -481,11 +472,7 @@ export default {
 
         cancelDelete(){
             this.deleteInfo={
-                pid:this.odoo_employee_id,
-                item_id:null,
-                work_date:"",
-                tag1:"",
-                overtime_application_udid:null,
+                id:null
             };
             this.deleteView=false;
         },
@@ -500,23 +487,24 @@ export default {
 
         async update_day_item(param){ 
             this.dialog_loading=true;
-            // await dayItemService.update_day_item(param).then(res =>{ 
-            //     if(res.code==1){ 
-            //         this.$message.success(this.$t(res.msg)); 
-            //         if(["create", "copy", "update"].includes(param.action)){
-            //             this.tbKey++;
-            //             this.getData();
-            //             this.cancelDialog();
-            //         }else if(param.action=="delete"){
-            //             this.cancelDelete()
-            //             this.handleDeleteChange();
-            //         }
-            //     }else if(res.code==0){ 
-            //         this.$message.warning(this.$t(res.msg)); 
-            //     }else{ 
-            //         this.$message.error(this.$t(res.msg)); 
-            //     } 
-            // }) 
+            await dailyJobsService.update_daily_jobs(param).then(res =>{ 
+                console.log(res);
+                if(res.code==1){ 
+                    this.$message.success(this.$t(res.msg)); 
+                    if(["create", "copy", "update"].includes(param.action)){
+                        this.tbKey++;
+                        this.getData();
+                        this.cancelDialog();
+                    }else if(param.action=="delete"){
+                        this.cancelDelete()
+                        this.handleDeleteChange();
+                    }
+                }else if(res.code==0){ 
+                    this.$message.warning(this.$t(res.msg)); 
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                } 
+            }) 
             this.dialog_loading=false;
         },
 
@@ -524,8 +512,6 @@ export default {
             this.$refs.form.validate(valid => {
                 if(valid){
                     var temp_form = Object.assign({}, this.form);
-                    delete temp_form["total_comp_time"];
-                    delete temp_form["total_work_hour"];
                     var param = {
                         action:this.createView?"create":(this.updateView?"update":"copy"),
                         form:temp_form
@@ -547,16 +533,11 @@ export default {
             this.form={
                 pid:this.odoo_employee_id,
                 p_name:this.fullname,
-                item_id:"",
                 work_date:"",
-                work_hours:"",
-                description:"",
-                tag1:"",
-                comp_time:null,
-                overtime_status:"",
-                overtime_application_udid:null,
+                content:"",
+                note:"",
+                created_by:this.fullname
             };
-            this.option.tags=[];
             this.edit_idx=null;
             this.$refs.form.clearValidate();
         },
@@ -588,33 +569,18 @@ export default {
                 page_size:this.page_size,
                 filter:this.filter
             }
-            await dayItemService.person_day_list(param).then(res =>{ 
+            await dailyJobsService.person_daily_jobs_list(param).then(res =>{ 
                 this.tableData=res.day_items;
                 console.log(res);
                 this.totalRow=res.total;
                 this.getSpanArr(this.tableData);
             })
-            // O(作廢)、 P (待辦)、R(退回)、F(完成)
-            this.tableData=[
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","day_of_week":3,"description":"修正 mysql events schedule 狀況","note":"","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","day_of_week":3,"description":"steam版本企劃內容整理","note":"","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","day_of_week":3,"description":"戰損貼圖修改，男一成年版模型製作","note":"","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","day_of_week":2,"description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","note":"","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","day_of_week":2,"description":"新增小天使與淡入淡出轉場","note":"","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","day_of_week":2,"description":"新增多語言與劇本選擇流程","note":"","status":"F","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","day_of_week":2,"description":"修改遊戲流程","note":"","status":"F","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","day_of_week":1,"description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","note":"需要支援","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","day_of_week":1,"description":"選擇UI改為砍擊模組","note":"","status":"F","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","day_of_week":1,"description":"新增場景管理器與轉場流程","note":"","status":"F","owner":""},
-            ];
-            this.totalRow=10;
-            this.getSpanArr(this.tableData);
             this.table_loading=false;
         },
         
-        async getOption(){
+        // async getOption(){
             
-        },
+        // },
 
         search(){
             this.handleCurrentChange(1);
