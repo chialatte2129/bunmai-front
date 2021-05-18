@@ -600,16 +600,16 @@ export default {
             })
 
             this.tableData=[
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"修正 mysql events schedule 狀況","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"steam版本企劃內容整理","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"王家得","dept_name":"數據分析","day_of_week":3,"note":"","description":"戰損貼圖修改，男一成年版模型製作","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增小天使與淡入淡出轉場","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增多語言與劇本選擇流程","status":"F","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"修改遊戲流程","status":"F","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"需要支援","description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","status":"P","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"","description":"選擇UI改為砍擊模組","status":"F","owner":""},
-                {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"巫家毅","dept_name":"數據分析","day_of_week":1,"note":"","description":"新增場景管理器與轉場流程","status":"F","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"修正 mysql events schedule 狀況","status":"P","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"steam版本企劃內容整理","status":"P","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"王家得","dept_name":"數據分析","day_of_week":3,"note":"","description":"戰損貼圖修改，男一成年版模型製作","status":"P","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","status":"P","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增小天使與淡入淡出轉場","status":"P","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增多語言與劇本選擇流程","status":"F","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"修改遊戲流程","status":"F","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"需要支援","description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","status":"P","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"","description":"選擇UI改為砍擊模組","status":"F","owner":""},
+                // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"巫家毅","dept_name":"數據分析","day_of_week":1,"note":"","description":"新增場景管理器與轉場流程","status":"F","owner":""},
             ];
             this.totalRow=10;
             this.getSpanArr(this.tableData);
