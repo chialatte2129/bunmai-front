@@ -92,7 +92,7 @@
                         }"/>
                     </el-form-item>
                     <el-form-item label="執行人員" prop="item_id">
-                        <span>{{form.p_name}}</span>
+                        <span >{{form.p_name}}</span>
                     </el-form-item>
                     <el-form-item label="執行事項" prop="content">
                         <el-input v-model="form.content" type="textarea" :rows="5" style="width:95%;"/>
@@ -108,10 +108,10 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="建立人員" prop="status">
-                        <span>{{form.created_by}}</span>
+                        <span style="color:blue;">{{form.created_by}}</span>
                     </el-form-item>
                     <el-form-item label="建立時間" prop="status">
-                       <span>{{form.created_at}}</span>
+                       <span style="color:blue;">{{form.created_at}}</span>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
@@ -342,6 +342,7 @@ export default {
                 form:this.finish_info
             };
             this.update_day_item(param);
+            this.getData();
             this.finishVisible=false;
         },
 
@@ -442,7 +443,7 @@ export default {
 
         async handleCreate(){
             var today = new Date();
-            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
             this.form.p_name=this.fullname;
             this.form.created_by=this.fullname;
             this.form.updated_by=this.odoo_employee_id;
