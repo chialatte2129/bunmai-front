@@ -49,6 +49,8 @@
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
                             :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
+                            <el-checkbox v-model="filter.hide_self"  class="mgr10" @change="search">排除自己</el-checkbox>
+                            <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">排除作廢</el-checkbox>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="521" v-loading="table_loading"
                             @sort-change="handleSortChange" :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
                                 <el-table-column prop="work_date" label="執行日期" width="150" show-overflow-tooltip>
@@ -80,9 +82,10 @@
                                         <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">作廢</el-button>
                                     </template>
                                 </el-table-column>
-                                 <el-table-column :label="$t('btn.action')" width="120" align="center" fixed="right">
+                                 <el-table-column :label="$t('btn.action')" width="150" align="center" fixed="right">
                                     <template slot-scope="scope">
                                         <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                                        <!-- <el-button v-if="scope.row.status=='O'" class="el-icon-delete" type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.delete')}}</el-button> -->
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -96,6 +99,15 @@
                 </el-col>
             </el-row>
         </div>
+
+        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelDelete">{{$t("btn.cancel")}}</el-button>
+                <el-button type="primary" @click="confirmDelete">{{$t("btn.confirm")}}</el-button>
+            </span>
+        </el-dialog>
+
         <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
         :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
@@ -165,6 +177,7 @@ export default {
             today:"",
             createView:false,
             updateView:false,
+            deleteView:false,
             copyView:false,
             form:{},
             tbKey:0,
@@ -205,7 +218,8 @@ export default {
                 dept_id:[],
                 pid:[],
                 hide_self:true,
-                self_id:localStorage.getItem("ms_odoo_employee_id")
+                self_id:localStorage.getItem("ms_odoo_employee_id"),
+                hide_void:true,
             },
             option:{
                 work_item:[],
@@ -410,6 +424,35 @@ export default {
                 } 
             }) 
             this.dialog_loading=false;
+        },
+
+        handleDelete(index, row){
+            this.deleteInfo={
+                id:row.id,
+                pid:this.odoo_employee_id,
+                work_date:row.work_date
+            };
+            this.deleteView=true;
+        },
+
+        handleDeleteChange(){
+            if(this.start_row==(this.totalRow-1)&&this.start_row!=0){ this.start_row-=this.page_size }
+            this.getData();
+        },
+
+        cancelDelete(){
+            this.deleteInfo={
+                id:null
+            };
+            this.deleteView=false;
+        },
+
+        confirmDelete(){
+            var param = {
+                action:"delete",
+                form:this.deleteInfo
+            }
+            this.update_day_item(param);
         },
 
         cancelDialog(){

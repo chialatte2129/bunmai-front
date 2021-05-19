@@ -17,6 +17,7 @@
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
                 <!-- <el-button size="large" type="warning" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/> -->
+                <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">排除作廢</el-checkbox>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
             :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
@@ -170,6 +171,7 @@ export default {
             filter:{
                 item_id:null,
                 work_date:[],
+                hide_void:true,
                 pid:localStorage.getItem("ms_odoo_employee_id"),
             },
             ban_status:["F"],
