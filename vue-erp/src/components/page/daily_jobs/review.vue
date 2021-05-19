@@ -36,7 +36,7 @@
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane label="工作執行" name="daily_details">
                             <div v-if="activeTabs=='daily_details'">
-                            <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="true">{{$t('btn.new')}}</el-button>
+                            <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
                             <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -59,7 +59,7 @@
                                 <el-table-column prop="content" label="工作事項" width="auto">
                                     <template slot-scope="scope">
                                         <el-tooltip effect="light" placement="top">
-                                            <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <!-- <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div> -->
                                             <div class="one-line">{{scope.row.content}}</div>
                                         </el-tooltip>
                                     </template>
@@ -67,7 +67,7 @@
                                 <el-table-column prop="note" label="執行狀況" width="auto">
                                     <template slot-scope="scope">
                                         <el-tooltip effect="light" placement="top">
-                                            <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div>
+                                            <!-- <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div> -->
                                             <div class="one-line">{{scope.row.note}}</div>
                                         </el-tooltip>
                                     </template>
@@ -82,7 +82,7 @@
                                 </el-table-column>
                                  <el-table-column :label="$t('btn.action')" width="120" align="center" fixed="right">
                                     <template slot-scope="scope">
-                                        <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="true">{{$t('btn.edit')}}</el-button>
+                                        <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -99,8 +99,8 @@
         <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
         :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
-                <el-form :model="form" ref="form" label-position="right" label-width="auto">
-                    <el-form-item label="執行日期" prop="work_date">
+                <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                    <el-form-item v-if="createView" label="執行日期" prop="work_date">
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
                         :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
                             disabledDate(time){ 
@@ -108,18 +108,27 @@
                             }
                         }"/>
                     </el-form-item>
-                    <el-form-item label="執行人員" prop="item_id">
-                        <el-select v-model="form.work_person" filterable clearable class="handle-input" :disabled="updateView||copyView" >
-                            <el-option label="許宸維" value="許宸維"/>
-                            <el-option label="巫家毅" value="巫家毅"/>
-                            <el-option label="王家得" value="王家得"/>
+                    <el-form-item v-if="updateView"  label="執行日期" prop="item_id">
+                        <span >{{form.work_date}}</span>
+                    </el-form-item>
+                    <el-form-item v-if="createView"  label="執行人員" prop="p_name">
+                        <el-select size="large" class="mgr10 handle-input" v-model="form.pid" filterable clearable collapse-tags
+                        :placeholder="$t('employee.name')">
+                            <el-option-group v-for="group in option.worker" :key="group.id" :label="group.name">
+                                <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled" @click.native="handleClickWorker(item)">
+                                    <span class="mgl10">{{item.name}}</span>
+                                </el-option>
+                            </el-option-group>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="執行事項" prop="work_hours">
-                        <el-input v-model="form.description" type="textarea" :rows="5" style="width:95%;"/>
+                    <el-form-item v-if="updateView"  label="執行人員" prop="item_id">
+                        <span >{{form.p_name}}</span>
                     </el-form-item>
-                    <el-form-item v-if="!createView" label="執行狀況" prop="work_hours">
-                        <el-input v-model="form.note" type="textarea" :rows="5" style="width:95%;"/>
+                    <el-form-item label="執行事項" prop="content">
+                        <el-input v-model="form.content" type="textarea" :rows="5" style="width:95%;"/>
+                    </el-form-item>
+                    <el-form-item v-if="!createView" label="執行狀況" prop="note">
+                        <el-input v-model="form.note" type="textarea" :rows="3" style="width:95%;"/>
                     </el-form-item>
                     <el-form-item label="狀態" prop="status">
                         <el-select v-model="form.status" class="handle-input" >
@@ -129,15 +138,15 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="建立人員" prop="status">
-                        <span>{{form.created_by}}</span>
+                        <span style="color:blue;">{{form.created_by}}</span>
                     </el-form-item>
                     <el-form-item label="建立時間" prop="status">
-                       <span>{{form.created_at}}</span>
+                       <span style="color:blue;">{{form.created_at}}</span>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer-loading">
                     <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
-                    <el-button type="primary" @click="confirmDialog" >{{$t("btn.confirm")}}</el-button>
+                    <el-button type="primary" @click="confirmDialog">{{$t("btn.confirm")}}</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -192,14 +201,16 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             filter:{
-                item_id:null,
                 work_date:[],
                 dept_id:[],
                 pid:[],
+                hide_self:true,
+                self_id:localStorage.getItem("ms_odoo_employee_id")
             },
             option:{
                 work_item:[],
                 employee:[],
+                worker:[],
             },
             day_mileseconds:86400000,
             pickerOptions:{
@@ -255,6 +266,26 @@ export default {
                     }
                 ]
             },
+            rules_org: {
+                p_name: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                work_date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                copy_date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                content: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ]
+            },
+
+            rules_com:{
+                description:[
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+            }
         }
     },
 
@@ -280,11 +311,26 @@ export default {
 
     async created(){
         await this.get_dept_tree();
-        await this.getOption();
         this.getToday();
     },
 
     computed: {
+        
+        rules(){
+            var output_rules = this.rules_org;
+            var com_key = Object.keys(this.rules_com);
+            if(this.des_flag){
+                for(var key of com_key){
+                    output_rules[key] = this.rules_com[key];
+                };
+            }else{
+                for(var key of com_key){
+                    delete output_rules[key];
+                };
+            };
+            this.desKey++;
+            return output_rules;
+        },
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
@@ -304,21 +350,20 @@ export default {
     },    
     
     methods: {
+        handleClickWorker(item){
+            console.log(item);
+            this.form.p_name = item.name;
+        },
         resetForm(){
             this.dlKey++;
             this.form={
-                pid:this.odoo_employee_id,
-                p_name:this.fullname,
-                item_id:"",
+                pid:"",
+                p_name:"",
                 work_date:"",
-                work_hours:"",
-                description:"",
-                tag1:"",
-                comp_time:null,
-                overtime_status:"",
-                overtime_application_udid:null,
+                content:"",
+                note:"",
+                created_by:this.fullname
             };
-            this.option.tags=[];
             this.edit_idx=null;
             this.$refs.form.clearValidate();
         },
@@ -346,24 +391,24 @@ export default {
 
         async update_day_item(param){ 
             this.dialog_loading=true;
-            // await dayItemService.update_day_item(param).then(res =>{ 
-            //     if(res.code==1){ 
-            //         this.$message.success(this.$t(res.msg)); 
-            //         if(["create", "copy", "update"].includes(param.action)){
-            //             this.tbKey++;
-            //             this.getData();
-            //             this.cancelDialog();
-            //         }else if(param.action=="delete"){
-            //             this.cancelDelete()
-            //             this.handleDeleteChange();
-            //         }
-            //     }else if(res.code==0){ 
-            //         this.$message.warning(this.$t(res.msg)); 
-            //     }else{ 
-            //         this.$message.error(this.$t(res.msg)); 
-            //     } 
-            // }) 
-            this.cancelDialog();
+            await dailyJobsService.update_daily_jobs(param).then(res =>{ 
+                console.log(res);
+                if(res.code==1){ 
+                    this.$message.success(this.$t(res.msg)); 
+                    if(["create", "copy", "update"].includes(param.action)){
+                        this.tbKey++;
+                        this.getData();
+                        this.cancelDialog();
+                    }else if(param.action=="delete"){
+                        this.cancelDelete()
+                        this.handleDeleteChange();
+                    }
+                }else if(res.code==0){ 
+                    this.$message.warning(this.$t(res.msg)); 
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                } 
+            }) 
             this.dialog_loading=false;
         },
 
@@ -377,17 +422,19 @@ export default {
 
         async handleCreate(){
             var today = new Date();
-            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-            this.form.work_person=this.fullname;
+            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
+            this.form.p_name="";
             this.form.created_by=this.fullname;
+            this.form.updated_by=this.odoo_employee_id;
             this.form.created_at=new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
             this.form.status="P";
             this.createView=true;
         },
 
+
         async handleEdit(index, row){
             this.form=Object.assign({}, row);
-            this.form.work_person=row.p_name;
+            this.form.updated_by = this.odoo_employee_id;
             this.edit_idx=index;
             this.updateView=true;
         },
@@ -470,7 +517,7 @@ export default {
         },
 
         handleCheckChange(data, checked, indeterminate){
-            // console.log("check change");
+            console.log(data);
             if(checked){
                 if(!this.checked_id.includes(data.id)){
                     this.checked_id.push(data.id);
@@ -572,9 +619,7 @@ export default {
             await dayItemService.get_dept_tree(param).then(res =>{ 
                 this.tree_data=res.tree_data;
                 this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
-                // for(var dept of this.tree_data){
-                //     dept.disabled=true;
-                // };
+                this.option.worker = res.tree_data;
             })
             await this.allCheckBox();
             this.tree_loading=false;
@@ -599,28 +644,7 @@ export default {
                 console.log(res);
                 this.getSpanArr(this.tableData);
             })
-
-            // this.tableData=[
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"修正 mysql events schedule 狀況","status":"P","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"巫家毅","dept_name":"數據分析","day_of_week":3,"note":"","description":"steam版本企劃內容整理","status":"P","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-19","p_name":"王家得","dept_name":"數據分析","day_of_week":3,"note":"","description":"戰損貼圖修改，男一成年版模型製作","status":"P","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"拋物線模組新增 可自訂位置 修改微調拋物線位置與選擇模組","status":"P","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"巫家毅","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增小天使與淡入淡出轉場","status":"P","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"新增多語言與劇本選擇流程","status":"F","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-18","p_name":"王家得","dept_name":"數據分析","day_of_week":2,"note":"","description":"修改遊戲流程","status":"F","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"需要支援","description":"選擇16歲以上劇本時,最後一波球會在空中飛舞砍不到","status":"P","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"王家得","dept_name":"數據分析","day_of_week":1,"note":"","description":"選擇UI改為砍擊模組","status":"F","owner":""},
-            //     // {"created_at":"2021-05-16 08:00","created_by":"許宸維","work_date":"2021-05-16","p_name":"巫家毅","dept_name":"數據分析","day_of_week":1,"note":"","description":"新增場景管理器與轉場流程","status":"F","owner":""},
-            // ];
-            // this.totalRow=10;
-            // this.getSpanArr(this.tableData);
             this.table_loading=false;
-        },
-        
-        async getOption(){
-            await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
-                this.option.work_item=res.work_item;
-            }) 
         },
 
         handleCurrentChange(currentPage){
@@ -650,6 +674,8 @@ export default {
                 work_date:[],
                 dept_id:this.filter.dept_id,
                 pid:[],
+                hide_self:true,
+                self_id:this.odoo_employee_id
             };
             this.tbKey++;
             this.sort_column="work_date";
