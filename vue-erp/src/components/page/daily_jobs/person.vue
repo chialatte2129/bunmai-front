@@ -340,12 +340,12 @@ export default {
 
         confirmFinish(){
             var param = {
-                action:"Update",
+                action:"update",
                 form:this.finish_info
             };
             this.update_day_item(param);
-            this.getData();
             this.finishVisible=false;
+            
         },
 
         cancelFinish(){
@@ -495,6 +495,7 @@ export default {
                 if(res.code==1){ 
                     this.$message.success(this.$t(res.msg)); 
                     if(["create", "copy", "update"].includes(param.action)){
+                        console.log("Finish");
                         this.tbKey++;
                         this.getData();
                         this.cancelDialog();
