@@ -60,18 +60,18 @@
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/>
                                 <el-table-column prop="content" label="工作事項" width="auto">
                                     <template slot-scope="scope">
-                                        <el-tooltip effect="light" placement="top">
+                                        <!-- <el-tooltip effect="light" placement="top"> -->
                                             <!-- <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div> -->
                                             <div class="one-line">{{scope.row.content}}</div>
-                                        </el-tooltip>
+                                        <!-- </el-tooltip> -->
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="note" label="執行狀況" width="auto">
                                     <template slot-scope="scope">
-                                        <el-tooltip effect="light" placement="top">
+                                        <!-- <el-tooltip effect="light" placement="top"> -->
                                             <!-- <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div> -->
                                             <div class="one-line">{{scope.row.note}}</div>
-                                        </el-tooltip>
+                                        <!-- </el-tooltip> -->
                                     </template>
                                 </el-table-column>
                                <el-table-column prop="status" label="執行狀態" width="120" align="center" header-align="center">
