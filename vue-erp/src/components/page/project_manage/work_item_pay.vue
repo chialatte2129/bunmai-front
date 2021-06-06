@@ -4,7 +4,7 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
                 <el-breadcrumb-item> {{$t('menus.work_items_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t('menus.work_items')}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t('menus.work_item_pay')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">

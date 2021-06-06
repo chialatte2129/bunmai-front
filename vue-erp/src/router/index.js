@@ -57,6 +57,21 @@ export default new Router({
                     meta: { title: 'menus.work_items' }
                 },
                 {
+                    path: '/work_item_cost',
+                    component: () => import('../components/page/project_manage/work_item_cost.vue'),
+                    meta: { title: 'menus.work_items' }
+                },
+                {
+                    path: '/work_item_cost_edit',
+                    component: () => import('../components/page/project_manage/work_item_cost_edit.vue'),
+                    meta: { title: 'menus.work_items' }
+                },
+                {
+                    path: '/work_item_pay',
+                    component: () => import('../components/page/project_manage/work_item_pay.vue'),
+                    meta: { title: 'menus.work_items' }
+                },
+                {
                     path: 'project_report_download',
                     component: () => import('../components/page/project_manage/report_download.vue'),
                     meta: { title: 'menus.project_report_download' }

@@ -4,12 +4,12 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
                 <el-breadcrumb-item> {{$t('menus.work_items_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t('menus.work_items')}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t('menus.work_item_cost')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
+                <!-- <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
                     {{$t('project.create_inner_project')}}
                 </el-button>
                 <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
@@ -32,7 +32,7 @@
                 <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"
                 :disabled="loading" @change="search">
                     <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
-                </el-select>
+                </el-select> -->
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
@@ -40,12 +40,22 @@
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="progress" label="專案進度" width="150" align="center" sortable="custom" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                       <span v-if="scope.row.progress>=80" style="color:red;">{{scope.row.progress}}%</span>
+                       <span v-if="scope.row.progress>=50&&scope.row.progress<80"  style="color:orange;">{{scope.row.progress}}%</span>
+                       <span v-if="scope.row.progress<50" style="color:green;">{{scope.row.progress}}%</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="unprocess_pay" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                       <span v-if="scope.row.unprocess_pay" style="color:red;">{{scope.row.unprocess_pay}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="income" label="預估收入" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="cost" label="預估支出" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -233,12 +243,13 @@ export default {
     },
 
     async created(){
-        await this.get_dept_employee();
-        await this.getOption();
+        // await this.get_dept_employee();
+        // await this.getOption();
         await this.getData();
     },
 
     computed: {
+        
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
@@ -295,6 +306,13 @@ export default {
     }, 
     
     methods: {
+        stateFormat(row, column, cellValue) {
+			cellValue += '';
+			if (!cellValue.includes('.')) cellValue += '.';
+			return cellValue.replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
+				return $1 + ',';
+			}).replace(/\.$/, '');
+		},
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
@@ -362,6 +380,8 @@ export default {
         },
 
         handleEdit(index, row){
+            this.$router.push("/work_item_cost_edit");
+      
             this.form=Object.assign({}, row);
             this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
             this.tag_form=Object.assign({}, {
@@ -498,6 +518,42 @@ export default {
             }
             await workItemService.get_work_items(param).then(res =>{ 
                 this.tableData=res.data;
+                this.tableData=[
+                    {
+                        "id": "200110",
+                        "name": "台中新光三越",
+                        "category": "預設",
+                        "status": "P",
+                        "status_name":"進行中",
+                        "income": 1000000,
+                        "cost": 20000,
+                        "progress":40,
+                        "unprocess_pay":0,
+                    },
+                    {
+                        "id": "P02090101",
+                        "name": "VAR APP v2.3.0",
+                        "category": "預設",
+                        "status": "P",
+                        "status_name":"進行中",
+                        "income": 1000000,
+                        "cost": 20000,
+                        "progress":40,
+                        "unprocess_pay":2,
+                    },
+                    {
+                        "id": "100127",
+                        "name": "馬來西亞VR軍事訓練",
+                        "category": "預設",
+                        "status": "P",
+                        "status_name":"進行中",
+                        "income": 1000000,
+                        "cost": 20000,
+                        "progress":40,
+                        "unprocess_pay":0,
+                    }
+                    
+                ];
                 this.totalRow=res.total;
             })
             this.loading=false;

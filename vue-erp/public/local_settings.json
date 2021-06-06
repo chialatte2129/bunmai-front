@@ -59,6 +59,18 @@
         {
             "index": "daily_jobs_review",
             "title": "menus.daily_jobs_review"
+        },
+        {
+            "index": "work_item_cost",
+            "title": "menus.work_item_cost"
+        },
+        {
+            "index": "work_item_cost_edit",
+            "title": "menus.work_item_cost_edit"
+        },
+        {
+            "index": "work_item_pay",
+            "title": "menus.work_item_pay"
         }
     ]
 }

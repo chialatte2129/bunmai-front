@@ -53,12 +53,33 @@ export default {
                     icon: "el-icon-collection",
                     index: "project",
                     title: this.$t("menus.project_manage"),
-                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items"]),
+                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items", "work_item_cost","work_item_pay", ]),
                     subs: [            
                         {
                             index: "work_items",
-                            title: this.$t("menus.work_items"),
-                            show: this.hasThisMenu("work_items")
+                            title: this.$t("menus.work_items_manage"),
+                            show: this.includeSubMenu([
+                                "work_items", 
+                                "work_item_cost",
+                                "work_item_pay", 
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "work_items",
+                                    title: this.$t("menus.work_items"),
+                                    show: this.hasThisMenu("work_items")
+                                },
+                                {
+                                    index: "work_item_cost",
+                                    title: this.$t("menus.work_item_cost"),
+                                    show: this.hasThisMenuOrMgr("work_item_cost"),
+                                },
+                                {
+                                    index: "work_item_pay",
+                                    title: this.$t("menus.work_item_pay"),
+                                    show: this.hasThisMenu("work_item_pay"),
+                                },
+                            ]
                         },
                         
                         {
