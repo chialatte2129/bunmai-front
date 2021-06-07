@@ -9,14 +9,14 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
+                <!-- <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
                     {{$t('project.create_inner_project')}}
                 </el-button>
                 <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
                 @click="handleProjectCreate">
                     {{$t('project.create_outter_project')}}
-                </el-button>
-                <el-select size="large" class="mgr10" v-model="filter.owner" filterable clearable multiple collapse-tags
+                </el-button> -->
+                <!-- <el-select size="large" class="mgr10" v-model="filter.owner" filterable clearable multiple collapse-tags
                 :placeholder="$t('project.owner')" :disabled="loading" @change="search">
                     <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
                         <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
@@ -34,14 +34,13 @@
                     <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
                 </el-select>
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
-                <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
+                <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button> -->
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+            <!-- <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
@@ -49,14 +48,13 @@
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
-                        <!-- <el-button :disabled="allowDelete(scope.row)" type="info" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">{{$t('project.delete')}}</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
                 :disabled="loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
-            </div>
+            </div> -->
         </div>
         
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">

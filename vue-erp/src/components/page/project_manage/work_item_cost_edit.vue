@@ -14,16 +14,16 @@
         <div class="container">
             <el-card shadow="hover" class="mgb10" v-loading.lock="loading">
                 <div slot="header" class="clearfix">
-                    <span>{{form.item_name}}</span>
+                    <span>專案成本 - {{form.item_name}}</span>
                     <el-button type=primary size=large icon="el-icon-files" class="card-header-r-btn" @click="handleUpdate"> {{$t('btn.save')}}</el-button>
                 </div>
-                <el-form ref="form" :model="form" :rules="rules" label-position="right" label-width="auto">
+                <el-form ref="form" :model="form" :rules="rules" label-position="left" label-width="150px">
                     <el-collapse v-model="collapseName">
                         <el-col :span="24" style="padding-right:10px;">
                             <el-collapse-item name="base_info" title="專案資訊" disabled>
                                 <el-row>
                                     <el-col :span="12">
-                                        <el-form-item label="專案ID">
+                                        <el-form-item label="專案編號">
                                             <span>{{form.id}}</span>
                                         </el-form-item>
                                         <el-form-item label="專案名稱">
@@ -32,24 +32,28 @@
                                         <el-form-item label="專案狀態">
                                             <span>{{form.status}}</span>
                                         </el-form-item>
+                                        <el-form-item label="負責人">
+                                            <span>{{form.owner}}</span>
+                                        </el-form-item>                                        
                                     </el-col>
                                     <el-col :span="12">
                                         <el-form-item label="預估工時">
-                                            <span>{{form.pre_work_time}} 小時</span>
+                                            <el-input type="number" v-model.number="form.pre_work_time" style="width:200px;"><template slot="append">小時</template></el-input>
+                                            <!-- <span>{{form.pre_work_time}} 小時</span> -->
                                         </el-form-item>
-                                        <el-form-item label="已執行工時">
+                                        <el-form-item label="執行工時">
                                             <span>{{form.work_time}} 小時</span>
                                         </el-form-item>
-                                        <el-form-item label="工時執行比例">
-                                            <span v-if="form.work_progress>=80" style="color:red;">{{form.work_progress}} %</span>
-                                            <span v-if="form.work_progress>=50&&form.work_progress<80"  style="color:orange;">{{form.work_progress}} %</span>
-                                            <span v-if="form.work_progress<50" style="color:green;">{{form.work_progress}} %</span>
+                                        <el-form-item label="執行比例">
+                                            <span v-if="workprogess>=80" style="color:red;">{{workprogess}} %</span>
+                                            <span v-if="workprogess>=50&&workprogess<80"  style="color:orange;">{{workprogess}} %</span>
+                                            <span v-if="workprogess<50" style="color:green;">{{workprogess}} %</span>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
                             <el-collapse-item name="income" title="請款單" disabled>
-                                <el-row  style="padding:20px;">
+                                <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <el-table :data="tableData_pay_order" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey1">
@@ -60,8 +64,8 @@
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                                             <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
-                                                    <!-- <el-button :disabled="allowDelete(scope.row)" type="info" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">{{$t('project.delete')}}</el-button> -->
+                                                    <el-button v-if="scope.row.status=='待審'" type="primary" size="mini" icon="el-icon-check" @click="checkPayOrderVisible=true">審核</el-button>
+                                                    <el-button v-if="scope.row.status!='待審'" type="info" size="mini" icon="el-icon-view" @click="viewPayOrderVisible=true">檢視</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
@@ -70,43 +74,49 @@
                                 </el-row>
                             </el-collapse-item>
                             <el-collapse-item name="income" title="預計收入" disabled>
-                                <el-row  style="padding:20px;">
+                                <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
+                                        <span style="float:right;padding:10px;">
+                                            <el-button type="success" icon="el-icon-plus"  @click="incomeCreateVisible=true">{{$t('btn.new')}}</el-button>
+                                        </span>
                                         <el-table :data="tableData_income" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey1">
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                                             <el-table-column prop="description" label="項目" width="auto" sortable="custom" show-overflow-tooltip/>
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
+                                            <el-table-column :label="$t('btn.action')" width="180" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
-                                                    <!-- <el-button :disabled="allowDelete(scope.row)" type="info" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">{{$t('project.delete')}}</el-button> -->
+                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="incomeEditVisible=true">{{$t('btn.edit')}}</el-button>
+                                                    <el-button  type="danger" size="mini" icon="el-icon-delete" @click="deleteView=true">{{$t('project.delete')}}</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
                                         <div style="float:right;color:red;">
-                                            <span><h1>Total {{stateFormat("","",form.total_income)}} 元</h1></span>
+                                            <span><h2>Total {{stateFormat("","",form.total_income)}} 元</h2></span>
                                         </div>
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
                             <el-collapse-item name="cost" title="預計支出" disabled>
-                                <el-row style="padding:20px;">
+                                <el-row style="padding-bottom:20px;">
                                     <el-col :span="24">
+                                        <span style="float:right;padding:10px;">
+                                            <el-button type="success" icon="el-icon-plus" @click="costCreateVisible=true">{{$t('btn.new')}}</el-button>
+                                        </span>
                                         <el-table :data="tableData_cost" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey2">
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                                             <el-table-column prop="description" label="項目" width="auto" sortable="custom" show-overflow-tooltip/>
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
+                                            <el-table-column :label="$t('btn.action')" width="180" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
-                                                    <!-- <el-button :disabled="allowDelete(scope.row)" type="info" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">{{$t('project.delete')}}</el-button> -->
+                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="costEditVisible=true">{{$t('btn.edit')}}</el-button>
+                                                    <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteView=true">{{$t('project.delete')}}</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
                                         <div style="float:right;color:red;">
-                                            <span><h1>Total {{stateFormat("","",form.total_cost)}} 元</h1></span>
+                                            <span><h2>Total {{stateFormat("","",form.total_cost)}} 元</h2></span>
                                         </div>
                                     </el-col>
                                 </el-row>
@@ -118,70 +128,190 @@
         </div>
 
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
-            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('project.ask_delete')}}</div>
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 刪除後不可恢復,您要刪除這筆紀錄嗎？</div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
+                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="900px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+
+        <el-dialog :title="showTitle" :visible.sync="viewPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="12">
-                        <el-form-item v-if="createView" :label="$t('project.id')" prop="id">
-                            <el-input v-model="form.id" clearable class="wd80pa">
-                                <template v-if="form.is_project==0" slot="prepend">INTER-</template>
-                            </el-input>
+                        <el-form-item label="請款單號">
+                            <span>{{payOrderForm.id}}</span>
                         </el-form-item>
-                        <el-form-item v-if="updateView" :label="$t('project.id')" prop="id">
-                            <span >{{form.id}}</span>
+                        <el-form-item label="申請日期">
+                            <span>{{payOrderForm.order_date}}</span>
                         </el-form-item>
-                        <el-form-item :label="$t('project.name')" prop="name">
-                            <el-input :readonly="setReadOnly" v-model="form.name" clearable class="wd80pa"/>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.category')" prop="category" v-if="false">
-                            <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable class="wd80pa">
-                                <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
-                            </el-select>
-                            <span v-if="form.is_project==1">{{form.category}}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.status')" prop="status">
-                            <el-select :disabled="setReadOnly" v-model="form.status" filterable class="wd80pa">
-                                <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
-                            </el-select>
+                        <el-form-item label="狀態">
+                            <span>{{payOrderForm.status}}</span>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item :label="$t('project.owner')" prop="owner">
-                            <el-select :disabled="setReadOnly" v-model="form.owner_id" filterable clearable class="wd80pa">
-                                <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
-                                        <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                                        <span v-else class="mgl10">{{item.name}}</span>
-                                    </el-option>
-                            </el-option-group>
-                            </el-select>
+                        <el-form-item label="公司名稱">
+                            <span>{{payOrderForm.company_name}}</span>
                         </el-form-item>
-                        <el-form-item :label="$t('common_column.start_date')" prop="date_period">
-                            <el-date-picker v-model="form.start_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
-                            :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}">
-                            </el-date-picker>
+                        <el-form-item label="請款人">
+                            <span>{{payOrderForm.owner}}</span>
                         </el-form-item>
-                        <el-form-item :label="$t('common_column.end_date')" prop="date_period">
-                            <el-date-picker v-model="form.end_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
-                            :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}">
-                            </el-date-picker>
+                        <el-form-item label="申請單位">
+                            <span>{{payOrderForm.order_dept}}</span>
                         </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="請款說明">
+                            <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
+                        </el-form-item>
+                        <el-table :data="payOrderForm.content" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
+                            <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                            <el-table-column prop="description" label="請款資訊" width="auto" sortable="custom" show-overflow-tooltip>
+                                <template slot-scope="content">
+                                    <div v-for="item in content.row.content" :key="item.title"><span >{{item.title}} : {{item.result}}</span></div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                        </el-table>
+                        <div style="float:right;color:red;">
+                            <span><h2>Total {{stateFormat("","",payOrderForm.amount)}} 元</h2></span>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="info" @click="closeAllDialog">關閉</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog :title="showTitle" :visible.sync="checkPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="請款單號">
+                            <span>{{payOrderForm.id}}</span>
+                        </el-form-item>
+                        <el-form-item label="申請日期">
+                            <span>{{payOrderForm.order_date}}</span>
+                        </el-form-item>
+                        <el-form-item label="狀態">
+                            <span>{{payOrderForm.status}}</span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="公司名稱">
+                            <span>{{payOrderForm.company_name}}</span>
+                        </el-form-item>
+                        <el-form-item label="請款人">
+                            <span>{{payOrderForm.owner}}</span>
+                        </el-form-item>
+                        <el-form-item label="申請單位">
+                            <span>{{payOrderForm.order_dept}}</span>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="請款說明">
+                            <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
+                        </el-form-item>
+                        <el-table :data="payOrderForm.content" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
+                            <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                            <el-table-column prop="description" label="請款資訊" width="auto" sortable="custom" show-overflow-tooltip>
+                                <template slot-scope="content">
+                                    <div v-for="item in content.row.content" :key="item.title"><span >{{item.title}} : {{item.result}}</span></div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                        </el-table>
+                        <div style="float:right;color:red;">
+                            <span><h2>Total {{stateFormat("","",payOrderForm.amount)}} 元</h2></span>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="danger" size="large" @click="closeAllDialog">退回</el-button>
+                <el-button type="success" size="large" @click="closeAllDialog">通過</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog :title="showTitle" :visible.sync="costCreateVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                <el-row>
+                    <el-col :span="12">
+                        
+                    </el-col>
+                    <el-col :span="12">
+                       
                     </el-col>
                 </el-row>
                
             </el-form>
-            <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
-                <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog :title="showTitle" :visible.sync="costEditVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                <el-row>
+                    <el-col :span="12">
+                        
+                    </el-col>
+                    <el-col :span="12">
+                       
+                    </el-col>
+                </el-row>
+               
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog :title="showTitle" :visible.sync="incomeCreateVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                <el-row>
+                    <el-col :span="12">
+                        
+                    </el-col>
+                    <el-col :span="12">
+                       
+                    </el-col>
+                </el-row>
+               
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog :title="showTitle" :visible.sync="incomeEditVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                <el-row>
+                    <el-col :span="12">
+                        
+                    </el-col>
+                    <el-col :span="12">
+                       
+                    </el-col>
+                </el-row>
+               
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+            </div>
+        </el-dialog>
+
+       
     </div>
 </template>
 <script>
@@ -211,6 +341,63 @@ export default {
             createView:false,
             updateView:false,
             tagVisible:false,
+
+            viewPayOrderVisible:false,
+            checkPayOrderVisible:false,
+            incomeCreateVisible:false,
+            incomeEditVisible:false,
+            costCreateVisible:false,
+            costEditVisible:false,
+
+            incomeForm:{
+                date:"",
+                description:"",
+                amount:""
+            },
+            costForm:{
+                date:"",
+                description:"",
+                amount:""
+            },
+            payOrderForm:{
+                id:"P0001-ASUDE",
+                status:"待審",
+                company_name:"維亞娛樂股份有限公司",
+                order_dept:"技術支援",
+                order_date:"2021-04-21",
+                owner:"陳嘉甫",
+                project_name:"BLOCKADE Steam v1.0.0.00",
+                amount:3700,
+                description:"研討會",
+                content:[
+                    {
+                        type:"交通費請款",
+                        amount:1200,
+                        content:[
+                            {title:"日期",result:"2021-02-05"},
+                            {title:"起訖地點",result:"高雄-台北"},
+                            {title:"票種",result:"高鐵一般席"}
+                        ]
+                    },
+                    {
+                        type:"住宿費請款",
+                        amount:2000,
+                        content:[
+                            {title:"日期",result:"2021-02-05"},
+                            {title:"地點",result:"台北市"}
+                        ]
+                    },
+                    {
+                        type:"生活費(膳食)",
+                        amount:500,
+                        content:[
+                            {title:"日期",result:"2021-02-05"}
+                        ]
+                    }
+                ]
+
+            },
+
             tagValue:"",
             check_start_time:"",
             check_end_time:"",
@@ -249,6 +436,7 @@ export default {
                 id:"P0009527",
                 name:"VAR APP v2.3.0",
                 status:"進行中",
+                owner:"梁鴻騰",
                 pre_work_time:1000,
                 work_time:540,
                 work_progress:54,
@@ -328,10 +516,25 @@ export default {
                 return false
             }
         },
+
+        workprogess(){
+
+            return ((this.form.work_time/this.form.pre_work_time )*100).toFixed(2)
+        }
         
     }, 
     
     methods: {
+        closeAllDialog(){
+            this.viewPayOrderVisible=false;
+            this.checkPayOrderVisible=false;
+            this.incomeCreateVisible=false;
+            this.incomeEditVisible=false;
+            this.costCreateVisible=false;
+            this.costEditVisible=false;
+
+            this.deleteView=false;
+        },
         handleUpdate(){
             this.$router.push("/work_item_cost");
         },
