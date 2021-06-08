@@ -72,12 +72,14 @@ export default {
                                 {
                                     index: "work_item_cost",
                                     title: this.$t("menus.work_item_cost"),
-                                    show: this.hasThisMenuOrMgr("work_item_cost"),
+                                    // show: this.hasThisMenuOrMgr("work_item_cost"),
+                                    show: false
                                 },
                                 {
                                     index: "work_item_pay",
                                     title: this.$t("menus.work_item_pay"),
-                                    show: this.hasThisMenu("work_item_pay"),
+                                    // show: this.hasThisMenu("work_item_pay"),
+                                    show:false
                                 },
                             ]
                         },
