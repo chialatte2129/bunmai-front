@@ -382,14 +382,14 @@ export default {
         handleEdit(index, row){
             this.$router.push("/work_item_cost_edit");
       
-            this.form=Object.assign({}, row);
-            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
-            this.tag_form=Object.assign({}, {
-                item_id:this.form.id,
-                pid:"",
-                tags:this.form.tags,
-            });
-            this.updateView=true;
+            // this.form=Object.assign({}, row);
+            // this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
+            // this.tag_form=Object.assign({}, {
+            //     item_id:this.form.id,
+            //     pid:"",
+            //     tags:this.form.tags,
+            // });
+            // this.updateView=true;
         },
 
         handleDelete(index, row){

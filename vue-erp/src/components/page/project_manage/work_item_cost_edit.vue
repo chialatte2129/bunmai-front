@@ -202,21 +202,18 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="公司名稱">
-                            <span>{{payOrderForm.company_name}}</span>
+                        <el-form-item label="申請單位">
+                            <span>{{payOrderForm.order_dept}}</span>
                         </el-form-item>
                         <el-form-item label="請款人">
                             <span>{{payOrderForm.owner}}</span>
-                        </el-form-item>
-                        <el-form-item label="申請單位">
-                            <span>{{payOrderForm.order_dept}}</span>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="請款說明">
-                            <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
+                            <el-input type="textarea" :rows="4" :readonly="true" v-model="payOrderForm.description"></el-input>
                         </el-form-item>
                         <el-table :data="payOrderForm.content" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
                             <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
@@ -240,12 +237,11 @@
         </el-dialog>
 
         <el-dialog :title="showTitle" :visible.sync="costCreateVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+            <el-form :model="costForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="12">
                         
-                    </el-col>
-                    <el-col :span="12">
+                    
                        
                     </el-col>
                 </el-row>
@@ -258,13 +254,18 @@
         </el-dialog>
 
         <el-dialog :title="showTitle" :visible.sync="costEditVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+            <el-form :model="costForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
+                    <el-col :span="24">
+                        <el-form-item label="日期">
+                            <el-input v-model="costForm.date"></el-input>
+                        </el-form-item>
+                        <el-form-item label="項目">
+                            <el-input v-model="costForm.description"></el-input>
+                        </el-form-item>
+                        <el-form-item label="金額">
+                            <el-input v-model="costForm.amount"></el-input>
+                        </el-form-item>
                     </el-col>
                 </el-row>
                
@@ -276,13 +277,18 @@
         </el-dialog>
 
         <el-dialog :title="showTitle" :visible.sync="incomeCreateVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+            <el-form :model="incomeForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
+                    <el-col :span="24">
+                        <el-form-item label="日期">
+                            <el-input v-model="incomeForm.date"></el-input>
+                        </el-form-item>
+                        <el-form-item label="項目">
+                            <el-input v-model="incomeForm.description"></el-input>
+                        </el-form-item>
+                        <el-form-item label="金額">
+                            <el-input v-model="incomeForm.amount"></el-input>
+                        </el-form-item>
                     </el-col>
                 </el-row>
                
@@ -294,13 +300,18 @@
         </el-dialog>
 
         <el-dialog :title="showTitle" :visible.sync="incomeEditVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+            <el-form :model="incomeForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
+                    <el-col :span="24">
+                        <el-form-item label="日期">
+                            <el-input v-model="incomeForm.date"></el-input>
+                        </el-form-item>
+                        <el-form-item label="項目">
+                            <el-input v-model="incomeForm.description"></el-input>
+                        </el-form-item>
+                        <el-form-item label="金額">
+                            <el-input v-model="incomeForm.amount"></el-input>
+                        </el-form-item>
                     </el-col>
                 </el-row>
                
