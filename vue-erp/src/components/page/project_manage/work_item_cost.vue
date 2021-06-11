@@ -27,7 +27,7 @@
             </div>
 
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
+            :default-sort="{prop:sort_column, order:sort}" @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" label="專案負責人" width="150" align="left" sortable="custom" show-overflow-tooltip/>
@@ -76,8 +76,10 @@ export default {
             page_size:10,
             page_size_list:[5, 10],
             start_row:0,
+
             sort_column:"id",
             sort:"desc",
+
             loading:false,
             filter:{
                 key_word:"",
@@ -156,7 +158,7 @@ export default {
                 status:this.filter.status,
                 owner:this.filter.owner
             };
-            console.log(query);
+            // console.log(query);
             return query
         },
 
@@ -173,6 +175,7 @@ export default {
         },
 
         handleSortChange({prop, order}){
+            console.log(prop,order);
             this.sort_column = prop;
             this.sort = order;
             this.handleCurrentChange(1);
@@ -241,7 +244,7 @@ export default {
         },
 
         search(){
-            console.log(this.filter);
+            // console.log(this.filter);
             this.handleCurrentChange(1);
         },
         
