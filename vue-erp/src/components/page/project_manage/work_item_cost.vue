@@ -9,13 +9,6 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <!-- <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
-                    {{$t('project.create_inner_project')}}
-                </el-button>
-                <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
-                @click="handleProjectCreate">
-                    {{$t('project.create_outter_project')}}
-                </el-button>
                 <el-select size="large" class="mgr10" v-model="filter.owner" filterable clearable multiple collapse-tags
                 :placeholder="$t('project.owner')" :disabled="loading" @change="search">
                     <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
@@ -25,37 +18,34 @@
                         </el-option>
                     </el-option-group>
                 </el-select>
-                <el-select size="large" v-model="filter.category" class="mgr10" multiple collapse-tags filterable clearable v-if="false"
-                :placeholder="$t('project.category')" :disabled="loading" @change="search">
-                    <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
-                </el-select>
                 <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"
                 :disabled="loading" @change="search">
                     <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
-                </el-select> -->
-                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
+                </el-select> 
+                <el-input v-model="filter.key_word" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
+
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
-                <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="progress" label="專案進度" width="150" align="center" sortable="custom" show-overflow-tooltip>
+                <el-table-column prop="owner" label="專案負責人" width="150" align="left" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="120" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="progress" label="專案進度" width="150" align="center"  show-overflow-tooltip>
                     <template slot-scope="scope">
-                       <span v-if="scope.row.progress>=80" style="color:red;">{{scope.row.progress}}%</span>
-                       <span v-if="scope.row.progress>=50&&scope.row.progress<80"  style="color:orange;">{{scope.row.progress}}%</span>
-                       <span v-if="scope.row.progress<50" style="color:green;">{{scope.row.progress}}%</span>
+                        <span v-if="scope.row.work_progress>=80" style="color:red;">{{scope.row.work_progress}}%</span>
+                        <span v-if="scope.row.work_progress>=50&&scope.row.work_progress<80"  style="color:orange;">{{scope.row.work_progress}}%</span>
+                        <span v-if="scope.row.work_progress<50" style="color:green;">{{scope.row.work_progress}}%</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="unprocess_pay" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>
+                <el-table-column prop="pay_order" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>
                     <template slot-scope="scope">
-                       <span v-if="scope.row.unprocess_pay" style="color:red;">{{scope.row.unprocess_pay}}</span>
+                       <span v-if="scope.row.unprocess_pay" style="color:red;">{{scope.row.pay_order}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="income" label="預估收入" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="cost" label="預估支出" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="income_amount" label="預估收入" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="cost_amount" label="預估支出" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -68,97 +58,6 @@
                 :disabled="loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
             </div>
         </div>
-        
-        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
-            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('project.ask_delete')}}</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-        
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="900px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item v-if="createView" :label="$t('project.id')" prop="id">
-                            <el-input v-model="form.id" clearable class="wd80pa">
-                                <template v-if="form.is_project==0" slot="prepend">INTER-</template>
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item v-if="updateView" :label="$t('project.id')" prop="id">
-                            <span >{{form.id}}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.name')" prop="name">
-                            <el-input :readonly="setReadOnly" v-model="form.name" clearable class="wd80pa"/>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.category')" prop="category" v-if="false">
-                            <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable class="wd80pa">
-                                <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
-                            </el-select>
-                            <span v-if="form.is_project==1">{{form.category}}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.status')" prop="status">
-                            <el-select :disabled="setReadOnly" v-model="form.status" filterable class="wd80pa">
-                                <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item :label="$t('project.owner')" prop="owner">
-                            <el-select :disabled="setReadOnly" v-model="form.owner_id" filterable clearable class="wd80pa">
-                                <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
-                                        <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                                        <span v-else class="mgl10">{{item.name}}</span>
-                                    </el-option>
-                            </el-option-group>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item :label="$t('common_column.start_date')" prop="date_period">
-                            <el-date-picker v-model="form.start_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
-                            :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item :label="$t('common_column.end_date')" prop="date_period">
-                            <el-date-picker v-model="form.end_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
-                            :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-form-item :label="$t('project.description')" prop="description">
-                        <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:95.5%;"/>
-                    </el-form-item>
-                    <div style="font-size:12px;margin:10px;color:rgb(255, 73, 73);"> [ {{$t("common_msg.non_essential")}} ] {{$t("project.tag_tips")}}</div>
-                    <el-collapse v-model="activeNames" accordion>
-                        <el-collapse-item name="tags" class="tag-collapse">
-                            <template slot="title">
-                                <div class="mgl10">{{$t("project.tags")}}</div>
-                            </template>
-                            <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
-                                <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
-                                :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
-                            </el-form-item>
-                            <el-form-item :label="$t('project.tags')" prop="tags">
-                                <!-- <el-button type="info" plain size="medium" class="mgr10" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
-                                <el-input style="width:50%;" v-model="tagValue" clearable ref="saveTagInput" size=medium show-word-limit maxlength="20"
-                                @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
-                                <!-- <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button> -->
-                                <el-divider/>
-                                <el-tag style="margin:5px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size=large type=success closable 
-                                :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
-                            </el-form-item>
-                        </el-collapse-item>
-                    </el-collapse>
-                </el-row>
-            </el-form>
-            <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
-                <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
-            </div>
-        </el-dialog>
     </div>
 </template>
 <script>
@@ -167,6 +66,8 @@ export default {
     name: "work_item_manage",
     data(){
         return {
+            action_list:localStorage.getItem("ms_user_actions"),
+            username:localStorage.getItem("ms_username"),
             activeNames:"",
             tbKey:0,
             tableData: [],
@@ -177,135 +78,40 @@ export default {
             start_row:0,
             sort_column:"id",
             sort:"desc",
-            action_list:localStorage.getItem("ms_user_actions"),
             loading:false,
-            deleteID:null,
-            deleteView:false,
-            createView:false,
-            updateView:false,
-            tagVisible:false,
-            tagValue:"",
-            check_start_time:"",
-            check_end_time:"",
             filter:{
-                name:"",
+                key_word:"",
                 status:[],
-                category:[],
                 owner:[],
             },
             tree_data:[],
-            
-            form:{
-                date_period:[],
-                type:"create",
-                id:"",
-                name:"",
-                category:"",
-                status:"",
-                is_project:"",
-                start_date:null,
-                end_date:null,
-                description:"",
-                owner:"",
-                owner_id:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
-                is_open_tags:false,
-            },
-
-            tag_form:{
-                item_id:"",
-                pid:"",
-                tags:[],
-            },
-
             option:{
-                categories:[],
                 status:[]
             },
-           
-            rules: {
-                name: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                id: [
-                    {pattern: /^[\u4e00-\u9fa5A-Za-z0-9. ()-]+$/, message: this.$t("rules.project_id"), trigger: ["blur", "change"]},
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                status: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                category: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ]
-                
-            },
+            rules: {},
         }
     },
 
     async created(){
-        // await this.get_dept_employee();
-        // await this.getOption();
+        await this.get_dept_employee();
+        await this.getOption();
         await this.getData();
     },
 
     computed: {
-        
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
-        },
-
-        showTitle(){
-            if(this.createView && this.form.is_project) return this.$t("project.create_outter_project");
-            else if(this.createView && !this.form.is_project) return this.$t("project.create_inner_project");
-            else if(this.updateView && this.form.is_project) return this.$t("project.edit_project");
-            else if(this.updateView && !this.form.is_project) return this.$t("project.edit_inner_project");
-            else return "";
-        },
-
-        showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
-            else return false;
-        },
-
-        allowProjectCreate(){
-            if (this.action_list.includes("create_outer_project")){
-                return true
-            }else{
-                return false
-            }
-        },
-
-        allowCreate(){
-            // if (this.action_list.includes("create_inner_project")){
-            //     return true
-            // }else{
-            //     return false
-            // }
-            return false
-        },
-
-        setReadOnly(){
-            if (this.form.is_project==1 && this.action_list.includes("edit_outer_project")){
-                return false
-            }else if (this.form.is_project==0 && this.action_list.includes("edit_inner_project")){
-                return false
-            }else{
-                return true
-            }
-        },
-
-        allowEdit(){
-            if (this.action_list.includes("edit_outer_project")){
-                return true
-            }else{
-                return false
-            }
-        },
-        
+        }
     }, 
     
     methods: {
+        coculateProgress(work_time_total,pre_work_time){
+            if (pre_work_time <= 0){
+                return 100.00
+            }else{
+                return ((work_time_total/pre_work_time)*100).toFixed(2)
+            }
+        },
         stateFormat(row, column, cellValue) {
 			cellValue += '';
 			if (!cellValue.includes('.')) cellValue += '.';
@@ -313,6 +119,7 @@ export default {
 				return $1 + ',';
 			}).replace(/\.$/, '');
 		},
+
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
@@ -323,28 +130,6 @@ export default {
             return return_dict;
         },
 
-        handleClose(tag){
-            this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
-        },
-
-        handleInputConfirm(){
-            let inputValue=this.tagValue;
-            if(inputValue){
-                if(!this.tag_form.tags.includes(inputValue)){
-                    this.tag_form.tags.push(inputValue);
-                };
-            };
-            this.tagVisible=false;
-            this.tagValue="";
-        },
-
-        showInput(){
-            this.tagVisible=true;
-            this.$nextTick(_ => {
-                this.$refs.saveTagInput.$refs.input.focus();
-            });
-        },
-
         async get_dept_employee(){
             this.loading=true;
             await workItemService.get_dept_employee({}).then(res =>{ 
@@ -353,143 +138,32 @@ export default {
             })
         },
         
-        allowDelete(row){
-            if(row.status == 'A'){
-                return true
-            };
-            if (row.is_project==1 && this.action_list.includes("delete_outer_project")){
-                return false
-            }else if (row.is_project==0 && this.action_list.includes("delete_inner_project")){
-                return false
-            }else{
-                return true
-            }
-        },
-
-        handleCreate(){
-            this.form.is_project = 0;
-            this.createView=true;
-        },
-
-        handleProjectCreate(){
-            console.log(this.tree_data);
-            this.form.is_project = 1;
-            this.form.category = "預設";
-            this.form.status = "D";
-            this.createView=true;
-        },
-
         handleEdit(index, row){
-            this.$router.push("/work_item_cost_edit");
-      
-            this.form=Object.assign({}, row);
-            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
-            this.tag_form=Object.assign({}, {
-                item_id:this.form.id,
-                pid:"",
-                tags:this.form.tags,
-            });
-            this.updateView=true;
+            var query=this.router_query();
+            query.id=row.id;
+            this.$router.push({path:"/work_item_cost_edit", query:query});
         },
+     
 
-        handleDelete(index, row){
-            this.deleteID=row.id;
-            this.deleteView=true;
-        },
-
-        cancelDelete(){
-            this.deleteID=null;
-            this.deleteView=false;
-        },
-
-        confirmDelete(){
-            this.form.id = this.deleteID; 
-            var param = {
-                type:"delete",
-                form:this.form
-            }
-            this.update_work_items(param);
-        },
-
-        update_work_items(param){ 
-            workItemService.update_work_items(param).then(res =>{ 
-                if(res.success){ 
-                    this.$message.success("success"); 
-                    if(param.type=="create"){
-                        this.handleCurrentChange(1);
-                        this.cancelDialog();
-                    }else if(param.type=="update"){
-                        this.getData();
-                        this.cancelDialog();
-                    }else if(param.type=="delete"){
-                        // console.log("finish delete");
-                        this.cancelDelete();
-                        this.getData();
-                    }else{
-                        this.getData();
-                    }
-                    
-                
-                }else{ 
-                    this.$message.error(this.$t(res.msg)); 
-                } 
-            }) 
-        },
-
-        confirmDialog(){
-            this.$refs.form.validate(valid => {
-                if(valid){
-                    var temp_form = Object.assign({}, this.form);
-                    var temp_tag_form = Object.assign({}, this.tag_form);
-                    temp_tag_form.item_id = temp_form.id;
-                    var param = {
-                        type:this.createView?"create":"update",
-                        form:temp_form,
-                        tag_form:temp_tag_form,
-                    }
-                    this.update_work_items(param);
-                }
-            })
-        },
-
-        cancelDialog(){
-            this.createView=false;
-            this.updateView=false;
-            this.resetForm();
-            this.resetTagForm();
-        },
-
-        resetForm(){
-            this.form.date_period = [];
-            this.form={
-                type:"create",
-                id:"",
-                name:"",
-                category:"",
-                status:"",
-                is_project:"",
-                start_date:"",
-                end_date:"",
-                description:"",
-                owner:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
-                is_open_tags:false,
+        router_query(){
+            var query={
+                sort_column:this.sort_column,
+                sort:this.sort,
+                start_row:this.start_row,
+                page_size:this.page_size,
+                cur_page:this.cur_page,
+                key_word:this.filter.key_word,
+                status:this.filter.status,
+                owner:this.filter.owner
             };
-            this.$refs.form.clearValidate();
-        },
-
-        resetTagForm(){
-            this.activeNames="";
-            this.tag_form={
-                item_id:"",
-                pid:"",
-                tags:[],
-            };
+            console.log(query);
+            return query
         },
 
         handleCurrentChange(currentPage){
             this.cur_page = currentPage;
             this.count_page;
+            this.$router.replace({ path:"/work_item_cost", query:this.router_query() }).catch(err => {});
             this.getData()
         },
 
@@ -503,58 +177,58 @@ export default {
             this.sort = order;
             this.handleCurrentChange(1);
         },
+        getParam(){
+            
+            this.sort_column=("sort_column" in this.$route.query)?this.$route.query.sort_column:this.sort_column;
+            this.sort=("sort" in this.$route.query)?this.$route.query.sort:this.sort;
+            this.cur_page=("cur_page" in this.$route.query)?parseInt(this.$route.query.cur_page):parseInt(this.cur_page);
+            this.start_row=("start_row" in this.$route.query)?parseInt(this.$route.query.start_row):parseInt(this.start_row);
+            this.page_size=("page_size" in this.$route.query)?parseInt(this.$route.query.page_size):parseInt(this.page_size);
+            this.tbKey++;
         
-        async getData(){
-            this.loading=true;
-            var param = {
+            this.filter={
+                key_word:("key_word" in this.$route.query)?this.$route.query.key_word:this.filter.key_word,
+                status:("status" in this.$route.query)?this.$route.query.status:this.filter.status,
+                owner:("owner" in this.$route.query)?this.$route.query.owner:this.filter.owner
+            };
+            var param={
                 sort_column:this.sort_column,
                 sort:this.sort,
                 start_row:this.start_row,
-                pagesize:this.page_size,
-                key_word:this.filter.name,
+                page_size:this.page_size,
+                username:this.username,
+                key_word:this.filter.key_word,
                 status:this.filter.status,
-                category:this.filter.category,
-                owner:this.filter.owner,
+                owner:this.filter.owner
             }
-            await workItemService.get_work_items(param).then(res =>{ 
-                this.tableData=res.data;
-                this.tableData=[
-                    {
-                        "id": "200110",
-                        "name": "台中新光三越",
-                        "category": "預設",
-                        "status": "P",
-                        "status_name":"進行中",
-                        "income": 1000000,
-                        "cost": 20000,
-                        "progress":40,
-                        "unprocess_pay":0,
-                    },
-                    {
-                        "id": "P02090101",
-                        "name": "VAR APP v2.3.0",
-                        "category": "預設",
-                        "status": "P",
-                        "status_name":"進行中",
-                        "income": 1000000,
-                        "cost": 20000,
-                        "progress":40,
-                        "unprocess_pay":2,
-                    },
-                    {
-                        "id": "100127",
-                        "name": "馬來西亞VR軍事訓練",
-                        "category": "預設",
-                        "status": "P",
-                        "status_name":"進行中",
-                        "income": 1000000,
-                        "cost": 20000,
-                        "progress":40,
-                        "unprocess_pay":0,
-                    }
-                    
-                ];
-                this.totalRow=res.total;
+            
+            return param
+        },
+        
+        async getData(){
+            this.loading=true;
+            // var param = {
+            //     sort_column:this.sort_column,
+            //     sort:this.sort,
+            //     start_row:this.start_row,
+            //     page_size:this.page_size,
+            //     key_word:this.filter.key_word,
+            //     username:this.username,
+            //     status:this.filter.status,
+            //     owner:this.filter.owner
+            // }
+            await workItemService.work_item_cost_teble(this.getParam()).then(res =>{ 
+                // console.log(res);
+                if(res.success){
+                    this.tableData=res.data;
+                    this.totalRow=res.total;
+                    this.$router.replace({ path:"/work_item_cost", query:this.router_query() }).catch(err => {});
+                }else if(res.code==0){
+                    this.$message.warning(this.$t(res.msg));
+                }else{
+                    this.$message.error(res.msg);
+                };
+                
             })
             this.loading=false;
         },
@@ -567,6 +241,7 @@ export default {
         },
 
         search(){
+            console.log(this.filter);
             this.handleCurrentChange(1);
         },
         

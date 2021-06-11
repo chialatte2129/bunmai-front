@@ -7,7 +7,12 @@ export const workItemService = {
 	get_dept_employee, 
 	get_tree,
 	downlaod_data,
-	downlaod_cost_data
+	downlaod_cost_data,
+	work_item_cost_teble,
+	get_project_cost_records,
+	get_project_cost_info,
+	update_pre_time,
+	update_cost_record
 }
 
 function get_work_items(param){
@@ -79,5 +84,61 @@ function downlaod_cost_data(param){
 		)		
 	})
 }
+
+
+// 專案成本管理
+function work_item_cost_teble(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/work_item_cost/table`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+//支出/收入明細
+function get_project_cost_records(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/work_item_cost/cost_records`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+//專案收支資訊＋權限驗證
+function get_project_cost_info(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/work_item_cost/info`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+//更新預估時間
+function update_pre_time(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/work_item_cost/pre_time/update`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+//更新收入/支出
+function update_cost_record(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/work_item_cost/cost/update`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
 
 

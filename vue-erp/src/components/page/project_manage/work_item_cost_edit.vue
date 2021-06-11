@@ -4,25 +4,23 @@
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
                 <el-breadcrumb-item> {{$t('menus.work_items_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item @click="handleLeave"> {{$t('menus.work_item_cost')}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{form.item_name}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item :to="{path:'/work_item_cost',query:$route.query}"> {{$t('menus.work_item_cost')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{form.id}}.{{form.name}}</b></el-breadcrumb-item>
             </el-breadcrumb>
-            <span style="float:right;margin:-37px 0px 0px 250px;">
-                <el-button type="info" icon="el-icon-back" size="large" @click="handleLeave">{{$t('btn.leave')}}</el-button>
-            </span>
+            
         </div>
         <div class="container">
             <el-card shadow="hover" class="mgb10" v-loading.lock="loading">
                 <div slot="header" class="clearfix">
-                    <span>專案成本 - {{form.item_name}}</span>
-                    <el-button type=primary size=large icon="el-icon-files" class="card-header-r-btn" @click="handleUpdate"> {{$t('btn.save')}}</el-button>
+                    <span>專案成本管理 - {{form.name}}</span>
+                    <el-button type=info size=large icon="el-icon-back" class="card-header-r-btn" @click="handleLeave">{{$t('btn.leave')}}</el-button>
                 </div>
                 <el-form ref="form" :model="form" :rules="rules" label-position="left" label-width="150px">
                     <el-collapse v-model="collapseName">
-                        <el-col :span="24" style="padding-right:10px;">
+                        <el-col :span="24" style="padding-right:10px;padding-left:10px;">
                             <el-collapse-item name="base_info" title="專案資訊" disabled>
-                                <el-row>
-                                    <el-col :span="12">
+                                <el-row :gutter="20" style="padding-right:10px;padding-left:10px;">
+                                    <el-col :span="12" >
                                         <el-form-item label="專案編號">
                                             <span>{{form.id}}</span>
                                         </el-form-item>
@@ -30,33 +28,38 @@
                                             <span>{{form.name}}</span>
                                         </el-form-item>
                                         <el-form-item label="專案狀態">
-                                            <span>{{form.status}}</span>
+                                            <span>{{form.status_name}}</span>
                                         </el-form-item>
                                         <el-form-item label="負責人">
                                             <span>{{form.owner}}</span>
                                         </el-form-item>                                        
                                     </el-col>
-                                    <el-col :span="12">
+                                    <el-col :span="10">
                                         <el-form-item label="預估工時">
-                                            <el-input type="number" v-model.number="form.pre_work_time" style="width:200px;"><template slot="append">小時</template></el-input>
+                                            <span>{{form.pre_work_time}} 小時</span>
+                                            <el-button type="success" icon="el-icon-time" style="margin-left:20px;" @click="handleUpdatePreTime"> 更新</el-button>
                                             <!-- <span>{{form.pre_work_time}} 小時</span> -->
                                         </el-form-item>
                                         <el-form-item label="執行工時">
-                                            <span>{{form.work_time}} 小時</span>
+                                            <span>{{form.total_work_hours}} 小時</span>
                                         </el-form-item>
                                         <el-form-item label="執行比例">
-                                            <span v-if="workprogess>=80" style="color:red;">{{workprogess}} %</span>
-                                            <span v-if="workprogess>=50&&workprogess<80"  style="color:orange;">{{workprogess}} %</span>
-                                            <span v-if="workprogess<50" style="color:green;">{{workprogess}} %</span>
+                                            <span v-if="form.work_progress>=80" style="color:red;">{{form.work_progress}} %</span>
+                                            <span v-if="form.work_progress>=50&&form.work_progress<80"  style="color:orange;">{{form.work_progress}} %</span>
+                                            <span v-if="form.work_progress<50" style="color:green;">{{form.work_progress}} %</span>
                                         </el-form-item>
+                                        <el-form-item label="費用加總">
+                                            <span>{{stateFormat("","",totalCost)}} 元</span>
+                                        </el-form-item>
+                                        
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="income" title="請款單" disabled>
+                            <el-collapse-item v-if="false" name="income" title="請款單" disabled>
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <el-table :data="tableData_pay_order" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-                                        @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey1">
+                                        @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
                                             <el-table-column prop="id" label="單號" width="150" sortable="custom" align="center" show-overflow-tooltip/>
                                             <el-table-column prop="status" label="狀態" width="150" sortable="custom" align="center" show-overflow-tooltip/>
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="center" show-overflow-tooltip/>
@@ -77,22 +80,23 @@
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
-                                            <el-button type="success" icon="el-icon-plus"  @click="incomeCreateVisible=true">{{$t('btn.new')}}</el-button>
+                                            <el-input v-model="filter.incomeKeyWord" class="mgr10 handle-input" placeholder="關鍵字搜尋" @change="search" />
+                                            <el-button type="success" size="large" icon="el-icon-plus"  @click="handleIncomeCreate">{{$t('btn.new')}}</el-button>
                                         </span>
                                         <el-table :data="tableData_income" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-                                        @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey1">
+                                        @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                                             <el-table-column prop="description" label="項目" width="auto" sortable="custom" show-overflow-tooltip/>
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                                             <el-table-column :label="$t('btn.action')" width="180" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="incomeEditVisible=true">{{$t('btn.edit')}}</el-button>
-                                                    <el-button  type="danger" size="mini" icon="el-icon-delete" @click="deleteView=true">{{$t('project.delete')}}</el-button>
+                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
+                                                    <el-button  type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
                                         <div style="float:right;color:red;">
-                                            <span><h2>Total {{stateFormat("","",form.total_income)}} 元</h2></span>
+                                            <span><h2>Total {{stateFormat("","",total_income)}} 元</h2></span>
                                         </div>
                                     </el-col>
                                 </el-row>
@@ -101,22 +105,24 @@
                                 <el-row style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
-                                            <el-button type="success" icon="el-icon-plus" @click="costCreateVisible=true">{{$t('btn.new')}}</el-button>
+                                            <el-input v-model="filter.costKeyWord" class="mgr10 handle-input" placeholder="關鍵字搜尋" @change="search" />
+                                            <el-button type="success" size="large" icon="el-icon-plus" @click="handleCostCreate">{{$t('btn.new')}}</el-button>
+                                            
                                         </span>
                                         <el-table :data="tableData_cost" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-                                        @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey2">
+                                        @sort-change="handleCostSortChange" :cell-style="getCellStyle" :key="tbKey2">
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                                             <el-table-column prop="description" label="項目" width="auto" sortable="custom" show-overflow-tooltip/>
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                                             <el-table-column :label="$t('btn.action')" width="180" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="costEditVisible=true">{{$t('btn.edit')}}</el-button>
-                                                    <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteView=true">{{$t('project.delete')}}</el-button>
+                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
+                                                    <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
                                         <div style="float:right;color:red;">
-                                            <span><h2>Total {{stateFormat("","",form.total_cost)}} 元</h2></span>
+                                            <span><h2>Total {{stateFormat("","",total_cost)}} 元</h2></span>
                                         </div>
                                     </el-col>
                                 </el-row>
@@ -130,13 +136,14 @@
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
             <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> 刪除後不可恢復,您要刪除這筆紀錄嗎？</div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+                <el-button @click="cancelDelete">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
         
+        
 
-        <el-dialog :title="showTitle" :visible.sync="viewPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="showTitle" :visible.sync="viewPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="12">
@@ -187,7 +194,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog :title="showTitle" :visible.sync="checkPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="showTitle" :visible.sync="checkPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="12">
@@ -202,21 +209,18 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="公司名稱">
-                            <span>{{payOrderForm.company_name}}</span>
+                        <el-form-item label="申請單位">
+                            <span>{{payOrderForm.order_dept}}</span>
                         </el-form-item>
                         <el-form-item label="請款人">
                             <span>{{payOrderForm.owner}}</span>
-                        </el-form-item>
-                        <el-form-item label="申請單位">
-                            <span>{{payOrderForm.order_dept}}</span>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="請款說明">
-                            <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
+                            <el-input type="textarea" :rows="4" :readonly="true" v-model="payOrderForm.description"></el-input>
                         </el-form-item>
                         <el-table :data="payOrderForm.content" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
                             <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
@@ -239,79 +243,68 @@
             </div>
         </el-dialog>
 
-        <el-dialog :title="showTitle" :visible.sync="costCreateVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+        <el-dialog title="更新預估工時" :visible.sync="updatePreTimeVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="preTimeForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
+                    <el-col :span="24">
+                        <el-form-item label="原預估工時">
+                            <span>{{preTimeForm.old_setting}} 小時</span>
+                        </el-form-item>
+                        <el-form-item label="新預估工時">
+                            <el-input type="number" v-model.number="preTimeForm.new_setting" style="width:200px;"><template slot="append">小時</template></el-input>
+                        </el-form-item>
                     </el-col>
                 </el-row>
-               
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+                <el-button type="primary" @click="confirmUpdatePreTime">{{$t('btn.confirm')}}</el-button>
             </div>
         </el-dialog>
 
-        <el-dialog :title="showTitle" :visible.sync="costEditVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+        <el-dialog title="預計支出" :visible.sync="costEditVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="costForm" ref="costForm" :rules="costRules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
+                    <el-col :span="24">
+                        <el-form-item label="日期" prop="date">
+                            <el-date-picker v-model="costForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
+                        </el-form-item>
+                        <el-form-item label="金額" prop="amount">
+                            <el-input type="number" v-model.number="costForm.amount" style="width:200px"></el-input>
+                        </el-form-item>
+                        <el-form-item label="項目說明" prop="description">
+                            <el-input type="textarea" :rows="3" v-model="costForm.description"></el-input>
+                        </el-form-item>
                     </el-col>
                 </el-row>
-               
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+                <el-button type="primary" @click="confirmCostDialog">{{$t('btn.confirm')}}</el-button>
             </div>
         </el-dialog>
 
-        <el-dialog :title="showTitle" :visible.sync="incomeCreateVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+        <el-dialog title="預計收入" :visible.sync="incomeEditVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+            <el-form :model="incomeForm" ref="incomeForm" :rules="incomeRules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
+                    <el-col :span="24">
+                        <el-form-item label="日期" prop="date">
+                            <el-date-picker v-model="incomeForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
+                        </el-form-item>
+                        <el-form-item label="金額" prop="amount">
+                            <el-input type="number" v-model.number="incomeForm.amount" style="width:200px"></el-input>
+                        </el-form-item>
+                        <el-form-item label="項目說明" prop="description">
+                            <el-input type="textarea" :rows="3" v-model="incomeForm.description"></el-input>
+                        </el-form-item>
                     </el-col>
                 </el-row>
-               
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
+                <el-button type="primary" @click="confirmIncomeDialog">{{$t('btn.confirm')}}</el-button>
             </div>
         </el-dialog>
-
-        <el-dialog :title="showTitle" :visible.sync="incomeEditVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-row>
-                    <el-col :span="12">
-                        
-                    </el-col>
-                    <el-col :span="12">
-                       
-                    </el-col>
-                </el-row>
-               
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="closeAllDialog">{{$t('btn.confirm')}}</el-button>
-            </div>
-        </el-dialog>
-
-       
     </div>
 </template>
 <script>
@@ -322,19 +315,25 @@ export default {
         return {
             collapseName:["base_info", "income", "cost"],
 
-            activeNames:"",
+            username:localStorage.getItem("ms_username"),
+            item_id:this.$route.query.id,
+
+            total_cost:0,
+            total_income:0,
+            today:"",
+
             tbKey1:0,
             tbKey2:0,
             tbKey3:0,
             
-            totalRow:0,
-            cur_page: 1,
-            page_size:10,
-            page_size_list:[5, 10],
-            start_row:0,
-            sort_column:"id",
-            sort:"desc",
+            cost_sort_column:"date",
+            cost_sort:"desc",
+
+            income_sort_column:"date",
+            income_sort:"desc",
+
             action_list:localStorage.getItem("ms_user_actions"),
+            
             loading:false,
             deleteID:null,
             deleteView:false,
@@ -344,21 +343,32 @@ export default {
 
             viewPayOrderVisible:false,
             checkPayOrderVisible:false,
-            incomeCreateVisible:false,
+            
             incomeEditVisible:false,
-            costCreateVisible:false,
             costEditVisible:false,
 
+            updatePreTimeVisible:false,
+
+            preTimeForm:{
+                old_setting:"",
+                new_setting:""
+            },
+
             incomeForm:{
+                type:"income",
+                actionType:"create",
                 date:"",
                 description:"",
                 amount:""
             },
             costForm:{
+                type:"cost",
+                actionType:"create",
                 date:"",
                 description:"",
                 amount:""
             },
+
             payOrderForm:{
                 id:"P0001-ASUDE",
                 status:"待審",
@@ -398,30 +408,13 @@ export default {
 
             },
 
-            tagValue:"",
-            check_start_time:"",
-            check_end_time:"",
             filter:{
-                name:"",
-                status:[],
-                category:[],
-                owner:[],
+                costKeyWord:"",
+                incomeKeyWord:""
             },
             
-            tableData_cost: [
-                {date:"2021-05-31",description:"支出項目ㄧ",amount:1000},
-                {date:"2021-05-31",description:"支出項目二",amount:30000},
-                {date:"2021-05-31",description:"支出項目三",amount:340},
-                {date:"2021-05-31",description:"支出項目四",amount:1430},
-                {date:"2021-05-31",description:"支出項目五",amount:500}
-            ],
-            tableData_income: [
-                {date:"2021-05-31",description:"收入項目一",amount:100000},
-                {date:"2021-05-31",description:"收入項目二",amount:20000},
-                {date:"2021-05-31",description:"收入項目三",amount:3000000},
-                {date:"2021-05-31",description:"收入項目四",amount:30000},
-                {date:"2021-05-31",description:"收入項目五",amount:4000}
-            ],
+            tableData_cost: [],
+            tableData_income: [],
             tableData_pay_order: [
                 {id:"P0001-ASUDE",date:"2021-04-21",status:"待審",description:"請款說明內容一",owner:"王家得",amount:2000},
                 {id:"P0001-LIEKD",date:"2021-04-20",status:"待審",description:"請款說明內容一",owner:"王家得",amount:2000},
@@ -432,26 +425,46 @@ export default {
                 {id:"P0001-IEKWE",date:"2021-04-17",status:"退回",description:"請款說明內容一",owner:"王家得",amount:2000},
             ],
             form:{
-                item_name:"VAR APP v2.3.0",
-                id:"P0009527",
-                name:"VAR APP v2.3.0",
-                status:"進行中",
-                owner:"梁鴻騰",
-                pre_work_time:1000,
-                work_time:540,
-                work_progress:54,
-                total_cost:33270,
-                total_income:3154000
+                id: "",
+                name: "",
+                status: "",
+                owner: "",
+                owner_id: null,
+                status_name: "",
+                income_amount: "0",
+                cost_amount: "0",
+                pay_order: 0,
+                total_work_hours: 0.0,
+                pre_work_time: 0,
+                work_progress: 0
+            },
+            rules: {},
+            costRules: {
+                description: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
                 
+                amount: [
+                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
             },
-
-            option:{
-                categories:[],
-                status:[]
-            },
-            tree_data:[],
-           
-            rules: {}
+            incomeRules: {
+                description: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                
+                amount: [
+                    {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+            }
                
         }
     },
@@ -460,86 +473,59 @@ export default {
         // await this.get_dept_employee();
         // await this.getOption();
         await this.getData();
+        await this.getToday();
     },
 
     computed: {
-        
-        count_page(){
-            this.start_row=(this.cur_page-1)*this.page_size;
-        },
-
-        showTitle(){
-            if(this.createView && this.form.is_project) return this.$t("project.create_outter_project");
-            else if(this.createView && !this.form.is_project) return this.$t("project.create_inner_project");
-            else if(this.updateView && this.form.is_project) return this.$t("project.edit_project");
-            else if(this.updateView && !this.form.is_project) return this.$t("project.edit_inner_project");
-            else return "";
-        },
-
-        showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
-            else return false;
-        },
-
-        allowProjectCreate(){
-            if (this.action_list.includes("create_outer_project")){
-                return true
-            }else{
-                return false
-            }
-        },
-
-        allowCreate(){
-            // if (this.action_list.includes("create_inner_project")){
-            //     return true
-            // }else{
-            //     return false
-            // }
-            return false
-        },
-
-        setReadOnly(){
-            if (this.form.is_project==1 && this.action_list.includes("edit_outer_project")){
-                return false
-            }else if (this.form.is_project==0 && this.action_list.includes("edit_inner_project")){
-                return false
-            }else{
-                return true
-            }
-        },
-
-        allowEdit(){
-            if (this.action_list.includes("edit_outer_project")){
-                return true
-            }else{
-                return false
-            }
-        },
-
-        workprogess(){
-
-            return ((this.form.work_time/this.form.pre_work_time )*100).toFixed(2)
+        totalCost(){
+            return this.total_cost + this.total_income
         }
-        
     }, 
     
     methods: {
+        async getToday(){
+            let time =new Date();
+            this.today = time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
+        },
+        handleUpdatePreTime(){
+            this.preTimeForm={
+                old_setting:this.form.pre_work_time,
+                new_setting:this.form.pre_work_time
+            };
+            this.updatePreTimeVisible = true;
+        },
+        confirmUpdatePreTime(){
+            if(this.preTimeForm.old_setting == this.preTimeForm.new_setting){
+                this.$message.error("未變更");
+            }else{
+                workItemService
+                .update_pre_time({id:this.item_id,pre_work_time:this.preTimeForm.new_setting})
+                .then(res =>{ 
+                    // console.log(res);
+                    if(res.code==1){
+                        this.$message.success(res.msg);
+                        // this.form.pre_work_time = this.preTimeForm.new_setting;
+                        this.getData()
+                        this.closeAllDialog();
+                    }else{
+                        this.$message.error(res.msg);
+                    }
+                })
+            };
+            this.updatePreTimeVisible = true;
+        },
         closeAllDialog(){
-            this.viewPayOrderVisible=false;
-            this.checkPayOrderVisible=false;
-            this.incomeCreateVisible=false;
+            // this.viewPayOrderVisible=false;
+            // this.checkPayOrderVisible=false;
             this.incomeEditVisible=false;
-            this.costCreateVisible=false;
             this.costEditVisible=false;
+            this.updatePreTimeVisible = false;
 
             this.deleteView=false;
-        },
-        handleUpdate(){
-            this.$router.push("/work_item_cost");
+            this.$refs.form.clearValidate();
         },
         handleLeave(){
-            this.$router.push("/work_item_cost");
+            this.$router.push({path:"/work_item_cost",query:this.$route.query});
         },
         stateFormat(row, column, cellValue) {
 			cellValue += '';
@@ -558,61 +544,112 @@ export default {
             return return_dict;
         },
 
-        
-
-        
-
-        showInput(){
-            this.tagVisible=true;
-            this.$nextTick(_ => {
-                this.$refs.saveTagInput.$refs.input.focus();
-            });
+        // Cost Record        
+        handleCostCreate(){
+            this.costForm={
+                actionType:"create",
+                type:"cost",
+                username:this.username,
+                work_item_id:this.item_id,
+                date:this.today,
+                description:"",
+                amount:null
+            }
+            this.costEditVisible=true;
+        },
+        handleCostEdit(index, row){
+            this.costForm=Object.assign({}, row);
+            this.costForm.username = localStorage.getItem("ms_username");
+            this.costForm.actionType="update";
+            this.costEditVisible=true;
+        },
+        confirmCostDialog(){
+            this.$refs.costForm.validate(valid => {
+                if(valid){
+                    var temp_form = Object.assign({}, this.costForm);
+                    var param = {
+                        action:temp_form.actionType,
+                        form:temp_form
+                    };
+                    this.confirmCostUpdate(param);
+                }
+            })
         },
 
-        async get_dept_employee(){
-            this.loading=true;
-            await workItemService.get_dept_employee({}).then(res =>{ 
-                this.tree_data=res.tree_data;
-                this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+        confirmCostUpdate(param){ 
+            // console.log(param);
+            workItemService.update_cost_record(param).then(res =>{ 
+                console.log(res);
+                if(res.code==1){ 
+                    this.$message.success(this.$t(res.msg)); 
+                    if(param.action=="create"){
+                        this.getCostData();
+                        this.closeAllDialog();
+                    }else if(param.action=="update"){
+                        this.getCostData();
+                        this.closeAllDialog();
+                    }else if(param.action=="delete"){
+                        this.closeAllDialog();
+                        // this.cancelDelete();
+                        this.getCostData();
+                    }else{
+                        this.getCostData();
+                    }
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                } 
+            }) 
+        },
+
+        resetCostForm(){
+            this.costForm={
+               
+            };
+            this.$refs.form.clearValidate();
+        },
+
+        // Income Record
+        handleIncomeCreate(){
+            this.incomeForm={
+                actionType:"create",
+                type:"income",
+                username:this.username,
+                work_item_id:this.item_id,
+                date:this.today,
+                description:"",
+                amount:null
+            }
+            this.incomeEditVisible=true;
+        },
+        handleIncomeEdit(index, row){
+            this.incomeForm=Object.assign({}, row);
+            this.incomeForm.username = localStorage.getItem("ms_username");
+            this.incomeForm.actionType="update";
+            this.incomeEditVisible=true;
+        },
+
+        confirmIncomeDialog(){
+            this.$refs.incomeForm.validate(valid => {
+                if(valid){
+                    var temp_form = Object.assign({}, this.incomeForm);
+                    var param = {
+                        action:temp_form.actionType,
+                        form:temp_form
+                    };
+                    this.confirmCostUpdate(param);
+                }
             })
         },
         
-        allowDelete(row){
-            if(row.status == 'A'){
-                return true
+        resetIncomeForm(){
+           
+            this.incomeForm={
+               
             };
-            if (row.is_project==1 && this.action_list.includes("delete_outer_project")){
-                return false
-            }else if (row.is_project==0 && this.action_list.includes("delete_inner_project")){
-                return false
-            }else{
-                return true
-            }
+            this.$refs.form.clearValidate();
         },
 
-        handleCreate(){
-            this.form.is_project = 0;
-            this.createView=true;
-        },
-
-        handleProjectCreate(){
-            console.log(this.tree_data);
-            this.form.is_project = 1;
-            this.form.category = "預設";
-            this.form.status = "D";
-            this.createView=true;
-        },
-
-        handleEdit(index, row){
-            this.form=Object.assign({}, row);
-            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
-            this.tag_form=Object.assign({}, {
-                item_id:this.form.id,
-                pid:"",
-                
-            });
-            this.updateView=true;
-        },
+        //  Handle Delete
 
         handleDelete(index, row){
             this.deleteID=row.id;
@@ -627,140 +664,93 @@ export default {
         confirmDelete(){
             this.form.id = this.deleteID; 
             var param = {
-                type:"delete",
+                action:"delete",
                 form:this.form
             }
-            this.update_work_items(param);
+            this.confirmCostUpdate(param);
         },
 
-        update_work_items(param){ 
-            workItemService.update_work_items(param).then(res =>{ 
-                if(res.success){ 
-                    this.$message.success("success"); 
-                    if(param.type=="create"){
-                        this.handleCurrentChange(1);
-                        this.cancelDialog();
-                    }else if(param.type=="update"){
-                        this.getData();
-                        this.cancelDialog();
-                    }else if(param.type=="delete"){
-                        // console.log("finish delete");
-                        this.cancelDelete();
-                        this.getData();
-                    }else{
-                        this.getData();
-                    }
-                    
-                
-                }else{ 
-                    this.$message.error(this.$t(res.msg)); 
-                } 
-            }) 
-        },
+        //  Other Data
 
-        confirmDialog(){
-            this.$refs.form.validate(valid => {
-                if(valid){
-                    var temp_form = Object.assign({}, this.form);
-                    var temp_tag_form = Object.assign({}, this.tag_form);
-                    temp_tag_form.item_id = temp_form.id;
-                    var param = {
-                        type:this.createView?"create":"update",
-                        form:temp_form,
-                        tag_form:temp_tag_form,
-                    }
-                    this.update_work_items(param);
-                }
-            })
+        handleCostSortChange({prop, order}){
+            this.income_sort_column = prop;
+            this.income_sort = order;
+            this.getCostData();
         },
-
-        cancelDialog(){
-            this.createView=false;
-            this.updateView=false;
-            this.resetForm();
-            this.resetTagForm();
-        },
-
-        resetForm(){
-            this.form.date_period = [];
-            this.form={
-               
-            };
-            this.$refs.form.clearValidate();
-        },
-
-        resetTagForm(){
-            this.activeNames="";
-            this.tag_form={
-                item_id:"",
-                pid:"",
-                
-            };
-        },
-
-        handleCurrentChange(currentPage){
-            this.cur_page = currentPage;
-            this.count_page;
-            this.getData()
-        },
-
-        handleSizeChange(size){
-            this.page_size = size;
-            this.handleCurrentChange(1);
-        },
-
-        handleSortChange({prop, order}){
-            this.sort_column = prop;
-            this.sort = order;
-            this.handleCurrentChange(1);
+        handleIncomeSortChange({prop, order}){
+            this.income_sort_column = prop;
+            this.income_sort = order;
+            this.getCostData();
         },
         
         async getData(){
             this.loading=true;
-            // var param = {
-            //     sort_column:this.sort_column,
-            //     sort:this.sort,
-            //     start_row:this.start_row,
-            //     pagesize:this.page_size,
-            //     key_word:this.filter.name,
-            //     status:this.filter.status,
-            //     category:this.filter.category,
-            //     owner:this.filter.owner,
-            // }
-            // await workItemService.get_work_items(param).then(res =>{ 
-            //     this.tableData=res.data;
-                
-            //     this.totalRow=res.total;
-            // })
-
-            
+            // console.log(this.$route.query);
+            var param = {
+                username:this.username,
+                item_id:this.item_id
+            }
+            await workItemService.get_project_cost_info(param).then(res =>{ 
+                // console.log(res);
+                if(res.code){
+                    this.form = res.data;
+                    this.getCostData();
+                }else{
+                    this.$message.error(res.msg);
+                }
+            })
             this.loading=false;
         },
-        
-        async getOption(){
-            await workItemService.get_options({}).then(res =>{ 
-                this.option.categories=res.categories; 
-                this.option.status=res.status; 
-            }) 
-        },
 
+        async getCostData(){
+            this.loading=true;
+            await workItemService.get_project_cost_records({
+                item_id:this.item_id,
+                type:"income",
+                sort:this.income_sort,
+                sort_column:this.income_sort_column,
+                key_word:this.filter.incomeKeyWord
+            }).then(res =>{ 
+                // console.log(res);
+                if(res.success){
+                    this.tableData_income = res.data;
+                    this.total_income = res.total;
+                }else{
+                    this.$message.error(res.msg);
+                }
+            });
+            await workItemService.get_project_cost_records({
+                item_id:this.item_id,
+                type:"cost",
+                sort:this.cost_sort,
+                sort_column:this.cost_sort_column,
+                key_word:this.filter.costKeyWord
+            }).then(res =>{ 
+                // console.log(res);
+                if(res.success){
+                    this.tableData_cost = res.data;
+                    this.total_cost = res.total;
+                }else{
+                    this.$message.error(res.msg);
+                }
+            })
+            this.loading=false;
+        },
+     
         search(){
-            this.handleCurrentChange(1);
+            this.getCostData();
         },
         
         cancelSearch(){
             this.filter={
-                name:"",
-                status:[],
-                category:[],
-                owner:[],
+                
             };
-            this.handleCurrentChange(1);
         },
     }
 }
 </script>
 <style scoped>
+    
     .handle-input{
         width:300px;
         display:inline-block;
