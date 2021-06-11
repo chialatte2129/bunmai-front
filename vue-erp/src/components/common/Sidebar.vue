@@ -72,8 +72,8 @@ export default {
                                 {
                                     index: "work_item_cost",
                                     title: this.$t("menus.work_item_cost"),
-                                    // show: this.hasThisMenuOrMgr("work_item_cost"),
-                                    show: false
+                                    show: this.hasThisMenuOrMgr("work_item_cost"),
+                                    // show: false
                                 },
                                 {
                                     index: "work_item_pay",

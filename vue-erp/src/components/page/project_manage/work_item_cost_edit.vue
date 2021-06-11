@@ -37,7 +37,7 @@
                                     <el-col :span="10">
                                         <el-form-item label="預估工時">
                                             <span>{{form.pre_work_time}} 小時</span>
-                                            <el-button type="success" icon="el-icon-time" style="margin-left:20px;" @click="handleUpdatePreTime"> 更新</el-button>
+                                            <el-button v-if="is_project_owner" type="success" icon="el-icon-time" style="margin-left:20px;" @click="handleUpdatePreTime"> 更新</el-button>
                                             <!-- <span>{{form.pre_work_time}} 小時</span> -->
                                         </el-form-item>
                                         <el-form-item label="執行工時">
@@ -48,10 +48,11 @@
                                             <span v-if="form.work_progress>=50&&form.work_progress<80"  style="color:orange;">{{form.work_progress}} %</span>
                                             <span v-if="form.work_progress<50" style="color:green;">{{form.work_progress}} %</span>
                                         </el-form-item>
-                                        <el-form-item label="費用加總">
-                                            <span>{{stateFormat("","",totalCost)}} 元</span>
+                                        <el-form-item label="專案費用">
+                                            <el-tooltip effect="light" content="預估收入 - 預估支出 ＝ 專案費用" placement="bottom">
+                                                <span>{{stateFormat("","",totalCost)}} 元</span>
+                                            </el-tooltip>
                                         </el-form-item>
-                                        
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
@@ -76,19 +77,19 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="income" title="預計收入" disabled>
+                            <el-collapse-item name="income" title="預估收入" disabled>
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
                                             <el-input v-model="filter.incomeKeyWord" class="mgr10 handle-input" placeholder="關鍵字搜尋" @change="search" />
-                                            <el-button type="success" size="large" icon="el-icon-plus"  @click="handleIncomeCreate">{{$t('btn.new')}}</el-button>
+                                            <el-button  v-if="is_project_owner" type="success" size="large" icon="el-icon-plus"   @click="handleIncomeCreate">{{$t('btn.new')}}</el-button>
                                         </span>
                                         <el-table :data="tableData_income" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                                             <el-table-column prop="description" label="項目" width="auto" sortable="custom" show-overflow-tooltip/>
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column :label="$t('btn.action')" width="180" align="center" fixed="right">
+                                            <el-table-column v-if="is_project_owner" :label="$t('btn.action')" width="180" align="center" fixed="right">
                                                 <template slot-scope="scope">
                                                     <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
                                                     <el-button  type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
@@ -96,25 +97,24 @@
                                             </el-table-column>
                                         </el-table>
                                         <div style="float:right;color:red;">
-                                            <span><h2>Total {{stateFormat("","",total_income)}} 元</h2></span>
+                                            <span><h2>收入總計 {{stateFormat("","",total_income)}} 元</h2></span>
                                         </div>
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="cost" title="預計支出" disabled>
+                            <el-collapse-item name="cost" title="預估支出" disabled>
                                 <el-row style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
                                             <el-input v-model="filter.costKeyWord" class="mgr10 handle-input" placeholder="關鍵字搜尋" @change="search" />
-                                            <el-button type="success" size="large" icon="el-icon-plus" @click="handleCostCreate">{{$t('btn.new')}}</el-button>
-                                            
+                                            <el-button v-if="is_project_owner" type="success" size="large" icon="el-icon-plus" @click="handleCostCreate">{{$t('btn.new')}}</el-button>
                                         </span>
                                         <el-table :data="tableData_cost" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handleCostSortChange" :cell-style="getCellStyle" :key="tbKey2">
                                             <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
                                             <el-table-column prop="description" label="項目" width="auto" sortable="custom" show-overflow-tooltip/>
                                             <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column :label="$t('btn.action')" width="180" align="center" fixed="right">
+                                            <el-table-column v-if="is_project_owner" :label="$t('btn.action')" width="180" align="center" fixed="right">
                                                 <template slot-scope="scope">
                                                     <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
                                                     <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
@@ -122,7 +122,7 @@
                                             </el-table-column>
                                         </el-table>
                                         <div style="float:right;color:red;">
-                                            <span><h2>Total {{stateFormat("","",total_cost)}} 元</h2></span>
+                                            <span><h2>支出總計 {{stateFormat("","",total_cost)}} 元</h2></span>
                                         </div>
                                     </el-col>
                                 </el-row>
@@ -478,7 +478,14 @@ export default {
 
     computed: {
         totalCost(){
-            return this.total_cost + this.total_income
+            return this.total_income - this.total_cost
+        },
+        is_project_owner(){
+            if(this.form.owner_id == localStorage.getItem("ms_odoo_employee_id")){
+                return true
+            }else{
+                return false
+            }
         }
     }, 
     
