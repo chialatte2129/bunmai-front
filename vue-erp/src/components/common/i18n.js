@@ -862,7 +862,8 @@ export const messages = {
             amount:"Amount",
             total_income:"Total Income",
             total_cost:"Total Cost",
-            update:"Update"
+            update:"Update",
+            hours:"hours"
         },
     },
     'ja_JP':{
