@@ -373,8 +373,8 @@
                             <el-date-picker v-model="incomeForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
                         </el-form-item>
                         <el-form-item label="支出類型" prop="recorded_type">
-                            <el-radio v-model="incomeForm.recorded_type" label="standard">預估支出</el-radio>
-                            <el-radio v-model="incomeForm.recorded_type" label="actual">實際支出</el-radio>
+                            <el-radio v-model="incomeForm.recorded_type" label="standard">預估收入</el-radio>
+                            <el-radio v-model="incomeForm.recorded_type" label="actual">實際收入</el-radio>
                         </el-form-item>
                         <el-form-item label="金額" prop="amount">
                             <el-input type="number" v-model.number="incomeForm.amount" style="width:200px"></el-input>
