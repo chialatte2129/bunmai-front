@@ -29,7 +29,7 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             :default-sort="{prop:sort_column, order:sort}" @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
-                <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="name" :label="$t('common_column.name')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('project.owner')" width="150" align="left" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="120" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="progress" label="執行工時比" width="150" align="center"  show-overflow-tooltip>
@@ -263,7 +263,7 @@ export default {
 </script>
 <style scoped>
     .handle-input{
-        width:300px;
+        width:200px;
         display:inline-block;
     }
     .del-dialog-cnt{
@@ -298,6 +298,6 @@ export default {
         margin:10px 0 5px 0;
     }
     .container{
-        margin-right:150px;
+        margin-right:10px;
     }
 </style>

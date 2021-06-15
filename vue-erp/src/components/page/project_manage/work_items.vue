@@ -39,8 +39,8 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="name" :label="$t('common_column.name')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('project.description')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
                 <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
@@ -528,7 +528,7 @@ export default {
 </script>
 <style scoped>
     .handle-input{
-        width:300px;
+        width:200px;
         display:inline-block;
     }
     .del-dialog-cnt{

@@ -26,7 +26,7 @@
                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                <el-table-column prop="description" :label="$t('employee.description')" min-width="300" width="auto">
                     <template slot-scope="scope">
                         <el-tooltip effect="light" placement="top">
                             <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>

@@ -902,7 +902,7 @@ export default {
         margin:10px 0 5px 0;
     }
     .container{
-        margin-right:150px;
+        margin-right:10px;
     }
     .container{
         background-color:#f0f0f0;

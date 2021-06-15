@@ -6,7 +6,7 @@
             <div class="content" >
                 <transition name="move" mode="out-in">
                     <keep-alive :include="tagsList">
-                        <router-view style="min-width:1600px;"></router-view>
+                        <router-view style="min-width:1000px;"></router-view>
                     </keep-alive>
                 </transition>
             </div>

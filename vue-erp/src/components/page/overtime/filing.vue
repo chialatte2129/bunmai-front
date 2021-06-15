@@ -63,7 +63,7 @@
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="150" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
+                                <el-table-column prop="item_id" :label="$t('project.name')" min-width="300" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
