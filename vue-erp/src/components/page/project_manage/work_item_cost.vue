@@ -37,6 +37,7 @@
                         <span v-if="scope.row.work_progress>=80" style="color:red;">{{scope.row.work_progress}}%</span>
                         <span v-if="scope.row.work_progress>=50&&scope.row.work_progress<80"  style="color:orange;">{{scope.row.work_progress}}%</span>
                         <span v-if="scope.row.work_progress<50" style="color:green;">{{scope.row.work_progress}}%</span>
+                        <span v-if="scope.row.work_progress=='-'" style="color:gray;">{{scope.row.work_progress}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column v-if="false" prop="pay_order" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>

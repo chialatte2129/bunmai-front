@@ -47,10 +47,16 @@
                                             <span v-if="form.work_progress>=80" style="color:red;">{{form.work_progress}} %</span>
                                             <span v-if="form.work_progress>=50&&form.work_progress<80"  style="color:orange;">{{form.work_progress}} %</span>
                                             <span v-if="form.work_progress<50" style="color:green;">{{form.work_progress}} %</span>
+                                            <span v-if="form.work_progress=='-'" style="color:gray;">{{form.work_progress}}</span>
                                         </el-form-item>
-                                        <el-form-item :label="$t('project.total_amount')">
-                                            <el-tooltip effect="light" content="預估收入 - 預估支出 ＝ 專案費用" placement="bottom">
-                                                <span>{{stateFormat("","",totalCost)}} 元</span>
+                                        <el-form-item label="預估淨利">
+                                            <el-tooltip effect="light" content="預估收入 - 預估支出 ＝ 預估淨利" placement="bottom">
+                                                <span>{{stateFormat("","",totalStandardIncome)}} 元</span>
+                                            </el-tooltip>
+                                        </el-form-item>
+                                        <el-form-item label="實際淨利">
+                                            <el-tooltip effect="light" content="實際收入 - 實際支出 ＝ 實際淨利" placement="bottom">
+                                                <span>{{stateFormat("","",totalActualIncome)}} 元</span>
                                             </el-tooltip>
                                         </el-form-item>
                                     </el-col>
@@ -77,53 +83,124 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="income" :title="$t('project.estimated_income')" disabled>
+                            <el-collapse-item name="income" title="專案收益" disabled>
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
                                             <el-input v-model="filter.incomeKeyWord" class="mgr10 handle-input" placeholder="關鍵字搜尋" @change="search" />
                                             <el-button  v-if="is_project_owner" type="success" size="large" icon="el-icon-plus"   @click="handleIncomeCreate">{{$t('btn.new')}}</el-button>
                                         </span>
-                                        <el-table :data="tableData_income" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-                                        @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
-                                            <el-table-column prop="date" :label="$t('project.date')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                                            <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
-                                            <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column v-if="is_project_owner" :label="$t('btn.action')" width="200" align="center" fixed="right">
-                                                <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                    <el-button  type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
-                                                </template>
-                                            </el-table-column>
-                                        </el-table>
-                                        <div style="float:right;color:red;">
-                                            <span><h2>{{$t('project.total_income')}} {{stateFormat("","",total_income)}} 元</h2></span>
-                                        </div>
+                                    </el-col>
+                                   
+                                    <el-col :span="24">
+                                        <el-card class="box-card">
+                                            <div slot="header" class="clearfix">
+                                                <span>預估收益</span>
+                                            </div>
+                                            <div>
+                                                <el-table :data="tableData_standard_income" height="250" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+                                                @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
+                                                    <el-table-column prop="date" :label="$t('project.date')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                                                    <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                                                    <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                                                    <el-table-column v-show="is_project_owner" :label="$t('btn.action')" width="200" align="center" fixed="right">
+                                                        <template slot-scope="scope">
+                                                            <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
+                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <span  v-if="!is_project_owner" style="color:#aaa">--</span>
+                                                        </template>
+                                                    </el-table-column>
+                                                </el-table>
+                                                <div style="float:right;color:red;">
+                                                    <span><h2>預估收益合計 {{stateFormat("","",total_standard_income)}} 元</h2></span>
+                                                </div>
+                                            </div>
+                                        </el-card>
+                                    </el-col>
+                                    <el-col :span="24" style="margin-top:10px;">
+                                        <el-card class="box-card">
+                                            <div slot="header" class="clearfix">
+                                                <span>實際收益</span>
+                                            </div>
+                                            <div>
+                                                <el-table :data="tableData_actual_income" height="250" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+                                                @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey2">
+                                                    <el-table-column prop="date" :label="$t('project.date')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                                                    <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                                                    <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                                                    <el-table-column v-show="is_project_owner" :label="$t('btn.action')" width="200" align="center" fixed="right">
+                                                        <template slot-scope="scope">
+                                                            <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
+                                                            <el-button v-if="is_project_owner"  type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <span  v-if="!is_project_owner" style="color:#aaa">--</span>
+                                                        </template>
+                                                    </el-table-column>
+                                                </el-table>
+                                                <div style="float:right;color:red;">
+                                                    <span><h2>實際收益合計 {{stateFormat("","",total_actual_income)}} 元</h2></span>
+                                                </div>
+                                            </div>
+                                        </el-card>
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="cost" :title="$t('project.estimated_cost')" disabled>
+                            <el-collapse-item name="cost" title="專案支出" disabled>
                                 <el-row style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
                                             <el-input v-model="filter.costKeyWord" class="mgr10 handle-input" placeholder="關鍵字搜尋" @change="search" />
                                             <el-button v-if="is_project_owner" type="success" size="large" icon="el-icon-plus" @click="handleCostCreate">{{$t('btn.new')}}</el-button>
                                         </span>
-                                        <el-table :data="tableData_cost" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-                                        @sort-change="handleCostSortChange" :cell-style="getCellStyle" :key="tbKey2">
-                                            <el-table-column prop="date" :label="$t('project.date')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                                            <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
-                                            <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column v-if="is_project_owner" :label="$t('btn.action')" width="200" align="center" fixed="right">
-                                                <template slot-scope="scope">
-                                                    <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                    <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
-                                                </template>
-                                            </el-table-column>
-                                        </el-table>
-                                        <div style="float:right;color:red;">
-                                            <span><h2>{{$t('project.total_cost')}} {{stateFormat("","",total_cost)}} 元</h2></span>
-                                        </div>
+                                    </el-col>
+                                    <el-col :span="24">
+                                        <el-card class="box-card">
+                                            <div slot="header" class="clearfix">
+                                                <span>預估支出</span>
+                                            </div>
+                                            <div>
+                                                <el-table :data="tableData_standard_cost" height="250" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+                                                @sort-change="handleCostSortChange" :cell-style="getCellStyle" :key="tbKey3">
+                                                    <el-table-column prop="date" :label="$t('project.date')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                                                    <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                                                    <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                                                    <el-table-column :label="$t('btn.action')" width="200" align="center" fixed="right">
+                                                        <template slot-scope="scope">
+                                                            <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
+                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <span  v-if="!is_project_owner" style="color:#aaa">--</span>
+                                                        </template>
+                                                    </el-table-column>
+                                                </el-table>
+                                                <div style="float:right;color:red;">
+                                                    <span><h2>預估支出合計 {{stateFormat("","",total_standard_cost)}} 元</h2></span>
+                                                </div>
+                                            </div>
+                                        </el-card>
+                                    </el-col>
+                                    <el-col :span="24"  style="margin-top:10px;">
+                                        <el-card class="box-card">
+                                            <div slot="header" class="clearfix">
+                                                <span>實際支出</span>
+                                            </div>
+                                            <div>
+                                                <el-table :data="tableData_actual_cost" height="250" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+                                                @sort-change="handleCostSortChange" :cell-style="getCellStyle" :key="tbKey4">
+                                                    <el-table-column prop="date" :label="$t('project.date')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                                                    <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                                                    <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                                                    <el-table-column :label="$t('btn.action')" width="200" align="center" fixed="right">
+                                                        <template slot-scope="scope">
+                                                            <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
+                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                             <span  v-if="!is_project_owner" style="color:#aaa">--</span>
+                                                        </template>
+                                                    </el-table-column>
+                                                </el-table>
+                                                <div style="float:right;color:red;">
+                                                    <span><h2>實際支出合計 {{stateFormat("","",total_actual_cost)}} 元</h2></span>
+                                                </div>
+                                            </div>
+                                        </el-card>
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
@@ -262,12 +339,16 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="預計支出" :visible.sync="costEditVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="專案支出" :visible.sync="costEditVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="costForm" ref="costForm" :rules="costRules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="日期" prop="date">
                             <el-date-picker v-model="costForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
+                        </el-form-item>
+                        <el-form-item label="支出類型" prop="recorded_type">
+                            <el-radio v-model="costForm.recorded_type" label="standard">預估支出</el-radio>
+                            <el-radio v-model="costForm.recorded_type" label="actual">實際支出</el-radio>
                         </el-form-item>
                         <el-form-item label="金額" prop="amount">
                             <el-input type="number" v-model.number="costForm.amount" style="width:200px"></el-input>
@@ -284,12 +365,16 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="預計收入" :visible.sync="incomeEditVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="專案收益" :visible.sync="incomeEditVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="incomeForm" ref="incomeForm" :rules="incomeRules" label-position="right" label-width="auto">
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="日期" prop="date">
                             <el-date-picker v-model="incomeForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
+                        </el-form-item>
+                        <el-form-item label="支出類型" prop="recorded_type">
+                            <el-radio v-model="incomeForm.recorded_type" label="standard">預估支出</el-radio>
+                            <el-radio v-model="incomeForm.recorded_type" label="actual">實際支出</el-radio>
                         </el-form-item>
                         <el-form-item label="金額" prop="amount">
                             <el-input type="number" v-model.number="incomeForm.amount" style="width:200px"></el-input>
@@ -318,13 +403,17 @@ export default {
             username:localStorage.getItem("ms_username"),
             item_id:this.$route.query.id,
 
-            total_cost:0,
-            total_income:0,
+            total_standard_cost:0,
+            total_actual_cost:0,
+            total_standard_income:0,
+            total_actual_income:0,
+
             today:"",
 
-            tbKey1:0,
-            tbKey2:0,
-            tbKey3:0,
+            tbKey1:1,
+            tbKey2:2,
+            tbKey3:3,
+            tbKey4:4,
             
             cost_sort_column:"date",
             cost_sort:"desc",
@@ -337,9 +426,6 @@ export default {
             loading:false,
             deleteID:null,
             deleteView:false,
-            createView:false,
-            updateView:false,
-            tagVisible:false,
 
             viewPayOrderVisible:false,
             checkPayOrderVisible:false,
@@ -357,6 +443,7 @@ export default {
             incomeForm:{
                 type:"income",
                 actionType:"create",
+                recorded_type:null,
                 date:"",
                 description:"",
                 amount:""
@@ -364,6 +451,7 @@ export default {
             costForm:{
                 type:"cost",
                 actionType:"create",
+                recorded_type:null,
                 date:"",
                 description:"",
                 amount:""
@@ -413,8 +501,11 @@ export default {
                 incomeKeyWord:""
             },
             
-            tableData_cost: [],
-            tableData_income: [],
+            tableData_standard_cost: [],
+            tableData_actual_cost: [],
+            tableData_standard_income: [],
+            tableData_actual_income: [],
+
             tableData_pay_order: [
                 {id:"P0001-ASUDE",date:"2021-04-21",status:"待審",description:"請款說明內容一",owner:"王家得",amount:2000},
                 {id:"P0001-LIEKD",date:"2021-04-20",status:"待審",description:"請款說明內容一",owner:"王家得",amount:2000},
@@ -446,6 +537,9 @@ export default {
                 date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
+                recorded_type: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
                 
                 amount: [
                     {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
@@ -459,7 +553,9 @@ export default {
                 date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ],
-                
+                recorded_type: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
                 amount: [
                     {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
@@ -477,8 +573,11 @@ export default {
     },
 
     computed: {
-        totalCost(){
-            return this.total_income - this.total_cost
+        totalStandardIncome(){
+            return this.total_standard_income - this.total_standard_cost
+        },
+        totalActualIncome(){
+            return this.total_actual_income - this.total_actual_cost
         },
         is_project_owner(){
             if(this.form.owner_id == localStorage.getItem("ms_odoo_employee_id")){
@@ -558,6 +657,7 @@ export default {
                 type:"cost",
                 username:this.username,
                 work_item_id:this.item_id,
+                recorded_type:null,
                 date:this.today,
                 description:"",
                 amount:null
@@ -622,6 +722,7 @@ export default {
                 type:"income",
                 username:this.username,
                 work_item_id:this.item_id,
+                recorded_type:null,
                 date:this.today,
                 description:"",
                 amount:null
@@ -720,8 +821,12 @@ export default {
             }).then(res =>{ 
                 // console.log(res);
                 if(res.success){
-                    this.tableData_income = res.data;
-                    this.total_income = res.total;
+                    this.tableData_standard_income = res.data.standard;
+                    this.total_standard_income = res.total.standard;
+
+                    this.tableData_actual_income = res.data.actual;
+                    this.total_actual_income = res.total.actual;
+
                 }else{
                     this.$message.error(res.msg);
                 }
@@ -735,8 +840,11 @@ export default {
             }).then(res =>{ 
                 // console.log(res);
                 if(res.success){
-                    this.tableData_cost = res.data;
-                    this.total_cost = res.total;
+                    this.tableData_standard_cost = res.data.standard;
+                    this.total_standard_cost = res.total.standard;
+
+                    this.tableData_actual_cost = res.data.actual;
+                    this.total_actual_cost = res.total.actual;
                 }else{
                     this.$message.error(res.msg);
                 }
