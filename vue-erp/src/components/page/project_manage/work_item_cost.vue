@@ -32,7 +32,7 @@
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('project.owner')" width="150" align="left" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="120" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="progress" :label="$t('project.progress')" width="150" align="center"  show-overflow-tooltip>
+                <el-table-column prop="progress" label="執行工時比" width="150" align="center"  show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.work_progress>=80" style="color:red;">{{scope.row.work_progress}}%</span>
                         <span v-if="scope.row.work_progress>=50&&scope.row.work_progress<80"  style="color:orange;">{{scope.row.work_progress}}%</span>
@@ -45,8 +45,8 @@
                        <span v-if="scope.row.unprocess_pay" style="color:red;">{{scope.row.pay_order}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="income_amount" :label="$t('project.estimated_income')" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="cost_amount" :label="$t('project.estimated_cost')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="std_amount" label="預估淨利" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="act_amount" label="實際淨利" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>

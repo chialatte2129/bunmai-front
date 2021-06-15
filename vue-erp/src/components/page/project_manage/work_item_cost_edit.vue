@@ -43,7 +43,7 @@
                                         <el-form-item :label="$t('project.total_work_hour')">
                                             <span>{{form.total_work_hours}} {{$t('project.hours')}}</span>
                                         </el-form-item>
-                                        <el-form-item :label="$t('project.progress_percent')">
+                                        <el-form-item label="執行工時比">
                                             <span v-if="form.work_progress>=80" style="color:red;">{{form.work_progress}} %</span>
                                             <span v-if="form.work_progress>=50&&form.work_progress<80"  style="color:orange;">{{form.work_progress}} %</span>
                                             <span v-if="form.work_progress<50" style="color:green;">{{form.work_progress}} %</span>
@@ -106,7 +106,7 @@
                                                     <el-table-column v-show="is_project_owner" :label="$t('btn.action')" width="200" align="center" fixed="right">
                                                         <template slot-scope="scope">
                                                             <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('btn.delete')}}</el-button>
                                                             <span  v-if="!is_project_owner" style="color:#aaa">--</span>
                                                         </template>
                                                     </el-table-column>
@@ -131,7 +131,7 @@
                                                     <el-table-column v-show="is_project_owner" :label="$t('btn.action')" width="200" align="center" fixed="right">
                                                         <template slot-scope="scope">
                                                             <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleIncomeEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                            <el-button v-if="is_project_owner"  type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <el-button v-if="is_project_owner"  type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('btn.delete')}}</el-button>
                                                             <span  v-if="!is_project_owner" style="color:#aaa">--</span>
                                                         </template>
                                                     </el-table-column>
@@ -166,7 +166,7 @@
                                                     <el-table-column :label="$t('btn.action')" width="200" align="center" fixed="right">
                                                         <template slot-scope="scope">
                                                             <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('btn.delete')}}</el-button>
                                                             <span  v-if="!is_project_owner" style="color:#aaa">--</span>
                                                         </template>
                                                     </el-table-column>
@@ -191,7 +191,7 @@
                                                     <el-table-column :label="$t('btn.action')" width="200" align="center" fixed="right">
                                                         <template slot-scope="scope">
                                                             <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('project.delete')}}</el-button>
+                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('btn.delete')}}</el-button>
                                                              <span  v-if="!is_project_owner" style="color:#aaa">--</span>
                                                         </template>
                                                     </el-table-column>
