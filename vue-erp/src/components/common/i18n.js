@@ -417,7 +417,23 @@ export const messages = {
                 P:"進行中",
                 F:"已結案",
                 A:"未成案",
-            }
+            },
+            progress:"專案進度",
+            estimated_income:"預估收益",
+            estimated_cost:"預估支出",
+            project_info:"專案資訊",
+            extimated_work_hour:"預估工時",
+            total_work_hour:"執行工時",
+            progress_percent:"執行比例",
+            total_amount:"專案費用",
+            date:"日期",
+            cost_description:"項目說明",
+            amount:"金額",
+            total_income:"收入總計",
+            total_cost:"支出總計",
+            update:"更新",
+            hours:"小時"
+
         },
     },
     'en_US': {
@@ -832,7 +848,22 @@ export const messages = {
                 P:"進行中",
                 F:"已結案",
                 A:"未成案",
-            }
+            },
+            progress:"Progress",
+            estimated_income:"Income",
+            estimated_cost:"Cost",
+            project_info:"Project Info",
+            extimated_work_hour:"Estimated Work Hours",
+            total_work_hour:"Current Work Hours",
+            progress_percent:"Progress",
+            total_amount:"Total Amount",
+            date:"Date",
+            cost_description:"Description",
+            amount:"Amount",
+            total_income:"Total Income",
+            total_cost:"Total Cost",
+            update:"Update",
+            hours:"hours"
         },
     },
     'ja_JP':{

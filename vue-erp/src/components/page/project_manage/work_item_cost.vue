@@ -27,25 +27,25 @@
             </div>
 
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
+            :default-sort="{prop:sort_column, order:sort}" @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" label="專案負責人" width="150" align="left" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="owner" :label="$t('project.owner')" width="150" align="left" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="status_name" :label="$t('common_column.status')" width="120" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="progress" label="專案進度" width="150" align="center"  show-overflow-tooltip>
+                <el-table-column prop="progress" :label="$t('project.progress')" width="150" align="center"  show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.work_progress>=80" style="color:red;">{{scope.row.work_progress}}%</span>
                         <span v-if="scope.row.work_progress>=50&&scope.row.work_progress<80"  style="color:orange;">{{scope.row.work_progress}}%</span>
                         <span v-if="scope.row.work_progress<50" style="color:green;">{{scope.row.work_progress}}%</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="pay_order" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>
+                <el-table-column v-if="false" prop="pay_order" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>
                     <template slot-scope="scope">
                        <span v-if="scope.row.unprocess_pay" style="color:red;">{{scope.row.pay_order}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="income_amount" label="預估收入" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="cost_amount" label="預估支出" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="income_amount" :label="$t('project.estimated_income')" width="150"  align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="cost_amount" :label="$t('project.estimated_cost')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -76,8 +76,10 @@ export default {
             page_size:10,
             page_size_list:[5, 10],
             start_row:0,
+
             sort_column:"id",
             sort:"desc",
+
             loading:false,
             filter:{
                 key_word:"",
@@ -156,7 +158,7 @@ export default {
                 status:this.filter.status,
                 owner:this.filter.owner
             };
-            console.log(query);
+            // console.log(query);
             return query
         },
 
@@ -173,6 +175,7 @@ export default {
         },
 
         handleSortChange({prop, order}){
+            console.log(prop,order);
             this.sort_column = prop;
             this.sort = order;
             this.handleCurrentChange(1);
@@ -241,7 +244,7 @@ export default {
         },
 
         search(){
-            console.log(this.filter);
+            // console.log(this.filter);
             this.handleCurrentChange(1);
         },
         
