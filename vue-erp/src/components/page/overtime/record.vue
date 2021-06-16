@@ -37,7 +37,7 @@
                 </el-table-column>
                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('project.name')" width="250" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                <el-table-column prop="description" :label="$t('employee.description')" width="auto" min-width="300">
                     <template slot-scope="scope">
                         <el-tooltip effect="light" placement="top">
                             <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>

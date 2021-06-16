@@ -78,8 +78,8 @@ export default {
                                 {
                                     index: "work_item_pay",
                                     title: this.$t("menus.work_item_pay"),
-                                    // show: this.hasThisMenu("work_item_pay"),
-                                    show:false
+                                    show: this.hasThisMenu("work_item_pay"),
+                                    // show:false
                                 },
                             ]
                         },
