@@ -62,7 +62,7 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item v-if="false" name="income" title="請款單" disabled>
+                            <el-collapse-item name="income" title="待審請款單" disabled>
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <el-table :data="tableData_pay_order" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
@@ -79,7 +79,6 @@
                                                 </template>
                                             </el-table-column>
                                         </el-table>
-                                        
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>

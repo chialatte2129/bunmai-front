@@ -55,8 +55,39 @@
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog title="新增請款細項" :visible.sync="addItemVisible" width="600px" center :before-close="cancelAddItem">
+            <el-row>
+                <el-col v-for="type in option.item_types" :key="type.title" :span="8">
+                    <div style="padding:5px;">
+                        <el-button type="primary" style="height:100px;width:100%;font-size:24px;" @click="confirmAddItem(type.content)">{{type.title}}</el-button>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-dialog>
+
+        <el-dialog title="新增請款單" :visible.sync="createView" width="300px" center :before-close="cancelCreate">
+            <div>
+                <el-form label-width="auto">
+                    <el-form-item label="專案名稱">
+                        <el-select v-model="createForm.project_id" filterable placeholder="請選擇專案">
+                            <el-option
+                            v-for="item in option.projects"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelCreate">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmCreate">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="1100px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="編輯請款單" :visible.sync="updateView" width="1100px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-card shadow="always" class="mgb10" v-loading.lock="loading">
@@ -100,7 +131,7 @@
                             <span>請款內容</span>
                             <el-button type=success size=large icon="el-icon-plus" class="card-header-r-btn" @click="handleAddItem">{{$t('btn.new')}}</el-button>
                         </div>
-                        <el-row v-for="item in form.order_content" :key="item.id" >
+                        <el-row v-for="(item,index) in form.order_content" :key="index" >
                             <el-card shadow="always" style="margin:5px;">
                                 <el-col :span="3">
                                     <span>{{item.type}}</span>
@@ -123,7 +154,11 @@
                                         </el-col>
                                     </div>
                                 </el-col>
-                                <el-col :span="5" style="float:right;padding-left:10px;text-align:right;">
+
+                                <el-col :span="1" style="float:right;padding-left:10px;text-align:right;">
+                                    <el-button type="text" style="" @click="handleDeleteItem(index)">刪除</el-button>
+                                </el-col>
+                                <el-col :span="4" style="float:right;padding-left:10px;text-align:right;">
                                     <el-input type="number" v-model.number="item.amount"  @change="handleContentChange"><template slot="append">元</template></el-input>
                                 </el-col>
                             </el-card>
@@ -186,7 +221,7 @@
     </div>
 </template>
 <script>
-// import { workItemService } from "@/_services";
+
 export default {
     name: "pay_order",
     components: {
@@ -250,16 +285,18 @@ export default {
             createView:false,
             updateView:false,
             
+            addItemVisible:false,
             
            
            
             filter:{
                 name:"",
                 status:[],
-                category:[],
-                owner:[],
             },
-            tree_data:[],
+            
+            createForm:{
+                project_id:""
+            },
             
             form:{
                 order_id:"",
@@ -287,8 +324,7 @@ export default {
                         date:"2021-06-18",
                         content:[
                             {id:1,title:"起訖地點",type:"input",result:"高雄-台北"},
-                            {id:2,title:"票種",type:"input",result:"高鐵一般席"},
-                            {id:3,title:"票種",type:"input",result:"高鐵一般席"}
+                            {id:2,title:"票種",type:"input",result:"高鐵一般席"}
                         ]
                     },
                     {
@@ -320,7 +356,62 @@ export default {
             },
 
             option:{
-                status:[]
+                projects:[],
+                status:[],
+                item_types:[
+                    {
+                        title:"一般",
+                        content:{
+                            type:"一般請款",
+                            amount:0,
+                            date:"",
+                            content:[
+                                {id:1,title:"摘要",type:"input",result:""}
+                            ]
+                        }
+                    },
+                    {
+                        title:"交通費",
+                        content:{
+                            type:"交通費請款",
+                            amount:0,
+                            date:"",
+                            content:[
+                                {id:1,title:"起訖地點",type:"input",result:""},
+                                {id:2,title:"票種",type:"input",result:""}
+                            ]
+                        }
+                    },
+                    {
+                        title:"住宿費",
+                        content:{
+                            type:"住宿費請款",
+                            amount:0,
+                            date:"",
+                            content:[
+                                {id:1,title:"地點",type:"input",result:""}
+                            ]
+                        }
+                    },
+                    {
+                        title:"生活費",
+                        content:{
+                            type:"生活費(膳食)",
+                            amount:0,
+                            date:"",
+                            content:[]
+                        }
+                    },
+                    {
+                        title:"辦公費",
+                        content:{
+                            type:"辦公費(郵電/交際/車資等)",
+                            amount:0,
+                            date:"",
+                            content:[]
+                        }
+                    },
+                ]
             },
            
             rules: {
@@ -360,8 +451,7 @@ export default {
         },
 
         showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
+            if(this.updateView) return this.updateView;
             else return false;
         },
         handleCaculateTotalAmount(){
@@ -382,11 +472,33 @@ export default {
 				return $1 + ',';
 			}).replace(/\.$/, '');
 		},
+
         handleContentChange(){
             console.log(this.form.order_content)
         },
         handleAddItem(){
+            console.log("add Item");
+            this.addItemVisible = true;
 
+        },
+        cancelAddItem(){
+            this.addItemVisible = false;
+        },
+        confirmAddItem(content){
+            this.form.order_content.push(content);
+            this.addItemVisible = false;
+        },
+        handleDeleteItem(index){
+            console.log(index);
+            this.form.order_content.splice(index,1);
+        },
+        
+        confirmCreate(){
+            this.createView = false;
+            this.handleEdit(0, {row:"order_id"})
+        },
+        cancelCreate(){
+            this.createView = false;
         },
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
@@ -397,38 +509,6 @@ export default {
             };
             return return_dict;
         },
-
-        handleClose(tag){
-            this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
-        },
-
-        handleInputConfirm(){
-            let inputValue=this.tagValue;
-            if(inputValue){
-                if(!this.tag_form.tags.includes(inputValue)){
-                    this.tag_form.tags.push(inputValue);
-                };
-            };
-            this.tagVisible=false;
-            this.tagValue="";
-        },
-
-        // showInput(){
-        //     this.tagVisible=true;
-        //     this.$nextTick(_ => {
-        //         this.$refs.saveTagInput.$refs.input.focus();
-        //     });
-        // },
-
-        // async get_dept_employee(){
-        //     this.loading=true;
-        //     await workItemService.get_dept_employee({}).then(res =>{ 
-        //         this.tree_data=res.tree_data;
-        //         this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
-        //     })
-        // },
-        
-        
 
         handleCreate(){
             this.createView=true;
@@ -461,28 +541,28 @@ export default {
         },
 
         update_work_items(param){ 
-            workItemService.update_work_items(param).then(res =>{ 
-                if(res.success){ 
-                    this.$message.success("success"); 
-                    if(param.type=="create"){
-                        this.handleCurrentChange(1);
-                        this.cancelDialog();
-                    }else if(param.type=="update"){
-                        this.getData();
-                        this.cancelDialog();
-                    }else if(param.type=="delete"){
-                        // console.log("finish delete");
-                        this.cancelDelete();
-                        this.getData();
-                    }else{
-                        this.getData();
-                    }
+            // workItemService.update_work_items(param).then(res =>{ 
+            //     if(res.success){ 
+            //         this.$message.success("success"); 
+            //         if(param.type=="create"){
+            //             this.handleCurrentChange(1);
+            //             this.cancelDialog();
+            //         }else if(param.type=="update"){
+            //             this.getData();
+            //             this.cancelDialog();
+            //         }else if(param.type=="delete"){
+            //             // console.log("finish delete");
+            //             this.cancelDelete();
+            //             this.getData();
+            //         }else{
+            //             this.getData();
+            //         }
                     
                 
-                }else{ 
-                    this.$message.error(this.$t(res.msg)); 
-                } 
-            }) 
+            //     }else{ 
+            //         this.$message.error(this.$t(res.msg)); 
+            //     } 
+            // }) 
         },
 
         confirmDialog(){
@@ -508,22 +588,22 @@ export default {
         },
 
         resetForm(){
-            this.form.date_period = [];
-            this.form={
-                type:"create",
-                id:"",
-                name:"",
-                category:"",
-                status:"",
-                is_project:"",
-                start_date:"",
-                end_date:"",
-                description:"",
-                owner:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
-                is_open_tags:false,
-            };
-            this.$refs.form.clearValidate();
+            
+            // this.form={
+            //     type:"create",
+            //     id:"",
+            //     name:"",
+            //     category:"",
+            //     status:"",
+            //     is_project:"",
+            //     start_date:"",
+            //     end_date:"",
+            //     description:"",
+            //     owner:"",
+            //     employ_id:localStorage.getItem("ms_odoo_employee_id"),
+            //     is_open_tags:false,
+            // };
+            // this.$refs.form.clearValidate();
         },
 
         handleCurrentChange(currentPage){
