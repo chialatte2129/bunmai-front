@@ -62,20 +62,35 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="income" title="待審請款單" disabled>
+                            <el-collapse-item name="income" title="請款單" disabled>
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <el-table :data="tableData_pay_order" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
-                                            <el-table-column prop="id" label="單號" width="150" sortable="custom" align="center" show-overflow-tooltip/>
-                                            <el-table-column prop="status" label="狀態" width="150" sortable="custom" align="center" show-overflow-tooltip/>
-                                            <el-table-column prop="date" label="日期" width="150" sortable="custom" align="center" show-overflow-tooltip/>
-                                            <el-table-column prop="description" label="說明" width="auto" sortable="custom" show-overflow-tooltip/>
-                                            <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
+                                            <el-table-column prop="order_id" label="單號" width="150" sortable="custom" align="center" show-overflow-tooltip/>
+                                            <el-table-column prop="status_name" label="狀態" width="150" sortable="custom" align="center" show-overflow-tooltip>
                                                 <template slot-scope="scope">
-                                                    <el-button v-if="scope.row.status=='待審'" type="primary" size="mini" icon="el-icon-check" @click="checkPayOrderVisible=true">審核</el-button>
-                                                    <el-button v-if="scope.row.status!='待審'" type="info" size="mini" icon="el-icon-view" @click="viewPayOrderVisible=true">檢視</el-button>
+                                                    <span v-if="scope.row.status=='P'" style="color:blue">待審</span>
+                                                    <span v-if="scope.row.status=='F'" style="color:green">通過</span>
+                                                    <span v-if="scope.row.status=='A'" style="color:red">退回</span>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="order_date" label="日期" width="150" sortable="custom" align="center" show-overflow-tooltip/>
+                                            <el-table-column prop="description" label="說明" width="auto" sortable="custom" show-overflow-tooltip/>
+                                            <el-table-column prop="is_paied" label="撥款狀態" width="150" align="center" show-overflow-tooltip>
+                                                <template slot-scope="scope">
+                                                    <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">已撥款</span>
+                                                    <span v-if="scope.row.status=='F'&&scope.row.is_paied==0" style="color:red">未撥款</span>
+                                                    <span v-if="scope.row.status!='F'" style="color:grey">--</span>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column prop="total_amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                                            <el-table-column :label="$t('btn.action')" width="260" align="center" fixed="right">
+                                                <template slot-scope="scope">
+                                                    <el-button v-if="is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="warning" size="mini" icon="el-icon-money" @click="handlePay(scope.row)">撥款</el-button>
+                                                    <el-button v-if="is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="danger" size="mini" icon="el-icon-money" @click="handleRejectAc(scope.row)">退回</el-button>
+                                                    <el-button v-if="scope.row.status=='P' && is_project_owner" type="primary" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">審核</el-button>
+                                                    <el-button type="info" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">檢視</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
@@ -189,9 +204,7 @@
                                                     <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                                                     <el-table-column :label="$t('btn.action')" width="200" align="center" fixed="right">
                                                         <template slot-scope="scope">
-                                                            <el-button v-if="is_project_owner" type="warning" size="mini" icon="el-icon-edit" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.edit')}}</el-button>
-                                                            <el-button v-if="is_project_owner" type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.$index,scope.row)">{{$t('btn.delete')}}</el-button>
-                                                             <span  v-if="!is_project_owner" style="color:#aaa">--</span>
+                                                            <el-button v-if="is_project_owner" type="info" size="mini" icon="el-icon-view" @click="handleCostEdit(scope.$index,scope.row)">{{$t('btn.view')}}</el-button>
                                                         </template>
                                                     </el-table-column>
                                                 </el-table>
@@ -219,105 +232,148 @@
         
         
 
-        <el-dialog title="showTitle" :visible.sync="viewPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="請款單" :visible.sync="viewPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="請款單號">
-                            <span>{{payOrderForm.id}}</span>
-                        </el-form-item>
-                        <el-form-item label="申請日期">
-                            <span>{{payOrderForm.order_date}}</span>
-                        </el-form-item>
-                        <el-form-item label="狀態">
-                            <span>{{payOrderForm.status}}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="公司名稱">
-                            <span>{{payOrderForm.company_name}}</span>
-                        </el-form-item>
-                        <el-form-item label="請款人">
-                            <span>{{payOrderForm.owner}}</span>
-                        </el-form-item>
-                        <el-form-item label="申請單位">
-                            <span>{{payOrderForm.order_dept}}</span>
-                        </el-form-item>
-                    </el-col>
+                    <el-card shadow="always" class="mgb10" v-loading.lock="loading">
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="請款單號">
+                                    <span>{{payOrderForm.order_id}}</span>
+                                </el-form-item>
+                                <el-form-item label="申請日期">
+                                    <span>{{payOrderForm.order_date}}</span>
+                                </el-form-item>
+                                <el-form-item label="狀態">
+                                    <span>{{payOrderForm.status}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="請款人">
+                                    <span>{{payOrderForm.p_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="申請單位">
+                                    <span>{{payOrderForm.dept_name}}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="請款說明">
+                                <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
+                            </el-form-item>
+                        </el-row>
+                    </el-card>
                 </el-row>
                 <el-row>
-                    <el-col :span="24">
-                        <el-form-item label="請款說明">
-                            <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
-                        </el-form-item>
-                        <el-table :data="payOrderForm.content" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
-                            <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                            <el-table-column prop="description" label="請款資訊" width="auto" sortable="custom" show-overflow-tooltip>
-                                <template slot-scope="content">
-                                    <div v-for="item in content.row.content" :key="item.title"><span >{{item.title}} : {{item.result}}</span></div>
+                    <el-card shadow="always" class="mgb10" v-loading.lock="loading">
+                        <div slot="header" class="clearfix">
+                            <span>請款內容</span>
+                        </div>
+                        <el-col :span="24" style="margin-bottom:10px;">
+                            <el-table :data="payOrderForm.content_json" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
+                                <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                                <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                                <el-table-column prop="description" label="請款資訊" width="auto" sortable="custom" show-overflow-tooltip>
+                                    <template slot-scope="content">
+                                        <div v-for="item in content.row.content" :key="item.title"><span >{{item.title}} : {{item.result}}</span></div>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                            </el-table>
+                            <div style="float:right;color:red;">
+                                <span><h2>Total {{stateFormat("","",payOrderForm.total_amount)}} 元</h2></span>
+                            </div>
+                        </el-col>
+                    </el-card>
+                </el-row>
+                <el-row>
+                    <el-card shadow="always"  class="mgb10" v-loading.lock="loading" >
+                        <div slot="header" class="clearfix">
+                            <span>付款方式</span>
+                        </div>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="付款方式">
+                                    <el-radio-group v-model="payOrderForm.payment_method" :disabled="true" size="mini">
+                                        <el-radio label="transfer" border>匯款</el-radio>
+                                        <el-radio label="cash" border>現金</el-radio>
+                                        <el-radio label="check" border>支票</el-radio>
+                                    </el-radio-group>
+                                    <!-- <span>{{form.payment_method}}</span> -->
+                                </el-form-item>
+                                <el-form-item label="匯款選項">
+                                    <el-radio-group v-model="payOrderForm.remittance_setting" :disabled="true" size="mini">
+                                        <el-radio label="deduct" border>跨行扣匯費</el-radio>
+                                        <el-radio label="no_deduct" border>跨行不扣匯費</el-radio>
+                                    </el-radio-group>
+                                    <!-- <span>{{form.payment_method}}</span> -->
+                                </el-form-item>
+                                <el-form-item label="付款日期">
+                                    <el-date-picker v-model="payOrderForm.remittance_date" :readonly="true" type="date" align="right" unlink-panels value-format="yyyy-MM-dd" />
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="匯款銀行/分行">
+                                    <el-input :readonly="true" type="text" style="width:200px;" v-model="payOrderForm.remittance_bank" ></el-input>
+                                </el-form-item>
+                                <el-form-item label="匯款帳號">
+                                    <el-input :readonly="true" type="text" style="width:200px;" v-model="payOrderForm.remittance_account" ></el-input>
+                                </el-form-item>
+                                <el-form-item label="支付對象/戶名">
+                                    <el-input :readonly="true" type="text" style="width:200px;" v-model="payOrderForm.account_name" ></el-input>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </el-row>
+                <el-row>
+                    <el-card shadow="always" v-loading.lock="loading">
+                        <div slot="header" class="clearfix">
+                            <span>歷程紀錄</span>
+                        </div>
+                        <div>
+                            <el-table
+                            :data="pay_order_history"
+                            style="width: 100%">
+                            <el-table-column
+                                prop="recorded_at"
+                                label="更動時間"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                            <el-table-column
+                                prop="employee_name"
+                                label="操作人員"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                            <el-table-column
+                                prop="prev_status"
+                                label="操作"
+                                align="center"
+                                width="200">
+                                <template slot-scope="scope">
+                                    {{scope.row.prev_status}} → {{scope.row.current_status}}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                        </el-table>
-                        <div style="float:right;color:red;">
-                            <span><h2>Total {{stateFormat("","",payOrderForm.amount)}} 元</h2></span>
+                            <el-table-column
+                                prop="note"
+                                label="備註">
+                            </el-table-column>
+                            </el-table>
                         </div>
-                    </el-col>
+                            
+                    </el-card>
                 </el-row>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="info" @click="closeAllDialog">關閉</el-button>
+                <el-button type="info" size="large" @click="closeAllDialog">關閉</el-button>
+                <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="danger" size="large" style="width:150px;" @click="handleReject">退回</el-button>
+                <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="primary" size="large" style="width:150px;" @click="handlePass">審核</el-button>
             </div>
         </el-dialog>
 
-        <el-dialog title="showTitle" :visible.sync="checkPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item label="請款單號">
-                            <span>{{payOrderForm.id}}</span>
-                        </el-form-item>
-                        <el-form-item label="申請日期">
-                            <span>{{payOrderForm.order_date}}</span>
-                        </el-form-item>
-                        <el-form-item label="狀態">
-                            <span>{{payOrderForm.status}}</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="申請單位">
-                            <span>{{payOrderForm.order_dept}}</span>
-                        </el-form-item>
-                        <el-form-item label="請款人">
-                            <span>{{payOrderForm.owner}}</span>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-col :span="24">
-                        <el-form-item label="請款說明">
-                            <el-input type="textarea" :rows="4" :readonly="true" v-model="payOrderForm.description"></el-input>
-                        </el-form-item>
-                        <el-table :data="payOrderForm.content" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
-                            <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                            <el-table-column prop="description" label="請款資訊" width="auto" sortable="custom" show-overflow-tooltip>
-                                <template slot-scope="content">
-                                    <div v-for="item in content.row.content" :key="item.title"><span >{{item.title}} : {{item.result}}</span></div>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                        </el-table>
-                        <div style="float:right;color:red;">
-                            <span><h2>Total {{stateFormat("","",payOrderForm.amount)}} 元</h2></span>
-                        </div>
-                    </el-col>
-                </el-row>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="danger" size="large" @click="closeAllDialog">退回</el-button>
-                <el-button type="success" size="large" @click="closeAllDialog">通過</el-button>
-            </div>
-        </el-dialog>
+        
 
         <el-dialog title="更新預估工時" :visible.sync="updatePreTimeVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="preTimeForm" ref="form" :rules="rules" label-position="right" label-width="auto">
@@ -343,24 +399,29 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="日期" prop="date">
-                            <el-date-picker v-model="costForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
+                            <el-date-picker :readonly="costForm.recorded_type=='actual'" v-model="costForm.date" type="date" align="right" value-format="yyyy-MM-dd"/>
                         </el-form-item>
                         <el-form-item label="支出類型" prop="recorded_type">
-                            <el-radio v-model="costForm.recorded_type" label="standard">預估支出</el-radio>
-                            <el-radio v-model="costForm.recorded_type" label="actual">實際支出</el-radio>
+                            <span v-if="costForm.recorded_type=='standard'">預估支出</span>
+                            <span v-if="costForm.recorded_type=='actual'">實際支出</span>
+                            <!-- <el-radio :disabled="costForm.recorded_type=='actual'" v-model="costForm.recorded_type" label="standard">預估支出</el-radio>
+                            <el-radio :disabled="true" v-model="costForm.recorded_type" label="actual">實際支出</el-radio> -->
                         </el-form-item>
                         <el-form-item label="金額" prop="amount">
-                            <el-input type="number" v-model.number="costForm.amount" style="width:200px"></el-input>
+                            <el-input :readonly="costForm.recorded_type=='actual'" type="number" v-model.number="costForm.amount" style="width:200px"></el-input>
                         </el-form-item>
                         <el-form-item label="項目說明" prop="description">
-                            <el-input type="textarea" :rows="3" v-model="costForm.description"></el-input>
+                            <el-input :readonly="costForm.recorded_type=='actual'" type="textarea" :rows="3" v-model="costForm.description"></el-input>
+                        </el-form-item>
+                        <el-form-item v-if="costForm.related_id" label="關聯請購單" prop="">
+                             <el-button type="text" @click="handleViewPayOrder({order_id:costForm.related_id})">{{costForm.related_id}}</el-button>
                         </el-form-item>
                     </el-col>
                 </el-row>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="closeAllDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmCostDialog">{{$t('btn.confirm')}}</el-button>
+                <el-button v-if="costForm.recorded_type!='actual'" type="primary" @click="confirmCostDialog">{{$t('btn.confirm')}}</el-button>
             </div>
         </el-dialog>
 
@@ -389,10 +450,49 @@
                 <el-button type="primary" @click="confirmIncomeDialog">{{$t('btn.confirm')}}</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="確認審核" :visible.sync="passVisible" width="300px" center :before-close="cancelPayOrderDialog">
+            <div style="text-align:center;">
+                <span>是否允許此請款單？</span>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmPass">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog title="確認退回" :visible.sync="rejectVisible" width="300px" center :before-close="cancelPayOrderDialog">
+            <div style="text-align:left;">
+                <span>是否退回此請款單？</span>
+            </div>
+            <div style="margin-top:10px;text-align:center;">
+                <el-input type="textarea" v-model="reject_note" :rows="3" placeholder="退回原因"></el-input>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmReject">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog title="確認撥款" :visible.sync="payVisible" width="300px" center :before-close="cancelPayOrderDialog">
+            <div style="text-align:center;">
+                <span>請選擇撥款日期</span>
+            </div>
+            <div style="margin-top:10px;text-align:center;">
+               <el-date-picker v-model="pay_date" type="date" align="right" value-format="yyyy-MM-dd" />
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmPay">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 <script>
 import { workItemService } from "@/_services";
+import { payOrderService } from "@/_services";
+
 export default {
     name: "work_item_manage",
     data(){
@@ -400,6 +500,7 @@ export default {
             collapseName:["base_info", "income", "cost"],
 
             username:localStorage.getItem("ms_username"),
+            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             item_id:this.$route.query.id,
 
             total_standard_cost:0,
@@ -434,6 +535,13 @@ export default {
 
             updatePreTimeVisible:false,
 
+            payVisible:false,
+            passVisible:false,
+            rejectVisible:false,
+            reject_note:"",
+            pay_date:"",
+            pay_id:"",
+
             preTimeForm:{
                 old_setting:"",
                 new_setting:""
@@ -456,44 +564,8 @@ export default {
                 amount:""
             },
 
-            payOrderForm:{
-                id:"P0001-ASUDE",
-                status:"待審",
-                company_name:"維亞娛樂股份有限公司",
-                order_dept:"技術支援",
-                order_date:"2021-04-21",
-                owner:"陳嘉甫",
-                project_name:"BLOCKADE Steam v1.0.0.00",
-                amount:3700,
-                description:"研討會",
-                content:[
-                    {
-                        type:"交通費請款",
-                        amount:1200,
-                        content:[
-                            {title:"日期",result:"2021-02-05"},
-                            {title:"起訖地點",result:"高雄-台北"},
-                            {title:"票種",result:"高鐵一般席"}
-                        ]
-                    },
-                    {
-                        type:"住宿費請款",
-                        amount:2000,
-                        content:[
-                            {title:"日期",result:"2021-02-05"},
-                            {title:"地點",result:"台北市"}
-                        ]
-                    },
-                    {
-                        type:"生活費(膳食)",
-                        amount:500,
-                        content:[
-                            {title:"日期",result:"2021-02-05"}
-                        ]
-                    }
-                ]
-
-            },
+            payOrderForm:{},
+            pay_order_history:[],
 
             filter:{
                 costKeyWord:"",
@@ -505,15 +577,7 @@ export default {
             tableData_standard_income: [],
             tableData_actual_income: [],
 
-            tableData_pay_order: [
-                {id:"P0001-ASUDE",date:"2021-04-21",status:"待審",description:"請款說明內容一",owner:"王家得",amount:2000},
-                {id:"P0001-LIEKD",date:"2021-04-20",status:"待審",description:"請款說明內容一",owner:"王家得",amount:2000},
-                {id:"P0001-IUYRJ",date:"2021-04-19",status:"通過",description:"請款說明內容一",owner:"王家得",amount:2000},
-                {id:"P0001-SKEID",date:"2021-04-18",status:"通過",description:"請款說明內容一",owner:"王家得",amount:2000},
-                {id:"P0001-POEIS",date:"2021-04-20",status:"通過",description:"請款說明內容一",owner:"王家得",amount:2000},
-                {id:"P0001-RUEJD",date:"2021-04-16",status:"退回",description:"請款說明內容一",owner:"王家得",amount:2000},
-                {id:"P0001-IEKWE",date:"2021-04-17",status:"退回",description:"請款說明內容一",owner:"王家得",amount:2000},
-            ],
+            tableData_pay_order: [],
             form:{
                 id: "",
                 name: "",
@@ -584,13 +648,132 @@ export default {
             }else{
                 return false
             }
+        },
+        is_accountant(){
+            if(localStorage.getItem("ms_user_menus").includes("accountant")){
+                return true
+            }else{
+                return false
+            }
         }
     }, 
     
     methods: {
+        cancelPayOrderDialog(){
+            this.payVisible=false;
+            this.passVisible=false;
+            this.rejectVisible=false;
+        },
+        
+        handlePass(){
+            this.passVisible=true;
+        },
+        handlePay(row){
+            this.pay_id = row.order_id;
+            this.pay_date = this.today;
+            this.payVisible=true;
+        },
+        handleReject(){
+            this.reject_note = "";
+            this.rejectVisible=true;
+        },
+
+        handleRejectAc(row){
+            this.payOrderForm.order_id = row.order_id;
+            this.reject_note = "";
+            this.rejectVisible=true;
+        },
+        confirmPass(){
+            var param = {
+                action:"review",
+                form:{
+                    odoo_employee_id:this.odoo_employee_id,
+                    order_id: this.payOrderForm.order_id,
+                    status:"F"
+                }
+            };
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    this.$message.success("Success") 
+                    this.getCostData();
+                    this.closeAllDialog();
+                    this.cancelPayOrderDialog();
+                }else{
+                    this.$message.error(res.msg)
+                }
+                    
+            })
+        },
+        confirmPay(){
+            var param = {
+                action:"pay",
+                form:{
+                    odoo_employee_id:this.odoo_employee_id,
+                    order_id: this.pay_id,
+                    pay_date:this.pay_date
+                }
+            };
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    this.$message.success("Success") 
+                    this.getCostData();
+                    this.closeAllDialog();
+                    this.cancelPayOrderDialog();
+                }else{
+                    this.$message.error(res.msg)
+                }
+                    
+            })
+        },
+        confirmReject(){
+            var param = {
+                action:"review",
+                form:{
+                    odoo_employee_id:this.odoo_employee_id,
+                    order_id: this.payOrderForm.order_id,
+                    status:"A",
+                    review_note:this.reject_note
+                }
+            };
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    this.$message.success("Success") 
+                    this.getCostData();
+                    this.closeAllDialog();
+                    this.cancelPayOrderDialog();
+                }else{
+                    this.$message.error(res.msg)
+                }
+                    
+            })
+        },
+
         async getToday(){
             let time =new Date();
             this.today = time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
+        },
+        async handleViewPayOrder(row){
+            var param = {
+                action:"info",
+                filter:{
+                    order_id:row.order_id
+                }
+            };
+            await payOrderService.get_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    // this.$message.success("OK")
+                    this.payOrderForm=res.data;
+                    this.pay_order_history=res.histories;
+                    this.viewPayOrderVisible=true;
+                }else{
+                    this.$message.error(res.msg)
+                }
+                    
+            })
         },
         handleUpdatePreTime(){
             this.preTimeForm={
@@ -620,13 +803,14 @@ export default {
             this.updatePreTimeVisible = true;
         },
         closeAllDialog(){
-            // this.viewPayOrderVisible=false;
+            this.viewPayOrderVisible=false;
             // this.checkPayOrderVisible=false;
             this.incomeEditVisible=false;
             this.costEditVisible=false;
             this.updatePreTimeVisible = false;
 
             this.deleteView=false;
+            
             this.$refs.form.clearValidate();
         },
         handleLeave(){
@@ -656,7 +840,7 @@ export default {
                 type:"cost",
                 username:this.username,
                 work_item_id:this.item_id,
-                recorded_type:null,
+                recorded_type:"standard",
                 date:this.today,
                 description:"",
                 amount:null
@@ -706,11 +890,14 @@ export default {
                 } 
             }) 
         },
-
+        resetPayOrderForm(){
+            this.payOrderForm={};
+        },
         resetCostForm(){
             this.costForm={
                
             };
+            
             this.$refs.form.clearValidate();
         },
 
@@ -844,6 +1031,19 @@ export default {
 
                     this.tableData_actual_cost = res.data.actual;
                     this.total_actual_cost = res.total.actual;
+                }else{
+                    this.$message.error(res.msg);
+                }
+            });
+            await payOrderService.get_project_pay_orders({
+                filter:{item_id:this.item_id}
+                
+            }).then(res =>{ 
+                // console.log(res);
+                if(res.code > 0){
+                    this.tableData_pay_order= res.data;
+                     
+                    // console.log(this.tableData_pay_order);
                 }else{
                     this.$message.error(res.msg);
                 }
