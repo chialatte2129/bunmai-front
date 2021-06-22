@@ -275,7 +275,7 @@
             </span>
         </el-dialog>
 
-         <el-dialog title="確認下載" :visible.sync="downloadVisible" width="300px" center :before-close="cancelQuestDialog">
+         <el-dialog title="確認下載" :visible.sync="downloadVisible" width="300px" center :before-close="cancelQuestDialog" v-loading="dialog_loading">
             <div style="text-align:center;">
                 <span>您要下載這張請款單嗎？</span>
             </div>
@@ -324,6 +324,7 @@ export default {
             username:localStorage.getItem("ms_username"),
 
             loading:false,
+            dialog_loading:false,
             
             deleteID:null,
             deleteView:false,
@@ -573,6 +574,7 @@ export default {
        
         confirmDownload(){
             var param = {order_id: this.download_id};
+            this.dialog_loading = true;
             payOrderService.downlaod_pay_order(param).then(response => {
                 // console.log(response);
                 const link = document.createElement('a');
@@ -585,9 +587,13 @@ export default {
                 document.body.removeChild(link);
                 URL.revokeObjectURL(link.href);//销毁url对象
                 this.cancelQuestDialog();
+                this.dialog_loading = false;
             }).catch(err => {
                 console.log(err);
+                this.cancelQuestDialog();
+                this.dialog_loading = false;
             })
+            this.dialog_loading = true;
         },
 
         handleContentChange(){
