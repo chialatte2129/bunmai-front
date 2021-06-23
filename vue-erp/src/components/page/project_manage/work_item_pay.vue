@@ -122,7 +122,11 @@
                                     <span>{{form.p_name}}</span>
                                 </el-form-item>
                                 <el-form-item label="請款單狀態">
-                                    <span>{{form.status}}</span>
+                                    <span v-if="form.status=='D'" style="color:grey">草稿</span>
+                                    <span v-if="form.status=='P'" style="color:blue">待審</span>
+                                    <span v-if="form.status=='F'" style="color:green">過審</span>
+                                    <span v-if="form.status=='A'" style="color:red">退回</span>
+                                    <!-- <span>{{form.status}}</span> -->
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -153,7 +157,7 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <div>
-                                        <el-col v-for="data in item.content" :key="data.id" :span="12" style="padding-left:10px;">
+                                        <el-col v-for="data in item.content" :key="item.id+data.id" :span="12" style="padding-left:10px;">
                                             <el-form ref="form" label-width="auto">
                                                 <el-form-item :label="data.title">
                                                     <el-input :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
@@ -166,7 +170,15 @@
                                     <el-button v-if="!orderReadOnly" type="text" style="" @click="handleDeleteItem(index)">刪除</el-button>
                                 </el-col>
                                 <el-col :span="4" style="float:right;padding-left:10px;text-align:right;">
-                                    <el-input :readonly="orderReadOnly" type="number" v-model.number="item.amount"  @change="handleContentChange"><template slot="append">元</template></el-input>
+                                    <el-input 
+                                    :readonly="orderReadOnly" 
+                                    type="number"  
+                                    v-model.number="item.amount" 
+                                    @keyup.native="prevent($event)"
+                                    @mousewheel.native.prevent
+                                    @change="handleContentChange"
+                                    ><template slot="append">元</template>
+                                    </el-input>
                                 </el-col>
                             </el-card>
                         </el-row>
@@ -498,6 +510,13 @@ export default {
     }, 
     
     methods: {
+        prevent(e){
+        var keynum = window.event ? e.keyCode : e.which;   //获取键盘码
+            if (keynum ==189|| keynum==190||keynum == 109 ||keynum == 110 ) {
+                this.$message.warning('禁止輸入小數及負數')
+                e.target.value = 0
+            }
+        },
         create_UUID(len) {
             let text = ""
             let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

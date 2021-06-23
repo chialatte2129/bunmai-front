@@ -245,7 +245,10 @@
                                     <span>{{payOrderForm.order_date}}</span>
                                 </el-form-item>
                                 <el-form-item label="狀態">
-                                    <span>{{payOrderForm.status}}</span>
+                                    <span v-if="payOrderForm.status=='D'" style="color:grey">草稿</span>
+                                    <span v-if="payOrderForm.status=='P'" style="color:blue">待審</span>
+                                    <span v-if="payOrderForm.status=='F'" style="color:green">過審</span>
+                                    <span v-if="payOrderForm.status=='A'" style="color:red">退回</span>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
@@ -254,6 +257,11 @@
                                 </el-form-item>
                                 <el-form-item label="申請單位">
                                     <span>{{payOrderForm.dept_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="撥款狀態">
+                                    <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==0" style="color:red">未撥款</span>
+                                    <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==1" style="color:green">已撥款</span>
+                                    <span v-if="payOrderForm.status!='F'" style="color:grey">--</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
