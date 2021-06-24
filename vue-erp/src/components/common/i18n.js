@@ -99,7 +99,8 @@ export const messages = {
             day_item_report_project:"專案工時報告",
             daily_jobs:"每日工作管理",
             daily_jobs_person:"我的待辦事項",
-            daily_jobs_review:"成員執行狀況"
+            daily_jobs_review:"成員執行狀況",
+            accountant:"會計人員權限"
         },
         table_title:{
             role :'角色代號',
@@ -531,7 +532,8 @@ export const messages = {
             issue_work_hours:"Work Hour Issue",
             daily_jobs:"Daily Work Manage",
             daily_jobs_person:"My Checklist",
-            daily_jobs_review:"Review"
+            daily_jobs_review:"Review",
+            accountant:"Accountant Roles"
         },
         table_title :{
             role :'Role id',

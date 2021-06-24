@@ -9,52 +9,54 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <!-- <el-button v-if="allowCreate" size="large" type="success" icon="el-icon-circle-plus-outline" :disabled="loading" @click="handleCreate">
-                    {{$t('project.create_inner_project')}}
+                <el-button size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
+                @click="handleCreate">
+                    {{$t('btn.new')}}
                 </el-button>
-                <el-button v-if="allowProjectCreate" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
-                @click="handleProjectCreate">
-                    {{$t('project.create_outter_project')}}
-                </el-button> -->
-                <!-- <el-select size="large" class="mgr10" v-model="filter.owner" filterable clearable multiple collapse-tags
-                :placeholder="$t('project.owner')" :disabled="loading" @change="search">
-                    <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                        <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
-                            <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                            <span v-else class="mgl10">{{item.name}}</span>
-                        </el-option>
-                    </el-option-group>
-                </el-select>
-                <el-select size="large" v-model="filter.category" class="mgr10" multiple collapse-tags filterable clearable v-if="false"
-                :placeholder="$t('project.category')" :disabled="loading" @change="search">
-                    <el-option v-for="category in option.categories" :key="category.name" :label="category.name" :value="category.name"/>
-                </el-select>
                 <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"
                 :disabled="loading" @change="search">
-                    <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
+                    <el-option v-for="item in option.status" :key="item.value" :label="item.label" :value="item.value"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('project.keyword')" :disabled="loading" @change="search"/>
-                <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button> -->
+                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" placeholder="關鍵字查詢" :disabled="loading" @change="search"/>
+                <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
-            <!-- <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+            <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
-                <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
+                <el-table-column prop="order_id" label="請款單號" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                <el-table-column prop="item_name" label="專案名稱" width="300px" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="owner" label="專案管理人"  width="120" align="center" show-overflow-tooltip/>
+                <el-table-column prop="description" label="請款說明" min-width="300px"  width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="order_date" label="請款日期" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                <el-table-column prop="status_name" label="請款單狀態" width="120" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
-                        <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
+                        <span v-if="scope.row.status=='D'" style="color:grey">草稿</span>
+                        <span v-if="scope.row.status=='P'" style="color:blue">待審</span>
+                        <span v-if="scope.row.status=='F'" style="color:green">通過</span>
+                        <span v-if="scope.row.status=='A'" style="color:red">退回</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="is_paied" label="撥款狀態" width="100" align="center" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">已撥款</span>
+                        <span v-if="scope.row.status=='F'&&scope.row.is_paied==0" style="color:red">未撥款</span>
+                        <span v-if="scope.row.status!='F'" style="color:grey">--</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="total_amount" label="申請金額" width="100" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column :label="$t('btn.action')" width="280" align="center" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button v-if="scope.row.status=='D'" type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
+                        <el-button v-if="scope.row.status=='P' || scope.row.status=='F' || scope.row.status=='A'" type="info" size="mini" icon="el-icon-view" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.view')}}</el-button>
+                        <el-button v-if="scope.row.status=='A' || scope.row.status=='P'" type="success" size="mini" icon="el-icon-refresh-right" @click="handleRestore(scope.row)">草稿</el-button>
+                        <el-button v-if="scope.row.status=='D' || scope.row.status=='A' " type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">作廢</el-button>
+                        <el-button v-if="scope.row.status=='F'" type="primary" size="mini" icon="el-icon-document" @click="handleDownload(scope.row)">下載</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
                 :disabled="loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
-            </div> -->
+            </div>
         </div>
         
         <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
@@ -64,165 +66,390 @@
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog title="新增請款細項" :visible.sync="addItemVisible" width="600px" center :before-close="cancelAddItem">
+            <el-row>
+                <el-col v-for="type in option.item_types" :key="type.title" :span="8">
+                    <div style="padding:5px;">
+                        <el-button type="primary" style="height:100px;width:100%;font-size:24px;" @click="confirmAddItem(type.content)">{{type.title}}</el-button>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-dialog>
+
+        <el-dialog title="新增請款單" :visible.sync="createView" width="400px" center :before-close="cancelCreate">
+            <div>
+                <el-form label-width="auto">
+                    <el-form-item label="專案名稱">
+                        <el-select v-model="createForm.project_id" filterable placeholder="請選擇專案">
+                            <el-option
+                            v-for="item in option.projects" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelCreate">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmCreate">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
         
-        <el-dialog :title="showTitle" :visible.sync="showVisible" width="900px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="編輯請款單" :visible.sync="updateView" width="1100px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
-                    <el-col :span="12">
-                        <el-form-item v-if="createView" :label="$t('project.id')" prop="id">
-                            <el-input v-model="form.id" clearable class="wd80pa">
-                                <template v-if="form.is_project==0" slot="prepend">INTER-</template>
-                            </el-input>
-                        </el-form-item>
-                        <el-form-item v-if="updateView" :label="$t('project.id')" prop="id">
-                            <span >{{form.id}}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.name')" prop="name">
-                            <el-input :readonly="setReadOnly" v-model="form.name" clearable class="wd80pa"/>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.category')" prop="category" v-if="false">
-                            <el-select v-if="form.is_project==0" :disabled="setReadOnly" v-model="form.category" filterable class="wd80pa">
-                                <el-option v-for="category in option.categories" :disabled="category.disable" :key="category.name" :label="category.name" :value="category.name"/>
-                            </el-select>
-                            <span v-if="form.is_project==1">{{form.category}}</span>
-                        </el-form-item>
-                        <el-form-item :label="$t('project.status')" prop="status">
-                            <el-select :disabled="setReadOnly" v-model="form.status" filterable class="wd80pa">
-                                <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item :label="$t('project.owner')" prop="owner">
-                            <el-select :disabled="setReadOnly" v-model="form.owner_id" filterable clearable class="wd80pa">
-                                <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
-                                        <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                                        <span v-else class="mgl10">{{item.name}}</span>
-                                    </el-option>
-                            </el-option-group>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item :label="$t('common_column.start_date')" prop="date_period">
-                            <el-date-picker v-model="form.start_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
-                            :picker-options="{ disabledDate(time){if(!form.end_date){return ''}else{return time.getTime() > Date.parse(new Date(form.end_date).toString())}}}">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item :label="$t('common_column.end_date')" prop="date_period">
-                            <el-date-picker v-model="form.end_date" type="date" :readonly="setReadOnly" value-format="yyyy-MM-dd" :placeholder="$t('common_msg.select')" class="wd80pa"
-                            :picker-options="{ disabledDate(time){if(!form.start_date){return ''}else{return time.getTime() <= Date.parse(new Date(form.start_date).toString())}}}">
-                            </el-date-picker>
-                        </el-form-item>
-                    </el-col>
+                    <el-card shadow="always" class="mgb10" v-loading.lock="loading">
+                        <div slot="header" class="clearfix">
+                            <span>基本資料</span>
+                        </div>
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item label="請款單號" >
+                                    <span>{{form.order_id}}</span>
+                                </el-form-item>
+                                <el-form-item label="專案名稱">
+                                    <span>{{form.item_id}} - {{form.item_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="申請日期">
+                                    <span>{{form.order_date}}</span>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="申請單位">
+                                    <span>{{form.dept_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="請款人">
+                                    <span>{{form.p_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="請款單狀態">
+                                    <span v-if="form.status=='D'" style="color:grey">草稿</span>
+                                    <span v-if="form.status=='P'" style="color:blue">待審</span>
+                                    <span v-if="form.status=='F'" style="color:green">過審</span>
+                                    <span v-if="form.status=='A'" style="color:red">退回</span>
+                                    <!-- <span>{{form.status}}</span> -->
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-form-item label="請款說明">
+                                <el-input :readonly="orderReadOnly" type="textarea" :rows="4" v-model="form.description" style="width:500px;"></el-input>
+                            </el-form-item>
+                        </el-row>
+                    </el-card>
                 </el-row>
                 <el-row>
-                    <el-form-item :label="$t('project.description')" prop="description">
-                        <el-input type="textarea" :readonly="setReadOnly" v-model="form.description" :rows="3" clearable style="width:95.5%;"/>
-                    </el-form-item>
-                    <div style="font-size:12px;margin:10px;color:rgb(255, 73, 73);"> [ {{$t("common_msg.non_essential")}} ] {{$t("project.tag_tips")}}</div>
-                    <el-collapse v-model="activeNames" accordion>
-                        <el-collapse-item name="tags" class="tag-collapse">
-                            <template slot="title">
-                                <div class="mgl10">{{$t("project.tags")}}</div>
-                            </template>
-                            <el-form-item :label="$t('project.is_open_tags')" prop="is_open_tags" label-width="140px">
-                                <el-switch v-model="form.is_open_tags" active-color="#13ce66" inactive-color="#ff4949" :active-value="1" :inactive-value="0"
-                                :active-text="$t('common_msg.yes')" :inactive-text="$t('common_msg.no')"/>
-                            </el-form-item>
-                            <el-form-item :label="$t('project.tags')" prop="tags">
-                                <!-- <el-button type="info" plain size="medium" class="mgr10" @click="tag_form.tags=[]">{{$t("btn.reset")}}</el-button> -->
-                                <el-input style="width:50%;" v-model="tagValue" clearable ref="saveTagInput" size=medium show-word-limit maxlength="20"
-                                @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"/>
-                                <!-- <el-button v-else type="warning" plain size="medium" @click="showInput">{{$t("project.add_tags")}}</el-button> -->
-                                <el-divider/>
-                                <el-tag style="margin:5px 5px 0px 0px;" :key="tag" v-for="tag in tag_form.tags" size=large type=success closable 
-                                :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
-                            </el-form-item>
-                        </el-collapse-item>
-                    </el-collapse>
+                    <el-card shadow="always" class="mgb10" style="padding-bottom:20px;" v-loading.lock="loading">
+                        <div slot="header" class="clearfix">
+                            <span>請款內容</span>
+                            <el-button v-if="!orderReadOnly" type=success size=large icon="el-icon-plus" class="card-header-r-btn" @click="handleAddItem">{{$t('btn.new')}}</el-button>
+                        </div>
+                        <el-row v-for="(item,index) in form.content_json" :key="item.id" >
+                            <el-card shadow="always" style="margin:5px;">
+                                <el-col :span="3">
+                                    <span>{{item.type}}</span>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form ref="form" label-width="auto">
+                                        <el-form-item label="日期">
+                                            <el-date-picker :readonly="orderReadOnly" v-model="item.date" style="width:155px" type="date" align="right" unlink-panels value-format="yyyy-MM-dd"  />
+                                        </el-form-item>
+                                    </el-form>
+                                </el-col>
+                                <el-col :span="11">
+                                    <div>
+                                        <el-col v-for="data in item.content" :key="data.id+item.id" :span="data.width" style="padding-left:10px;">
+                                            <el-form ref="form" label-width="auto">
+                                                <el-form-item :label="data.title">
+                                                    <el-input type="text" :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
+                                                </el-form-item>
+                                            </el-form>
+                                        </el-col>
+                                    </div>
+                                </el-col>
+                                <el-col :span="1" style="float:right;padding-left:10px;text-align:right;">
+                                    <el-button v-if="!orderReadOnly" type="text" style="" @click="handleDeleteItem(index)">刪除</el-button>
+                                </el-col>
+                                <el-col :span="4" style="float:right;padding-left:10px;text-align:right;">
+                                    <el-input 
+                                    :readonly="orderReadOnly" 
+                                    type="number"  
+                                    v-model.number="item.amount" 
+                                    @keyup.native="prevent($event)"
+                                    @mousewheel.native.prevent
+                                    @change="handleContentChange"
+                                    ><template slot="append">元</template>
+                                    </el-input>
+                                </el-col>
+                            </el-card>
+                        </el-row>
+                        <div style="float:right;color:red;">
+                            <span><h2>Total {{stateFormat("","",handleCaculateTotalAmount)}} 元</h2></span>
+                        </div>
+                    </el-card>
                 </el-row>
+                <el-row>
+                    <el-card shadow="always" class="mgb10" v-loading.lock="loading">
+                        <div slot="header" class="clearfix">
+                            <span>付款方式</span>
+                        </div>
+                        <el-form ref="form" label-width="auto">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="付款方式">
+                                        <el-radio-group v-model="form.payment_method" :disabled="orderReadOnly" size="mini">
+                                            <el-radio label="transfer" border>匯款</el-radio>
+                                            <el-radio label="cash" border>現金</el-radio>
+                                            <el-radio label="check" border>支票</el-radio>
+                                        </el-radio-group>
+                                        <!-- <span>{{form.payment_method}}</span> -->
+                                    </el-form-item>
+                                    <el-form-item label="匯款選項">
+                                        <el-radio-group v-model="form.remittance_setting" :disabled="form.payment_method!='transfer' || orderReadOnly" size="mini">
+                                            <el-radio label="deduct" border>跨行扣匯費</el-radio>
+                                            <el-radio label="no_deduct" border>跨行不扣匯費</el-radio>
+                                        </el-radio-group>
+                                        <!-- <span>{{form.payment_method}}</span> -->
+                                    </el-form-item>
+                                    <!-- <el-form-item label="付款日期">
+                                        <el-date-picker v-model="form.remittance_date" :readonly="orderReadOnly" type="date" align="right" unlink-panels value-format="yyyy-MM-dd" />
+                                    </el-form-item> -->
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="匯款銀行/分行">
+                                        <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="form.remittance_bank" ></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="匯款帳號">
+                                        <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="form.remittance_account" ></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="支付對象/戶名">
+                                        <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="form.account_name" ></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                    </el-card>
+                </el-row>
+                <el-row>
+                    <el-card shadow="always" v-loading.lock="loading">
+                        <div slot="header" class="clearfix">
+                            <span>歷程紀錄</span>
+                        </div>
+                        <div>
+                            <el-table
+                            :data="pay_order_history"
+                            style="width: 100%">
+                            <el-table-column
+                                prop="recorded_at"
+                                label="更動時間"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                            <el-table-column
+                                prop="employee_name"
+                                label="操作人員"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                           <el-table-column
+                                prop="prev_status"
+                                label="操作"
+                                align="center"
+                                width="200">
+                                <template slot-scope="scope">
+                                    {{scope.row.prev_status}} → {{scope.row.current_status}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="note"
+                                label="說明">
+                            </el-table-column>
+                            </el-table>
+                        </div>
+                            
+                    </el-card>
+                </el-row>
+                
             </el-form>
-            <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
-                <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDialog">{{$t('btn.confirm')}}</el-button>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-if="orderReadOnly==false"  size="large" @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button v-if="orderReadOnly==false" size="large" type="primary" @click="confirmDialog">{{$t('btn.save')}}</el-button>
+                <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">送審</el-button>
             </div>
+        </el-dialog>
+
+         <el-dialog title="確認恢復草稿" :visible.sync="restoreVisible" width="300px" center :before-close="cancelQuestDialog">
+            <div style="text-align:center;">
+                <span>您要恢復草稿嗎?</span>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmRestore">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
+
+         <el-dialog title="確認下載" :visible.sync="downloadVisible" width="300px" center :before-close="cancelQuestDialog" v-loading="dialog_loading">
+            <div style="text-align:center;">
+                <span>您要下載這張請款單嗎？</span>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmDownload">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
+
+         <el-dialog title="確認作廢" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog">
+            <div style="text-align:center;">
+                <span>您確定要作廢這張請款單？</span>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
 <script>
-import { workItemService } from "@/_services";
+import { payOrderService } from "@/_services";
+import { dayItemService } from "@/_services";
+
 export default {
-    name: "work_item_manage",
+    name: "pay_order",
+    components: {
+    },
     data(){
         return {
             activeNames:"",
+            itemKey:0,
             tbKey:0,
             tableData: [],
+
             totalRow:0,
             cur_page: 1,
             page_size:10,
             page_size_list:[5, 10],
             start_row:0,
-            sort_column:"id",
+            sort_column:"order_date",
             sort:"desc",
+            
             action_list:localStorage.getItem("ms_user_actions"),
+            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            username:localStorage.getItem("ms_username"),
+
             loading:false,
+            dialog_loading:false,
+            
             deleteID:null,
             deleteView:false,
             createView:false,
             updateView:false,
-            tagVisible:false,
-            tagValue:"",
-            check_start_time:"",
-            check_end_time:"",
+            
+            addItemVisible:false,
+            
+            restoreVisible:false,
+            downloadVisible:false,
+            deleteVisible:false,
+            restore_id:"",
+            download_id:"",
+            delete_id:"",
+           
             filter:{
                 name:"",
                 status:[],
-                category:[],
-                owner:[],
             },
-            tree_data:[],
+            
+            createForm:{
+                project_id:""
+            },
             
             form:{
-                date_period:[],
-                type:"create",
-                id:"",
-                name:"",
-                category:"",
-                status:"",
-                is_project:"",
-                start_date:null,
-                end_date:null,
+                order_id:"",
+                item_id:"",
+                dept_name:"",
+                dept_id:"",
+                applicant:"",
+                order_date:"",
                 description:"",
-                owner:"",
-                owner_id:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
-                is_open_tags:false,
+                status:"",
+                status_name:"",
+
+                payment_method:"",
+                remittance_date:"",
+                remittance_bank:"",
+                remittance_account:"",
+                remittance_setting:"",
+                acount_name:"",
+
+                content_json:[]
             },
 
-            tag_form:{
-                item_id:"",
-                pid:"",
-                tags:[],
-            },
+            pay_order_history:[],
 
             option:{
-                categories:[],
-                status:[]
+                projects:[],
+                status:[
+                    {label:"草稿",value:"D"},
+                    {label:"待審",value:"P"},
+                    {label:"過審",value:"F"},
+                    {label:"退回",value:"A"}
+                ],
+                item_types:[
+                    {
+                        title:"一般",
+                        content:{
+                            type:"一般請款",
+                            amount:0,
+                            date:"",
+                            content:[
+                                {id:"1",title:"摘要",width:24,type:"textarea",result:""}
+                            ]
+                        }
+                    },
+                    {
+                        title:"交通費",
+                        content:{
+                            type:"交通費請款",
+                            amount:0,
+                            date:"",
+                            content:[
+                                {id:"1",title:"起訖地點",width:12,type:"text",result:""},
+                                {id:"2",title:"票種",width:12,type:"text",result:""}
+                            ]
+                        }
+                    },
+                    {
+                        title:"住宿費",
+                        content:{
+                            type:"住宿費請款",
+                            amount:0,
+                            date:"",
+                            content:[
+                                {id:"1",title:"地點",width:24,type:"text",result:""}
+                            ]
+                        }
+                    },
+                    {
+                        title:"生活費",
+                        content:{
+                            type:"生活費(膳食)",
+                            amount:0,
+                            date:"",
+                            content:[]
+                        }
+                    },
+                    {
+                        title:"辦公費",
+                        content:{
+                            type:"辦公費(郵電/交際/車資等)",
+                            amount:0,
+                            date:"",
+                            content:[]
+                        }
+                    },
+                ]
             },
            
             rules: {
-                name: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                id: [
-                    {pattern: /^[\u4e00-\u9fa5A-Za-z0-9. ()-]+$/, message: this.$t("rules.project_id"), trigger: ["blur", "change"]},
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                status: [
-                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
-                ],
-                category: [
+                payment_method: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
                 ]
                 
@@ -231,7 +458,7 @@ export default {
     },
 
     async created(){
-        await this.get_dept_employee();
+        // await this.get_dept_employee();
         await this.getOption();
         await this.getData();
     },
@@ -242,57 +469,212 @@ export default {
         },
 
         showTitle(){
-            if(this.createView && this.form.is_project) return this.$t("project.create_outter_project");
-            else if(this.createView && !this.form.is_project) return this.$t("project.create_inner_project");
-            else if(this.updateView && this.form.is_project) return this.$t("project.edit_project");
-            else if(this.updateView && !this.form.is_project) return this.$t("project.edit_inner_project");
+            if(this.createView) return "新增請款單";
+            else if(this.updateView) return "編輯請款單";
             else return "";
         },
 
         showVisible(){
-            if(this.createView) return this.createView;
-            else if(this.updateView) return this.updateView;
+            if(this.updateView) return this.updateView;
             else return false;
         },
+        handleCaculateTotalAmount(){
+            var total = 0;
+            this.form.content_json.forEach(element => {
+                total+=element.amount
+            });
+            return total
+        },
+        async checkContent(){
+            await this.form.content_json.forEach(element => {
+                console.log(element.amount);
+                if(element.amount==0 || element.amount==null || element.amount==""){
+                    console.log("false");
+                    return false
 
-        allowProjectCreate(){
-            if (this.action_list.includes("create_outer_project")){
-                return true
+                }
+            });
+        },
+        today(){
+            let time =new Date();
+            return time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
+        },
+        orderReadOnly(){
+            if(this.form.status == "D"){
+                return false
             }else{
-                return false
+                return true 
             }
-        },
+        }
 
-        allowCreate(){
-            // if (this.action_list.includes("create_inner_project")){
-            //     return true
-            // }else{
-            //     return false
-            // }
-            return false
-        },
-
-        setReadOnly(){
-            if (this.form.is_project==1 && this.action_list.includes("edit_outer_project")){
-                return false
-            }else if (this.form.is_project==0 && this.action_list.includes("edit_inner_project")){
-                return false
-            }else{
-                return true
-            }
-        },
-
-        allowEdit(){
-            if (this.action_list.includes("edit_outer_project")){
-                return true
-            }else{
-                return false
-            }
-        },
-        
     }, 
     
     methods: {
+        prevent(e){
+        var keynum = window.event ? e.keyCode : e.which;   //获取键盘码
+            if (keynum ==189|| keynum==190||keynum == 109 ||keynum == 110 ) {
+                this.$message.warning('禁止輸入小數及負數')
+                e.target.value = 0
+            }
+        },
+        create_UUID(len) {
+            let text = ""
+            let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            for( let i=0; i < len; i++ ) {
+                text += chars.charAt(Math.floor(Math.random() * chars.length))
+            }
+            // console.log(text);
+			return text
+		},
+
+        stateFormat(row, column, cellValue) {
+			cellValue += '';
+			if (!cellValue.includes('.')) cellValue += '.';
+			return cellValue.replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
+				return $1 + ',';
+			}).replace(/\.$/, '');
+		},
+        cancelQuestDialog(){
+            this.restoreVisible = false;
+            this.downloadVisible = false;
+            this.deleteVisible = false;
+        },
+        handleDelete(row){
+            this.delete_id = row.order_id;
+            this.deleteVisible = true;
+        },
+        handleRestore(row){
+            this.restore_id = row.order_id;
+            this.restoreVisible = true;
+        },
+        handleDownload(row){
+            this.download_id = row.order_id;
+            this.downloadVisible = true;
+        },
+
+        confirmDelete(){
+            var param = {
+                action:"delete",
+                form:{
+                    odoo_employee_id:this.odoo_employee_id,
+                    order_id: this.delete_id
+                }
+            };
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    this.$message.success("Success") 
+                    this.getData();
+                    this.cancelQuestDialog();
+                }else{
+                    this.$message.error(res.msg)
+                } 
+            })
+        },
+        confirmRestore(){
+            var param = {
+                action:"restore",
+                form:{
+                    odoo_employee_id:this.odoo_employee_id,
+                    order_id: this.restore_id
+                }
+            };
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    this.$message.success("Success") 
+                    this.getData();
+                    this.cancelQuestDialog();
+                }else{
+                    this.$message.error(res.msg)
+                } 
+            })
+        },
+       
+        confirmDownload(){
+            var param = {order_id: this.download_id};
+            this.dialog_loading = true;
+            payOrderService.downlaod_pay_order(param).then(response => {
+                // console.log(response);
+                const link = document.createElement('a');
+                let blob = new Blob([response.data], {type: 'application/pdf'});
+                link.style.display = 'none';
+                link.href = URL.createObjectURL(blob);//创建url对象
+                link.download = this.today+'-'+this.download_id+".pdf"
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);//销毁url对象
+                this.cancelQuestDialog();
+                this.dialog_loading = false;
+            }).catch(err => {
+                console.log(err);
+                this.cancelQuestDialog();
+                this.dialog_loading = false;
+            })
+            this.dialog_loading = true;
+        },
+
+        handleContentChange(){
+            console.log(this.form.content_json)
+        },
+        handleAddItem(){
+            console.log("add Item");
+            this.addItemVisible = true;
+
+        },
+        cancelAddItem(){
+            this.addItemVisible = false;
+        },
+        async confirmAddItem(content){
+            var temp_content = JSON.parse(JSON.stringify(content));
+            var new_uuid = this.create_UUID(8);
+            temp_content.id = new_uuid
+            // await temp_content.content.forEach(element => {
+            //     console.log(element);
+            //     element.id = element.id + new_uuid
+            // });
+            await this.form.content_json.push(temp_content);
+            console.log(this.form.content_json);
+            this.addItemVisible = false;
+        },
+        handleDeleteItem(index){
+            console.log(index);
+            this.form.content_json.splice(index,1);
+        },
+        
+        confirmCreate(){
+            if(!this.createForm.project_id){
+                return this.$message.error("請選擇專案")
+            }else{
+                var param = {
+                    action:"create",
+                    form:{
+                        odoo_employee_id:this.odoo_employee_id,
+                        item_id: this.createForm.project_id
+                    }
+                };
+                payOrderService.update_pay_orders(param).then(res =>{ 
+                    console.log(res);
+                    if(res.code>0){
+                        // this.$message.success("OK")
+                        this.getData();
+                        this.createForm.project_id = "";
+                        this.createView = false;
+                        this.handleEdit(0, {order_id:res.create_id})
+                    }else{
+                        this.$message.error(res.msg)
+                    }
+                        
+                })
+            }
+            // this.createView = false;
+            // this.handleEdit(0, {row:"order_id"})
+        },
+        cancelCreate(){
+            this.createForm={project_id:""};
+            this.createView = false;
+        },
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
@@ -303,76 +685,28 @@ export default {
             return return_dict;
         },
 
-        handleClose(tag){
-            this.tag_form.tags.splice(this.tag_form.tags.indexOf(tag), 1);
-        },
-
-        handleInputConfirm(){
-            let inputValue=this.tagValue;
-            if(inputValue){
-                if(!this.tag_form.tags.includes(inputValue)){
-                    this.tag_form.tags.push(inputValue);
-                };
-            };
-            this.tagVisible=false;
-            this.tagValue="";
-        },
-
-        showInput(){
-            this.tagVisible=true;
-            this.$nextTick(_ => {
-                this.$refs.saveTagInput.$refs.input.focus();
-            });
-        },
-
-        async get_dept_employee(){
-            this.loading=true;
-            await workItemService.get_dept_employee({}).then(res =>{ 
-                this.tree_data=res.tree_data;
-                this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
-            })
-        },
-        
-        allowDelete(row){
-            if(row.status == 'A'){
-                return true
-            };
-            if (row.is_project==1 && this.action_list.includes("delete_outer_project")){
-                return false
-            }else if (row.is_project==0 && this.action_list.includes("delete_inner_project")){
-                return false
-            }else{
-                return true
-            }
-        },
-
         handleCreate(){
-            this.form.is_project = 0;
             this.createView=true;
         },
-
-        handleProjectCreate(){
-            console.log(this.tree_data);
-            this.form.is_project = 1;
-            this.form.category = "預設";
-            this.form.status = "D";
-            this.createView=true;
-        },
-
-        handleEdit(index, row){
-            this.form=Object.assign({}, row);
-            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
-            this.tag_form=Object.assign({}, {
-                item_id:this.form.id,
-                pid:"",
-                tags:this.form.tags,
-            });
-            this.updateView=true;
-        },
-
-        handleDelete(index, row){
-            this.deleteID=row.id;
-            this.deleteView=true;
+       
+        async handleEdit(index, row){
+            var param = {
+                action:"info",
+                filter:{
+                    order_id:row.order_id
+                }
+            };
+            await payOrderService.get_pay_orders(param).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    // this.$message.success("OK")
+                    this.form=res.data;
+                    this.pay_order_history=res.histories;
+                    this.updateView=true;
+                }else{
+                    this.$message.error(res.msg)
+                }
+            })
         },
 
         cancelDelete(){
@@ -380,89 +714,131 @@ export default {
             this.deleteView=false;
         },
 
-        confirmDelete(){
-            this.form.id = this.deleteID; 
-            var param = {
-                type:"delete",
-                form:this.form
-            }
-            this.update_work_items(param);
-        },
-
-        update_work_items(param){ 
-            workItemService.update_work_items(param).then(res =>{ 
-                if(res.success){ 
+        update_pay_order(param){ 
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                if(res.code > 0){ 
                     this.$message.success("success"); 
-                    if(param.type=="create"){
-                        this.handleCurrentChange(1);
-                        this.cancelDialog();
-                    }else if(param.type=="update"){
-                        this.getData();
-                        this.cancelDialog();
-                    }else if(param.type=="delete"){
-                        // console.log("finish delete");
-                        this.cancelDelete();
-                        this.getData();
-                    }else{
-                        this.getData();
-                    }
-                    
-                
+                    this.getData();
+                    this.cancelDialog();
                 }else{ 
                     this.$message.error(this.$t(res.msg)); 
                 } 
             }) 
         },
 
+        
         confirmDialog(){
-            this.$refs.form.validate(valid => {
-                if(valid){
-                    var temp_form = Object.assign({}, this.form);
-                    var temp_tag_form = Object.assign({}, this.tag_form);
-                    temp_tag_form.item_id = temp_form.id;
-                    var param = {
-                        type:this.createView?"create":"update",
-                        form:temp_form,
-                        tag_form:temp_tag_form,
-                    }
-                    this.update_work_items(param);
-                }
-            })
+            var temp_form = Object.assign({}, this.form);
+            var param = {
+                action:"update",
+                form:temp_form
+            };
+            param.form.odoo_employee_id = this.odoo_employee_id;
+            param.form.total_amount = this.handleCaculateTotalAmount;
+            this.update_pay_order(param);
         },
 
+        async handInOrder(){
+            console.log("GOGOGO");
+            var temp_form = Object.assign({}, this.form);
+            var param = {
+                action:"update",
+                form:temp_form
+            };
+            param.form.odoo_employee_id = this.odoo_employee_id;
+            param.form.total_amount = this.handleCaculateTotalAmount;
+            this.update_pay_order_handin(param);
+        },
+
+        update_pay_order_handin(param){ 
+            payOrderService.update_pay_orders(param).then(res =>{ 
+                if(res.code > 0){ 
+                    var handin_form = {
+                        action:"handin",
+                        form:{
+                            odoo_employee_id:this.odoo_employee_id,
+                            order_id:this.form.order_id,
+                            order_date:this.today
+                        }
+                    };
+                    payOrderService.update_pay_orders(handin_form).then(res =>{
+                        if(res.code > 0){ 
+                            this.getData();
+                            this.cancelDialog();
+                        }else{
+                            this.$message.error(this.$t(res.msg)); 
+                        }
+                    })
+
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                } 
+            }) 
+        },
+
+        async handleHandIn(){
+            if(!this.form.content_json.length){
+                return this.$message.error("未設定請款內容");
+            }
+            await this.form.content_json.forEach(element => {
+                console.log(element.amount);
+                if(element.amount==0 || element.amount==null || element.amount==""){
+                    return this.$message.error("請款單細項未正確設定金額");
+                }
+            });
+            if(this.form.description==""||this.form.description==null){
+                return this.$message.error("請填寫請款說明");
+            };
+            if(this.form.payment_method=="transfer"){
+                console.log("transfer");
+                if(this.form.remittance_setting==""||this.form.remittance_setting==null){
+                    return this.$message.error("未設定匯款方式");
+                };
+                // if(this.form.remittance_date==""||this.form.remittance_date==null){
+                //     return this.$message.error("未設定預計付款日期");
+                // };
+                if(this.form.remittance_bank==""||this.form.remittance_bank==null){
+                    return this.$message.error("未設定匯款銀行/分行");
+                };
+                if(this.form.remittance_account==""||this.form.remittance_account==null){
+                    return this.$message.error("未設定匯款帳號");
+                };
+                if(this.form.account_name==""||this.form.account_name==null){
+                    return this.$message.error("未設定支付對象/戶名");
+                };
+            };
+            
+            await this.handInOrder();
+
+        },
+
+        
+
         cancelDialog(){
-            this.createView=false;
             this.updateView=false;
             this.resetForm();
-            this.resetTagForm();
         },
 
         resetForm(){
-            this.form.date_period = [];
             this.form={
-                type:"create",
-                id:"",
-                name:"",
-                category:"",
-                status:"",
-                is_project:"",
-                start_date:"",
-                end_date:"",
-                description:"",
-                owner:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
-                is_open_tags:false,
-            };
-            this.$refs.form.clearValidate();
-        },
-
-        resetTagForm(){
-            this.activeNames="";
-            this.tag_form={
+                order_id:"",
                 item_id:"",
-                pid:"",
-                tags:[],
+                dept_name:"",
+                dept_id:"",
+                applicant:"",
+                order_date:"",
+                description:"",
+                status:"",
+                status_name:"",
+                payment_method:"",
+                remittance_date:"",
+                remittance_bank:"",
+                remittance_account:"",
+                remittance_setting:"",
+                acount_name:"",
+                content_json:[]
             };
+            // this.$refs.form.clearValidate();
         },
 
         handleCurrentChange(currentPage){
@@ -485,16 +861,18 @@ export default {
         async getData(){
             this.loading=true;
             var param = {
-                sort_column:this.sort_column,
-                sort:this.sort,
-                start_row:this.start_row,
-                pagesize:this.page_size,
-                key_word:this.filter.name,
-                status:this.filter.status,
-                category:this.filter.category,
-                owner:this.filter.owner,
+                action:"table",
+                filter:{
+                    odoo_employee_id:this.odoo_employee_id,
+                    sort_column:this.sort_column,
+                    sort:this.sort,
+                    start_row:this.start_row,
+                    page_size:this.page_size,
+                    key_word:this.filter.name,
+                    status:this.filter.status
+                }
             }
-            await workItemService.get_work_items(param).then(res =>{ 
+            await payOrderService.get_pay_orders(param).then(res =>{ 
                 this.tableData=res.data;
                 this.totalRow=res.total;
             })
@@ -502,10 +880,10 @@ export default {
         },
         
         async getOption(){
-            await workItemService.get_options({}).then(res =>{ 
-                this.option.categories=res.categories; 
-                this.option.status=res.status; 
-            }) 
+            await dayItemService.get_option_list({action:["work_item_now"]}).then(res =>{ 
+                this.option.projects=res.work_item_now;
+                // console.log(res.work_item_now);
+            });
         },
 
         search(){
@@ -521,6 +899,10 @@ export default {
             };
             this.handleCurrentChange(1);
         },
+        resultChange(result){
+            console.log(data);
+            console.log(result);
+        }
     }
 }
 </script>
@@ -538,6 +920,7 @@ export default {
         width:100%;
         font-size:14px;
     }
+    
     .mgb10{
         margin-bottom:10px;
     }
@@ -561,6 +944,11 @@ export default {
         margin:10px 0 5px 0;
     }
     .container{
-        margin-right:150px;
+        margin-right:10px;
+    }
+    .card-header-r-btn{
+        position:relative;
+        float:right;
+        margin-top:-10px;
     }
 </style>

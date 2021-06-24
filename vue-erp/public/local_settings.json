@@ -71,6 +71,10 @@
         {
             "index": "work_item_pay",
             "title": "menus.work_item_pay"
+        },
+        {
+            "index": "accountant",
+            "title": "menus.accountant"
         }
     ]
 }
