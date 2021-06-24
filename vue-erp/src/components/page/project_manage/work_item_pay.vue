@@ -47,7 +47,7 @@
                     <template slot-scope="scope">
                         <el-button v-if="scope.row.status=='D'" type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
                         <el-button v-if="scope.row.status=='P' || scope.row.status=='F' || scope.row.status=='A'" type="info" size="mini" icon="el-icon-view" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.view')}}</el-button>
-                        <el-button v-if="scope.row.status=='A'" type="success" size="mini" icon="el-icon-refresh-right" @click="handleRestore(scope.row)">草稿</el-button>
+                        <el-button v-if="scope.row.status=='A' || scope.row.status=='P'" type="success" size="mini" icon="el-icon-refresh-right" @click="handleRestore(scope.row)">草稿</el-button>
                         <el-button v-if="scope.row.status=='D' || scope.row.status=='A' " type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">作廢</el-button>
                         <el-button v-if="scope.row.status=='F'" type="primary" size="mini" icon="el-icon-document" @click="handleDownload(scope.row)">下載</el-button>
                     </template>
@@ -157,10 +157,10 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <div>
-                                        <el-col v-for="data in item.content" :key="item.id+data.id" :span="12" style="padding-left:10px;">
+                                        <el-col v-for="data in item.content" :key="data.id+item.id" :span="data.width" style="padding-left:10px;">
                                             <el-form ref="form" label-width="auto">
                                                 <el-form-item :label="data.title">
-                                                    <el-input :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
+                                                    <el-input type="text" :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
                                                 </el-form-item>
                                             </el-form>
                                         </el-col>
@@ -400,7 +400,7 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:1,title:"摘要",type:"input",result:""}
+                                {id:"1",title:"摘要",width:24,type:"textarea",result:""}
                             ]
                         }
                     },
@@ -411,8 +411,8 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:1,title:"起訖地點",type:"input",result:""},
-                                {id:2,title:"票種",type:"input",result:""}
+                                {id:"1",title:"起訖地點",width:12,type:"text",result:""},
+                                {id:"2",title:"票種",width:12,type:"text",result:""}
                             ]
                         }
                     },
@@ -423,7 +423,7 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:1,title:"地點",type:"input",result:""}
+                                {id:"1",title:"地點",width:24,type:"text",result:""}
                             ]
                         }
                     },
@@ -616,7 +616,7 @@ export default {
         },
 
         handleContentChange(){
-            console.log(this.form.order_content)
+            console.log(this.form.content_json)
         },
         handleAddItem(){
             console.log("add Item");
@@ -626,10 +626,16 @@ export default {
         cancelAddItem(){
             this.addItemVisible = false;
         },
-        confirmAddItem(content){
-            var temp_content = Object.assign({}, content);
-            temp_content.id = this.create_UUID(8);
-            this.form.content_json.push(temp_content);
+        async confirmAddItem(content){
+            var temp_content = JSON.parse(JSON.stringify(content));
+            var new_uuid = this.create_UUID(8);
+            temp_content.id = new_uuid
+            // await temp_content.content.forEach(element => {
+            //     console.log(element);
+            //     element.id = element.id + new_uuid
+            // });
+            await this.form.content_json.push(temp_content);
+            console.log(this.form.content_json);
             this.addItemVisible = false;
         },
         handleDeleteItem(index){
@@ -700,7 +706,6 @@ export default {
                 }else{
                     this.$message.error(res.msg)
                 }
-                    
             })
         },
 
@@ -915,6 +920,7 @@ export default {
         width:100%;
         font-size:14px;
     }
+    
     .mgb10{
         margin-bottom:10px;
     }

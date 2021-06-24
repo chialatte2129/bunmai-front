@@ -232,7 +232,7 @@
         
         
 
-        <el-dialog title="請款單" :visible.sync="viewPayOrderVisible" width="900px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog title="請款單" :visible.sync="viewPayOrderVisible" width="1100px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-card shadow="always" class="mgb10" v-loading.lock="loading">
@@ -267,7 +267,7 @@
                         </el-row>
                         <el-row>
                             <el-form-item label="請款說明">
-                                <el-input type="textarea" :rows="4" v-model="payOrderForm.description"></el-input>
+                                <el-input type="textarea" :readonly="true"  :rows="4" v-model="payOrderForm.description"></el-input>
                             </el-form-item>
                         </el-row>
                     </el-card>
@@ -277,21 +277,41 @@
                         <div slot="header" class="clearfix">
                             <span>請款內容</span>
                         </div>
-                        <el-col :span="24" style="margin-bottom:10px;">
-                            <el-table :data="payOrderForm.content_json" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading">
-                                <el-table-column prop="type" label="項目" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                                <el-table-column prop="date" label="日期" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                                <el-table-column prop="description" label="請款資訊" width="auto" sortable="custom" show-overflow-tooltip>
-                                    <template slot-scope="content">
-                                        <div v-for="item in content.row.content" :key="item.title"><span >{{item.title}} : {{item.result}}</span></div>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="amount" label="金額" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                            </el-table>
-                            <div style="float:right;color:red;">
-                                <span><h2>Total {{stateFormat("","",payOrderForm.total_amount)}} 元</h2></span>
-                            </div>
-                        </el-col>
+                        <el-row v-for="item in payOrderForm.content_json" :key="item.id" >
+                            <el-card shadow="always" style="margin:5px;">
+                                <el-col :span="3">
+                                    <span>{{item.type}}</span>
+                                </el-col>
+                                <el-col :span="5">
+                                    <el-form ref="form" label-width="auto">
+                                        <el-form-item label="日期">
+                                            <el-date-picker :readonly="true" v-model="item.date" style="width:155px" type="date" align="right" unlink-panels value-format="yyyy-MM-dd"  />
+                                        </el-form-item>
+                                    </el-form>
+                                </el-col>
+                                <el-col :span="11">
+                                    <div>
+                                        <el-col v-for="data in item.content" :key="data.id+item.id" :span="data.width" style="padding-left:10px;">
+                                            <el-form ref="form" label-width="auto">
+                                                <el-form-item :label="data.title">
+                                                    <el-input type="text" :rows="4" :readonly="true" v-model="data.result" ></el-input>
+                                                </el-form-item>
+                                            </el-form>
+                                        </el-col>
+                                    </div>
+                                </el-col>
+                                <el-col :span="4" style="float:right;padding-left:10px;text-align:right;">
+                                    <el-form ref="form" label-width="auto">
+                                        <el-form-item label="金額">
+                                            <span> {{stateFormat("","",item.amount)}}</span>
+                                        </el-form-item>
+                                    </el-form>
+                                </el-col>
+                            </el-card>
+                        </el-row>
+                        <div style="float:right;color:red;">
+                            <span><h2>Total {{stateFormat("","",payOrderForm.total_amount)}} 元</h2></span>
+                        </div>
                     </el-card>
                 </el-row>
                 <el-row>
@@ -672,20 +692,18 @@ export default {
             this.passVisible=false;
             this.rejectVisible=false;
         },
-        
         handlePass(){
             this.passVisible=true;
         },
         handlePay(row){
             this.pay_id = row.order_id;
-            this.pay_date = this.today;
+            // this.pay_date = this.today;
             this.payVisible=true;
         },
         handleReject(){
             this.reject_note = "";
             this.rejectVisible=true;
         },
-
         handleRejectAc(row){
             this.payOrderForm.order_id = row.order_id;
             this.reject_note = "";
@@ -714,6 +732,9 @@ export default {
             })
         },
         confirmPay(){
+            if (!this.pay_date){
+                return this.$message.error("請選擇撥款日期")
+            };
             var param = {
                 action:"pay",
                 form:{
@@ -727,8 +748,8 @@ export default {
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getCostData();
-                    this.closeAllDialog();
                     this.cancelPayOrderDialog();
+                    this.closeAllDialog();
                 }else{
                     this.$message.error(res.msg)
                 }
