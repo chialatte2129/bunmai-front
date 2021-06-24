@@ -697,7 +697,7 @@ export default {
         },
         handlePay(row){
             this.pay_id = row.order_id;
-            // this.pay_date = this.today;
+            this.pay_date = "";
             this.payVisible=true;
         },
         handleReject(){
@@ -732,7 +732,7 @@ export default {
             })
         },
         confirmPay(){
-            if (!this.pay_date){
+            if (this.pay_date=="" || this.pay_date==null){
                 return this.$message.error("請選擇撥款日期")
             };
             var param = {
