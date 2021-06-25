@@ -415,7 +415,8 @@ export const messages = {
             total_work_hours:"累計專案工時",
             status_tag:{
                 D:"草稿",
-                P:"進行中",
+                P:"開發中",
+                R:"營運中",
                 F:"已結案",
                 A:"未成案",
             },
@@ -847,7 +848,8 @@ export const messages = {
             total_work_hours:"Work Hours",
             status_tag:{
                 D:"草稿",
-                P:"進行中",
+                P:"開發中",
+                R:"營運中",
                 F:"已結案",
                 A:"未成案",
             },

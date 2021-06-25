@@ -13,7 +13,7 @@
                 @click="handleCreate">
                     {{$t('btn.new')}}
                 </el-button>
-                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('project.status')"
+                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable placeholder="請款狀態"
                 :disabled="loading" @change="search">
                     <el-option v-for="item in option.status" :key="item.value" :label="item.label" :value="item.value"/>
                 </el-select>
