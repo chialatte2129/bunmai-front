@@ -12,7 +12,8 @@ export const workItemService = {
 	get_project_cost_records,
 	get_project_cost_info,
 	update_pre_time,
-	update_cost_record
+	update_cost_record,
+	get_project_status_record
 }
 
 function get_work_items(param){
@@ -141,4 +142,14 @@ function update_cost_record(param){
 }
 
 
+// 專案狀態更新歷程
+function get_project_status_record(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/project/status/get`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
 

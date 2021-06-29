@@ -141,8 +141,44 @@
                                 :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
                             </el-form-item>
                         </el-collapse-item>
+                        <el-collapse-item v-if="updateView" name="history" class="tag-collapse">
+                            <template slot="title">
+                                <div class="mgl10">專案狀態紀錄</div>
+                            </template>
+                            <el-table
+                            v-loading="histable_load"
+                            :data="item_history"
+                            style="width: 100%">
+                            <el-table-column
+                                prop="recorded_at"
+                                label="更動時間"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                            <el-table-column
+                                prop="employee_name"
+                                label="操作人員"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                           <el-table-column
+                                prop="prev_status"
+                                label="操作"
+                                align="center"
+                                width="200">
+                                <template slot-scope="scope">
+                                    {{scope.row.prev_status}} → {{scope.row.current_status}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="note"
+                                label="說明">
+                            </el-table-column>
+                            </el-table>
+                        </el-collapse-item>
                     </el-collapse>
                 </el-row>
+                
             </el-form>
             <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
                 <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
@@ -201,6 +237,9 @@ export default {
                 employ_id:localStorage.getItem("ms_odoo_employee_id"),
                 is_open_tags:false,
             },
+
+            item_history:[],
+            histable_load:false,
 
             tag_form:{
                 item_id:"",
@@ -360,7 +399,21 @@ export default {
             this.form.status = "D";
             this.createView=true;
         },
-
+        getStatusRecord(item_id){
+            this.item_history=[];
+            this.histable_load=true;
+            workItemService.get_project_status_record({item_id:item_id}).then(res =>{ 
+                console.log(res);
+                if(res.success){ 
+                    this.item_history=res.result;
+                    this.histable_load=false;
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                    this.histable_load=false;
+                } 
+            }) 
+            
+        },
         handleEdit(index, row){
             this.form=Object.assign({}, row);
             this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
@@ -369,6 +422,7 @@ export default {
                 pid:"",
                 tags:this.form.tags,
             });
+            this.getStatusRecord(row.id);
             this.updateView=true;
         },
 
