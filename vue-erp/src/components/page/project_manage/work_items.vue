@@ -143,7 +143,7 @@
                         </el-collapse-item>
                         <el-collapse-item v-if="updateView" name="history" class="tag-collapse">
                             <template slot="title">
-                                <div class="mgl10">專案狀態紀錄</div>
+                                <div class="mgl10">{{$t('project.project_status_record')}}</div>
                             </template>
                             <el-table
                             v-loading="histable_load"
@@ -151,19 +151,19 @@
                             style="width: 100%">
                             <el-table-column
                                 prop="recorded_at"
-                                label="更動時間"
+                                :label="$t('project.recorded_at')"
                                 align="center"
                                 width="180">
                             </el-table-column>
                             <el-table-column
                                 prop="employee_name"
-                                label="操作人員"
+                                :label="$t('project.member')"
                                 align="center"
                                 width="180">
                             </el-table-column>
                            <el-table-column
                                 prop="prev_status"
-                                label="操作"
+                                :label="$t('project.action')"
                                 align="center"
                                 width="200">
                                 <template slot-scope="scope">
@@ -172,7 +172,7 @@
                             </el-table-column>
                             <el-table-column
                                 prop="note"
-                                label="說明">
+                                :label="$t('project.note')">
                             </el-table-column>
                             </el-table>
                         </el-collapse-item>

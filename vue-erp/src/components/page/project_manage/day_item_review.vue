@@ -70,14 +70,14 @@
                                         </el-tooltip>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
-                                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="80" align="right" header-align="left"/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left">
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="100" align="right" header-align="left"/>
+                                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="120" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="100" align="right" header-align="left">
                                     <template slot-scope="scope">
                                         <span v-if="scope.row.comp_time>0">{{scope.row.comp_time}}</span><span v-else>-</span>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="120" align="right" header-align="left"/>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"

@@ -13,21 +13,21 @@
                 @click="handleCreate">
                     {{$t('btn.new')}}
                 </el-button>
-                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable placeholder="請款狀態"
+                <el-select class="mgr10" size="large" v-model="filter.status" multiple collapse-tags filterable clearable :placeholder="$t('reimburse.status')"
                 :disabled="loading" @change="search">
                     <el-option v-for="item in option.status" :key="item.value" :label="item.label" :value="item.value"/>
                 </el-select>
-                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" placeholder="關鍵字查詢" :disabled="loading" @change="search"/>
+                <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('btn.key_word')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
-                <el-table-column prop="order_id" label="請款單號" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                <el-table-column prop="item_name" label="專案名稱" width="300px" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" label="專案管理人"  width="120" align="center" show-overflow-tooltip/>
-                <el-table-column prop="description" label="請款說明" min-width="300px"  width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="order_date" label="請款日期" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                <el-table-column prop="status_name" label="請款單狀態" width="120" align="center" show-overflow-tooltip>
+                <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
+                <el-table-column prop="item_name" :label="$t('reimburse.project_name')" width="300px" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="owner" :label="$t('reimburse.project_owner')"  width="140" align="center" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('reimburse.description')" min-width="300px"  width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('reimburse.status')" width="120" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.status=='D'" style="color:grey">草稿</span>
                         <span v-if="scope.row.status=='P'" style="color:blue">待審</span>
@@ -35,21 +35,21 @@
                         <span v-if="scope.row.status=='A'" style="color:red">退回</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="is_paied" label="撥款狀態" width="100" align="center" show-overflow-tooltip>
+                <el-table-column prop="is_paied" :label="$t('reimburse.reimburse_status')" width="110" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">已撥款</span>
                         <span v-if="scope.row.status=='F'&&scope.row.is_paied==0" style="color:red">未撥款</span>
                         <span v-if="scope.row.status!='F'" style="color:grey">--</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="total_amount" label="申請金額" width="100" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="280" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button v-if="scope.row.status=='D'" type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
                         <el-button v-if="scope.row.status=='P' || scope.row.status=='F' || scope.row.status=='A'" type="info" size="mini" icon="el-icon-view" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.view')}}</el-button>
-                        <el-button v-if="scope.row.status=='A' || scope.row.status=='P'" type="success" size="mini" icon="el-icon-refresh-right" @click="handleRestore(scope.row)">草稿</el-button>
-                        <el-button v-if="scope.row.status=='D' || scope.row.status=='A' " type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">作廢</el-button>
-                        <el-button v-if="scope.row.status=='F'" type="primary" size="mini" icon="el-icon-document" @click="handleDownload(scope.row)">下載</el-button>
+                        <el-button v-if="scope.row.status=='A' || scope.row.status=='P'" type="success" size="mini" icon="el-icon-refresh-right" @click="handleRestore(scope.row)">{{$t('btn.draft')}}</el-button>
+                        <el-button v-if="scope.row.status=='D' || scope.row.status=='A' " type="danger" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">{{$t('btn.abandon')}}</el-button>
+                        <el-button v-if="scope.row.status=='F'" type="primary" size="mini" icon="el-icon-document" @click="handleDownload(scope.row)">{{$t('btn.download')}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -67,7 +67,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="新增請款細項" :visible.sync="addItemVisible" width="600px" center :before-close="cancelAddItem">
+        <el-dialog :title="$t('reimburse.create_item')" :visible.sync="addItemVisible" width="600px" center :before-close="cancelAddItem">
             <el-row>
                 <el-col v-for="type in option.item_types" :key="type.title" :span="8">
                     <div style="padding:5px;">
@@ -77,11 +77,11 @@
             </el-row>
         </el-dialog>
 
-        <el-dialog title="新增請款單" :visible.sync="createView" width="400px" center :before-close="cancelCreate">
+        <el-dialog :title="$t('reimburse.create_reimburse')" :visible.sync="createView" width="400px" center :before-close="cancelCreate">
             <div>
                 <el-form label-width="auto">
-                    <el-form-item label="專案名稱">
-                        <el-select v-model="createForm.project_id" filterable placeholder="請選擇專案">
+                    <el-form-item :label="$t('reimburse.project_name')">
+                        <el-select v-model="createForm.project_id" filterable :placeholder="$t('reimburse.select_project_name')">
                             <el-option
                             v-for="item in option.projects" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id">
                             </el-option>
@@ -95,7 +95,7 @@
             </span>
         </el-dialog>
         
-        <el-dialog title="編輯請款單" :visible.sync="updateView" width="1100px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog :title="$t('reimburse.edit_reimburse')" :visible.sync="updateView" width="1100px" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
                     <el-card shadow="always" class="mgb10" v-loading.lock="loading">
@@ -167,7 +167,7 @@
                                     </div>
                                 </el-col>
                                 <el-col :span="1" style="float:right;padding-left:10px;text-align:right;">
-                                    <el-button v-if="!orderReadOnly" type="text" style="" @click="handleDeleteItem(index)">刪除</el-button>
+                                    <el-button v-if="!orderReadOnly" type="text" style="" @click="handleDeleteItem(index)">{{$t('btn.delete')}}</el-button>
                                 </el-col>
                                 <el-col :span="4" style="float:right;padding-left:10px;text-align:right;">
                                     <el-input 
@@ -273,34 +273,25 @@
             <div slot="footer" class="dialog-footer">
                 <el-button v-if="orderReadOnly==false"  size="large" @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button v-if="orderReadOnly==false" size="large" type="primary" @click="confirmDialog">{{$t('btn.save')}}</el-button>
-                <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">送審</el-button>
+                <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">{{$t('reimburse.submit')}}</el-button>
             </div>
         </el-dialog>
 
-         <el-dialog title="確認恢復草稿" :visible.sync="restoreVisible" width="300px" center :before-close="cancelQuestDialog">
-            <div style="text-align:center;">
-                <span>您要恢復草稿嗎?</span>
-            </div>
+         <el-dialog :title="$t('reimburse.confirm_restore')" :visible.sync="restoreVisible" width="300px" center :before-close="cancelQuestDialog">
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmRestore">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
 
-         <el-dialog title="確認下載" :visible.sync="downloadVisible" width="300px" center :before-close="cancelQuestDialog" v-loading="dialog_loading">
-            <div style="text-align:center;">
-                <span>您要下載這張請款單嗎？</span>
-            </div>
+         <el-dialog :title="$t('reimburse.confirm_download')" :visible.sync="downloadVisible" width="300px" center :before-close="cancelQuestDialog" v-loading="dialog_loading">
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDownload">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
 
-         <el-dialog title="確認作廢" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog">
-            <div style="text-align:center;">
-                <span>您確定要作廢這張請款單？</span>
-            </div>
+         <el-dialog :title="$t('reimburse.confirm_abandon')" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog">
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>

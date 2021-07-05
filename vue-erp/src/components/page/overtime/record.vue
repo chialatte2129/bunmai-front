@@ -49,7 +49,7 @@
                 <el-table-column prop="status" :label="$t('overtime.process_status')" width="100" show-overflow-tooltip>
                     <template slot-scope="scope">{{$t("overtime.status."+scope.row.status)}}</template>
                 </el-table-column>
-                <el-table-column :label="$t('menus.work_items')" width="80" align="center">
+                <el-table-column :label="$t('menus.work_items')" width="100" align="center">
                     <template slot-scope="scope">
                         <el-button type=text size=mini icon="el-icon-edit" @click="handlePersonProject(scope.row)" :disabled="table_loading||['A', 'F'].includes(scope.row.status)"/>
                     </template>

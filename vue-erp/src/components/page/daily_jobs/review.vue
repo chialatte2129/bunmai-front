@@ -33,9 +33,11 @@
                     </el-card>
                 </el-col>
                 <el-col :span="19">
-                    <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
-                        <el-tab-pane label="工作執行" name="daily_details">
-                            <div v-if="activeTabs=='daily_details'">
+                    <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
+                        <div slot="header" class="clearfix">
+                            <span><b>{{$t('menus.daily_jobs')}}</b></span>
+                        </div>
+                        <div v-if="activeTabs=='daily_details'">
                             <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
                             <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
@@ -49,40 +51,34 @@
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
                             :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
-                            <el-checkbox v-model="filter.hide_self"  class="mgr10" @change="search">排除自己</el-checkbox>
-                            <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">排除作廢</el-checkbox>
+                            <el-checkbox v-model="filter.hide_self"  class="mgr10" @change="search">{{$t('todo_list.hide_myself')}}</el-checkbox>
+                            <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">{{$t('todo_list.hide_abandon')}}</el-checkbox>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="521" v-loading="table_loading"
                             @sort-change="handleSortChange" :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
-                                <el-table-column prop="work_date" label="執行日期" width="150" show-overflow-tooltip>
+                                <el-table-column prop="work_date" :label="$t('todo_list.date')" width="150" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                                 </el-table-column>
-                                <el-table-column prop="p_name" label="執行人員" width="90" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('todo_list.member')" width="90" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/>
-                                <el-table-column prop="content" label="工作事項" width="auto">
+                                <el-table-column prop="content" :label="$t('todo_list.task_name')" width="auto">
                                     <template slot-scope="scope">
-                                        <!-- <el-tooltip effect="light" placement="top"> -->
-                                            <!-- <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div> -->
-                                            <div class="one-line">{{scope.row.content}}</div>
-                                        <!-- </el-tooltip> -->
+                                        <div class="one-line">{{scope.row.content}}</div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="note" label="執行狀況" width="auto">
+                                <el-table-column prop="note" :label="$t('todo_list.result')" width="auto">
                                     <template slot-scope="scope">
-                                        <!-- <el-tooltip effect="light" placement="top"> -->
-                                            <!-- <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div> -->
                                             <div class="one-line">{{scope.row.note}}</div>
-                                        <!-- </el-tooltip> -->
                                     </template>
                                 </el-table-column>
-                               <el-table-column prop="status" label="執行狀態" width="120" align="center" header-align="center">
+                                <el-table-column prop="status" :label="$t('todo_list.status')" width="120" align="center" header-align="center">
                                     <template slot-scope="scope">
-                                        <el-button v-if="scope.row.status=='F'" type="success" style="width:80px">已完成</el-button>
-                                        <el-button v-if="scope.row.status=='P' && today<=scope.row.work_date" type="primary" style="width:80px" >待辦</el-button>
-                                        <el-button v-if="scope.row.status=='P' && today>scope.row.work_date" type="danger" style="width:80px" >逾期待辦</el-button>
-                                        <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">作廢</el-button>
+                                        <el-button v-if="scope.row.status=='F'" type="success" style="width:80px">{{$t('todo_list.status_item.F')}}</el-button>
+                                        <el-button v-if="scope.row.status=='P' && today<=scope.row.work_date" type="primary" style="width:80px" >{{$t('todo_list.status_item.P')}}</el-button>
+                                        <el-button v-if="scope.row.status=='P' && today>scope.row.work_date" type="danger" style="width:80px" >{{$t('todo_list.status_item.P_over')}}</el-button>
+                                        <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">{{$t('todo_list.status_item.A')}}</el-button>
                                     </template>
                                 </el-table-column>
-                                 <el-table-column :label="$t('btn.action')" width="150" align="center" fixed="right">
+                                    <el-table-column :label="$t('btn.action')" width="150" align="center" fixed="right">
                                     <template slot-scope="scope">
                                         <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
                                         <!-- <el-button v-if="scope.row.status=='O'" class="el-icon-delete" type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.delete')}}</el-button> -->
@@ -93,9 +89,8 @@
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
                                 :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
                             </div>
-                            </div>
-                        </el-tab-pane>
-                    </el-tabs>
+                        </div>
+                    </el-card>
                 </el-col>
             </el-row>
         </div>
@@ -112,7 +107,7 @@
         :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                    <el-form-item v-if="createView" label="執行日期" prop="work_date">
+                    <el-form-item v-if="createView" :label="$t('todo_list.date')" prop="work_date">
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
                         :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
                             disabledDate(time){ 
@@ -120,10 +115,10 @@
                             }
                         }"/>
                     </el-form-item>
-                    <el-form-item v-if="updateView"  label="執行日期" prop="item_id">
+                    <el-form-item v-if="updateView"  :label="$t('todo_list.date')" prop="item_id">
                         <span >{{form.work_date}}</span>
                     </el-form-item>
-                    <el-form-item v-if="createView"  label="執行人員" prop="p_name">
+                    <el-form-item v-if="createView"  :label="$t('todo_list.member')" prop="p_name">
                         <el-select size="large" class="mgr10 handle-input" v-model="form.pid" filterable clearable collapse-tags
                         :placeholder="$t('employee.name')">
                             <el-option-group v-for="group in option.worker" :key="group.id" :label="group.name">
@@ -133,26 +128,26 @@
                             </el-option-group>
                         </el-select>
                     </el-form-item>
-                    <el-form-item v-if="updateView"  label="執行人員" prop="item_id">
+                    <el-form-item v-if="updateView"  :label="$t('todo_list.member')" prop="item_id">
                         <span >{{form.p_name}}</span>
                     </el-form-item>
-                    <el-form-item label="執行事項" prop="content">
+                    <el-form-item :label="$t('todo_list.task_name')" prop="content">
                         <el-input v-model="form.content" type="textarea" :rows="5" style="width:95%;"/>
                     </el-form-item>
-                    <el-form-item v-if="!createView" label="執行狀況" prop="note">
+                    <el-form-item v-if="!createView" :label="$t('todo_list.result')" prop="note">
                         <el-input v-model="form.note" type="textarea" :rows="3" style="width:95%;"/>
                     </el-form-item>
-                    <el-form-item label="狀態" prop="status">
+                    <el-form-item :label="$t('todo_list.status')" prop="status">
                         <el-select v-model="form.status" class="handle-input" >
-                            <el-option value="F" label="已完成"/>
-                            <el-option value="P" label="待辦"/>
-                            <el-option value="O" label="作廢"/>
+                            <el-option value="F" :label="$t('todo_list.status_item.F')"/>
+                            <el-option value="P" :label="$t('todo_list.status_item.P')"/>
+                            <el-option value="O" :label="$t('todo_list.status_item.A')"/>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="建立人員" prop="status">
+                    <el-form-item :label="$t('todo_list.create_by')" prop="status">
                         <span style="color:blue;">{{form.created_by}}</span>
                     </el-form-item>
-                    <el-form-item label="建立時間" prop="status">
+                    <el-form-item :label="$t('todo_list.create_at')" prop="status">
                        <span style="color:blue;">{{form.created_at}}</span>
                     </el-form-item>
                 </el-form>
@@ -349,8 +344,8 @@ export default {
             this.start_row=(this.cur_page-1)*this.page_size;
         },
         showTitle(){
-            if(this.createView) return "新增待辦事項";
-            else if(this.updateView) return "編輯待辦事項";
+            if(this.createView) return this.$t('todo_list.create_task');
+            else if(this.updateView) return this.$t('todo_list.update_task');
             else if(this.copyView) return "複製待辦事項";
             else return "";
         },
@@ -734,7 +729,7 @@ export default {
         padding:15px;
     }
     .handle-input{
-        width:280px;
+        width:200px;
         display:inline-block;
     }
     .del-dialog-cnt{

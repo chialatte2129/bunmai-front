@@ -17,14 +17,14 @@
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
                 <!-- <el-button size="large" type="warning" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/> -->
-                <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">排除作廢</el-checkbox>
+                <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">{{$t('todo_list.hide_abandon')}}</el-checkbox>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
             :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
-                <el-table-column prop="work_date" label="執行日期" width="150" sortable="custom" show-overflow-tooltip>
+                <el-table-column prop="work_date" :label="$t('todo_list.date')" width="150" sortable="custom" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                 </el-table-column>
-                <el-table-column prop="description" label="工作事項" width="auto">
+                <el-table-column prop="description" :label="$t('todo_list.task_name')" width="auto">
                     <template slot-scope="scope">
                         <!-- <el-tooltip effect="light" placement="top"> -->
                             <!-- <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div> -->
@@ -32,7 +32,7 @@
                         <!-- </el-tooltip> -->
                     </template>
                 </el-table-column>
-                <el-table-column prop="note" label="執行狀況" width="auto">
+                <el-table-column prop="note" :label="$t('todo_list.result')" width="auto">
                     <template slot-scope="scope">
                         <!-- <el-tooltip effect="light" placement="top"> -->
                             <!-- <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div> -->
@@ -40,12 +40,12 @@
                         <!-- </el-tooltip> -->
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="執行狀態" width="120" align="center" header-align="center">
+                <el-table-column prop="status" :label="$t('todo_list.status')" width="120" align="center" header-align="center">
                     <template slot-scope="scope">
-                        <el-button v-if="scope.row.status=='F'" type="success" style="width:80px">已完成</el-button>
-                        <el-button v-if="scope.row.status=='P' && today<=scope.row.work_date" type="primary" style="width:80px" @click="handleFinish(scope.row)">待辦</el-button>
-                        <el-button v-if="scope.row.status=='P' && today>scope.row.work_date" type="danger" style="width:80px" @click="handleFinish(scope.row)">逾期待辦</el-button>
-                        <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">作廢</el-button>
+                        <el-button v-if="scope.row.status=='F'" type="success" style="width:80px">{{$t('todo_list.status_item.F')}}</el-button>
+                        <el-button v-if="scope.row.status=='P' && today<=scope.row.work_date" type="primary" style="width:80px" @click="handleFinish(scope.row)">{{$t('todo_list.status_item.P')}}</el-button>
+                        <el-button v-if="scope.row.status=='P' && today>scope.row.work_date" type="danger" style="width:80px" @click="handleFinish(scope.row)">{{$t('todo_list.status_item.P_over')}}</el-button>
+                        <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">{{$t('todo_list.status_item.A')}}</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column :label="$t('btn.action')" width="120" align="center" fixed="right">
@@ -64,7 +64,7 @@
             </div>
         </div>
         
-        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
+        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="300px" center :before-close="cancelDelete">
             <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelDelete">{{$t("btn.cancel")}}</el-button>
@@ -72,8 +72,8 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="完成工作事項" :visible.sync="finishVisible" width="500px" center :before-close="cancelFinish">
-            <div style="text-align:center;">您要完成這項工作嗎 ?</div>
+        <el-dialog :title="$t('todo_list.finish_task')" :visible.sync="finishVisible" width="300px" center :before-close="cancelFinish">
+            
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelFinish()">{{$t("btn.cancel")}}</el-button>
                 <el-button type="primary" @click="confirmFinish">{{$t("btn.confirm")}}</el-button>
@@ -84,7 +84,7 @@
         :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
-                    <el-form-item label="執行日期" prop="work_date">
+                    <el-form-item :label="$t('todo_list.date')" prop="work_date">
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
                         :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
                             disabledDate(time){ 
@@ -92,26 +92,26 @@
                             }
                         }"/>
                     </el-form-item>
-                    <el-form-item label="執行人員" prop="item_id">
+                    <el-form-item :label="$t('todo_list.member')" prop="item_id">
                         <span >{{form.p_name}}</span>
                     </el-form-item>
-                    <el-form-item label="執行事項" prop="content">
+                    <el-form-item :label="$t('todo_list.task_name')" prop="content">
                         <el-input v-model="form.content" type="textarea" :rows="5" style="width:95%;"/>
                     </el-form-item>
-                    <el-form-item v-if="!createView" label="執行狀況" prop="note">
+                    <el-form-item v-if="!createView" :label="$t('todo_list.result')" prop="note">
                         <el-input v-model="form.note" type="textarea" :rows="3" style="width:95%;"/>
                     </el-form-item>
-                    <el-form-item label="狀態" prop="status">
+                    <el-form-item :label="$t('todo_list.status')" prop="status">
                         <el-select v-model="form.status" class="handle-input" >
-                            <el-option value="F" label="已完成"/>
-                            <el-option value="P" label="待辦"/>
-                            <el-option value="O" label="作廢"/>
+                            <el-option value="F" :label="$t('todo_list.status_item.F')"/>
+                            <el-option value="P" :label="$t('todo_list.status_item.P')"/>
+                            <el-option value="O" :label="$t('todo_list.status_item.A')"/>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="建立人員" prop="status">
+                    <el-form-item :label="$t('todo_list.create_by')" prop="status">
                         <span style="color:blue;">{{form.created_by}}</span>
                     </el-form-item>
-                    <el-form-item label="建立時間" prop="status">
+                    <el-form-item :label="$t('todo_list.create_at')" prop="status">
                        <span style="color:blue;">{{form.created_at}}</span>
                     </el-form-item>
                 </el-form>
@@ -312,8 +312,8 @@ export default {
         },
 
         showTitle(){
-            if(this.createView) return "新增待辦事項";
-            else if(this.updateView) return "編輯待辦事項";
+            if(this.createView) return this.$t('todo_list.create_task');
+            else if(this.updateView) return this.$t('todo_list.update_task');
             else if(this.copyView) return "複製待辦事項";
             else return "";
         },
@@ -445,7 +445,8 @@ export default {
 
         async handleCreate(){
             var today = new Date();
-            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
+            // this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
+            this.form.work_date="";
             this.form.p_name=this.fullname;
             this.form.created_by=this.fullname;
             this.form.updated_by=this.odoo_employee_id;

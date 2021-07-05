@@ -169,6 +169,7 @@ export default {
                             title: this.$t("menus.view_report"),
                             show: this.includeSubMenu([
                                 "view_work_hours",
+                                "day_item_report_project"
                             ]),
                             subs: [ 
                                 {

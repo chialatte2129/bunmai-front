@@ -67,7 +67,7 @@
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="90" align="right" header-align="left"/>
                                 <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
                                 <el-table-column prop="reviewed_at" :label="$t('overtime.reviewed_at')" width="100" show-overflow-tooltip>
                                     <template slot-scope="scope">
