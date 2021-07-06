@@ -28,7 +28,7 @@
                                             <span>{{form.name}}</span>
                                         </el-form-item>
                                         <el-form-item :label="$t('project.status')">
-                                            <span>{{form.status_name}}</span>
+                                            <span>{{$t('project.status_tag.'+form.status)}}</span>
                                         </el-form-item>
                                         <el-form-item :label="$t('project.owner')">
                                             <span>{{form.owner}}</span>
@@ -238,27 +238,27 @@
                     <el-card shadow="always" class="mgb10" v-loading.lock="loading">
                         <el-row>
                             <el-col :span="12">
-                                <el-form-item label="請款單號">
+                                <el-form-item :label="$t('reimburse.order_id')">
                                     <span>{{payOrderForm.order_id}}</span>
                                 </el-form-item>
-                                <el-form-item label="申請日期">
+                                <el-form-item :label="$t('reimburse.order_date')">
                                     <span>{{payOrderForm.order_date}}</span>
                                 </el-form-item>
-                                <el-form-item label="狀態">
-                                    <span v-if="payOrderForm.status=='D'" style="color:grey">草稿</span>
-                                    <span v-if="payOrderForm.status=='P'" style="color:blue">待審</span>
-                                    <span v-if="payOrderForm.status=='F'" style="color:green">過審</span>
-                                    <span v-if="payOrderForm.status=='A'" style="color:red">退回</span>
+                                <el-form-item :label="$t('reimburse.status')">
+                                    <span v-if="payOrderForm.status=='D'" style="color:grey">{{$t('reimburse.status_tag.D')}}</span>
+                                    <span v-if="payOrderForm.status=='P'" style="color:blue">{{$t('reimburse.status_tag.P')}}</span>
+                                    <span v-if="payOrderForm.status=='F'" style="color:green">{{$t('reimburse.status_tag.F')}}</span>
+                                    <span v-if="payOrderForm.status=='A'" style="color:red">{{$t('reimburse.status_tag.A')}}</span>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="請款人">
+                                <el-form-item :label="$t('reimburse.applicant_name')">
                                     <span>{{payOrderForm.p_name}}</span>
                                 </el-form-item>
-                                <el-form-item label="申請單位">
+                                <el-form-item :label="$t('reimburse.order_dept')">
                                     <span>{{payOrderForm.dept_name}}</span>
                                 </el-form-item>
-                                <el-form-item label="撥款狀態">
+                                <el-form-item :label="$t('reimburse.reimburse_status')">
                                     <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==0" style="color:red">未撥款</span>
                                     <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==1" style="color:green">已撥款</span>
                                     <span v-if="payOrderForm.status!='F'" style="color:grey">--</span>
@@ -266,7 +266,7 @@
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-form-item label="請款說明">
+                            <el-form-item :label="$t('reimburse.description')">
                                 <el-input type="textarea" :readonly="true"  :rows="4" v-model="payOrderForm.description"></el-input>
                             </el-form-item>
                         </el-row>
@@ -275,7 +275,7 @@
                 <el-row>
                     <el-card shadow="always" class="mgb10" v-loading.lock="loading">
                         <div slot="header" class="clearfix">
-                            <span>請款內容</span>
+                            <span>{{$t('reimburse.content')}}</span>
                         </div>
                         <el-row v-for="item in payOrderForm.content_json" :key="item.id" >
                             <el-card shadow="always" style="margin:5px;">
@@ -317,37 +317,37 @@
                 <el-row>
                     <el-card shadow="always"  class="mgb10" v-loading.lock="loading" >
                         <div slot="header" class="clearfix">
-                            <span>付款方式</span>
+                            <span>{{$t('reimburse.payment_setting')}}</span>
                         </div>
                         <el-row>
                             <el-col :span="12">
-                                <el-form-item label="付款方式">
+                                <el-form-item :label="$t('reimburse.payment_method')">
                                     <el-radio-group v-model="payOrderForm.payment_method" :disabled="true" size="mini">
-                                        <el-radio label="transfer" border>匯款</el-radio>
-                                        <el-radio label="cash" border>現金</el-radio>
-                                        <el-radio label="check" border>支票</el-radio>
+                                        <el-radio label="transfer" border>{{$t('reimburse.remit')}}</el-radio>
+                                        <el-radio label="cash" border>{{$t('reimburse.cash')}}</el-radio>
+                                        <el-radio label="check" border>{{$t('reimburse.check')}}</el-radio>
                                     </el-radio-group>
                                     <!-- <span>{{form.payment_method}}</span> -->
                                 </el-form-item>
-                                <el-form-item label="匯款選項">
+                                <el-form-item :label="$t('reimburse.remit_options')">
                                     <el-radio-group v-model="payOrderForm.remittance_setting" :disabled="true" size="mini">
-                                        <el-radio label="deduct" border>跨行扣匯費</el-radio>
-                                        <el-radio label="no_deduct" border>跨行不扣匯費</el-radio>
+                                        <el-radio label="deduct" border>{{$t('reimburse.deduct')}}</el-radio>
+                                        <el-radio label="no_deduct" border>{{$t('reimburse.no_deduct')}}</el-radio>
                                     </el-radio-group>
                                     <!-- <span>{{form.payment_method}}</span> -->
                                 </el-form-item>
-                                <el-form-item label="付款日期">
+                                <el-form-item :label="$t('reimburse.allocated_at')">
                                     <el-date-picker v-model="payOrderForm.remittance_date" :readonly="true" type="date" align="right" unlink-panels value-format="yyyy-MM-dd" />
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="匯款銀行/分行">
+                                <el-form-item :label="$t('reimburse.beneficiary_bank')">
                                     <el-input :readonly="true" type="text" style="width:200px;" v-model="payOrderForm.remittance_bank" ></el-input>
                                 </el-form-item>
-                                <el-form-item label="匯款帳號">
+                                <el-form-item :label="$t('reimburse.swift_code')">
                                     <el-input :readonly="true" type="text" style="width:200px;" v-model="payOrderForm.remittance_account" ></el-input>
                                 </el-form-item>
-                                <el-form-item label="支付對象/戶名">
+                                <el-form-item :label="$t('reimburse.beneficiary')">
                                     <el-input :readonly="true" type="text" style="width:200px;" v-model="payOrderForm.account_name" ></el-input>
                                 </el-form-item>
                             </el-col>
@@ -357,7 +357,7 @@
                 <el-row>
                     <el-card shadow="always" v-loading.lock="loading">
                         <div slot="header" class="clearfix">
-                            <span>歷程紀錄</span>
+                            <span>{{$t('reimburse.status_history')}}</span>
                         </div>
                         <div>
                             <el-table
@@ -365,19 +365,19 @@
                             style="width: 100%">
                             <el-table-column
                                 prop="recorded_at"
-                                label="更動時間"
+                                :label="$t('reimburse.recorded_at')"
                                 align="center"
                                 width="180">
                             </el-table-column>
                             <el-table-column
                                 prop="employee_name"
-                                label="操作人員"
+                                :label="$t('reimburse.employee_name')"
                                 align="center"
                                 width="180">
                             </el-table-column>
                             <el-table-column
                                 prop="prev_status"
-                                label="操作"
+                                :label="$t('reimburse.action')"
                                 align="center"
                                 width="200">
                                 <template slot-scope="scope">
@@ -386,7 +386,7 @@
                             </el-table-column>
                             <el-table-column
                                 prop="note"
-                                label="備註">
+                                :label="$t('reimburse.note')">
                             </el-table-column>
                             </el-table>
                         </div>

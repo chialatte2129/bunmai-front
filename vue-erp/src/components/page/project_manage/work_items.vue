@@ -42,8 +42,12 @@
                 <el-table-column prop="name" :label="$t('common_column.name')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('project.description')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
                 <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <span>{{$t('project.status_tag.'+scope.row.status)}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="owner" :label="$t('project.owner')" width="155" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
@@ -90,7 +94,7 @@
                         </el-form-item>
                         <el-form-item :label="$t('project.status')" prop="status">
                             <el-select :disabled="setReadOnly" v-model="form.status" filterable class="wd80pa">
-                                <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
+                                <el-option v-for="item in option.status" :key="item.id" :label="$t('project.status_tag.'+item.id)" :value="item.id"/>
                             </el-select>
                         </el-form-item>
                     </el-col>

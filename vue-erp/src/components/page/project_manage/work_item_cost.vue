@@ -30,8 +30,12 @@
             :default-sort="{prop:sort_column, order:sort}" @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="name" :label="$t('common_column.name')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" :label="$t('project.owner')" width="150" align="left" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="120" align="center" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="owner" :label="$t('project.owner')" width="155" align="left" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="120" align="center" sortable="custom" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <span>{{$t('project.status_tag.'+scope.row.status)}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="progress" :label="$t('cost.work_hour_percent')" width="150" align="center"  show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.work_progress>=80" style="color:red;">{{scope.row.work_progress}}%</span>

@@ -474,6 +474,17 @@ export const messages = {
 
         },
         reimburse:{
+            status_tag:{
+                D:"草稿",
+                P:"待審",
+                F:"通過",
+                A:"退回"
+            },
+            allocate_tag:{
+                waiting:"未撥款",
+                allocated:"已撥款"
+            },
+            basic_info:"基本資料",
             order_id:"請款單號",
             project_name:"專案名稱",
             select_project_name:"請選擇專案",
@@ -514,6 +525,8 @@ export const messages = {
             confirm_restore:"確認恢復草稿",
             confirm_download:"確認下載",
             confirm_abandon:"確認作廢",
+
+            allocated_at:"付款日期"
         },
         cost:{
             work_hour_percent:"執行工時比",
@@ -946,7 +959,7 @@ export const messages = {
             issue_work_hours_tip:"For reference only, working hours from Monday to Friday are listed here, and it does not represent the correct working date.",
         },
         project:{
-            name:"Proj. Name",
+            name:"Project Name",
             description:"Description",
             category:"Category",
             status:"Status",
@@ -960,7 +973,7 @@ export const messages = {
             edit_project:"Edit Project",
             create_inner_project:"Create Project",
             edit_inner_project:"Edit Project",
-            owner:"Project Owner",
+            owner:"Project Manager",
             is_open_tags:"Active Category Tag",
             tag1:"Category Tag",
             tags:"Category Tag",
@@ -973,11 +986,11 @@ export const messages = {
             unknown_item_id:"Unknown Project",
             total_work_hours:"Work Hours",
             status_tag:{
-                D:"草稿",
-                P:"開發中",
-                R:"營運中",
-                F:"已結案",
-                A:"未成案",
+                D:"Draft",
+                P:"Develop",
+                R:"Operation",
+                F:"Closed",
+                A:"Fail",
             },
             progress:"Progress",
             estimated_income:"Income",
@@ -1025,6 +1038,17 @@ export const messages = {
 
         },
         reimburse:{
+            status_tag:{
+                D:"Draft",
+                P:"Process",
+                F:"Passed",
+                A:"Reject"
+            },
+            allocate_tag:{
+                waiting:"Waiting",
+                allocated:"Allocated"
+            },
+            basic_info:"Basic Info",
             order_id:"ID",
             project_name:"Project",
             select_project_name:"Please Select Project",
@@ -1061,6 +1085,8 @@ export const messages = {
             action:"Actions",
             note:"Note",
             submit:"Submit",
+
+            allocated_at:"Allocated At",
 
             confirm_restore:"Confirm restore this order form",
             confirm_download:"Confirm Download",
