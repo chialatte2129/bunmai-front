@@ -44,11 +44,6 @@
                         <span v-if="scope.row.work_progress=='-'" style="color:gray;">{{scope.row.work_progress}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column v-if="false" prop="pay_order" label="待審請款單" width="150" align="center" sortable="custom" show-overflow-tooltip>
-                    <template slot-scope="scope">
-                       <span v-if="scope.row.unprocess_pay" style="color:red;">{{scope.row.pay_order}}</span>
-                    </template>
-                </el-table-column>
                 <el-table-column prop="std_amount" :label="$t('cost.predict_net_income')" width="165"  align="right" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="act_amount" :label="$t('cost.actual_net_income')" width="165" align="right" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
@@ -89,7 +84,7 @@ export default {
             filter:{
                 key_word:"",
                 status:[],
-                owner:[],
+                owner:[]
             },
             tree_data:[],
             option:{

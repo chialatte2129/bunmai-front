@@ -190,7 +190,7 @@ export const messages = {
             grant:"撥款",
             proccess:"審核",
             reject:"退回",
-            draft:"草稿",
+            draft:"恢復成草稿",
             abandon:"作廢",
             download:"下載"
 
@@ -474,6 +474,9 @@ export const messages = {
 
         },
         reimburse:{
+            information_key_word:"請款ID及說明關鍵字",
+            show_mine:"僅顯示我的申請",
+            show_accountant:"僅顯示撥款審核",
             status_tag:{
                 D:"草稿",
                 P:"待審",
@@ -1038,6 +1041,9 @@ export const messages = {
 
         },
         reimburse:{
+            information_key_word:"ID & Info Keywords",
+            show_mine:"Only Show Mine",
+            show_accountant:"Only Show Allocate",
             status_tag:{
                 D:"Draft",
                 P:"Process",
@@ -1054,7 +1060,7 @@ export const messages = {
             select_project_name:"Please Select Project",
             project_owner:"Project Manager",
             description:"Information",
-            order_date:"Payment Date",
+            order_date:"Order Date",
             status:"Status",
             reimburse_status:"Allocate",
             total_amount:"Total Amount",
