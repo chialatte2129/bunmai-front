@@ -116,7 +116,7 @@
                                     <span>{{form.order_id}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.project_name')">
-                                    <span>{{form.item_id}} - {{form.item_name}}</span>
+                                    <el-button type="text" style="font-size:16px;" @click="handleOpenProjectCost(form.item_id)">{{form.item_id}} - {{form.item_name}}</el-button>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.order_date')">
                                     <span>{{form.order_date}}</span>
@@ -582,6 +582,10 @@ export default {
     }, 
     
     methods: {
+        handleOpenProjectCost(item_id){
+            let routeData = this.$router.resolve({path: "/work_item_cost_edit", query: {id: item_id}});
+            window.open(routeData.href, '_blank');
+        },
         prevent(e){
         var keynum = window.event ? e.keyCode : e.which;   //获取键盘码
             if (keynum ==189|| keynum==190||keynum == 109 ||keynum == 110 ) {
