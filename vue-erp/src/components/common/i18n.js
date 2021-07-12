@@ -1028,10 +1028,10 @@ export const messages = {
             result:"Result",
             status:"Status",
             status_item:{
-                F:"已完成",
-                P:"待辦",
-                P_over:"逾期待辦",
-                A:"作廢"
+                F:"Finish",
+                P:"Process",
+                P_over:"Delay",
+                A:"Abandon"
             },
             create_at:"Create At",
             create_by:"Create By",

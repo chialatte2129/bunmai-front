@@ -116,7 +116,10 @@
                                     <span>{{form.order_id}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.project_name')">
-                                    <el-button type="text" style="font-size:16px;" @click="handleOpenProjectCost(form.item_id)">{{form.item_id}} - {{form.item_name}}</el-button>
+                                    <!-- <el-button type="text" style="font-size:16px;width:300px;word-wrap:break-word;" @click="handleOpenProjectCost(form.item_id)">{{form.item_id}} - {{form.item_name}}</el-button> -->
+                                    
+                                    <span style="width:80%;font-size:16px;cursor: pointer;color:blue" @click="handleOpenProjectCost(form.item_id)">{{form.item_id}} - {{form.item_name}}</span>
+                                    
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.order_date')">
                                     <span>{{form.order_date}}</span>
@@ -281,7 +284,7 @@
             <div slot="footer" class="dialog-footer">
                 <!-- <el-button v-if="form.status=='D'" type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, form)">{{$t('btn.edit')}}</el-button> -->
                 <!-- <el-button v-if="form.status=='P' || form.status=='F' || form.status=='A'" type="info" size="mini" icon="el-icon-view" @click="handleEdit(scope.$index, form)">{{$t('btn.view')}}</el-button> -->
-                <el-button v-if="true"  size="large" @click="cancelDialog">{{$t('btn.leave')}}</el-button>
+                <el-button v-if="true"  size="large" @click="cancelDialog">{{$t('btn.close')}}</el-button>
                 <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="danger" size="large" @click="handleRejectAc(form)">{{$t('btn.reject')}}</el-button>
                 <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="warning" size="large" icon="el-icon-money" @click="handlePay(form)">{{$t('btn.grant')}}</el-button>
                 <el-button v-if="is_order_owner && (form.status=='A' || form.status=='P')" type="success" size="large" @click="handleRestore(form)">{{$t('btn.draft')}}</el-button>
