@@ -75,6 +75,10 @@
         {
             "index": "accountant",
             "title": "menus.accountant"
+        },
+        {
+            "index": "project_cost_upload",
+            "title": "menus.project_cost_upload"
         }
     ]
 }

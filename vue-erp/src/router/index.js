@@ -115,6 +115,11 @@ export default new Router({
                     path: 'daily_jobs_review',
                     component: () => import('../components/page/daily_jobs/review.vue'),
                     meta: { title:  'menus.daily_jobs_review' }
+                },   
+                {
+                    path: '/project_cost_upload',
+                    component: () => import('../components/page/project_manage/project_cost_upload.vue'),
+                    meta: { title:  'menus.project_cost_upload' }
                 }
             ]
         },

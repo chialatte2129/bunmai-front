@@ -100,7 +100,8 @@ export const messages = {
             daily_jobs:"待辦事項",
             daily_jobs_person:"我的待辦事項",
             daily_jobs_review:"成員執行狀況",
-            accountant:"會計人員權限"
+            accountant:"會計人員權限",
+            project_cost_upload:"專案工時成本上傳",
         },
         table_title:{
             role :'角色代號',
@@ -532,9 +533,12 @@ export const messages = {
             allocated_at:"付款日期"
         },
         cost:{
+
             work_hour_percent:"執行工時比",
             predict_net_income:"預估淨利",
+            predict_net_income_content:"預估收入 - 預估支出 ＝ 預估淨利",
             actual_net_income:"實際淨利",
+            actual_net_income_content:"實際收入 - 實際支出 ＝ 實際淨利",
             reimbursement:"請款單",
             
             project_income:"專案收益",
@@ -668,7 +672,8 @@ export const messages = {
             daily_jobs:"To-Do List",
             daily_jobs_person:"My To-Do List",
             daily_jobs_review:"Review",
-            accountant:"Accountant Roles"
+            accountant:"Accountant Roles",
+            project_cost_upload:"Project Cost Upload",
         },
         table_title :{
             role :'Role id',

@@ -53,7 +53,7 @@ export default {
                     icon: "el-icon-collection",
                     index: "project",
                     title: this.$t("menus.project_manage"),
-                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items", "work_item_cost","work_item_pay", ]),
+                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items", "work_item_cost","work_item_pay","project_cost_upload" ]),
                     subs: [            
                         {
                             index: "work_items",
@@ -62,6 +62,7 @@ export default {
                                 "work_items", 
                                 "work_item_cost",
                                 "work_item_pay", 
+                                "project_cost_upload",
                             ]),
                             subs: [ 
                                 {
@@ -80,6 +81,11 @@ export default {
                                     title: this.$t("menus.work_item_pay"),
                                     show: this.hasThisMenu("work_item_pay"),
                                     // show:false
+                                },
+                                {
+                                    index: "project_cost_upload",
+                                    title: this.$t("menus.project_cost_upload"),
+                                    show: this.hasThisMenu("project_cost_upload"),
                                 },
                             ]
                         },

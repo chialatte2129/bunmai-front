@@ -42,6 +42,7 @@
                                         </el-form-item>
                                         <el-form-item :label="$t('project.total_work_hour')">
                                             <span>{{form.total_work_hours}} {{$t('project.hours')}}</span>
+                                            <el-button v-if="is_project_owner" type="info" icon="el-icon-view" style="margin-left:20px;" @click="handleViewWorkItem"> {{$t('btn.view')}}</el-button>
                                         </el-form-item>
                                         <el-form-item :label="$t('cost.work_hour_percent')">
                                             <span v-if="form.work_progress>=80" style="color:red;">{{form.work_progress}} %</span>
@@ -517,12 +518,54 @@
             </span>
         </el-dialog>
 
+        <el-dialog title="檢視工時細項" :visible.sync="workItemView" width="1200px" :before-close="closeViewWorkItem">
+            <el-row>
+                <el-select size="large" class="mgr10 handle-input" v-model="subFilter.pid" filterable clearable multiple collapse-tags
+                :placeholder="$t('employee.name')" @change="subHandleCurrentChange(1)">
+                    <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
+                        <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                            <span class="mgl10">{{item.name}}</span>
+                        </el-option>
+                    </el-option-group>
+                </el-select>
+                <el-date-picker v-model="subFilter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd"
+                :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
+                @change="subHandleCurrentChange(1)" class="mgr10" size="large"/>
+            </el-row>
+            <el-row>
+                <div v-loading.lock="false">
+                    <el-table :data="subTableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="532" v-loading="table_loading"
+                    @sort-change="subHandleSortChange" :cell-style="getCellStyle" :key="tbKey">
+                        <el-table-column prop="work_date" :label="$t('employee.work_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                        <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
+                        <el-table-column prop="description" :label="$t('employee.description')" width="auto" show-overflow-tooltip/>
+                        <el-table-column prop="work_hours" :label="$t('employee.work_hour')" width="100" align="right" header-align="left"/>
+                        <el-table-column type="expand" width="40">
+                            <template slot-scope="props">
+                                <el-form label-position="left" label-width="85px">
+                                    <el-form-item :label="$t('project.tag1')">{{props.row.tag1}}</el-form-item>
+                                    <el-form-item :label="$t('employee.description')"><p style="white-space:pre-wrap;word-break:break-all;">{{props.row.description}}</p></el-form-item>
+                                </el-form >
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination">
+                        <el-pagination @size-change="subHandleSizeChange" @current-change="subHandleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
+                        :current-page="sub_cur_page" :page-sizes="sub_page_size_list" :page-size="sub_page_size" :total="subTotalRow" background/>
+                    </div>
+                </div>
+            </el-row>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="info" style="width:150px;" @click="closeViewWorkItem">{{$t('btn.close')}}</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 <script>
 import { workItemService } from "@/_services";
 import { payOrderService } from "@/_services";
-
+import { dayItemService } from "@/_services";
 export default {
     name: "work_item_manage",
     data(){
@@ -556,14 +599,12 @@ export default {
             loading:false,
             deleteID:null,
             deleteView:false,
-
             viewPayOrderVisible:false,
             checkPayOrderVisible:false,
-            
             incomeEditVisible:false,
             costEditVisible:false,
-
             updatePreTimeVisible:false,
+            workItemView:false,
 
             payVisible:false,
             passVisible:false,
@@ -571,6 +612,24 @@ export default {
             reject_note:"",
             pay_date:"",
             pay_id:"",
+
+            table_loading:false,
+            tbKey:0,
+            subTableData:[],
+            subTotalRow:0,
+            sub_cur_page: 1,
+            sub_page_size:10,
+            sub_page_size_list:[10, 20, 50],
+            sub_start_row:0,
+            sub_sort_column:"work_date",
+            sub_sort:"desc",
+            subFilter:{
+                pid:[],
+                work_date:[]
+            },
+            option:{
+                employee:[]
+            },
 
             preTimeForm:{
                 old_setting:"",
@@ -663,6 +722,7 @@ export default {
         // await this.getOption();
         await this.getData();
         await this.getToday();
+        await this.get_employee();
     },
 
     computed: {
@@ -685,10 +745,84 @@ export default {
             }else{
                 return false
             }
-        }
+        },
+        sub_count_page(){
+            this.sub_start_row=(this.sub_cur_page-1)*this.sub_page_size;
+        },
     }, 
     
     methods: {
+         async get_employee(){
+            var param = {
+                odoo_employee_id:this.odoo_employee_id,
+                username:this.username,
+            }
+            await dayItemService.get_dept_tree(param).then(res =>{ 
+                this.tree_data=res.tree_data;
+                this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+                this.option.employee = res.tree_data;
+            })
+        },
+        subHandleSortChange({prop, order}){
+            console.log(prop,order);
+            this.sub_sort_column = prop;
+            this.sub_sort = order;
+            this.subHandleCurrentChange(1);
+        },
+        subHandleCurrentChange(currentPage){
+            this.sub_cur_page = currentPage;
+            this.sub_count_page;
+            this.getSubData()
+        },
+
+        subHandleSizeChange(size){
+            this.sub_page_size = size;
+            this.subHandleCurrentChange(1);
+        },
+
+        async getSubData(){
+            console.log("get data !")
+            this.table_loading=true;
+            var param = {
+                action:"table",
+                sort_column:this.sub_sort_column,
+                sort:this.sub_sort,
+                start_row:this.sub_start_row,
+                page_size:this.sub_page_size,
+                username:this.username,
+                odoo_employee_id:this.odoo_employee_id,
+                filter:{
+                    item_id:[this.item_id],
+                    work_date:this.subFilter.work_date,
+                    dept_id:[],
+                    pid:this.subFilter.pid,
+                }
+            }
+            await dayItemService.review_day_list(param).then(res =>{ 
+                console.log(res);
+                
+                this.subTableData=res.day_items;
+                this.subTotalRow=res.total;
+            })
+            this.table_loading=false;
+        },
+        handleViewWorkItem(){
+            this.getSubData();
+            this.workItemView = true;
+        },
+        closeViewWorkItem(){
+            this.dlKey++;
+            this.subTableData=[]
+            this.subTotalRow=0;
+            this.sub_cur_page=1;
+            this.sub_page_size=10;
+            this.sub_count_page;
+            this.workItemView = false;
+        },
+        getWorkItemData(){
+
+        },
+        
         cancelPayOrderDialog(){
             this.payVisible=false;
             this.passVisible=false;

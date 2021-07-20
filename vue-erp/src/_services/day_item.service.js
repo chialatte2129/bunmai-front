@@ -7,7 +7,11 @@ export const dayItemService = {
     update_day_item,
 	get_dept_tree,
 	get_project_totals,
-	get_project_dept_totals
+	get_project_dept_totals,
+	downlaod_cost_sample,
+	upload_worktime_cost,
+	get_project_worktime_cost,
+	update_cost_data,
 }
 
 function get_option_list(param){
@@ -73,6 +77,46 @@ function get_project_totals(param){
 function get_project_dept_totals(param){
     return new Promise((resolve, reject) => {
 		axios.post(`${process.env.VUE_APP_API}/api/v1/project_report/get_dept_totals`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function downlaod_cost_sample(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/worktime/cost_template/download`, param,{responseType: 'blob'}).then((response) => {
+			resolve(response)}).catch((error) => {
+				reject(error)
+			}
+		)		
+	})
+}
+
+function upload_worktime_cost(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/worktime/cost/upload`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function get_project_worktime_cost(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/worktime/cost/table`, param).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function update_cost_data(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/worktime/cost/update`, param).then((resp) => {
 			resolve(resp.data)}).catch((error) => {
 				reject(error)
 			}
