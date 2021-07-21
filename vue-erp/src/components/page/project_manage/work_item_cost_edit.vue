@@ -16,9 +16,9 @@
                     <el-button type=info size=large icon="el-icon-back" class="card-header-r-btn" @click="handleLeave">{{$t('btn.leave')}}</el-button>
                 </div>
                 <el-form ref="form" :model="form" :rules="rules" label-position="left" label-width="200px">
-                    <el-collapse v-model="collapseName">
+                    <el-collapse v-model="collapseName" >
                         <el-col :span="24" style="padding-right:10px;padding-left:10px;">
-                            <el-collapse-item name="base_info" :title="$t('project.project_info')" disabled>
+                            <el-collapse-item name="base_info" :title="$t('project.project_info')" >
                                 <el-row :gutter="20" style="padding-right:10px;padding-left:10px;">
                                     <el-col :span="12" >
                                         <el-form-item :label="$t('project.id')">
@@ -63,21 +63,21 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="income" :title="$t('cost.reimbursement')" disabled>
+                            <el-collapse-item name="payment" :title="$t('cost.reimbursement')">
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <el-table :data="tableData_pay_order" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-                                        @sort-change="handleIncomeSortChange" :cell-style="getCellStyle" :key="tbKey1">
-                                            <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
-                                            <el-table-column prop="status_name" :label="$t('reimburse.status')" width="150" sortable="custom" align="center" show-overflow-tooltip>
+                                        @sort-change="handlePaySortChange" :cell-style="getCellStyle" :key="tbKey1">
+                                            <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="150" align="center" show-overflow-tooltip/>
+                                            <el-table-column prop="status" :label="$t('reimburse.status')" width="150" align="center" show-overflow-tooltip>
                                                 <template slot-scope="scope">
                                                     <span v-if="scope.row.status=='P'" style="color:blue">待審</span>
                                                     <span v-if="scope.row.status=='F'" style="color:green">通過</span>
                                                     <span v-if="scope.row.status=='A'" style="color:red">退回</span>
                                                 </template>
                                             </el-table-column>
-                                            <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="150" sortable="custom" align="center" show-overflow-tooltip/>
-                                            <el-table-column prop="description" :label="$t('reimburse.description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                                            <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="150" align="center" show-overflow-tooltip/>
+                                            <el-table-column prop="description" :label="$t('reimburse.description')" min-width="150px" width="auto" show-overflow-tooltip/>
                                             <el-table-column prop="is_paied" :label="$t('reimburse.reimburse_status')" width="150" align="center" show-overflow-tooltip>
                                                 <template slot-scope="scope">
                                                     <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">已撥款</span>
@@ -85,20 +85,20 @@
                                                     <span v-if="scope.row.status!='F'" style="color:grey">--</span>
                                                 </template>
                                             </el-table-column>
-                                            <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
+                                            <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="150" align="right" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                                             <el-table-column :label="$t('btn.action')" width="300" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button v-if="is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="warning" size="mini" icon="el-icon-money" @click="handlePay(scope.row)">{{$t('btn.grant')}}</el-button>
-                                                    <el-button v-if="is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="danger" size="mini" icon="el-icon-money" @click="handleRejectAc(scope.row)">{{$t('btn.reject')}}</el-button>
-                                                    <el-button v-if="scope.row.status=='P' && is_project_owner" type="primary" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.proccess')}}</el-button>
-                                                    <el-button type="info" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.view')}}</el-button>
+                                                    <el-button v-if="scope.row.type=='pay_order' && is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="warning" size="mini" icon="el-icon-money" @click="handlePay(scope.row)">{{$t('btn.grant')}}</el-button>
+                                                    <el-button v-if="scope.row.type=='pay_order' && is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="danger" size="mini" icon="el-icon-money" @click="handleRejectAc(scope.row)">{{$t('btn.reject')}}</el-button>
+                                                    <el-button v-if="scope.row.type=='pay_order' && scope.row.status=='P' && is_project_owner" type="primary" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.proccess')}}</el-button>
+                                                    <el-button v-if="scope.row.type=='pay_order'" type="info" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.view')}}</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="income" :title="$t('cost.project_income')" disabled>
+                            <el-collapse-item name="income" :title="$t('cost.project_income')">
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
@@ -159,7 +159,7 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="cost" :title="$t('cost.project_expense')" disabled>
+                            <el-collapse-item name="cost" :title="$t('cost.project_expense')" style="margin-bottom:50px;">
                                 <el-row style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <span style="float:right;padding:10px;">
@@ -219,6 +219,7 @@
                             </el-collapse-item>
                         </el-col>
                     </el-collapse>
+                   
                 </el-form>
             </el-card>
         </div>
@@ -570,7 +571,7 @@ export default {
     name: "work_item_manage",
     data(){
         return {
-            collapseName:["base_info", "income", "cost"],
+            collapseName:["base_info","payment", "income", "cost"],
 
             username:localStorage.getItem("ms_username"),
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
@@ -593,6 +594,9 @@ export default {
 
             income_sort_column:"date",
             income_sort:"desc",
+
+            pay_sort_column:"order_date",
+            pay_sort:"desc",
 
             action_list:localStorage.getItem("ms_user_actions"),
             
@@ -817,10 +821,11 @@ export default {
             this.sub_cur_page=1;
             this.sub_page_size=10;
             this.sub_count_page;
+            this.subFilter={
+                pid:[],
+                work_date:[]
+            };
             this.workItemView = false;
-        },
-        getWorkItemData(){
-
         },
         
         cancelPayOrderDialog(){
@@ -1132,13 +1137,18 @@ export default {
         //  Other Data
 
         handleCostSortChange({prop, order}){
-            this.income_sort_column = prop;
-            this.income_sort = order;
+            this.cost_sort_column = prop;
+            this.cost_sort = order;
             this.getCostData();
         },
         handleIncomeSortChange({prop, order}){
             this.income_sort_column = prop;
             this.income_sort = order;
+            this.getCostData();
+        },
+        handlePaySortChange({prop, order}){
+            this.pay_sort_column = prop;
+            this.pay_sort = order;
             this.getCostData();
         },
         
@@ -1201,8 +1211,9 @@ export default {
                 }
             });
             await payOrderService.get_project_pay_orders({
-                filter:{item_id:this.item_id}
-                
+                filter:{item_id:this.item_id},
+                sort:this.cost_sort,
+                sort_column:this.cost_sort_column                
             }).then(res =>{ 
                 // console.log(res);
                 if(res.code > 0){
