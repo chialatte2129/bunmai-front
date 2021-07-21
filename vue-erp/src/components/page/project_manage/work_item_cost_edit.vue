@@ -519,7 +519,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="檢視工時細項" :visible.sync="workItemView" width="1200px" :before-close="closeViewWorkItem">
+        <el-dialog :title="$t('menus.day_item_review')" :visible.sync="workItemView" width="1200px" :before-close="closeViewWorkItem">
             <el-row>
                 <el-select size="large" class="mgr10 handle-input" v-model="subFilter.pid" filterable clearable multiple collapse-tags
                 :placeholder="$t('employee.name')" @change="subHandleCurrentChange(1)">
