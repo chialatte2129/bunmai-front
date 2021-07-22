@@ -255,6 +255,10 @@ export default {
             let time =new Date();
             return time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
         },
+
+        count_page(){
+            this.start_row=(this.cur_page-1)*this.page_size;
+        },
     }, 
     
     methods: {
