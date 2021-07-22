@@ -71,27 +71,27 @@
                                             <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="150" align="center" show-overflow-tooltip/>
                                             <el-table-column prop="status" :label="$t('reimburse.status')" width="150" align="center" show-overflow-tooltip>
                                                 <template slot-scope="scope">
-                                                    <span v-if="scope.row.status=='P'" style="color:blue">待審</span>
-                                                    <span v-if="scope.row.status=='F'" style="color:green">通過</span>
-                                                    <span v-if="scope.row.status=='A'" style="color:red">退回</span>
+                                                    <span v-if="scope.row.status=='P'" style="color:blue">{{$t('reimburse.status_tag.P')}}</span>
+                                                    <span v-if="scope.row.status=='F'" style="color:green">{{$t('reimburse.status_tag.F')}}</span>
+                                                    <span v-if="scope.row.status=='A'" style="color:red">{{$t('reimburse.status_tag.A')}}</span>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="150" align="center" show-overflow-tooltip/>
                                             <el-table-column prop="description" :label="$t('reimburse.description')" min-width="150px" width="auto" show-overflow-tooltip/>
                                             <el-table-column prop="is_paied" :label="$t('reimburse.reimburse_status')" width="150" align="center" show-overflow-tooltip>
                                                 <template slot-scope="scope">
-                                                    <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">已撥款</span>
-                                                    <span v-if="scope.row.status=='F'&&scope.row.is_paied==0" style="color:red">未撥款</span>
+                                                    <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
+                                                    <span v-if="scope.row.status=='F'&&scope.row.is_paied==0" style="color:red">{{$t('reimburse.allocate_tag.waiting')}}</span>
                                                     <span v-if="scope.row.status!='F'" style="color:grey">--</span>
                                                 </template>
                                             </el-table-column>
                                             <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="150" align="right" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
-                                            <el-table-column :label="$t('btn.action')" width="300" align="center" fixed="right">
+                                            <el-table-column :label="$t('btn.action')" width="110" align="center" fixed="right">
                                                 <template slot-scope="scope">
-                                                    <el-button v-if="scope.row.type=='pay_order' && is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="warning" size="mini" icon="el-icon-money" @click="handlePay(scope.row)">{{$t('btn.grant')}}</el-button>
+                                                    <!-- <el-button v-if="scope.row.type=='pay_order' && is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="warning" size="mini" icon="el-icon-money" @click="handlePay(scope.row)">{{$t('btn.grant')}}</el-button>
                                                     <el-button v-if="scope.row.type=='pay_order' && is_accountant && scope.row.status=='F' && scope.row.is_paied==0" type="danger" size="mini" icon="el-icon-money" @click="handleRejectAc(scope.row)">{{$t('btn.reject')}}</el-button>
-                                                    <el-button v-if="scope.row.type=='pay_order' && scope.row.status=='P' && is_project_owner" type="primary" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.proccess')}}</el-button>
-                                                    <el-button v-if="scope.row.type=='pay_order'" type="info" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.view')}}</el-button>
+                                                    <el-button v-if="scope.row.type=='pay_order' && scope.row.status=='P' && is_project_owner" type="primary" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.proccess')}}</el-button> -->
+                                                    <el-button v-if="scope.row.type=='pay_order'" type="warning" size="mini" icon="el-icon-document" @click="handleViewPayOrder(scope.row)">{{$t('btn.edit')}}</el-button>
                                                 </template>
                                             </el-table-column>
                                         </el-table>
@@ -261,8 +261,8 @@
                                     <span>{{payOrderForm.dept_name}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.reimburse_status')">
-                                    <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==0" style="color:red">未撥款</span>
-                                    <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==1" style="color:green">已撥款</span>
+                                    <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==0" style="color:red">{{$t('reimburse.allocate_tag.waiting')}}</span>
+                                    <span v-if="payOrderForm.status=='F'&&payOrderForm.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
                                     <span v-if="payOrderForm.status!='F'" style="color:grey">--</span>
                                 </el-form-item>
                             </el-col>
@@ -398,6 +398,8 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button type="info" size="large" @click="closeAllDialog">{{$t('btn.close')}}</el-button>
+                <el-button v-if="is_accountant && payOrderForm.status=='F' && payOrderForm.is_paied==0" type="danger" size="large" icon="el-icon-money" @click="handleRejectAc(payOrderForm)">{{$t('btn.reject')}}</el-button>
+                <el-button v-if="is_accountant && payOrderForm.status=='F' && payOrderForm.is_paied==0" type="warning" size="large" icon="el-icon-money" @click="handlePay(payOrderForm)">{{$t('btn.grant')}}</el-button>
                 <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="danger" size="large" style="width:150px;" @click="handleReject">{{$t('btn.reject')}}</el-button>
                 <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="primary" size="large" style="width:150px;" @click="handlePass">{{$t('btn.proccess')}}</el-button>
             </div>

@@ -42,3 +42,8 @@ export default {
     }
 }
 </script>
+<style>
+.el-table--scrollable-x .el-table__body-wrapper {
+    z-index : 1;
+}
+</style>

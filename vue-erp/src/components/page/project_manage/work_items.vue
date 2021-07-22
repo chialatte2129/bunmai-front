@@ -585,6 +585,7 @@ export default {
 }
 </script>
 <style scoped>
+
     .handle-input{
         width:200px;
         display:inline-block;
