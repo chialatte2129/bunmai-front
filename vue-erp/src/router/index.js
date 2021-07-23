@@ -120,6 +120,11 @@ export default new Router({
                     path: '/project_cost_upload',
                     component: () => import('../components/page/project_manage/project_cost_upload.vue'),
                     meta: { title:  'menus.project_cost_upload' }
+                },
+                {
+                    path: '/supplier_accounts',
+                    component: () => import('../components/page/project_manage/supplier_accounts.vue'),
+                    meta: { title:  'menus.supplier_accounts' }
                 }
             ]
         },

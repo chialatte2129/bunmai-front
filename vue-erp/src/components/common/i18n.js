@@ -102,6 +102,8 @@ export const messages = {
             daily_jobs_review:"成員執行狀況",
             accountant:"會計人員權限",
             project_cost_upload:"專案工時成本上傳",
+            partner_manage:"聯絡人管理",
+            supplier_accounts:"供應商帳戶管理",
         },
         table_title:{
             role :'角色代號',
@@ -674,6 +676,8 @@ export const messages = {
             daily_jobs_review:"Review",
             accountant:"Accountant Roles",
             project_cost_upload:"Project Cost Upload",
+            partner_manage:"Partner Manage",
+            supplier_accounts:"Supplier Account",
         },
         table_title :{
             role :'Role id',

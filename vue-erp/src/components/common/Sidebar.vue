@@ -193,6 +193,19 @@ export default {
                     ]
                 },
                 {
+                    icon: "el-icon-user",
+                    index: "member",
+                    title: this.$t("menus.partner_manage"),
+                    show: this.includeSubMenu(["supplier_accounts"]),
+                    subs: [            
+                        {
+                            index: "supplier_accounts",
+                            title: this.$t("menus.supplier_accounts"),
+                            show: this.hasThisMenu("supplier_accounts")
+                        }
+                    ]
+                },
+                {
                     icon: "el-icon-lx-lock",
                     index: "acl",
                     title: this.$t("menus.acl"),

@@ -79,6 +79,10 @@
         {
             "index": "project_cost_upload",
             "title": "menus.project_cost_upload"
+        },
+        {
+            "index": "supplier_accounts",
+            "title": "menus.supplier_accounts"
         }
     ]
 }

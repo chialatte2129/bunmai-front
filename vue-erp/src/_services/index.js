@@ -9,5 +9,4 @@ export {overtimeService} from './overtime.service'
 export {reportService} from './report.service'
 export {dailyJobsService} from './daily_jobs.service'
 export {payOrderService} from './pay_order.service'
-
-
+export {partnerService} from './partner.service'
