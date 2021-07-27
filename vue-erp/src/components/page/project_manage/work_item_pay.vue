@@ -27,7 +27,7 @@
                 <el-checkbox v-if="is_accountant" v-model="filter.only_accountant"  class="mgr10" @change="search">{{$t('reimburse.show_accountant')}}</el-checkbox>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
+            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">
                 <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="160" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('reimburse.project_name')" width="200px" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('reimburse.project_owner')"  width="140" align="center" show-overflow-tooltip/>
@@ -49,7 +49,9 @@
                         <span v-if="scope.row.status!='F'" style="color:grey">--</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="payment_note" label="付款說明" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="amount" label="申請金額" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="total_amount" label="總金額" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="150" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -171,7 +173,7 @@
                                         <el-col v-for="data in item.content" :key="data.id+item.id" :span="data.width" style="padding-left:10px;">
                                             <el-form ref="form" label-width="auto">
                                                 <el-form-item :label="data.title">
-                                                    <el-input type="text" :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
+                                                    <el-input :type="data.type" :rows="3" :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
                                                 </el-form-item>
                                             </el-form>
                                         </el-col>
@@ -202,40 +204,51 @@
                     <el-card shadow="always" class="mgb10" v-loading.lock="loading">
                         <div slot="header" class="clearfix">
                             <span>{{$t('reimburse.payment_setting')}}</span>
+                             <el-button v-if="!orderReadOnly" type=success size=large icon="el-icon-plus" class="card-header-r-btn" @click="handleAddPaymentItem">{{$t('btn.new')}}</el-button>
                         </div>
                         <el-form ref="form" label-width="auto">
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item :label="$t('reimburse.payment_method')">
-                                        <el-radio-group v-model="form.payment_method" :disabled="orderReadOnly" size="mini">
-                                            <el-radio label="transfer" border>{{$t('reimburse.remit')}}</el-radio>
-                                            <el-radio label="cash" border>{{$t('reimburse.cash')}}</el-radio>
-                                            <el-radio label="check" border>{{$t('reimburse.check')}}</el-radio>
-                                        </el-radio-group>
-                                        <!-- <span>{{form.payment_method}}</span> -->
-                                    </el-form-item>
-                                    <el-form-item :label="$t('reimburse.remit_options')">
-                                        <el-radio-group v-model="form.remittance_setting" :disabled="form.payment_method!='transfer' || orderReadOnly" size="mini">
-                                            <el-radio label="deduct" border>{{$t('reimburse.deduct')}}</el-radio>
-                                            <el-radio label="no_deduct" border>{{$t('reimburse.no_deduct')}}</el-radio>
-                                        </el-radio-group>
-                                        <!-- <span>{{form.payment_method}}</span> -->
-                                    </el-form-item>
-                                    <el-form-item v-if="is_accountant" label="付款日期">
-                                        <el-date-picker v-model="form.remittance_date" :readonly="orderReadOnly" type="date" align="right" unlink-panels value-format="yyyy-MM-dd" />
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item :label="$t('reimburse.beneficiary_bank')">
-                                        <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="form.remittance_bank" ></el-input>
-                                    </el-form-item>
-                                    <el-form-item :label="$t('reimburse.swift_code')">
-                                        <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="form.remittance_account" ></el-input>
-                                    </el-form-item>
-                                    <el-form-item :label="$t('reimburse.beneficiary')">
-                                        <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="form.account_name" ></el-input>
-                                    </el-form-item>
-                                </el-col>
+                            <el-row v-for="(item,index) in form.payment_item" :key="item.id">
+                                <el-card shadow="always" class="mgb10" v-loading.lock="loading">
+                                    <el-col :span="10">
+                                        <el-form-item label="付款日期">
+                                            <el-date-picker v-model="item.remittance_date" :readonly="orderReadOnly" type="date" align="right" placeholder="選填" unlink-panels value-format="yyyy-MM-dd" />
+                                        </el-form-item>
+                                        <el-form-item label="付款金額">
+                                            <el-input :readonly="orderReadOnly" type="number" v-model.number="item.amount"  style="width:200px;" @keyup.native="prevent($event)" @mousewheel.native.prevent><template slot="append">元</template></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="付款說明">
+                                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.payment_note" placeholder="選填"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="10">
+                                        <el-form-item :label="$t('reimburse.payment_method')">
+                                            <el-radio-group v-model="item.payment_method" :disabled="orderReadOnly" size="mini">
+                                                <el-radio label="transfer" border>{{$t('reimburse.remit')}}</el-radio>
+                                                <el-radio label="cash" border>{{$t('reimburse.cash')}}</el-radio>
+                                                <el-radio label="check" border>{{$t('reimburse.check')}}</el-radio>
+                                            </el-radio-group>
+                                        </el-form-item>
+                                        <el-form-item v-if="item.payment_method=='transfer'" :label="$t('reimburse.remit_options')">
+                                            <el-radio-group v-model="item.remittance_setting" :disabled="item.payment_method!='transfer' || orderReadOnly" size="mini">
+                                                <el-radio label="deduct" border>{{$t('reimburse.deduct')}}</el-radio>
+                                                <el-radio label="no_deduct" border>{{$t('reimburse.no_deduct')}}</el-radio>
+                                            </el-radio-group>
+                                        </el-form-item>
+                                        <el-form-item v-if="item.payment_method=='transfer'" :label="$t('reimburse.beneficiary')">
+                                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.account_name" ></el-input>
+                                            <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner(item.id)"> 常用聯絡人</el-button>
+                                        </el-form-item>
+                                        <el-form-item v-if="item.payment_method=='transfer'" :label="$t('reimburse.beneficiary_bank')">
+                                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.remittance_bank" ></el-input>
+                                        </el-form-item>
+                                        <el-form-item v-if="item.payment_method=='transfer'" :label="$t('reimburse.swift_code')">
+                                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.remittance_account" ></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="4">
+                                        <el-button v-if="!orderReadOnly" type="text" size="large" style="float:right;" @click="handleRemovePaymentItem(index)">刪除</el-button>
+                                    </el-col>
+                                </el-card>
                             </el-row>
                         </el-form>
                     </el-card>
@@ -354,11 +367,30 @@
             </span>
         </el-dialog>
 
+        <el-dialog title="選擇常用聯絡人" :visible.sync="partnerVisible" width="500px" center :before-close="cancelPartnerVisivle">
+            <div style="text-align:center;">
+                <el-form label-width="auto">
+                    <el-form-item label="聯絡人">
+                        <el-select v-model="select_partner" filterable placeholder="選擇常用聯絡人">
+                            <el-option
+                            v-for="item in option.partner" :key="item.id" :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelPartnerVisivle">{{$t('btn.cancel')}}</el-button>
+                <el-button type="primary" @click="confirmPartner">{{$t('btn.confirm')}}</el-button>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 <script>
 import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
+import { partnerService } from "@/_services";
 
 export default {
     name: "pay_order",
@@ -371,6 +403,8 @@ export default {
             itemKey:0,
             tbKey:0,
             tableData: [],
+            spanArr:[],
+            pos:0,
 
             totalRow:0,
             cur_page: 1,
@@ -395,6 +429,7 @@ export default {
             restoreVisible:false,
             downloadVisible:false,
             deleteVisible:false,
+            partnerVisible:false,
 
             payVisible:false,
             passVisible:false,
@@ -402,6 +437,9 @@ export default {
             reject_note:"",
             pay_date:"",
             pay_id:"",
+
+            select_partner:"",
+            payment_row_id:"",
 
             restore_id:"",
             download_id:"",
@@ -436,7 +474,7 @@ export default {
                 remittance_account:"",
                 remittance_setting:"",
                 acount_name:"",
-
+                payment_item:[],
                 content_json:[]
             },
 
@@ -444,6 +482,7 @@ export default {
 
             option:{
                 projects:[],
+                partner:[],
                 status:[
                     {label:"草稿",value:"D"},
                     {label:"待審",value:"P"},
@@ -581,10 +620,51 @@ export default {
                 return false
             }
         },
+        computePayOrder(){
+            var set_amount = 0;
+            var total_amount = this.handleCaculateTotalAmount;
+            this.form.payment_item.forEach(element => {
+                set_amount += element.amount;
+            });
+            if(total_amount - set_amount > 0){
+                return total_amount - set_amount
+            }else{
+                return 0
+            };
+        },
 
     }, 
     
     methods: {
+        objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+            if(["order_id", "item_name","owner","p_name","description","order_date","status_name","is_paied","total_amount"].includes(column.property)){
+                const _row=this.spanArr[rowIndex];
+                const _col=_row>0?1:0;
+                return { rowspan:_row, colspan:_col }
+            }
+        },
+        getSpanArr(data){
+            this.resetSpanArr();
+            for(var i=0;i<data.length;i++){
+                if(i===0){ 
+                    this.spanArr.push(1);
+                    this.pos=0;
+                }else{
+                    if(data[i].order_id===data[i-1].order_id){
+                        this.spanArr[this.pos]+=1;
+                        this.spanArr.push(0);
+                    }else{ 
+                        this.spanArr.push(1); 
+                        this.pos=i;
+                    }
+                }
+            }
+        },
+        resetSpanArr(){
+            this.spanArr=[];
+            this.pos=null;
+        },
+
         handleOpenProjectCost(item_id){
             let routeData = this.$router.resolve({path: "/work_item_cost_edit", query: {id: item_id}});
             window.open(routeData.href, '_blank');
@@ -613,6 +693,26 @@ export default {
 				return $1 + ',';
 			}).replace(/\.$/, '');
 		},
+        cancelPartnerVisivle(){
+            this.partnerVisible = false;
+        },
+        confirmPartner(){
+            var item_index = this.form.payment_item.findIndex((element) => element.id == this.payment_row_id);
+            console.log(this.select_partner);
+            var partner_index = this.option.partner.findIndex((element) => element.id == this.select_partner);
+            var select_partner_data = this.option.partner[partner_index]
+            console.log(partner_index);
+            console.log(select_partner_data);
+            this.form.payment_item[item_index].remittance_account = select_partner_data.account;
+            this.form.payment_item[item_index].remittance_bank = select_partner_data.bank;
+            this.form.payment_item[item_index].account_name = select_partner_data.account_name;
+            this.partnerVisible = false;
+        },
+        handlePartner(row_id){
+            this.select_partner = "";
+            this.payment_row_id = row_id;
+            this.partnerVisible = true;
+        },
         cancelQuestDialog(){
             this.restoreVisible = false;
             this.downloadVisible = false;
@@ -798,6 +898,28 @@ export default {
             this.addItemVisible = true;
 
         },
+        async handleAddPaymentItem(){
+            if(this.form.payment_item.length<3){
+                var temp_content = {
+                    pay_order_id:this.form.order_id,
+                    amount:this.computePayOrder,
+                    payment_note:"",
+                    payment_method:null,
+                    remittance_setting:"",
+                    remittance_date:null,
+                    remittance_bank:"",
+                    remittance_account:"",
+                    account_name:"",
+                    is_paied:0
+                };
+                var new_uuid = this.create_UUID(8);
+                temp_content.id = new_uuid
+                await this.form.payment_item.push(temp_content);      
+            }else{
+                return this.$message.error("僅限三筆付款資訊")
+            }
+             
+        },
         cancelAddItem(){
             this.addItemVisible = false;
         },
@@ -817,7 +939,10 @@ export default {
             console.log(index);
             this.form.content_json.splice(index,1);
         },
-        
+        handleRemovePaymentItem(index){
+            console.log(index);
+            this.form.payment_item.splice(index,1);
+        },
         confirmCreate(){
             if(!this.createForm.project_id){
                 return this.$message.error("請選擇專案")
@@ -968,24 +1093,24 @@ export default {
             if(this.form.description==""||this.form.description==null){
                 return this.$message.error("請填寫請款說明");
             };
-            if(this.form.payment_method=="transfer"){
-                console.log("transfer");
-                if(this.form.remittance_setting==""||this.form.remittance_setting==null){
-                    return this.$message.error("未設定匯款方式");
-                };
-                // if(this.form.remittance_date==""||this.form.remittance_date==null){
-                //     return this.$message.error("未設定預計付款日期");
-                // };
-                if(this.form.remittance_bank==""||this.form.remittance_bank==null){
-                    return this.$message.error("未設定匯款銀行/分行");
-                };
-                if(this.form.remittance_account==""||this.form.remittance_account==null){
-                    return this.$message.error("未設定匯款帳號");
-                };
-                if(this.form.account_name==""||this.form.account_name==null){
-                    return this.$message.error("未設定支付對象/戶名");
-                };
-            };
+            // if(this.form.payment_method=="transfer"){
+            //     console.log("transfer");
+            //     if(this.form.remittance_setting==""||this.form.remittance_setting==null){
+            //         return this.$message.error("未設定匯款方式");
+            //     };
+            //     // if(this.form.remittance_date==""||this.form.remittance_date==null){
+            //     //     return this.$message.error("未設定預計付款日期");
+            //     // };
+            //     if(this.form.remittance_bank==""||this.form.remittance_bank==null){
+            //         return this.$message.error("未設定匯款銀行/分行");
+            //     };
+            //     if(this.form.remittance_account==""||this.form.remittance_account==null){
+            //         return this.$message.error("未設定匯款帳號");
+            //     };
+            //     if(this.form.account_name==""||this.form.account_name==null){
+            //         return this.$message.error("未設定支付對象/戶名");
+            //     };
+            // };
             
             await this.handInOrder();
 
@@ -1058,6 +1183,7 @@ export default {
             await payOrderService.get_pay_orders(param).then(res =>{ 
                 this.tableData=res.data;
                 this.totalRow=res.total;
+                this.getSpanArr(this.tableData);
             })
             this.loading=false;
         },
@@ -1065,7 +1191,10 @@ export default {
         async getOption(){
             await dayItemService.get_option_list({action:["work_item_now"]}).then(res =>{ 
                 this.option.projects=res.work_item_now;
-                // console.log(res.work_item_now);
+            });
+            await partnerService.get_supplier_account({action:"table",filter:{start_row:0, page_size:1000, key_word:"" }}).then(res =>{
+                console.log(res);
+                this.option.partner=res.data;
             });
             
         },
