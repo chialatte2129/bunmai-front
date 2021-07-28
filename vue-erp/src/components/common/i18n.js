@@ -259,7 +259,8 @@ export const messages = {
             dict_error:"字典檔異常",
             non_essential:"選填非必要",
             select:"請選擇",
-            contact_maintainer:"發生未知錯誤請聯絡維護工程師，謝謝您"
+            contact_maintainer:"發生未知錯誤請聯絡維護工程師，謝謝您",
+            optional:"選填",
         },
         common_column:{
             id:"ID",
@@ -498,7 +499,7 @@ export const messages = {
             description:"請款說明",
             order_date:"請款日期",
             status:"請款單狀態",
-            reimburse_status:"撥款狀態",
+            reimburse_status:"付款狀態",
             total_amount:"申請金額",
             create_item:"新增請款細項",
             create_reimburse:"新增請款單",
@@ -532,7 +533,13 @@ export const messages = {
             confirm_download:"確認下載",
             confirm_abandon:"確認作廢",
 
-            allocated_at:"付款日期"
+            allocated_at:"付款日期",
+
+            payment_note:"付款說明",
+            total_amount:"總金額",
+            payment_date:"付款日期",
+            partner_account: "常用聯絡人",
+
         },
         cost:{
 
@@ -832,7 +839,8 @@ export const messages = {
             dict_error:"Dictionary Setting Error",
             non_essential:"Non-essential",
             select:"Select",
-            contact_maintainer:"Unknown Error happened, contact maintainer please, thanks for your help"
+            contact_maintainer:"Unknown Error happened, contact maintainer please, thanks for your help",
+            optional:"Optional",
         },
         common_column:{
             id:"ID",
@@ -1106,6 +1114,11 @@ export const messages = {
             confirm_restore:"Confirm restore this order form",
             confirm_download:"Confirm Download",
             confirm_abandon:"Confirm Abandon",
+
+            payment_note:"Note",
+            total_amount:"Total Amount",
+            payment_date:"Payment Date",
+            partner_account: "Partner Account",
         },
         cost:{
             work_hour_percent:"Productivity",

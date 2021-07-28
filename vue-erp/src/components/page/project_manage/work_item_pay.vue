@@ -29,10 +29,10 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">
                 <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="160" sortable="custom" align="left" show-overflow-tooltip/>
-                <el-table-column prop="item_name" :label="$t('reimburse.project_name')" width="200px" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="item_name" :label="$t('reimburse.project_name')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('reimburse.project_owner')"  width="140" align="center" show-overflow-tooltip/>
                 <el-table-column prop="p_name" :label="$t('reimburse.applicant_name')" width="140" align="center" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('reimburse.description')" min-width="200px"  width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('reimburse.description')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="140" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="status_name" :label="$t('reimburse.status')" width="120" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
@@ -42,6 +42,7 @@
                         <span v-if="scope.row.status=='A'" style="color:red">{{$t('reimburse.status_tag.A')}}</span>
                     </template>
                 </el-table-column>
+                <el-table-column prop="payment_note" :label="$t('reimburse.payment_note')" width="110" align="left" :formatter="stateFormat" show-overflow-tooltip/>
                 <el-table-column prop="is_paied" :label="$t('reimburse.reimburse_status')" width="110" align="center" show-overflow-tooltip>
                     <template slot-scope="scope">
                         <span v-if="scope.row.status=='F'&&scope.row.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
@@ -49,10 +50,9 @@
                         <span v-if="scope.row.status!='F'" style="color:grey">--</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="payment_note" label="付款說明" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
-                <el-table-column prop="amount" label="申請金額" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
-                <el-table-column prop="total_amount" label="總金額" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
-                <el-table-column :label="$t('btn.action')" width="150" align="center" fixed="right">
+                <el-table-column prop="amount" :label="$t('reimburse.amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="action" :label="$t('btn.action')" width="100" align="center" fixed="right">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
                         <!-- <el-button v-if="scope.row.status=='D'" type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
@@ -173,7 +173,7 @@
                                         <el-col v-for="data in item.content" :key="data.id+item.id" :span="data.width" style="padding-left:10px;">
                                             <el-form ref="form" label-width="auto">
                                                 <el-form-item :label="data.title">
-                                                    <el-input :type="data.type" :rows="3" :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
+                                                    <el-input :type="data.type" :rows="3" autosize :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable @change="handleContentChange"></el-input>
                                                 </el-form-item>
                                             </el-form>
                                         </el-col>
@@ -210,17 +210,36 @@
                             <el-row v-for="(item,index) in form.payment_item" :key="item.id">
                                 <el-card shadow="always" class="mgb10" v-loading.lock="loading">
                                     <el-col :span="10">
-                                        <el-form-item label="付款日期">
-                                            <el-date-picker v-model="item.remittance_date" :readonly="orderReadOnly" type="date" align="right" placeholder="選填" unlink-panels value-format="yyyy-MM-dd" />
+                                        <el-form-item :label="$t('reimburse.payment_date')">
+                                            <el-date-picker v-model="item.remittance_date" :readonly="orderReadOnly" type="date" align="right" :placeholder="$t('common_msg.optional')" unlink-panels value-format="yyyy-MM-dd" />
                                         </el-form-item>
-                                        <el-form-item label="付款金額">
+                                        <el-form-item :label="$t('reimburse.amount')">
                                             <el-input :readonly="orderReadOnly" type="number" v-model.number="item.amount"  style="width:200px;" @keyup.native="prevent($event)" @mousewheel.native.prevent><template slot="append">元</template></el-input>
                                         </el-form-item>
-                                        <el-form-item label="付款說明">
-                                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.payment_note" placeholder="選填"></el-input>
+                                        <el-form-item :label="$t('reimburse.payment_note')">
+                                            <el-select
+                                                v-model="item.payment_note"
+                                                filterable
+                                                allow-create
+                                                default-first-option
+                                                :disabled="orderReadOnly"
+                                                :readonly="orderReadOnly"
+                                                :placeholder="$t('common_msg.select')">
+                                                <el-option
+                                                v-for="item in option.payment_note"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                        <el-form-item :label="$t('reimburse.reimburse_status')">
+                                            <span v-if="form.status=='F'&&item.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
+                                            <span v-if="form.status=='F'&&item.is_paied==0" style="color:red">{{$t('reimburse.allocate_tag.waiting')}}</span>
+                                            <span v-if="form.status!='F'" style="color:grey">--</span>
                                         </el-form-item>
                                     </el-col>
-                                    <el-col :span="10">
+                                    <el-col :span="11">
                                         <el-form-item :label="$t('reimburse.payment_method')">
                                             <el-radio-group v-model="item.payment_method" :disabled="orderReadOnly" size="mini">
                                                 <el-radio label="transfer" border>{{$t('reimburse.remit')}}</el-radio>
@@ -236,7 +255,7 @@
                                         </el-form-item>
                                         <el-form-item v-if="item.payment_method=='transfer'" :label="$t('reimburse.beneficiary')">
                                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.account_name" ></el-input>
-                                            <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner(item.id)"> 常用聯絡人</el-button>
+                                            <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner(item.id)">{{$t('reimburse.partner_account')}}</el-button>
                                         </el-form-item>
                                         <el-form-item v-if="item.payment_method=='transfer'" :label="$t('reimburse.beneficiary_bank')">
                                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.remittance_bank" ></el-input>
@@ -245,8 +264,9 @@
                                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="item.remittance_account" ></el-input>
                                         </el-form-item>
                                     </el-col>
-                                    <el-col :span="4">
-                                        <el-button v-if="!orderReadOnly" type="text" size="large" style="float:right;" @click="handleRemovePaymentItem(index)">刪除</el-button>
+                                    <el-col :span="3">
+                                        <el-button v-if="!orderReadOnly" type="text" size="large" style="float:right;" @click="handleRemovePaymentItem(index)">{{$t('btn.delete')}}</el-button>
+                                        <el-button v-if="is_accountant && form.status=='F' && item.is_paied==0" type="warning" size="large" icon="el-icon-money" @click="handlePay(item.id,item.remittance_date)">{{$t('btn.grant')}}</el-button>
                                     </el-col>
                                 </el-card>
                             </el-row>
@@ -261,7 +281,8 @@
                         <div>
                             <el-table
                             :data="pay_order_history"
-                            style="width: 100%">
+                            height="300px"
+                            style="width: 100%;">
                             <el-table-column
                                 prop="recorded_at"
                                 :label="$t('reimburse.recorded_at')"
@@ -299,7 +320,7 @@
                 <!-- <el-button v-if="form.status=='P' || form.status=='F' || form.status=='A'" type="info" size="mini" icon="el-icon-view" @click="handleEdit(scope.$index, form)">{{$t('btn.view')}}</el-button> -->
                 <el-button v-if="true"  size="large" @click="cancelDialog">{{$t('btn.close')}}</el-button>
                 <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="danger" size="large" @click="handleRejectAc(form)">{{$t('btn.reject')}}</el-button>
-                <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="warning" size="large" icon="el-icon-money" @click="handlePay(form)">{{$t('btn.grant')}}</el-button>
+                
                 <el-button v-if="is_order_owner && (form.status=='A' || form.status=='P')" type="success" size="large" @click="handleRestore(form)">{{$t('btn.draft')}}</el-button>
                 <el-button v-if="is_project_owner && form.status=='P'" type="danger" size="large" @click="handleReject">{{$t('btn.reject')}}</el-button>
                 <el-button v-if="is_project_owner && form.status=='P'" type="primary" size="large" @click="handlePass">{{$t('btn.proccess')}}</el-button>
@@ -367,17 +388,13 @@
             </span>
         </el-dialog>
 
-        <el-dialog title="選擇常用聯絡人" :visible.sync="partnerVisible" width="500px" center :before-close="cancelPartnerVisivle">
+        <el-dialog :title="$t('reimburse.partner_account')" :visible.sync="partnerVisible" width="500px" center :before-close="cancelPartnerVisivle">
             <div style="text-align:center;">
-                <el-form label-width="auto">
-                    <el-form-item label="聯絡人">
-                        <el-select v-model="select_partner" filterable placeholder="選擇常用聯絡人">
-                            <el-option
-                            v-for="item in option.partner" :key="item.id" :label="item.name" :value="item.id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
+                <el-select v-model="select_partner" filterable :placeholder="$t('reimburse.partner_account')" style="width:300px;">
+                    <el-option
+                    v-for="item in option.partner" :key="item.id" :label="item.name" :value="item.id">
+                    </el-option>
+                </el-select>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelPartnerVisivle">{{$t('btn.cancel')}}</el-button>
@@ -411,8 +428,8 @@ export default {
             page_size:10,
             page_size_list:[5, 10],
             start_row:0,
-            sort_column:"order_date",
-            sort:"desc",
+            sort_column:"",
+            sort:"",
             
             action_list:localStorage.getItem("ms_user_actions"),
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
@@ -483,6 +500,12 @@ export default {
             option:{
                 projects:[],
                 partner:[],
+                payment_note:[
+                    {label:"一般支付",value:"一般支付"},
+                    {label:"訂金",value:"訂金"},
+                    {label:"頭期款",value:"頭期款"},
+                    {label:"尾款",value:"尾款"},
+                ],
                 status:[
                     {label:"草稿",value:"D"},
                     {label:"待審",value:"P"},
@@ -637,7 +660,7 @@ export default {
     
     methods: {
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-            if(["order_id", "item_name","owner","p_name","description","order_date","status_name","is_paied","total_amount"].includes(column.property)){
+            if(["order_id", "item_name","owner","p_name","description","order_date","status_name","total_amount","action"].includes(column.property)){
                 const _row=this.spanArr[rowIndex];
                 const _col=_row>0?1:0;
                 return { rowspan:_row, colspan:_col }
@@ -727,9 +750,9 @@ export default {
         handlePass(){
             this.passVisible=true;
         },
-        handlePay(row){
-            this.pay_id = row.order_id;
-            this.pay_date = "";
+        handlePay(id,date=""){
+            this.pay_id = id;
+            this.pay_date = date;
             this.payVisible=true;
         },
         handleReject(){
@@ -771,7 +794,7 @@ export default {
                 action:"pay",
                 form:{
                     odoo_employee_id:this.odoo_employee_id,
-                    order_id: this.pay_id,
+                    order_item_id: this.pay_id,
                     pay_date:this.pay_date
                 }
             };
@@ -840,6 +863,7 @@ export default {
                     this.$message.success("Success") 
                     this.getData();
                     this.cancelQuestDialog();
+                    this.cancelDialog();
                 }else{
                     this.$message.error(res.msg)
                 } 
@@ -903,7 +927,7 @@ export default {
                 var temp_content = {
                     pay_order_id:this.form.order_id,
                     amount:this.computePayOrder,
-                    payment_note:"",
+                    payment_note:"一般支付",
                     payment_method:null,
                     remittance_setting:"",
                     remittance_date:null,
