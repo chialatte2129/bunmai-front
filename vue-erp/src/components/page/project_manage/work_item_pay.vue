@@ -445,7 +445,7 @@
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.beneficiary')">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.account_name" ></el-input>
-                            <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
+                            <el-button v-if="!orderReadOnly && is_purchasing" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.beneficiary_bank')">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_bank" ></el-input>
@@ -753,6 +753,13 @@ export default {
         },
         is_accountant(){
             if(localStorage.getItem("ms_user_menus").includes("accountant")){
+                return true
+            }else{
+                return false
+            }
+        },
+        is_purchasing(){
+            if(localStorage.getItem("ms_user_menus").includes("purchasing")){
                 return true
             }else{
                 return false

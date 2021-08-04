@@ -77,6 +77,10 @@
             "title": "menus.accountant"
         },
         {
+            "index": "purchasing",
+            "title": "menus.purchasing"
+        },
+        {
             "index": "project_cost_upload",
             "title": "menus.project_cost_upload"
         },
