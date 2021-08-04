@@ -485,7 +485,8 @@ export const messages = {
                 D:"草稿",
                 P:"待審",
                 F:"通過",
-                A:"退回"
+                A:"退回",
+                C:"完成"
             },
             allocate_tag:{
                 waiting:"未撥款",
@@ -509,9 +510,7 @@ export const messages = {
             content:"請款內容",
             date:"日期",
             amount:"金額",
-
             payment_setting:"支付設定",
-            payment_method:"付款方式",
             cash:"付現",
             check:"支票",
             remit:"匯款",
@@ -522,25 +521,37 @@ export const messages = {
             beneficiary:"支付對象/戶名",
             beneficiary_bank:"匯款銀行/分行",
             swift_code:"匯款帳號",
-
             status_history:"歷程紀錄",
             recorded_at:"更動時間",
             employee_name:"操作人員",
             action:"操作",
             note:"說明",
             submit:"送審",
-
             confirm_restore:"確認恢復草稿",
             confirm_download:"確認下載",
             confirm_abandon:"確認作廢",
-
             allocated_at:"付款日期",
-
             payment_note:"付款說明",
-            total_amount:"總金額",
             payment_date:"付款日期",
             partner_account: "常用聯絡人",
 
+            act_payment_date:"實際付款日",
+            pre_payment_date:"預計付款日",
+            paied_amount: "支付金額",
+            id:"項次",
+            item_name:"項目",
+            item_content:"內容",
+            payment_note:"付款說明",
+            payment_method:"付款方式",
+            select_partner:"選擇聯絡人",
+            option:"選項",
+            partner_name:"聯絡人名稱",
+            update_payment_date:"更新付款日",
+            confirm_payment_order:"完成請款單",
+            update_payment_item_setting:"編輯請款細項",
+            update_payment_setting:"編輯支付設定",
+            quest_complete_payment:"你要完成這張請款單嗎？",
+            quest_complete_payment_unpaied:"尚有未支付的款項，你要完成這張請款單嗎？",
         },
         cost:{
 
@@ -581,8 +592,8 @@ export const messages = {
             withdraw:"確認退回",
             confirm_withdraw:"是否退回此請款單",
 
-            appropriate:"確認撥款",
-            select_appropriate_date:"請選擇撥款日期",
+            appropriate:"更新付款日",
+            select_appropriate_date:"請選擇付款日期",
             reject_reason:"退回原因"
         }
     },
@@ -1066,7 +1077,8 @@ export const messages = {
                 D:"Draft",
                 P:"Process",
                 F:"Passed",
-                A:"Reject"
+                A:"Reject",
+                C:"Complete"
             },
             allocate_tag:{
                 waiting:"Waiting",
@@ -1092,7 +1104,6 @@ export const messages = {
             amount:"Amount",
 
             payment_setting:"Payment Setting",
-            payment_method:"Payment Method",
             cash:"Cash",
             check:"Check",
             remit:"Remit",
@@ -1118,9 +1129,26 @@ export const messages = {
             confirm_abandon:"Confirm Abandon",
 
             payment_note:"Note",
-            total_amount:"Total Amount",
             payment_date:"Payment Date",
             partner_account: "Partner Account",
+
+            act_payment_date:"ACT. Pay At",
+            pre_payment_date:"PRED. Pay At",
+            paied_amount: "Paied Amount",
+            id:"ID",
+            item_name:"Name",
+            item_content:"Content",
+            payment_note:"Note",
+            payment_method:"Pay Method",
+            select_partner:"Select Partner",
+            option:"Option",
+            partner_name:"Partner",
+            update_payment_date:"Update Date",
+            confirm_payment_order:"Complete",
+            update_payment_setting:"Payment Setting",
+            update_payment_item_setting:"Payment Content",
+            quest_complete_payment:"Do you want to finish this payment order？",
+            quest_complete_payment_unpaied:"尚有未支付的款項，你要完成這張請款單嗎？",
         },
         cost:{
             work_hour_percent:"Productivity",
@@ -1160,7 +1188,7 @@ export const messages = {
             withdraw:"Reject",
             confirm_withdraw:"Confirm Reject",
 
-            appropriate:"Allocate",
+            appropriate:"Update Allocate Date",
             select_appropriate_date:"Choose Allocate Date",
             reject_reason:"Comments"
         }
