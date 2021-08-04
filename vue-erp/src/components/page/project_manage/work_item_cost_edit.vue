@@ -52,12 +52,12 @@
                                         </el-form-item>
                                         <el-form-item :label="$t('cost.predict_net_income')">
                                             <el-tooltip effect="light" :content="$t('cost.predict_net_income_content')" placement="bottom">
-                                                <span>{{stateFormat("","",totalStandardIncome)}} 元</span>
+                                                <span>{{stateFormat("","",Math.round(totalStandardIncome * 100) / 100)}} 元</span>
                                             </el-tooltip>
                                         </el-form-item>
                                         <el-form-item :label="$t('cost.actual_net_income')">
                                             <el-tooltip effect="light" :content="$t('cost.actual_net_income_content')" placement="bottom">
-                                                <span>{{stateFormat("","",totalActualIncome)}} 元</span>
+                                                <span>{{stateFormat("","",Math.round(totalActualIncome * 100) / 100)}} 元</span>
                                             </el-tooltip>
                                         </el-form-item>
                                     </el-col>
@@ -182,7 +182,7 @@
                                                     </el-table-column>
                                                 </el-table>
                                                 <div style="float:right;color:red;">
-                                                    <span><h2>{{$t('cost.predict_expense_total')}} {{stateFormat("","",total_standard_cost)}} 元</h2></span>
+                                                    <span><h2>{{$t('cost.predict_expense_total')}} {{stateFormat("","",Math.round(total_standard_cost * 100) / 100)}} 元</h2></span>
                                                 </div>
                                             </div>
                                         </el-card>
@@ -205,7 +205,7 @@
                                                     </el-table-column>
                                                 </el-table>
                                                 <div style="float:right;color:red;">
-                                                    <span><h2>{{$t('cost.actual_expense_total')}} {{stateFormat("","",total_actual_cost)}} 元</h2></span>
+                                                    <span><h2>{{$t('cost.actual_expense_total')}} {{stateFormat("","",Math.round(total_actual_cost * 100) / 100)}} 元</h2></span>
                                                 </div>
                                             </div>
                                         </el-card>
