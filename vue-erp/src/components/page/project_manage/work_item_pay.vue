@@ -363,7 +363,7 @@
         <el-dialog :title="$t('reimburse.update_payment_item_setting')" :visible.sync="updateItemVisible" width="500px" center :before-close="cancelUpdateItem" :close-on-click-modal="false" :close-on-press-escape="false">
             <div>
                  <el-form ref="form" label-width="80px">
-                    <el-form-item :label="$t('reimburse.id')">
+                    <el-form-item v-if="item_index>-1" :label="$t('reimburse.id')">
                         <span>{{item_index+1}}</span>
                     </el-form-item>
                     <el-form-item :label="$t('reimburse.item_name')">
