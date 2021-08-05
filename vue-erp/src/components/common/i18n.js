@@ -529,7 +529,7 @@ export const messages = {
             note:"說明",
             submit:"送審",
             confirm_restore:"確認恢復草稿",
-            confirm_download:"確認下載",
+            confirm_download:"下載請款單",
             confirm_abandon:"確認作廢",
             allocated_at:"付款日期",
             payment_note:"付款說明",
@@ -1127,7 +1127,7 @@ export const messages = {
             allocated_at:"Allocated At",
 
             confirm_restore:"Confirm restore this order form",
-            confirm_download:"Confirm Download",
+            confirm_download:"Download Payment Order",
             confirm_abandon:"Confirm Abandon",
 
             payment_note:"Note",

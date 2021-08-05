@@ -30,6 +30,7 @@
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">
                 <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="160" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('reimburse.project_name')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="owner" :label="$t('reimburse.project_owner')" width="140" align="center" show-overflow-tooltip/>
                 <el-table-column prop="p_name" :label="$t('reimburse.applicant_name')" width="140" align="center" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('reimburse.description')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
@@ -148,7 +149,6 @@
                                 <el-form-item v-if="form.status =='F' || form.status =='C'" :label="$t('reimburse.paied_amount')">
                                     <span>{{stateFormat(0,0,caculatePaiedTotalAmount)}} 元</span>
                                 </el-form-item>
-                                
                             </el-col>
                         </el-row>
                         <el-row>
@@ -283,10 +283,13 @@
         </el-dialog>
 
          <el-dialog :title="$t('reimburse.confirm_download')" :visible.sync="downloadVisible" width="300px" center :before-close="cancelQuestDialog" v-loading="dialog_loading">
-            <span slot="footer" class="dialog-footer">
+            <div>
+                <img src="image/icon/pdf_icon.jpg" style="width:100%;cursor:pointer;" @click="confirmDownload"/>
+            </div>
+            <!-- <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDownload">{{$t('btn.confirm')}}</el-button>
-            </span>
+            </span> -->
         </el-dialog>
 
          <el-dialog :title="$t('reimburse.confirm_abandon')" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog">
