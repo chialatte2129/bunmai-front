@@ -15,7 +15,9 @@ import { store } from './_store';
 import JsEncrypt from 'jsencrypt';
 import JsonExcel from 'vue-json-excel';
 import VueClipboard from 'vue-clipboard2';
+import LoadScript from "vue-plugin-load-script";
 
+Vue.use(LoadScript);
 Vue.config.productionTip = false
 Vue.use(VueI18n);
 Vue.use(VueClipboard)

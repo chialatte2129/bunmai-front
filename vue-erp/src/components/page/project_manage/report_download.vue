@@ -109,6 +109,7 @@
             :fetch="fetchData"
             :name="getToday()+'_'+download_name">{{$t('btn.download_excel')}}</download-excel>
             <el-button type="primary" plain style="margin-top:20px;width:200px;" @click="handleDownlaodCostReport()">下載成本結算表</el-button>
+            <el-button type="primary" plain style="margin-top:20px;width:200px;" @click="handleDownlaodCostReportV2()">下載成本結算表(含補休申請)</el-button>
             <el-table
             :data="tableData"
             @sort-change="sortChange"
@@ -497,6 +498,34 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             await workItemService.downlaod_cost_data(this.last_params)
+            .then(response => {
+                console.log(response);
+                const link = document.createElement('a');
+                let blob = new Blob([response.data], {type: 'application/vnd.ms-excel'});
+                link.style.display = 'none';
+                link.href = URL.createObjectURL(blob);//创建url对象
+                link.download = this.handleGenFileName()
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);//销毁url对象
+            }).catch(err => {
+                console.log(err);
+            })
+
+            this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+                loadingInstance.close();
+            });
+            
+        },
+
+        async handleDownlaodCostReportV2(){   
+            let loadingInstance = Loading.service({
+                lock: true,
+                text: '產生報表中.....',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            await workItemService.downlaod_cost_data_v2(this.last_params)
             .then(response => {
                 console.log(response);
                 const link = document.createElement('a');
