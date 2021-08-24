@@ -5,7 +5,7 @@ services:
   web_erp:
 
     image:
-      varlive/vue-varlive:game-latest
+      varlive/vue-varlive:erp-latest
 
     deploy:
 

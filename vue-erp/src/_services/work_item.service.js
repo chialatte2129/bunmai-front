@@ -8,6 +8,7 @@ export const workItemService = {
 	get_tree,
 	downlaod_data,
 	downlaod_cost_data,
+	downlaod_cost_data_v2,
 	work_item_cost_teble,
 	get_project_cost_records,
 	get_project_cost_info,
@@ -79,6 +80,16 @@ function downlaod_data(param){
 function downlaod_cost_data(param){
     return new Promise((resolve, reject) => {
 		axios.post(`${process.env.VUE_APP_API}/api/v1/work_time/classifier/download`, param,{responseType: 'blob'}).then((response) => {
+			resolve(response)}).catch((error) => {
+				reject(error)
+			}
+		)		
+	})
+}
+
+function downlaod_cost_data_v2(param){
+    return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v2/work_time/classifier/download`, param,{responseType: 'blob'}).then((response) => {
 			resolve(response)}).catch((error) => {
 				reject(error)
 			}
