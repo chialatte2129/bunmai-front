@@ -87,6 +87,11 @@ export default {
                                     title: this.$t("menus.project_cost_upload"),
                                     show: this.hasThisMenu("project_cost_upload"),
                                 },
+                                   {
+                                    index: "project_funnel_review",
+                                    title: this.$t("menus.project_funnel_review"),
+                                    show: this.hasThisMenu("project_funnel_review"),
+                                },
                             ]
                         },
                         

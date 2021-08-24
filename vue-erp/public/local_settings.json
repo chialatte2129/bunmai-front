@@ -87,6 +87,10 @@
         {
             "index": "supplier_accounts",
             "title": "menus.supplier_accounts"
+        },
+        {
+            "index": "project_funnel_review",
+            "title": "menus.project_funnel_review"
         }
     ]
 }

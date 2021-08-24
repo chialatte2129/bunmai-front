@@ -15,10 +15,13 @@ import { store } from './_store';
 import JsEncrypt from 'jsencrypt';
 import JsonExcel from 'vue-json-excel';
 import VueClipboard from 'vue-clipboard2';
-
+import HighchartsVue from "highcharts-vue";
+import LoadScript from "vue-plugin-load-script";
 Vue.config.productionTip = false
+Vue.use(LoadScript);
 Vue.use(VueI18n);
 Vue.use(VueClipboard)
+Vue.use(HighchartsVue);
 Vue.use(ElementUI, {
     size: 'small'
 });

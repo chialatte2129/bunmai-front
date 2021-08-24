@@ -125,6 +125,11 @@ export default new Router({
                     path: '/supplier_accounts',
                     component: () => import('../components/page/project_manage/supplier_accounts.vue'),
                     meta: { title:  'menus.supplier_accounts' }
+                },   
+                {
+                    path: '/project_funnel_review',
+                    component: () => import('../components/page/project_manage/funnel_review.vue'),
+                    meta: { title:  'menus.project_funnel_review' }
                 }
             ]
         },

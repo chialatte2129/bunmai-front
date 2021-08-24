@@ -105,6 +105,7 @@ export const messages = {
             project_cost_upload:"專案工時成本上傳",
             partner_manage:"聯絡人管理",
             supplier_accounts:"供應商帳戶管理",
+            project_funnel_review:"專案漏斗管理",
         },
         table_title:{
             role :'角色代號',
@@ -699,6 +700,7 @@ export const messages = {
             project_cost_upload:"Project Cost Upload",
             partner_manage:"Partner Manage",
             supplier_accounts:"Supplier Account",
+            project_funnel_review:"Funnel Review",
         },
         table_title :{
             role :'Role id',
