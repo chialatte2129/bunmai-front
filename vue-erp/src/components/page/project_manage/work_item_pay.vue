@@ -31,7 +31,8 @@
                 <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="160" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('reimburse.project_name')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('reimburse.project_owner')" width="140" align="center" show-overflow-tooltip/>
-                <el-table-column prop="p_name" :label="$t('reimburse.applicant_name')" width="140" align="center" show-overflow-tooltip/>
+                <el-table-column prop="applicant_name" :label="$t('reimburse.applicant_name')" width="140" align="center" show-overflow-tooltip/>
+                <el-table-column prop="p_name" label="填寫人" width="140" align="center" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('reimburse.description')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="status_name" :label="$t('reimburse.status')" width="100" align="center" show-overflow-tooltip>
@@ -87,6 +88,18 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="申請人">
+                        <el-select size="large" class="mgr10" v-model="createForm.applicant_id" filterable collapse-tags
+                        placeholder="請選擇申請人" :disabled="loading">
+                            <el-option-group v-for="group in option.members" :key="group.id" :label="group.name">
+                                <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                    <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
+                                    <span v-else class="mgl10">{{item.name}}</span>
+                                </el-option>
+                            </el-option-group>
+                        </el-select>
+                     
+                    </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -95,7 +108,8 @@
             </span>
         </el-dialog>
         
-        <el-dialog :title="$t('reimburse.edit_reimburse')" :visible.sync="updateView" width="1100px" :key="tbkey" :before-close="cancelDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog :title="$t('reimburse.edit_reimburse')" :visible.sync="updateView" width="1100px" :key="tbkey" :before-close="cancelDialog" top="8%" 
+        :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog" v-loading="dialog_loading">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="100px">
                 <el-row class="mgb10" >
                     <div style="float:right;">
@@ -106,10 +120,9 @@
                         <el-button v-if="is_project_owner && form.status=='P'" type="danger" size="large" @click="handleReject">{{$t('btn.reject')}}</el-button>
                         <el-button v-if="is_project_owner && form.status=='P'" type="primary" size="large" @click="handlePass">{{$t('btn.proccess')}}</el-button>
                         <el-button v-if="orderReadOnly==false" type="danger" size="large" @click="handleDelete(form)">{{$t('btn.abandon')}}</el-button>
-                        <el-button v-if="is_order_owner && form.status=='F'" type="primary" size="largre" @click="handleDownload(form)">{{$t('btn.download')}}</el-button>
+                        <el-button v-if="is_order_owner && form.status=='F'" type="primary" size="largre" @click="confirmDownload(form)">{{$t('btn.download')}}</el-button>
                         <el-button v-if="orderReadOnly==false" size="large" type="primary" @click="confirmDialog">{{$t('btn.save')}}</el-button>
                         <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">{{$t('reimburse.submit')}}</el-button>
-                        
                     </div>
                 </el-row>
                 <el-row>
@@ -137,11 +150,14 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item :label="$t('reimburse.order_dept')">
-                                    <span>{{form.dept_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.applicant_name')">
+                                <el-form-item label="填寫人">
                                     <span>{{form.p_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="申請人">
+                                    <span>{{form.applicant_name}}</span>
+                                </el-form-item>
+                                <el-form-item label="申請人部門">
+                                    <span>{{form.dept_name}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.total_amount')">
                                     <span>{{stateFormat(0,0, handleCaculateTotalAmount)}} 元</span>
@@ -269,7 +285,7 @@
                 <el-button v-if="is_project_owner && form.status=='P'" type="danger" size="large" @click="handleReject">{{$t('btn.reject')}}</el-button>
                 <el-button v-if="is_project_owner && form.status=='P'" type="primary" size="large" @click="handlePass">{{$t('btn.proccess')}}</el-button>
                 <el-button v-if="orderReadOnly==false" type="danger" size="large" @click="handleDelete(form)">{{$t('btn.abandon')}}</el-button>
-                <el-button v-if="is_order_owner && form.status=='F'" type="primary" size="largre" @click="handleDownload(form)">{{$t('btn.download')}}</el-button>
+                <el-button v-if="is_order_owner && form.status=='F'" type="primary" size="largre" @click="confirmDownload(form)">{{$t('btn.download')}}</el-button>
                 <el-button v-if="orderReadOnly==false" size="large" type="primary" @click="confirmDialog">{{$t('btn.save')}}</el-button>
                 <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">{{$t('reimburse.submit')}}</el-button>
             </div>
@@ -487,6 +503,7 @@
     </div>
 </template>
 <script>
+import { workItemService } from "@/_services";
 import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
 import { partnerService } from "@/_services";
@@ -575,7 +592,8 @@ export default {
             },
             
             createForm:{
-                project_id:""
+                project_id:"",
+                applicant_id:"",
             },
             
             form:{
@@ -604,6 +622,7 @@ export default {
             option:{
                 projects:[],
                 partner:[],
+                members:[],
                 payment_note:[
                     {label:"一般支付",value:"一般支付"},
                     {label:"訂金",value:"訂金"},
@@ -752,7 +771,7 @@ export default {
             }
         },
         is_order_owner(){
-            return this.form.pid == this.odoo_employee_id;
+            return this.form.pid == this.odoo_employee_id || this.form.applicant_id == this.odoo_employee_id;
         },
         is_accountant(){
             if(localStorage.getItem("ms_user_menus").includes("accountant")){
@@ -792,7 +811,7 @@ export default {
     
     methods: {
         objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-            if(["order_id", "item_name","owner","p_name","description","order_date","status_name","total_amount","action"].includes(column.property)){
+            if(["order_id", "item_name","owner","p_name","description","applicant_name","order_date","status_name","total_amount","action"].includes(column.property)){
                 const _row=this.spanArr[rowIndex];
                 const _col=_row>0?1:0;
                 return { rowspan:_row, colspan:_col }
@@ -909,7 +928,7 @@ export default {
                 if(res.code>0){
                     this.$message.success("success"); 
                     this.getData();
-                    this.handleEdit(0, {order_id:this.form.order_id});
+                    // this.handleEdit(0, {order_id:this.form.order_id});
                     this.cancelPayOrderDialog();
                     this.cancelDialog();
                 }else{
@@ -955,7 +974,7 @@ export default {
                 if(res.code>0){
                     this.$message.success("success"); 
                     this.getData();
-                    this.handleEdit(0, {order_id:this.form.order_id});
+                    // this.handleEdit(0, {order_id:this.form.order_id});
                     this.cancelPayOrderDialog();
                     this.cancelDialog();
                 }else{
@@ -1012,8 +1031,9 @@ export default {
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getData();
-                    this.handleEdit(0, {order_id:this.form.order_id});
+                    // this.handleEdit(0, {order_id:this.form.order_id});
                     this.cancelQuestDialog();
+                    this.cancelDialog();
                 }else{
                     this.$message.error(res.msg)
                 } 
@@ -1042,7 +1062,7 @@ export default {
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getData();
-                    this.handleEdit(0, {order_id:this.form.order_id});
+                    // this.handleEdit(0, {order_id:this.form.order_id});
                     this.cancelQuestDialog();
                     this.cancelDialog();
                     this.confirmPaymentVisible = false;
@@ -1053,8 +1073,8 @@ export default {
             this.confirmPaymentVisible = false;
         },
        
-        confirmDownload(){
-            var param = {order_id: this.download_id};
+        confirmDownload(row){
+            var param = {order_id: row.order_id};
             this.dialog_loading = true;
             payOrderService.downlaod_pay_order(param).then(response => {
                 // console.log(response);
@@ -1062,7 +1082,7 @@ export default {
                 let blob = new Blob([response.data], {type: 'application/pdf'});
                 link.style.display = 'none';
                 link.href = URL.createObjectURL(blob);//创建url对象
-                link.download = this.today+'-'+this.download_id+".pdf"
+                link.download = this.today+'-'+row.order_id+".pdf"
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -1175,7 +1195,8 @@ export default {
                     action:"create",
                     form:{
                         odoo_employee_id:this.odoo_employee_id,
-                        item_id: this.createForm.project_id
+                        item_id: this.createForm.project_id,
+                        applicant_id: this.createForm.applicant_id
                     }
                 };
                 payOrderService.update_pay_orders(param).then(res =>{ 
@@ -1184,6 +1205,7 @@ export default {
                         // this.$message.success("OK")
                         this.getData();
                         this.createForm.project_id = "";
+                        this.createForm.applicant_id = "";
                         this.createView = false;
                         this.handleEdit(0, {order_id:res.create_id})
                     }else{
@@ -1209,6 +1231,11 @@ export default {
 
         handleCreate(){
             this.createView=true;
+            console.log(typeof this.odoo_employee_id);
+            this.createForm = {
+                applicant_id: parseInt(this.odoo_employee_id,10),
+                project_id: ""
+            }
         },
        
         async handleEdit(index, row){
@@ -1272,6 +1299,7 @@ export default {
             param.form.odoo_employee_id = this.odoo_employee_id;
             param.form.total_amount = this.handleCaculateTotalAmount;
             this.update_pay_order_handin(param);
+            
         },
 
         update_pay_order_handin(param){ 
@@ -1288,7 +1316,7 @@ export default {
                     payOrderService.update_pay_orders(handin_form).then(res =>{
                         if(res.code > 0){ 
                             this.getData();
-                            this.handleEdit(0, {order_id:this.form.order_id});
+                            // this.handleEdit(0, {order_id:this.form.order_id});
                             this.$message.success("Success"); 
                             this.cancelDialog();
                         }else{
@@ -1393,6 +1421,11 @@ export default {
             await dayItemService.get_option_list({action:["work_item_now"]}).then(res =>{ 
                 this.option.projects=res.work_item_now;
             });
+            await workItemService.get_dept_employee({}).then(res =>{ 
+                this.option.members=res.tree_data;
+                console.log(res.tree_data);
+                this.option.members.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
+            })
             await partnerService.get_supplier_account({action:"table",filter:{start_row:0, page_size:1000, key_word:"" }}).then(res =>{
                 console.log(res);
                 this.option.partner=res.data;
