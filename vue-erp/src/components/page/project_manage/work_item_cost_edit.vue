@@ -66,7 +66,7 @@
                             <el-collapse-item name="payment" :title="$t('cost.reimbursement')">
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
-                                        <el-table :data="tableData_pay_order" height="300" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
+                                        <el-table :data="tableData_pay_order" height="500" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                                         @sort-change="handlePaySortChange" :cell-style="getCellStyle" :key="tbKey1" :span-method="objectSpanMethod">
                                             <el-table-column prop="order_id" :label="$t('reimburse.order_id')" width="200" align="center" show-overflow-tooltip/>
                                             <el-table-column prop="status" :label="$t('reimburse.status')" width="150" align="center" show-overflow-tooltip>
@@ -260,7 +260,7 @@
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item :label="$t('reimburse.applicant_name')">
-                                    <span>{{payOrderForm.p_name}}</span>
+                                    <span>{{payOrderForm.applicant_name}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.order_dept')">
                                     <span>{{payOrderForm.dept_name}}</span>

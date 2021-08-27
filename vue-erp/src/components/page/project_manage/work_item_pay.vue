@@ -32,7 +32,7 @@
                 <el-table-column prop="item_name" :label="$t('reimburse.project_name')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('reimburse.project_owner')" width="140" align="center" show-overflow-tooltip/>
                 <el-table-column prop="applicant_name" :label="$t('reimburse.applicant_name')" width="140" align="center" show-overflow-tooltip/>
-                <el-table-column prop="p_name" label="填寫人" width="140" align="center" show-overflow-tooltip/>
+                <el-table-column prop="p_name"  :label="$t('reimburse.filler')" width="140" align="center" show-overflow-tooltip/>
                 <el-table-column prop="description" :label="$t('reimburse.description')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
                 <el-table-column prop="status_name" :label="$t('reimburse.status')" width="100" align="center" show-overflow-tooltip>
@@ -88,9 +88,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="申請人">
+                    <el-form-item  :label="$t('reimburse.applicant')">
                         <el-select size="large" class="mgr10" v-model="createForm.applicant_id" filterable collapse-tags
-                        placeholder="請選擇申請人" :disabled="loading">
+                        :placeholder="$t('reimburse.applicant_name')" :disabled="loading">
                             <el-option-group v-for="group in option.members" :key="group.id" :label="group.name">
                                 <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
                                     <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
@@ -150,13 +150,13 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="填寫人">
+                                <el-form-item :label="$t('reimburse.filler')">
                                     <span>{{form.p_name}}</span>
                                 </el-form-item>
-                                <el-form-item label="申請人">
+                                <el-form-item :label="$t('reimburse.applicant')">
                                     <span>{{form.applicant_name}}</span>
                                 </el-form-item>
-                                <el-form-item label="申請人部門">
+                                <el-form-item :label="$t('reimburse.applicant_dept')">
                                     <span>{{form.dept_name}}</span>
                                 </el-form-item>
                                 <el-form-item :label="$t('reimburse.total_amount')">
@@ -624,9 +624,8 @@ export default {
                 partner:[],
                 members:[],
                 payment_note:[
-                    {label:"一般支付",value:"一般支付"},
+                    {label:"請款",value:"請款"},
                     {label:"訂金",value:"訂金"},
-                    {label:"頭期款",value:"頭期款"},
                     {label:"尾款",value:"尾款"},
                 ],
                 status:[
@@ -1153,7 +1152,7 @@ export default {
                 var temp_content = {
                     pay_order_id:this.form.order_id,
                     amount:this.computePayOrder,
-                    payment_note:"一般支付",
+                    payment_note:"請款",
                     payment_method:"transfer",
                     remittance_setting:"deduct",
                     pre_payment_date:null,

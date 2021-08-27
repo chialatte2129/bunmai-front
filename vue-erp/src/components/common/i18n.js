@@ -554,6 +554,10 @@ export const messages = {
             update_payment_setting:"編輯支付設定",
             quest_complete_payment:"你要完成這張請款單嗎？",
             quest_complete_payment_unpaied:"尚有未支付的款項，你要完成這張請款單嗎？",
+
+            filler:"填寫人",
+            applicant:"申請人",
+            applicant_dept:"申請人部門"
         },
         cost:{
 
@@ -1117,7 +1121,7 @@ export const messages = {
             no_deduct:"No Deduct",
             beneficiary:"Beneficiary",
             beneficiary_bank:"Benificiary Bank",
-            swift_code:"SWIFT Code",
+            swift_code:"Account",
 
             status_history:"Histories",
             recorded_at:"Recorded At",
@@ -1153,6 +1157,9 @@ export const messages = {
             update_payment_item_setting:"Payment Content",
             quest_complete_payment:"Do you want to finish this payment order？",
             quest_complete_payment_unpaied:"尚有未支付的款項，你要完成這張請款單嗎？",
+            filler:"Filler",
+            applicant:"Applicant",
+            applicant_dept:"Department"
         },
         cost:{
             work_hour_percent:"Productivity",
