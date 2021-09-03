@@ -88,8 +88,19 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item  :label="$t('reimburse.applicant')">
-                        <el-select size="large" class="mgr10" v-model="createForm.applicant_id" filterable collapse-tags
+                    <el-form-item  :label="$t('reimburse.filler')">
+                        <el-select class="mgr10" v-model="createForm.filler_id"  filterable collapse-tags
+                        :placeholder="$t('reimburse.applicant_name')" :disabled="true">
+                            <el-option-group v-for="group in option.members" :key="group.id" :label="group.name">
+                                <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
+                                    <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
+                                    <span v-else class="mgl10">{{item.name}}</span>
+                                </el-option>
+                            </el-option-group>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item  :label="$t('reimburse.applicant_withcomment')">
+                        <el-select class="mgr10" v-model="createForm.applicant_id" filterable collapse-tags
                         :placeholder="$t('reimburse.applicant_name')" :disabled="loading">
                             <el-option-group v-for="group in option.members" :key="group.id" :label="group.name">
                                 <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
@@ -98,7 +109,6 @@
                                 </el-option>
                             </el-option-group>
                         </el-select>
-                     
                     </el-form-item>
                 </el-form>
             </div>
@@ -1233,6 +1243,7 @@ export default {
             console.log(typeof this.odoo_employee_id);
             this.createForm = {
                 applicant_id: parseInt(this.odoo_employee_id,10),
+                filler_id: parseInt(this.odoo_employee_id,10),
                 project_id: ""
             }
         },

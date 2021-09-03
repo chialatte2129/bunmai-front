@@ -508,7 +508,7 @@ export const messages = {
             create_reimburse:"新增請款單",
             edit_reimburse:"編輯請款單",
             order_dept:"申請單位",
-            applicant_name:"請款人",
+            applicant_name:"申請人",
             content:"請款內容",
             date:"日期",
             amount:"金額",
@@ -557,6 +557,7 @@ export const messages = {
 
             filler:"填寫人",
             applicant:"申請人",
+            applicant_withcomment:"申請(承辦)人",
             applicant_dept:"申請人部門"
         },
         cost:{
@@ -1107,6 +1108,7 @@ export const messages = {
             edit_reimburse:"Order Form",
             order_dept:"Department",
             applicant_name:"Applicant",
+
             content:"Content",
             date:"Date",
             amount:"Amount",
@@ -1159,6 +1161,7 @@ export const messages = {
             quest_complete_payment_unpaied:"尚有未支付的款項，你要完成這張請款單嗎？",
             filler:"Filler",
             applicant:"Applicant",
+            applicant_withcomment:"Applicant",
             applicant_dept:"Department"
         },
         cost:{
