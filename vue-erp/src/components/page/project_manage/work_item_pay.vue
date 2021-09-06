@@ -89,15 +89,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item  :label="$t('reimburse.filler')">
-                        <el-select class="mgr10" v-model="createForm.filler_id"  filterable collapse-tags
-                        :placeholder="$t('reimburse.applicant_name')" :disabled="true">
-                            <el-option-group v-for="group in option.members" :key="group.id" :label="group.name">
-                                <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
-                                    <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                                    <span v-else class="mgl10">{{item.name}}</span>
-                                </el-option>
-                            </el-option-group>
-                        </el-select>
+                        <span>{{user_info}}</span>
                     </el-form-item>
                     <el-form-item  :label="$t('reimburse.applicant_withcomment')">
                         <el-select class="mgr10" v-model="createForm.applicant_id" filterable collapse-tags
@@ -543,6 +535,7 @@ export default {
             action_list:localStorage.getItem("ms_user_actions"),
             odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
             username:localStorage.getItem("ms_username"),
+            user_info:localStorage.getItem("ms_user_fullname"),
 
             loading:false,
             dialog_loading:false,
@@ -760,9 +753,9 @@ export default {
         },
         async checkContent(){
             await this.form.content_json.forEach(element => {
-                console.log(element.amount);
+                // console.log(element.amount);
                 if(element.amount==0 || element.amount==null || element.amount==""){
-                    console.log("false");
+                    // console.log("false");
                     return false
 
                 }
@@ -933,7 +926,7 @@ export default {
                 }
             };
             payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
+                // console.log(res);
                 if(res.code>0){
                     this.$message.success("success"); 
                     this.getData();
@@ -979,7 +972,7 @@ export default {
                 }
             };
             payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
+                // console.log(res);
                 if(res.code>0){
                     this.$message.success("success"); 
                     this.getData();
@@ -1016,7 +1009,7 @@ export default {
                 }
             };
             payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
+                // console.log(res);
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getData();
@@ -1036,7 +1029,7 @@ export default {
                 }
             };
             payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
+                // console.log(res);
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getData();
@@ -1067,7 +1060,7 @@ export default {
                 }
             };
             payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
+                // console.log(res);
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getData();
@@ -1099,7 +1092,7 @@ export default {
                 this.cancelQuestDialog();
                 this.dialog_loading = false;
             }).catch(err => {
-                console.log(err);
+                // console.log(err);
                 this.cancelQuestDialog();
                 this.dialog_loading = false;
             })
@@ -1107,17 +1100,17 @@ export default {
         },
 
         handleContentChange(){
-            console.log(this.form.content_json)
+            // console.log(this.form.content_json)
         },
         handleAddItem(){
-            console.log("add Item");
+            // console.log("add Item");
             this.addItemVisible = true;
         },
 
         handleUpdateItem(row,index){
             this.item_form = JSON.parse(JSON.stringify(row));
             this.item_index = index;
-            console.log(index);
+            // console.log(index);
             this.updateItemVisible = true;
         },
         cancelUpdateItem(){
@@ -1189,11 +1182,11 @@ export default {
             this.addItemVisible = false;
         },
         handleDeleteItem(index){
-            console.log(index);
+            // console.log(index);
             this.form.content_json.splice(index,1);
         },
         handleRemovePaymentItem(index){
-            console.log(index);
+            // console.log(index);
             this.form.payment_item.splice(index,1);
         },
         confirmCreate(){
@@ -1209,7 +1202,7 @@ export default {
                     }
                 };
                 payOrderService.update_pay_orders(param).then(res =>{ 
-                    console.log(res);
+                    // console.log(res);
                     if(res.code>0){
                         // this.$message.success("OK")
                         this.getData();
@@ -1240,7 +1233,7 @@ export default {
 
         handleCreate(){
             this.createView=true;
-            console.log(typeof this.odoo_employee_id);
+            // console.log(typeof this.odoo_employee_id);
             this.createForm = {
                 applicant_id: parseInt(this.odoo_employee_id,10),
                 filler_id: parseInt(this.odoo_employee_id,10),
@@ -1257,7 +1250,7 @@ export default {
                 }
             };
             await payOrderService.get_pay_orders(param).then(res =>{ 
-                console.log(res);
+                // console.log(res);
                 if(res.code>0){
                     // this.$message.success("OK")
                     this.form=res.data;
@@ -1345,7 +1338,7 @@ export default {
                 return this.$message.error("未設定請款內容");
             }
             await this.form.content_json.forEach(element => {
-                console.log(element.amount);
+                // console.log(element.amount);
                 if(element.amount==0 || element.amount==null || element.amount==""){
                     return this.$message.error("請款單細項未正確設定金額");
                 }
@@ -1433,11 +1426,11 @@ export default {
             });
             await workItemService.get_dept_employee({}).then(res =>{ 
                 this.option.members=res.tree_data;
-                console.log(res.tree_data);
+                // console.log(res.tree_data);
                 this.option.members.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
             })
             await partnerService.get_supplier_account({action:"table",filter:{start_row:0, page_size:1000, key_word:"" }}).then(res =>{
-                console.log(res);
+                // console.log(res);
                 this.option.partner=res.data;
             });
             
@@ -1457,8 +1450,8 @@ export default {
             this.handleCurrentChange(1);
         },
         resultChange(result){
-            console.log(data);
-            console.log(result);
+            // console.log(data);
+            // console.log(result);
         }
     }
 }
