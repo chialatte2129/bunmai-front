@@ -304,10 +304,6 @@
             <div>
                 <img src="image/icon/pdf_icon.jpg" style="width:100%;cursor:pointer;" @click="confirmDownload"/>
             </div>
-            <!-- <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmDownload">{{$t('btn.confirm')}}</el-button>
-            </span> -->
         </el-dialog>
 
          <el-dialog :title="$t('reimburse.confirm_abandon')" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog">
@@ -402,8 +398,6 @@
                         :readonly="orderReadOnly" 
                         type="number"  
                         v-model.number="item_form.amount" 
-                        @keyup.native="prevent($event)"
-                        @mousewheel.native.prevent
                         @change="handleContentChange"
                         ><template slot="append">元</template>
                         </el-input>
@@ -442,7 +436,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.amount')">
-                            <el-input :readonly="orderReadOnly" type="number" v-model.number="pay_item_form.amount"  style="width:200px;" @keyup.native="prevent($event)" @mousewheel.native.prevent><template slot="append">元</template></el-input>
+                            <el-input :readonly="orderReadOnly" type="number" v-model.number="pay_item_form.amount"  style="width:200px;"><template slot="append">元</template></el-input>
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.reimburse_status')">
                             <span v-if="form.status=='F'&&pay_item_form.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
@@ -717,13 +711,11 @@ export default {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
-
         showTitle(){
             if(this.createView) return "新增請款單";
             else if(this.updateView) return "編輯請款單";
             else return "";
         },
-
         showVisible(){
             if(this.updateView) return this.updateView;
             else return false;
@@ -802,13 +794,8 @@ export default {
             this.form.payment_item.forEach(element => {
                 set_amount += element.amount;
             });
-            if(total_amount - set_amount > 0){
-                return total_amount - set_amount
-            }else{
-                return 0
-            };
-        },
-
+            return total_amount - set_amount
+        }
     }, 
     
     methods: {
@@ -840,7 +827,6 @@ export default {
             this.spanArr=[];
             this.pos=null;
         },
-
         handleOpenProjectCost(item_id){
             let routeData = this.$router.resolve({path: "/work_item_cost_edit", query: {id: item_id}});
             window.open(routeData.href, '_blank');
@@ -861,7 +847,6 @@ export default {
             // console.log(text);
 			return text
 		},
-
         stateFormat(row, column, cellValue) {
 			cellValue += '';
 			if (!cellValue.includes('.')) cellValue += '.';
@@ -890,15 +875,12 @@ export default {
             this.downloadVisible = false;
             this.deleteVisible = false;
         },
-
         cancelPayOrderDialog(){
             this.payDateVisible=false;
             this.passVisible=false;
             this.rejectVisible=false;
             this.payDateVisible=false;
         },
-
-        
         handlePass(){
             this.passVisible=true;
         },
@@ -985,8 +967,6 @@ export default {
                     
             })
         },
-
-
         handleDelete(row){
             this.delete_id = row.order_id;
             this.deleteVisible = true;
@@ -999,7 +979,6 @@ export default {
             this.download_id = row.order_id;
             this.downloadVisible = true;
         },
-
         confirmDelete(){
             var param = {
                 action:"delete",
@@ -1041,15 +1020,12 @@ export default {
                 } 
             })
         },
-
         handleConfirmPayment(){
             this.confirmPaymentVisible = true;
         },
-
         cancelConfirmPayment(){
             this.confirmPaymentVisible = false;
         },
-
         confirmPayment(){
             var param = {
                 action:"ConfirmPayment",
@@ -1074,7 +1050,6 @@ export default {
             })
             this.confirmPaymentVisible = false;
         },
-       
         confirmDownload(row){
             var param = {order_id: row.order_id};
             this.dialog_loading = true;
@@ -1098,7 +1073,6 @@ export default {
             })
             this.dialog_loading = true;
         },
-
         handleContentChange(){
             // console.log(this.form.content_json)
         },
@@ -1106,7 +1080,6 @@ export default {
             // console.log("add Item");
             this.addItemVisible = true;
         },
-
         handleUpdateItem(row,index){
             this.item_form = JSON.parse(JSON.stringify(row));
             this.item_index = index;
@@ -1124,7 +1097,6 @@ export default {
             };
             this.updateItemVisible = false;
         },
-
         handleUpdatePayItem(row,index){
             this.pay_item_form = JSON.parse(JSON.stringify(row));
             this.pay_item_index = index;
@@ -1141,7 +1113,6 @@ export default {
             };
             this.updatePayItemVisible = false;
         },
-
         async handleAddPaymentItem(){
             if (!this.select_partner){
                 this.select_partner = {
@@ -1230,7 +1201,6 @@ export default {
             };
             return return_dict;
         },
-
         handleCreate(){
             this.createView=true;
             // console.log(typeof this.odoo_employee_id);
@@ -1240,7 +1210,6 @@ export default {
                 project_id: ""
             }
         },
-       
         async handleEdit(index, row){
             this.tbkey++;
             var param = {
@@ -1261,12 +1230,10 @@ export default {
                 }
             })
         },
-
         cancelDelete(){
             this.deleteID=null;
             this.deleteView=false;
         },
-
         update_pay_order(param){ 
             payOrderService.update_pay_orders(param).then(res =>{ 
                 if(res.code > 0){ 
@@ -1279,8 +1246,6 @@ export default {
                 } 
             }) 
         },
-
-        
         confirmDialog(){
             var temp_form = Object.assign({}, this.form);
             var param = {
@@ -1291,7 +1256,6 @@ export default {
             param.form.total_amount = this.handleCaculateTotalAmount;
             this.update_pay_order(param);
         },
-
         async handInOrder(){
             // console.log("GOGOGO");
             var temp_form = Object.assign({}, this.form);
@@ -1304,7 +1268,6 @@ export default {
             this.update_pay_order_handin(param);
             
         },
-
         update_pay_order_handin(param){ 
             payOrderService.update_pay_orders(param).then(res =>{ 
                 if(res.code > 0){ 
@@ -1332,7 +1295,6 @@ export default {
                 } 
             }) 
         },
-
         async handleHandIn(){
             if(!this.form.content_json.length){
                 return this.$message.error("未設定請款內容");
@@ -1348,13 +1310,11 @@ export default {
             };
             await this.handInOrder();
 
-        },        
-
+        },   
         cancelDialog(){
             this.updateView=false;
             this.resetForm();
         },
-
         resetForm(){
             this.form={
                 order_id:"",
@@ -1376,24 +1336,20 @@ export default {
                 content_json:[]
             };
         },
-
         handleCurrentChange(currentPage){
             this.cur_page = currentPage;
             this.count_page;
             this.getData()
         },
-
         handleSizeChange(size){
             this.page_size = size;
             this.handleCurrentChange(1);
         },
-
         handleSortChange({prop, order}){
             this.sort_column = prop;
             this.sort = order;
             this.handleCurrentChange(1);
         },
-        
         async getData(){
             this.loading=true;
             var param = {
@@ -1419,7 +1375,6 @@ export default {
             })
             this.loading=false;
         },
-        
         async getOption(){
             await dayItemService.get_option_list({action:["work_item_now"]}).then(res =>{ 
                 this.option.projects=res.work_item_now;
@@ -1435,11 +1390,9 @@ export default {
             });
             
         },
-
         search(){
             this.handleCurrentChange(1);
         },
-        
         cancelSearch(){
             this.filter={
                 name:"",
@@ -1449,10 +1402,6 @@ export default {
             };
             this.handleCurrentChange(1);
         },
-        resultChange(result){
-            // console.log(data);
-            // console.log(result);
-        }
     }
 }
 </script>
