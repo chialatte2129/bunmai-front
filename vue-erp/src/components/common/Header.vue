@@ -114,8 +114,19 @@ export default {
     },
     handleCommand(command) {
       if (command == "loginout") {
-        localStorage.removeItem("ms_username");
+        localStorage.removeItem("ms_user_id");
+        localStorage.removeItem("ms_odoo_token");
         localStorage.removeItem("ms_user_token");
+        localStorage.removeItem("ms_username");
+        localStorage.removeItem("ms_user_fullname");
+        localStorage.removeItem("ms_is_admin");  
+        localStorage.removeItem("ms_is_odoo");  
+        localStorage.removeItem("ms_odoo_user_id");  
+        localStorage.removeItem("ms_user_menus"); 
+        localStorage.removeItem("ms_user_actions");
+        localStorage.removeItem("ms_odoo_user_id");
+        localStorage.removeItem("ms_odoo_employee_id");
+        localStorage.removeItem("ms_odoo_is_dept_manager");
         this.$router.push("/login");
       }
       if (command == "opendialog") {
