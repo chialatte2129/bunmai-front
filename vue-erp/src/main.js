@@ -35,21 +35,50 @@ const i18n = new VueI18n({
     messages
 })
 ElementLocale.i18n((key, value) => i18n.t(key, value))
-
+import { accountService } from "@/_services";
+import { Message } from "element-ui";
 //使用钩子函数对路由进行权限跳转
-router.beforeEach((to, from, next) => {
-    
+router.beforeEach((to, from, next) => {     
     var path_id=to.path.replace("/","");
     var path_array=to.path.split("/")
-    console.log(to.path, ' >>> ',path_id);
-    if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限     
-            
+    var ms_username= localStorage.getItem('ms_username');
+    console.log(to.path, ' >>> ',path_id, " who >",ms_username);
+    if(path_id == "redirect") {
+        if(to.query.ms_username != undefined && to.query.ms_user_token != undefined && to.query.target!= undefined){
+            path_id=to.query.target;
+            accountService.redirect_login(to.query.ms_username,to.query.ms_user_token)
+            .then(function(result) {
+                if (result.msg_code == 1) {
+                  localStorage.setItem("ms_user_id", result.data.account_id);
+                  localStorage.setItem("ms_user_token", result.data.token);
+                  localStorage.setItem("ms_username", result.data.username);
+                  localStorage.setItem("ms_user_fullname", result.data.user_full_name);
+                  localStorage.setItem("ms_is_admin", result.data.is_admin);  
+                  localStorage.setItem("ms_is_odoo", result.data.is_odoo_user);  
+                  localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);  
+                  localStorage.setItem("ms_user_menus", result.data.user_menus); 
+                  localStorage.setItem("ms_user_actions", result.data.user_actions);
+                  localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);
+                  localStorage.setItem("ms_odoo_employee_id", result.data.odoo_employee_id);
+                  if(result.data.user_menus.indexOf(to.query.target) >=0){
+                    next(to.query.target);
+                  }       
+                }
+                else {
+                    Message({
+                      type: "error",
+                      message: result.msg
+                    });
+                  } 
+              })
+           
+        } 
+    }
+    if (path_id != "login" && (localStorage.getItem("ms_user_menus") != undefined && localStorage.getItem("ms_user_menus").indexOf(path_id) < 0) || path_id == "") { //沒權限                 
         localStorage.removeItem('ms_username');               
         next('/login');
-    }
-    const ms_username= localStorage.getItem('ms_username');
-    if (!ms_username && to.path !== '/login') {
-        
+    }    
+    if (!ms_username && to.path !== '/login') {        
         next('/login');
     }  else {
         if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {

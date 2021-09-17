@@ -7,9 +7,24 @@ export const accountService = {
   list_by_page,
   update_account,
   delete_account,
-  clean_login_info
+  clean_login_info,
+  redirect_login,
 }
 
+function redirect_login(uname,token) {  
+  var param = {       
+      'username': uname,
+      'token' : token
+  }  
+  return new Promise((resolve, reject) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/redirect_login', param).then((resp) => {
+      resolve(resp.data)
+    }).catch((error) => {
+      reject(error)
+    })
+   })
+
+}
 
 function clean_login_info(localStorage,router) {  
   console.log('call clean login');
