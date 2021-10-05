@@ -40,12 +40,12 @@ import { Message } from "element-ui";
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {     
     var path_id=to.path.replace("/","");
-    console.log("temp");
-    console.log(localStorage.getItem("ms_odoo_employee_id"));
-    if(localStorage.getItem("ms_odoo_employee_id")){
+
+    if(localStorage.getItem("ms_username")){
+        console.log("Clear Old Storage Data");
         localStorage.clear()
     };
-    
+
     var ms_username= accountService.get_user_info('ms_username');
     console.log(to.path, ' >>> ',path_id, " who >",ms_username);
     if(path_id == "redirect") {
