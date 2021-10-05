@@ -41,8 +41,11 @@ import { Message } from "element-ui";
 router.beforeEach((to, from, next) => {     
     var path_id=to.path.replace("/","");
     console.log("temp");
-    // var path_array=to.path.split("/")
-    console.log(accountService.get_user_info('ms_username'));
+    console.log(localStorage.getItem("ms_odoo_employee_id"));
+    if(localStorage.getItem("ms_odoo_employee_id")){
+        localStorage.clear()
+    };
+    
     var ms_username= accountService.get_user_info('ms_username');
     console.log(to.path, ' >>> ',path_id, " who >",ms_username);
     if(path_id == "redirect") {
