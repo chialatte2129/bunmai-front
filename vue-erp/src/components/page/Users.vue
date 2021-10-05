@@ -27,24 +27,19 @@
               </el-form-item>
               <el-form-item :label="$t('table_title.role')">
                 <div style="width:1000px;float:left;" v-if="props.row.roles_id!=''">
-                  <el-tag v-for="role in props.row.roles_id.split(',')" style="margin-right:5px;" size="medium">{{ role }}</el-tag>
+                  <el-tag v-for="role in props.row.roles_id.split(',')" :key="role" style="margin-right:5px;" size="medium">{{ role }}</el-tag>
                 </div>
               </el-form-item>
             </el-form>
           </template>
         </el-table-column>
-        
         <el-table-column prop="username" :label="$t('table_title.account')" width="200" show-overflow-tooltip></el-table-column>
         <el-table-column prop="last_name" :label="$t('table_title.last_name')" width="auto" show-overflow-tooltip></el-table-column>
         <el-table-column prop="info" :label="$t('table_title.info')" width="auto" show-overflow-tooltip></el-table-column>
         <el-table-column prop="email" :label="$t('table_title.email')" width="300" :formatter="formatter" show-overflow-tooltip></el-table-column>
         <el-table-column :label="$t('btn.action')" width="105" align="center">
           <template slot-scope="scope">
-            <!-- <el-button type="success" icon="el-icon-circle-check" @click="handleActive(scope.$index, scope.row)" v-if="!scope.row.is_active" :disabled="login_user==scope.row.username">
-              {{$t('account.active')}}
-            </el-button> -->
             <el-button type="warning" icon="el-icon-edit"  @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
-            <!-- <el-button type="danger" icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">{{$t('btn.delete')}}</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -84,14 +79,6 @@
         <el-button type="primary" @click="saveEdit('form')">{{$t('btn.confirm')}}</el-button>
       </span>
     </el-dialog>
-
-    <!-- <el-dialog :title="$t('common_msg.warning')" :visible.sync="delVisible" width="300px" center>
-      <div class="del-dialog-cnt">{{$t('common_msg.delete_confirm')}}</div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="delVisible = false">{{$t('btn.cancel')}}</el-button>
-        <el-button type="primary" @click="deleteRow">{{$t('btn.confirm')}}</el-button>
-      </span>
-    </el-dialog> -->
   </div>
 </template>
 

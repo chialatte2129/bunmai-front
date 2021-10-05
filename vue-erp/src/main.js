@@ -53,13 +53,13 @@ router.beforeEach((to, from, next) => {
                 if (result.msg_code == 1) {
 
                     var user_info = {
-                    ms_is_admin: result.data.is_admin,
-                    ms_is_odoo: result.data.is_odoo_user,
-                    ms_odoo_user_id: result.data.odoo_user_id,
-                    ms_odoo_employee_id: result.data.odoo_employee_id,
-                    ms_odoo_is_dept_manager: result.data.odoo_is_dept_manager,
-                    ms_user_id: result.data.account_id,
-                    ms_username: result.data.username
+                        ms_is_admin: result.data.is_admin,
+                        ms_is_odoo: result.data.is_odoo_user,
+                        ms_odoo_user_id: result.data.odoo_user_id,
+                        ms_odoo_employee_id: result.data.odoo_employee_id,
+                        ms_odoo_is_dept_manager: result.data.odoo_is_dept_manager,
+                        ms_user_id: result.data.account_id,
+                        ms_username: result.data.username
                     };
     
                     localStorage.setItem("ms_user_info", btoa(btoa(JSON.stringify(user_info))));
@@ -67,18 +67,6 @@ router.beforeEach((to, from, next) => {
                     localStorage.setItem("ms_user_actions", btoa(btoa(result.data.user_actions)));
                     localStorage.setItem("ms_user_token", result.data.token);
                     localStorage.setItem("ms_user_fullname", result.data.user_full_name);
-
-                //   localStorage.setItem("ms_user_id", result.data.account_id);
-                //   localStorage.setItem("ms_user_token", result.data.token);
-                //   localStorage.setItem("ms_username", result.data.username);
-                //   localStorage.setItem("ms_user_fullname", result.data.user_full_name);
-                //   localStorage.setItem("ms_is_admin", result.data.is_admin);  
-                //   localStorage.setItem("ms_is_odoo", result.data.is_odoo_user);  
-                //   localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);  
-                //   localStorage.setItem("ms_user_menus", result.data.user_menus); 
-                //   localStorage.setItem("ms_user_actions", result.data.user_actions);
-                //   localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);
-                //   localStorage.setItem("ms_odoo_employee_id", result.data.odoo_employee_id);
                   if(result.data.user_menus.indexOf(to.query.target) >=0){
                     next(to.query.target);
                   }       
