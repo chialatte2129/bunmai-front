@@ -68,7 +68,7 @@
 </template>
 <script>
 import { partnerService } from "@/_services";
-
+import { accountService } from "@/_services";
 export default {
     name: "pay_order",
     components: {
@@ -89,9 +89,9 @@ export default {
             sort_column:"name",
             sort:"asc",
             
-            action_list:localStorage.getItem("ms_user_actions"),
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
-            username:localStorage.getItem("ms_username"),
+            action_list:accountService.get_user_actions(),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
 
             loading:false,
             dialog_loading:false,

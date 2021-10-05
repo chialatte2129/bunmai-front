@@ -93,12 +93,13 @@
 </template>
 <script>
 import { dayItemService } from "@/_services";
+import { accountService } from "@/_services";
 export default {
     name: "day_item_review",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
-            username:localStorage.getItem("ms_username"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
             tree_loading:false,
             checked_id:[],
             expand_key:[],

@@ -125,11 +125,12 @@
 </template>
 <script>
 import { dailyJobsService } from "@/_services";
+import { accountService } from "@/_services";
 export default {
     name: "daily_jobs_person",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
             today:"",
             tbKey:0,
@@ -154,7 +155,7 @@ export default {
                 status:""
             },
             deleteInfo:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 item_id:null,
                 work_date:"",
                 tag1:"",
@@ -172,13 +173,13 @@ export default {
                 item_id:null,
                 work_date:[],
                 hide_void:true,
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
             },
             ban_status:["F"],
             overtime_ban_status:["F", "A"],
             edit_idx:null,
             form:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 p_name:localStorage.getItem("ms_user_fullname"),
                 work_date:"",
                 content:"",

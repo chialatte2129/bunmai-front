@@ -167,14 +167,15 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { dayItemService, overtimeService } from "@/_services";
 export default {
     name: "overtime_process",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
-            username:localStorage.getItem("ms_username"),
+            username:accountService.get_user_info("ms_username"),
             tree_loading:false,
             checked_id:[],
             expand_key:[],

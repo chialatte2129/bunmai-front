@@ -206,12 +206,13 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { dayItemService, personTagService } from "@/_services";
 export default {
     name: "day_item_person",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
             tbKey:0,
             dlKey:0,
@@ -231,7 +232,7 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             deleteInfo:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 item_id:null,
                 work_date:"",
                 tag1:"",
@@ -249,13 +250,13 @@ export default {
             filter:{
                 item_id:null,
                 work_date:[],
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
             },
             ban_status:["F"],
             overtime_ban_status:["F", "A"],
             edit_idx:null,
             form:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 p_name:localStorage.getItem("ms_user_fullname"),
                 item_id:"",
                 work_date:"",
@@ -268,7 +269,7 @@ export default {
             },
             tag_form:{
                 item_id:"",
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 tags:[],
             },
             edit_tag_info:{
@@ -576,7 +577,7 @@ export default {
         resetTagForm(){
             this.tag_form={
                 item_id:"",
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 tags:[],
             };
             this.edit_tag_info={

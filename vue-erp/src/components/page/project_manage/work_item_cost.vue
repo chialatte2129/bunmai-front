@@ -61,13 +61,14 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { workItemService } from "@/_services";
 export default {
     name: "work_item_manage",
     data(){
         return {
-            action_list:localStorage.getItem("ms_user_actions"),
-            username:localStorage.getItem("ms_username"),
+            action_list:accountService.get_user_actions(),
+            username:accountService.get_user_info("ms_username"),
             activeNames:"",
             tbKey:0,
             tableData: [],

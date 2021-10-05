@@ -120,7 +120,7 @@ export default {
       activeView:false,
       activeif:false,
       activeUser:"",
-      login_user:localStorage.getItem('ms_username'),
+      login_user:accountService.get_user_info('ms_username'),
       form: {
         username: "",
         email: "",

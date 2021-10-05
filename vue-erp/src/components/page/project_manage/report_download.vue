@@ -130,7 +130,7 @@ import { dayItemService } from "@/_services";
 import { workItemService } from "@/_services";
 import varDeptTree from "./var_dept_tree.vue";
 import { Loading } from 'element-ui';
-
+import { accountService } from "@/_services";
 export default {
     name: "report_download",
     components:{
@@ -140,8 +140,8 @@ export default {
     data(){
         return {
             download_name:"專案細項報表",
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
-            username:localStorage.getItem("ms_username"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
             tree_loading:false,
             expand_key:["F","P","A","D"],
             tree_data:[],

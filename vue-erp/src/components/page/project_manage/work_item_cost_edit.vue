@@ -682,6 +682,7 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { workItemService } from "@/_services";
 import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
@@ -692,8 +693,8 @@ export default {
             orderReadOnly:true,
             collapseName:["base_info","payment", "income", "cost"],
 
-            username:localStorage.getItem("ms_username"),
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             item_id:this.$route.query.id,
 
             total_standard_cost:0,
@@ -717,7 +718,7 @@ export default {
             pay_sort_column:"order_date",
             pay_sort:"desc",
 
-            action_list:localStorage.getItem("ms_user_actions"),
+            action_list:accountService.get_user_actions(),
             
             loading:false,
             deleteID:null,
@@ -889,14 +890,14 @@ export default {
             return Math.round((this.total_actual_income - this.total_actual_cost) * 10) / 10;
         },
         is_project_owner(){
-            if(this.form.owner_id == localStorage.getItem("ms_odoo_employee_id")){
+            if(this.form.owner_id == accountService.get_user_info("ms_odoo_employee_id")){
                 return true
             }else{
                 return false
             }
         },
         is_accountant(){
-            if(localStorage.getItem("ms_user_menus").includes("accountant")){
+            if(accountService.get_user_menus().includes("accountant")){
                 return true
             }else{
                 return false
@@ -1273,7 +1274,7 @@ export default {
         },
         handleCostEdit(index, row){
             this.costForm=Object.assign({}, row);
-            this.costForm.username = localStorage.getItem("ms_username");
+            this.costForm.username = accountService.get_user_info("ms_username");
             this.costForm.actionType="update";
             this.costEditVisible=true;
         },
@@ -1341,7 +1342,7 @@ export default {
         },
         handleIncomeEdit(index, row){
             this.incomeForm=Object.assign({}, row);
-            this.incomeForm.username = localStorage.getItem("ms_username");
+            this.incomeForm.username = accountService.get_user_info("ms_username");
             this.incomeForm.actionType="update";
             this.incomeEditVisible=true;
         },

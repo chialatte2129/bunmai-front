@@ -162,12 +162,13 @@
 <script>
 import { dailyJobsService } from "@/_services";
 import { dayItemService } from "@/_services";
+import { accountService } from "@/_services";
 export default {
     name: "day_item_review",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
-            username:localStorage.getItem("ms_username"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
             fullname:localStorage.getItem("ms_user_fullname"),
             today:"",
             createView:false,
@@ -213,7 +214,7 @@ export default {
                 dept_id:[],
                 pid:[],
                 hide_self:true,
-                self_id:localStorage.getItem("ms_odoo_employee_id"),
+                self_id:accountService.get_user_info("ms_odoo_employee_id"),
                 hide_void:true,
             },
             option:{

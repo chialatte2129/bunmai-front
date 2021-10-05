@@ -192,6 +192,7 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { workItemService } from "@/_services";
 export default {
     name: "work_item_manage",
@@ -207,7 +208,7 @@ export default {
             start_row:0,
             sort_column:"id",
             sort:"desc",
-            action_list:localStorage.getItem("ms_user_actions"),
+            action_list:accountService.get_user_actions(),
             loading:false,
             deleteID:null,
             deleteView:false,
@@ -238,7 +239,7 @@ export default {
                 description:"",
                 owner:"",
                 owner_id:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
+                employ_id:accountService.get_user_info("ms_odoo_employee_id"),
                 is_open_tags:false,
             },
 
@@ -420,7 +421,7 @@ export default {
         },
         handleEdit(index, row){
             this.form=Object.assign({}, row);
-            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
+            this.form.employ_id = accountService.get_user_info("ms_odoo_employee_id");
             this.tag_form=Object.assign({}, {
                 item_id:this.form.id,
                 pid:"",
@@ -510,7 +511,7 @@ export default {
                 end_date:"",
                 description:"",
                 owner:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
+                employ_id:accountService.get_user_info("ms_odoo_employee_id"),
                 is_open_tags:false,
             };
             this.$refs.form.clearValidate();

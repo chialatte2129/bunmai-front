@@ -9,7 +9,7 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
+                <el-button v-if="odoo_employee_id != null" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
                 @click="handleCreate">
                     {{$t('btn.new')}}
                 </el-button>
@@ -503,7 +503,7 @@ import { workItemService } from "@/_services";
 import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
 import { partnerService } from "@/_services";
-
+import { accountService } from "@/_services";
 export default {
     name: "pay_order",
     components: {
@@ -526,9 +526,9 @@ export default {
             sort_column:"",
             sort:"",
             
-            action_list:localStorage.getItem("ms_user_actions"),
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
-            username:localStorage.getItem("ms_username"),
+            action_list:accountService.get_user_actions(),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
             user_info:localStorage.getItem("ms_user_fullname"),
 
             loading:false,
@@ -711,15 +711,18 @@ export default {
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },
+
         showTitle(){
             if(this.createView) return "新增請款單";
             else if(this.updateView) return "編輯請款單";
             else return "";
         },
+
         showVisible(){
             if(this.updateView) return this.updateView;
             else return false;
         },
+
         handleCaculateTotalAmount(){
             var total = 0;
             this.form.content_json.forEach(element => {
@@ -727,6 +730,7 @@ export default {
             });
             return total
         },
+
         handleCaculatePayItemTotalAmount(){
             var total = 0;
             this.form.payment_item.forEach(element => {
@@ -734,6 +738,7 @@ export default {
             });
             return total
         },
+
         caculatePaiedTotalAmount(){
             var total = 0;
             this.form.payment_item.forEach(element => {
@@ -743,6 +748,7 @@ export default {
             });
             return total
         },
+
         async checkContent(){
             await this.form.content_json.forEach(element => {
                 // console.log(element.amount);
@@ -753,10 +759,12 @@ export default {
                 }
             });
         },
+
         today(){
             let time =new Date();
             return time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
         },
+
         orderReadOnly(){
             if(this.form.status == "D"){
                 return false
@@ -764,30 +772,35 @@ export default {
                 return true 
             }
         },
+
         is_order_owner(){
             return this.form.pid == this.odoo_employee_id || this.form.applicant_id == this.odoo_employee_id;
         },
+
         is_accountant(){
-            if(localStorage.getItem("ms_user_menus").includes("accountant")){
+            if(accountService.get_user_menus().includes("accountant")){
                 return true
             }else{
                 return false
             }
         },
+
         is_purchasing(){
-            if(localStorage.getItem("ms_user_menus").includes("purchasing")){
+            if(accountService.get_user_menus().includes("purchasing")){
                 return true
             }else{
                 return false
             }
         },
+
         is_project_owner(){
-            if(this.form.project_owner_id == localStorage.getItem("ms_odoo_employee_id")){
+            if(this.form.project_owner_id == accountService.get_user_info("ms_odoo_employee_id")){
                 return true
             }else{
                 return false
             }
         },
+
         computePayOrder(){
             var set_amount = 0;
             var total_amount = this.handleCaculateTotalAmount;
@@ -1369,11 +1382,16 @@ export default {
                 }
             }
             await payOrderService.get_pay_orders(param).then(res =>{ 
-                this.tableData=res.data;
-                this.totalRow=res.total;
-                this.getSpanArr(this.tableData);
+                if(res.code==1){
+                    this.tableData=res.data;
+                    this.totalRow=res.total;
+                    this.getSpanArr(this.tableData);
+                    this.loading=false;
+                }else{
+                    this.loading=false;
+                    this.$message.error(res.msg)
+                };             
             })
-            this.loading=false;
         },
         async getOption(){
             await dayItemService.get_option_list({action:["work_item_now"]}).then(res =>{ 

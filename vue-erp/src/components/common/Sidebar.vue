@@ -43,6 +43,7 @@
 </template>
 <script>
 import bus from "../common/bus";
+import { accountService } from "@/_services";
 export default {
     data(){
         return {
@@ -262,7 +263,7 @@ export default {
     },
     methods: {
         hasThisMenu(menu_path){
-            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            var my_menus = accountService.get_user_menus();
             if (my_menus.includes(menu_path)) {
                 return true;
             } else {
@@ -271,11 +272,11 @@ export default {
         },
 
         hasThisMenuOrMgr(menu_path){
-            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            var my_menus = accountService.get_user_menus();
             if (my_menus.includes(menu_path)) {
                 return true;
             } else {
-                if (localStorage.getItem("ms_odoo_is_dept_manager")=="true") {
+                if (accountService.get_user_info("ms_odoo_is_dept_manager")=="true") {
                     localStorage.setItem("ms_user_menus", `${localStorage.getItem('ms_user_menus')}, ${menu_path}`); 
                     return true;
                 }
@@ -286,7 +287,7 @@ export default {
         includeSubMenu(sys_menus){
             var find_flag = false;
             var arrayLength = sys_menus.length;
-            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            var my_menus = accountService.get_user_menus();
             for (var i = 0; i < arrayLength; i++) {
                 var menu_path = sys_menus[i];
                 if (my_menus.includes(menu_path)) {
