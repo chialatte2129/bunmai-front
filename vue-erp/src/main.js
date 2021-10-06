@@ -84,7 +84,11 @@ router.beforeEach((to, from, next) => {
            
         } 
     }
-    if (path_id != "login" && (accountService.get_user_menus() != undefined && accountService.get_user_menus().indexOf(path_id) < 0) || path_id == "") { //沒權限                 
+    if (path_id != "login" && (accountService.get_user_menus() != undefined && accountService.get_user_menus().indexOf(path_id) < 0) || path_id == "") { //沒權限  
+        // console.log("No Auth");
+        // console.log(path_id);
+        // console.log(accountService.get_user_menus());
+        // console.log(accountService.get_user_menus().indexOf(path_id))             
         localStorage.removeItem('ms_username');               
         next('/login');
     }    

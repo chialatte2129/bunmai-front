@@ -123,6 +123,7 @@ export default {
         // localStorage.removeItem("ms_odoo_user_id");  
         localStorage.removeItem("ms_user_menus"); 
         localStorage.removeItem("ms_user_actions");
+        localStorage.removeItem("ms_user_info");
         // localStorage.removeItem("ms_odoo_user_id");
         // localStorage.removeItem("ms_odoo_employee_id");
         // localStorage.removeItem("ms_odoo_is_dept_manager");

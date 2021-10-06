@@ -271,13 +271,20 @@ export default {
             }
         },
 
+        updateUserMenus(menu_path){
+            console.log("Add to menus:", menu_path);
+            var base64_user_menu = localStorage.getItem("ms_user_menus");
+            var user_menu = atob(atob(base64_user_menu));
+            localStorage.setItem("ms_user_menus", btoa(btoa(`${user_menu},${menu_path}`))); 
+        },
+
         hasThisMenuOrMgr(menu_path){
             var my_menus = accountService.get_user_menus();
             if (my_menus.includes(menu_path)) {
                 return true;
             } else {
-                if (accountService.get_user_info("ms_odoo_is_dept_manager")=="true") {
-                    localStorage.setItem("ms_user_menus", `${localStorage.getItem('ms_user_menus')}, ${menu_path}`); 
+                if (accountService.get_user_info("ms_odoo_is_dept_manager")==true) {
+                    this.updateUserMenus(menu_path);
                     return true;
                 }
             }
