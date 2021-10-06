@@ -70,9 +70,9 @@ router.beforeEach((to, from, next) => {
                     localStorage.setItem("ms_user_actions", btoa(btoa(result.data.user_actions)));
                     localStorage.setItem("ms_user_token", result.data.token);
                     localStorage.setItem("ms_user_fullname", result.data.user_full_name);
-                  if(result.data.user_menus.indexOf(to.query.target) >=0){
-                    next(to.query.target);
-                  }       
+                    if(result.data.user_menus.indexOf(to.query.target) >=0){
+                        next(to.query.target);
+                    }       
                 }
                 else {
                     Message({
