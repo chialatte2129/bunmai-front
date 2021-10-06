@@ -276,7 +276,7 @@ export default {
             if (my_menus.includes(menu_path)) {
                 return true;
             } else {
-                if (accountService.get_user_info("ms_odoo_is_dept_manager")==true) {
+                if (accountService.get_user_info("ms_odoo_is_dept_manager")=="true") {
                     localStorage.setItem("ms_user_menus", `${localStorage.getItem('ms_user_menus')}, ${menu_path}`); 
                     return true;
                 }
