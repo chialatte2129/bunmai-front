@@ -657,6 +657,9 @@ export default {
 
         async handleEdit(index, row){
             this.form=Object.assign({}, row);
+            if(this.form.comp_time){
+                this.des_flag=true;
+            };
             this.form.org_tag1=row.tag1;
             await this.get_filter_tag();
             this.edit_idx=index;
@@ -744,6 +747,7 @@ export default {
         },
 
         cancelDialog(){
+            this.des_flag=false;
             this.resetForm();
             this.createView=false;
             this.updateView=false;
