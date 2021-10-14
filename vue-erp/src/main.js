@@ -17,6 +17,7 @@ import JsonExcel from 'vue-json-excel';
 import VueClipboard from 'vue-clipboard2';
 import HighchartsVue from "highcharts-vue";
 import LoadScript from "vue-plugin-load-script";
+import DlgDraggable from "vue-element-dialog-draggable"
 Vue.config.productionTip = false
 Vue.use(LoadScript);
 Vue.use(VueI18n);
@@ -25,9 +26,15 @@ Vue.use(HighchartsVue);
 Vue.use(ElementUI, {
     size: 'small'
 });
+Vue.use(DlgDraggable, {
+    containment: true //Constrains dragging to within the bounds of the window.  Default: false.
+  });
 Vue.prototype.$axios = axios;
 Vue.prototype.$jsEncrypt = JsEncrypt;
 Vue.component('downloadExcel', JsonExcel)
+Vue.use(DlgDraggable, {
+  containment: true //Constrains dragging to within the bounds of the window.  Default: false.
+});
 const i18n = new VueI18n({
     locale: localStorage.getItem("ms_user_lang")==undefined ? 'en_US':localStorage.getItem("ms_user_lang"),
     fallbackLocale: 'en_US',

@@ -59,7 +59,7 @@
             </div>
         </div>
         
-        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
+        <el-dialog v-draggable :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
             <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelDelete">{{$t("btn.cancel")}}</el-button>
@@ -68,7 +68,7 @@
         </el-dialog>
         
         <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
-        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
+        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey" v-draggable>
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
@@ -130,7 +130,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog :title="$t('employee.edit_personal_tags')" :visible.sync="tagView" top="90px" width="1100px" 
+        <el-dialog :title="$t('employee.edit_personal_tags')" :visible.sync="tagView" top="90px" width="1100px" v-draggable
         :before-close="cancelTagDialog" :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="tagDlKey">
             <div v-loading.lock="tag_dl_loading">
                 <el-row class="mgb10 mgl10">
