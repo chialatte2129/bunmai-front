@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div>
+        <div v-if="!tableData.length" style="width:100%;">
+            <span style="color:grey;">尚無簽核流程</span>
+        </div>
+        <div v-if="tableData.length"> 
             <el-steps direction="vertical" :active="current_proccess" >
                 <el-step title="建單" status="finish" class="mgb10" :description="'建單時間:'+approval_info.created_at" icon="el-icon-success"></el-step>
                 <el-step v-for="(item, index) in tableData" class="stage-step mgb10" 
@@ -75,6 +78,10 @@ export default {
         type: {
             type: String,
             default:""
+        },
+        load_key: {
+            type: Number,
+            default:0
         }
     },
     data(){
@@ -101,11 +108,14 @@ export default {
     watch:{
         tableData(){
             this.handleProcessAction();
-        }
+        },
+        load_key(){
+            this.getData();
+        },
     },
 
     async created(){
-        await this.getData();
+        // await this.getData();
     },
 
     computed: {
@@ -115,11 +125,9 @@ export default {
     methods: {
         handleProcessAction(){
             var current_stagte_index = this.tableData.findIndex(element => element.is_current_layer==1)
-            if(current_stagte_index==-1){
-                console.log(this.tableData.length + 2);
+            if(current_stagte_index==-1){ 
                 this.current_proccess = this.tableData.length + 2;
             }else{
-                console.log(current_stagte_index + 3);
                 this.current_proccess = current_stagte_index + 3;
             }
         },
@@ -176,13 +184,9 @@ export default {
                     this.loading=false;
                 }else{
                     this.loading=false;
-                    this.$message.error(res.msg)
+                    console.log(res);
                 };             
             })
-        },
-
-        resultChange(){
-            this.$emit('result_change',{"checked_id":this.checked_id})
         },
     }
 }
