@@ -72,14 +72,12 @@
                 <el-button @click="cancelCreate">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmCreate">{{$t('btn.confirm')}}</el-button>
             </span>
-        
         </el-dialog>
         
         <el-dialog :title="$t('reimburse.edit_reimburse')" v-if="updateView" :visible.sync="updateView" width="1100px" :key="tbKey" :before-close="cancelDialog" top="8%" 
         :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog" >
             <paymentOrderItem v-if="updateView" :order_id="current_order_id" @close="cancelDialog"></paymentOrderItem>
         </el-dialog>
-
     </div>
 </template>
 <script>
@@ -422,4 +420,5 @@ export default {
         float:right;
         margin-top:-10px;
     }
+   
 </style>

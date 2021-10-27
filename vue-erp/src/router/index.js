@@ -115,7 +115,7 @@ export default new Router({
                     path: 'daily_jobs_review',
                     component: () => import('../components/page/daily_jobs/review.vue'),
                     meta: { title:  'menus.daily_jobs_review' }
-                },   
+                },  
                 {
                     path: '/project_cost_upload',
                     component: () => import('../components/page/project_manage/project_cost_upload.vue'),
@@ -123,7 +123,7 @@ export default new Router({
                 },
                 {
                     path: '/supplier_accounts',
-                    component: () => import('../components/page/project_manage/supplier_accounts.vue'),
+                    component: () => import('../components/page/partner/supplier_accounts.vue'),
                     meta: { title:  'menus.supplier_accounts' }
                 },   
                 {

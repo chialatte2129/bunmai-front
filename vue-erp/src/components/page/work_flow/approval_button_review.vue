@@ -5,7 +5,7 @@
         v-draggable
         :title="$t('btn.proccess')"
         :visible.sync="dialogVisible"
-        :modal="false"
+        :modal="true" :append-to-body="true"
         width="30%"
         :before-close="handleClose">
             <el-form label-position="top">
@@ -74,11 +74,16 @@ export default {
                 console.log(res);
                 this.getData();
                 this.handleClose();
+                this.beforeClose();
             });
         },
 
         getData(){
             this.$emit('change',{})
+        },
+
+        beforeClose(){
+            this.$emit('beforeClose',{})
         },
 
     }

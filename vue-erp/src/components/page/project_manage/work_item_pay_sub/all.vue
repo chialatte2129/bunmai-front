@@ -114,7 +114,7 @@ export default {
             totalRow:0,
             cur_page: 1,
             page_size:10,
-            page_size_list:[5, 10],
+            page_size_list:[5, 10, 50,100],
             start_row:0,
             sort_column:"",
             sort:"",

@@ -8,10 +8,11 @@
         </div>
         <div class="container">
             <div class="mgb10">
-                <el-button size="large" type="success" class="mgr10" icon="el-icon-plus" :disabled="loading" 
+                <!-- <el-button size="large" type="success" class="mgr10" icon="el-icon-plus" :disabled="loading" 
                 @click="handleCreate()">
                     {{$t('btn.new')}}
-                </el-button>
+                </el-button> -->
+                <addNewPartner :btnTitle="$t('btn.new')" @finish="handleFinishCreate"></addNewPartner>
                 <el-input v-model="filter.key_word" clearable size="large" class="mgr10 handle-input" placeholder="關鍵字搜尋" :disabled="loading" @change="getData()"/>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
@@ -19,6 +20,7 @@
                 <el-table-column prop="name" label="紀錄名稱" width="auto" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="account_name" label="帳戶名稱" width="auto" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="bank" label="銀行"  width="auto" sortable="custom" align="left" show-overflow-tooltip/>
+                <el-table-column prop="branch" label="分行"  width="auto" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="account" label="帳號" width="auto" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="200" align="center" fixed="right">
                     <template slot-scope="scope">
@@ -54,6 +56,9 @@
                     <el-form-item label="銀行" >
                         <el-input v-model="form.bank" style="width:400px;"></el-input>
                     </el-form-item>
+                    <el-form-item label="分行" >
+                        <el-input v-model="form.branch" style="width:400px;"></el-input>
+                    </el-form-item>
                     <el-form-item label="帳號" >
                         <el-input v-model="form.account" style="width:400px;"></el-input>
                     </el-form-item>
@@ -69,9 +74,11 @@
 <script>
 import { partnerService } from "@/_services";
 import { accountService } from "@/_services";
+import addNewPartner from "./add_new_partner";
 export default {
     name: "pay_order",
     components: {
+        addNewPartner
     },
     data(){
         return {
@@ -114,6 +121,7 @@ export default {
                 name:"",
                 account_name:"",
                 bank:"",
+                branch:"",
                 account:""
             },
 
@@ -157,12 +165,15 @@ export default {
     }, 
     
     methods: {
-
+        handleFinishCreate(){
+            this.getData();
+        },
         async handleCreate(){
             this.form = {
                 name:"",
                 account_name:"",
                 bank:"",
+                branch:"",
                 account:"",
                 odoo_employee_id: this.odoo_employee_id
             };

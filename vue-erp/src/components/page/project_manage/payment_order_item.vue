@@ -8,8 +8,8 @@
                         <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="danger" size="large" @click="handleRejectAc(form)">{{$t('btn.reject')}}</el-button>
                         <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="success" size="large" @click="handleConfirmPayment(form)">{{$t("reimburse.confirm_payment_order")}}</el-button>
                         <el-button v-if="is_order_owner && (form.status=='A' || form.status=='P')" type="success" size="large" @click="handleRestore(form)">{{$t('btn.draft')}}</el-button>
-                        <approvalReviewButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @change="getData"></approvalReviewButton>
-                        <approvalRejectButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @change="getData"></approvalRejectButton>
+                        <approvalReviewButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @beforeClose="closeDialog" @change="getData"></approvalReviewButton>
+                        <approvalRejectButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @beforeClose="closeDialog" @change="getData"></approvalRejectButton>
                         <el-button v-if="orderReadOnly==false" type="danger" size="large" @click="handleDelete(form)">{{$t('btn.abandon')}}</el-button>
                         <el-button v-if="is_order_owner && form.status=='F'" type="primary" size="largre" @click="confirmDownload(form)">{{$t('btn.download')}}</el-button>
                         <el-button v-if="orderReadOnly==false" size="large" type="primary" @click="confirmDialog">{{$t('btn.save')}}</el-button>
@@ -65,6 +65,8 @@
                         </el-row>
                     </el-card>
                 </el-row>
+
+                <!-- 請款內容 -->
                 <el-row>
                     <el-card shadow="always" class="mgb10" style="padding-bottom:20px;">
                         <div slot="header" class="clearfix">
@@ -94,6 +96,8 @@
                         </div>
                     </el-card>
                 </el-row>
+
+                <!-- 支付設定 -->
                 <el-row >
                     <el-card shadow="always" class="mgb10" style="padding-bottom:20px;">
                         <div slot="header" class="clearfix">
@@ -126,6 +130,8 @@
                         </div>
                     </el-card>
                 </el-row>
+
+                <!-- 簽核狀態 -->
                 <el-row :gutter="10">
                     <el-col :span="9">
                         <el-card shadow="always">
@@ -187,8 +193,8 @@
                 <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="danger" size="large" @click="handleRejectAc(form)">{{$t('btn.reject')}}</el-button>
                 <el-button v-if="is_accountant && form.status=='F' && form.is_paied==0" type="success" size="large" @click="handleConfirmPayment(form)">{{$t("reimburse.confirm_payment_order")}}</el-button>
                 <el-button v-if="is_order_owner && (form.status=='A' || form.status=='P')" type="success" size="large" @click="handleRestore(form)">{{$t('btn.draft')}}</el-button>
-                <approvalReviewButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @change="getData"></approvalReviewButton>
-                <approvalRejectButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @change="getData"></approvalRejectButton>
+                <approvalReviewButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @beforeClose="closeDialog" @change="getData"></approvalReviewButton>
+                <approvalRejectButton v-if="is_current_approver && form.status=='P'" :current_stage_id="form.current_stage_id" class="flr mgl5" @beforeClose="closeDialog" @change="getData"></approvalRejectButton>
                 <el-button v-if="orderReadOnly==false" type="danger" size="large" @click="handleDelete(form)">{{$t('btn.abandon')}}</el-button>
                 <el-button v-if="is_order_owner && form.status=='F'" type="primary" size="largre" @click="confirmDownload(form)">{{$t('btn.download')}}</el-button>
                 <el-button v-if="orderReadOnly==false" size="large" type="primary" @click="confirmDialog">{{$t('btn.save')}}</el-button>
@@ -197,7 +203,7 @@
             </div>
         </div>
 
-        <el-dialog :title="$t('reimburse.create_item')" :modal="false" :visible.sync="addItemVisible" width="600px" center :before-close="cancelAddItem" v-draggable>
+        <el-dialog :title="$t('reimburse.create_item')" :modal="true" :append-to-body="true" :visible.sync="addItemVisible" width="600px" center :before-close="cancelAddItem" v-draggable>
             <el-row>
                 <el-col v-for="type in option.item_types" :key="type.title" :span="8">
                     <div style="padding:5px;">
@@ -207,21 +213,21 @@
             </el-row>
         </el-dialog>
 
-         <el-dialog :title="$t('reimburse.confirm_restore')" :modal="false" :visible.sync="restoreVisible" width="300px" center :before-close="cancelQuestDialog"  v-draggable>
+         <el-dialog :title="$t('reimburse.confirm_restore')" :modal="true" :append-to-body="true" :visible.sync="restoreVisible" width="300px" center :before-close="cancelQuestDialog"  v-draggable>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmRestore">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
 
-         <el-dialog :title="$t('reimburse.confirm_abandon')" :modal="false" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog"  v-draggable>
+         <el-dialog :title="$t('reimburse.confirm_abandon')" :modal="true" :append-to-body="true" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog"  v-draggable>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('cost.approval')" :modal="false" :visible.sync="passVisible" width="300px" center :before-close="cancelPayOrderDialog"  v-draggable>
+        <el-dialog :title="$t('cost.approval')" :modal="true" :append-to-body="true" :visible.sync="passVisible" width="300px" center :before-close="cancelPayOrderDialog"  v-draggable>
             <div style="text-align:center;">
                 <span>{{$t('cost.confirm_approval')}}</span>
             </div>
@@ -231,7 +237,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('cost.withdraw')" :modal="false" :visible.sync="rejectVisible" width="300px" center :before-close="cancelPayOrderDialog"  v-draggable>
+        <el-dialog :title="$t('cost.withdraw')" :modal="true" :append-to-body="true" :visible.sync="rejectVisible" width="300px" center :before-close="cancelPayOrderDialog"  v-draggable>
             <div style="text-align:left;">
                 <span>{{$t('cost.confirm_withdraw')}}</span>
             </div>
@@ -244,7 +250,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('cost.appropriate')" :modal="false" :visible.sync="payDateVisible" width="300px" center :before-close="cancelPayOrderDialog"  v-draggable>
+        <el-dialog :title="$t('cost.appropriate')" :modal="true" :append-to-body="true" :visible.sync="payDateVisible" width="300px" center :before-close="cancelPayOrderDialog"  v-draggable>
             <div style="text-align:center;">
                 <span>{{$t('cost.select_appropriate_date')}}</span>
             </div>
@@ -257,10 +263,12 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('reimburse.partner_account')" :modal="false" :visible.sync="partnerVisible" width="900px" center :before-close="cancelPartnerVisivle"  v-draggable>
+        <el-dialog :title="$t('reimburse.partner_account')" :modal="true" :append-to-body="true"  :visible.sync="partnerVisible" width="900px" center :before-close="cancelPartnerVisivle"  v-draggable>
             <div >
                 <span style="width:250px;margin-bottom:20px;">{{$t('reimburse.select_partner')}}: {{select_partner.name}}</span>
+                <addNewPartner style="float:right" class="mgl10" :btnTitle="$t('btn.new')" ></addNewPartner>
                 <el-input v-model="partner_search" size="mini" style="float:right;width:250px;margin-bottom:20px;" :placeholder="$t('btn.key_word')" clearable/>
+                
                 <el-table :data="option.partner.filter(
                     data => !partner_search || ( 
                         data.name.toLowerCase().includes(partner_search.toLowerCase()) || 
@@ -285,8 +293,9 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('reimburse.update_payment_item_setting')" :modal="false" :visible.sync="updateItemVisible" width="500px" center :before-close="cancelUpdateItem" 
+        <el-dialog :title="$t('reimburse.update_payment_item_setting')" :modal="true" :append-to-body="true"  :visible.sync="updateItemVisible" width="500px" center :before-close="cancelUpdateItem" 
         :close-on-click-modal="false" :close-on-press-escape="false"  v-draggable>
+            
             <div>
                  <el-form ref="form" label-width="80px">
                     <el-form-item v-if="item_index>-1" :label="$t('reimburse.id')">
@@ -295,8 +304,14 @@
                     <el-form-item :label="$t('reimburse.item_name')">
                         <span>{{item_form.type}}</span>
                     </el-form-item>
+                    <!-- 選擇日期 -->
                     <el-form-item :label="$t('reimburse.date')">
-                        <el-date-picker :readonly="orderReadOnly" v-model="item_form.date" style="width:155px" type="date" align="right" unlink-panels value-format="yyyy-MM-dd"  />
+                        <el-date-picker 
+                        :readonly="orderReadOnly" v-model="item_form.date" 
+                        :picker-options="pickerOptions"
+                        style="width:155px" 
+                        type="date" align="right" unlink-panels 
+                        value-format="yyyy-MM-dd" />
                     </el-form-item>
                     <el-form-item  v-for="data in item_form.content" :key="data.id+item_form.id" :label="data.title">
                         <el-input :type="data.type" :rows="3" autosize :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable></el-input>
@@ -316,9 +331,10 @@
                 <el-button @click="cancelUpdateItem">{{$t('btn.cancel')}}</el-button>
                 <el-button  v-if="!orderReadOnly" type="primary" @click="confirmUpdateItem">{{$t('btn.confirm')}}</el-button>
             </span>
+            
         </el-dialog>
 
-        <el-dialog :title="$t('reimburse.update_payment_setting')" :modal="false" :visible.sync="updatePayItemVisible" width="1000px" center  
+        <el-dialog :title="$t('reimburse.update_payment_setting')" :modal="true" :append-to-body="true"  :visible.sync="updatePayItemVisible" width="1000px" center  
         :before-close="cancelUpdatePayItem" :close-on-click-modal="false" :close-on-press-escape="false"  v-draggable>
             <div>
                 <el-row>
@@ -369,7 +385,7 @@
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.beneficiary')">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.account_name" ></el-input>
-                            <el-button v-if="!orderReadOnly && is_purchasing" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
+                            <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.beneficiary_bank')">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_bank" ></el-input>
@@ -387,7 +403,7 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('reimburse.confirm_payment_order')" :modal="false" :visible.sync="confirmPaymentVisible" width="300px" center 
+        <el-dialog :title="$t('reimburse.confirm_payment_order')" :modal="true" :append-to-body="true" :visible.sync="confirmPaymentVisible" width="300px" center 
         :before-close="cancelConfirmPayment"  v-draggable>
             <div>
                 <el-form ref="form" label-width="80px">
@@ -415,12 +431,14 @@ import { accountService } from "@/_services";
 import workFlowStatus from "../work_flow/workflow_status.vue";
 import approvalRejectButton from "../work_flow/approval_button_reject.vue";
 import approvalReviewButton from "../work_flow/approval_button_review.vue";
+import addNewPartner from "../partner/add_new_partner";
 export default {
     name: "pay_order",
     components: {
         workFlowStatus,
         approvalRejectButton,
-        approvalReviewButton
+        approvalReviewButton,
+        addNewPartner
     },
     props: {
         order_id: {
@@ -608,6 +626,10 @@ export default {
                 ]
                 
             },
+
+            pickerOptions: {
+                disabledDate:this.disabledDate
+            }
         }
     },
 
@@ -615,6 +637,8 @@ export default {
         // await this.get_dept_employee();
         await this.getOption();
         await this.getData();
+        console.log(this.max_cert_date);
+        console.log(this.min_cert_date);
     },
 
     computed: {
@@ -708,10 +732,73 @@ export default {
                 set_amount += element.amount;
             });
             return total_amount - set_amount
-        }
+        },
+
+        min_cert_date(){
+            var max_date = "";
+            this.form.content_json.forEach(element=>{
+                console.log(element);
+                if(max_date){
+                    if(element.date>max_date){
+                        max_date = element.date
+                    }
+                }else{
+                    max_date = element.date
+                }
+            });
+            if(max_date){
+                let date = new Date(max_date);
+                date.setDate(date.getDate() - 30);
+                // console.log(date);
+                return date;
+            }else{
+                return false
+            };
+            
+        },
+
+        max_cert_date(){
+            var min_date = "";
+            this.form.content_json.forEach(element=>{
+                console.log(element);
+                if(min_date){
+                    if(element.date<min_date){
+                        min_date = element.date
+                    }
+                }else{
+                    min_date = element.date
+                }
+            });
+            if(min_date){
+                let date = new Date(min_date);
+                date.setDate(date.getDate() + 30);
+                // console.log(date);
+                return date;
+            }else{
+                return false
+            };
+        },
+        
+
     }, 
     
     methods: {
+        disabledDate (time) {
+            let count_date = 0;
+            this.form.content_json.forEach(element=>{
+                if(element.date){
+                    count_date++
+                }
+            });
+            if(!count_date){
+                return false
+            }else if(this.form.content_json.length==1 && this.item_index==0){
+                return false
+            }else{
+                return  time.getTime() <= this.min_cert_date  ||  time.getTime() >= this.max_cert_date;
+            }
+        },
+        
         handleOpenProjectCost(item_id){
             let routeData = this.$router.resolve({path: "/work_item_cost_edit", query: {id: item_id}});
             window.open(routeData.href, '_blank');
@@ -972,12 +1059,17 @@ export default {
         },
 
         confirmUpdateItem(){
-            if(this.item_index<0){
-                this.form.content_json.push(this.item_form);
+            if(!this.item_form.date){
+                return this.$message.error("請設定憑證日期")
             }else{
-                this.form.content_json.splice(this.item_index, 1, this.item_form);
-            };
-            this.updateItemVisible = false;
+                if(this.item_index<0){
+                    this.form.content_json.push(this.item_form);
+                }else{
+                    this.form.content_json.splice(this.item_index, 1, this.item_form);
+                };
+                this.updateItemVisible = false;
+            }
+            
         },
 
         handleUpdatePayItem(row,index){

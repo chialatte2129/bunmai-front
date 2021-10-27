@@ -12,7 +12,7 @@
                 <el-checkbox v-model="filter.is_current_sign"  class="mgr10" @change="search">待審核</el-checkbox>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
-            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">
+            @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey1" >
                 <el-table-column prop="display_order_id" :label="$t('reimburse.order_id')" width="160" sortable="custom" align="left" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('reimburse.project_name')" min-width="150px"  width="auto" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="owner" :label="$t('reimburse.project_owner')" width="140" align="center" show-overflow-tooltip/>
@@ -30,9 +30,9 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
-                <el-table-column prop="action" :label="$t('btn.action')" width="100" align="center" fixed="right">
+                <el-table-column prop="action" :label="$t('btn.action')" width="100" align="center" fixed="right" style="z-index:1000">
                     <template slot-scope="scope">
-                        <el-button type="warning" size="mini" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
+                        <el-button type="warning" size="mini" icon="el-icon-edit"  @click="handleEdit(scope.$index, scope.row)">{{$t('btn.edit')}}</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -41,40 +41,8 @@
                 :disabled="loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
             </div>
         </div>
-        <el-dialog :title="$t('reimburse.create_reimburse')" :visible.sync="createView" width="400px" center :before-close="cancelCreate">
-            <div>
-                <el-form label-width="auto">
-                    <el-form-item :label="$t('reimburse.project_name')">
-                        <el-select v-model="createForm.project_id" filterable :placeholder="$t('reimburse.select_project_name')">
-                            <el-option
-                            v-for="item in option.projects" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item  :label="$t('reimburse.filler')">
-                        <span>{{user_info}}</span>
-                    </el-form-item>
-                    <el-form-item  :label="$t('reimburse.applicant_withcomment')">
-                        <el-select class="mgr10" v-model="createForm.applicant_id" filterable collapse-tags
-                        :placeholder="$t('reimburse.applicant_name')" :disabled="loading">
-                            <el-option-group v-for="group in option.members" :key="group.id" :label="group.name">
-                                <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
-                                    <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
-                                    <span v-else class="mgl10">{{item.name}}</span>
-                                </el-option>
-                            </el-option-group>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelCreate">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmCreate">{{$t('btn.confirm')}}</el-button>
-            </span>
         
-        </el-dialog>
-        
-        <el-dialog :title="$t('reimburse.edit_reimburse')" v-if="updateView" :visible.sync="updateView" width="1100px" :key="tbKey" :before-close="cancelDialog" top="8%" 
+        <el-dialog :title="$t('reimburse.edit_reimburse')" v-if="updateView" :visible.sync="updateView" width="1100px" :key="tbKey1" :before-close="cancelDialog" top="8%" 
         :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog" >
             <paymentOrderItem v-if="updateView" :order_id="current_order_id" @close="cancelDialog"></paymentOrderItem>
         </el-dialog>
@@ -88,14 +56,19 @@ import { dayItemService } from "@/_services";
 import { partnerService } from "@/_services";
 import { accountService } from "@/_services";
 import paymentOrderItem from "../payment_order_item.vue";
+import bus from "@/components/common/bus";
 export default {
     name: "pay_order",
     components: {
         paymentOrderItem
     },
+    props: {
+        tbKey: Number,
+        
+    },
     data(){
         return {
-            tbKey:0,
+            tbKey1:0,
             tableData: [],
             spanArr:[],
             pos:0,
@@ -153,13 +126,28 @@ export default {
                 ]
                 
             },
+            screenWidth:document.body.clientWidth
         }
     },
 
     async created(){
-        // await this.get_dept_employee();
+        console.log("OK");
+        bus.$on('screen-width', width => {
+            this.screenWidth=width;
+        });
         await this.getOption();
         await this.getData();
+        this.$refs.multipleTable.doLayout();
+    },
+
+    watch: {
+        tbkey(val){
+            this.tbKey1 = val;
+            console.log(val);
+        },
+        async screenWidth(val){
+            await this.$refs.multipleTable.doLayout();
+        },
     },
 
     computed: {
@@ -183,36 +171,6 @@ export default {
     }, 
     
     methods: {
-        objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-            if(["display_order_id", "item_name","owner","p_name","description","applicant_name","order_date","status_name","total_amount","action"].includes(column.property)){
-                const _row=this.spanArr[rowIndex];
-                const _col=_row>0?1:0;
-                return { rowspan:_row, colspan:_col }
-            }
-        },
-
-        getSpanArr(data){
-            this.resetSpanArr();
-            for(var i=0;i<data.length;i++){
-                if(i===0){ 
-                    this.spanArr.push(1);
-                    this.pos=0;
-                }else{
-                    if(data[i].order_id===data[i-1].order_id){
-                        this.spanArr[this.pos]+=1;
-                        this.spanArr.push(0);
-                    }else{ 
-                        this.spanArr.push(1); 
-                        this.pos=i;
-                    }
-                }
-            }
-        },
-
-        resetSpanArr(){
-            this.spanArr=[];
-            this.pos=null;
-        },
 
         create_UUID(len) {
             let text = ""
@@ -286,7 +244,7 @@ export default {
         },
 
         async handleEdit(index, row){
-            this.tbKey++;
+            this.tbKey1++;
             this.current_order_id = row.order_id;
             this.updateView = true;
         },
@@ -337,7 +295,7 @@ export default {
                 if(res.code==1){
                     this.tableData=res.data;
                     this.totalRow=res.total;
-                    this.getSpanArr(this.tableData);
+                    // this.getSpanArr(this.tableData);
                     this.handleSyncTodo();
                     this.loading=false;
                 }else{

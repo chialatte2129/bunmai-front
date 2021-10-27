@@ -106,6 +106,7 @@ export const messages = {
             partner_manage:"聯絡人管理",
             supplier_accounts:"供應商帳戶管理",
             project_funnel_review:"專案漏斗管理",
+            payment_order_review:"請款單連結",
         },
         table_title:{
             role :'角色代號',
@@ -510,7 +511,7 @@ export const messages = {
             order_dept:"申請單位",
             applicant_name:"申請人",
             content:"請款內容",
-            date:"日期",
+            date:"憑證日期",
             amount:"金額",
             payment_setting:"支付設定",
             cash:"付現",
@@ -706,6 +707,7 @@ export const messages = {
             partner_manage:"Partner Manage",
             supplier_accounts:"Supplier Account",
             project_funnel_review:"Funnel Review",
+            payment_order_review:"Payment Hyperlink",
         },
         table_title :{
             role :'Role id',

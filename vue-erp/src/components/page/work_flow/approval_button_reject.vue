@@ -5,7 +5,7 @@
         v-draggable
         :title="$t('btn.reject')"
         :visible.sync="dialogVisible"
-        :modal="false"
+        :modal="true" :append-to-body="true"
         width="30%"
         :before-close="handleClose">
             <el-form label-position="top">
@@ -72,13 +72,18 @@ export default {
             .approval_stage_reject(params)
             .then(res=>{
                 console.log(res);
-                this.getData();
+                // this.getData();
                 this.handleClose();
+                this.beforeClose();
             });
         },
 
         getData(){
             this.$emit('change',{})
+        },
+
+        beforeClose(){
+            this.$emit('beforeClose',{})
         },
 
     }

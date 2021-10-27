@@ -227,171 +227,11 @@
             </span>
         </el-dialog>
         
-        
-
-        <el-dialog :title="$t('cost.reimbursement')" :visible.sync="viewPayOrderVisible" width="1100px" :before-close="closeAllDialog" top="8%"  :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
-            <el-form :model="payOrderForm" ref="form" :rules="rules" label-position="right" label-width="150px">
-                <el-row class="mgb10" >
-                    <div style="float:right;">
-                        <el-button type="info" size="large" @click="closeAllDialog">{{$t('btn.close')}}</el-button>
-                        <el-button v-if="is_accountant && payOrderForm.status=='F' " type="danger" size="large" @click="handleRejectAc(payOrderForm)">{{$t('btn.reject')}}</el-button>
-                        <el-button v-if="is_accountant && payOrderForm.status=='F' " type="success" size="large" @click="handleConfirmPayment(form)">確認請款單</el-button>
-                        <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="danger" size="large" style="width:150px;" @click="handleReject">{{$t('btn.reject')}}</el-button>
-                        <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="primary" size="large" style="width:150px;" @click="handlePass">{{$t('btn.proccess')}}</el-button>
-                    </div>
-                </el-row>
-                <el-row>
-                    <el-card shadow="always" class="mgb10" v-loading.lock="loading">
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item :label="$t('reimburse.order_id')">
-                                    <span>{{payOrderForm.order_id}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.order_date')">
-                                    <span>{{payOrderForm.order_date}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.status')">
-                                    <span v-if="payOrderForm.status=='D'" style="color:grey">{{$t('reimburse.status_tag.D')}}</span>
-                                    <span v-if="payOrderForm.status=='P'" style="color:blue">{{$t('reimburse.status_tag.P')}}</span>
-                                    <span v-if="payOrderForm.status=='F'" style="color:green">{{$t('reimburse.status_tag.F')}}</span>
-                                    <span v-if="payOrderForm.status=='A'" style="color:red">{{$t('reimburse.status_tag.A')}}</span>
-                                    <span v-if="payOrderForm.status=='C'" style="color:green">{{$t('reimburse.status_tag.C')}}</span>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item :label="$t('reimburse.applicant_name')">
-                                    <span>{{payOrderForm.applicant_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.order_dept')">
-                                    <span>{{payOrderForm.dept_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.reimburse_status')">
-                                    <span v-if="(payOrderForm.status=='F' || payOrderForm.status=='C')  &&payOrderForm.is_paied==0" style="color:red">{{$t('reimburse.allocate_tag.waiting')}}</span>
-                                    <span v-if="(payOrderForm.status=='F' || payOrderForm.status=='C') &&payOrderForm.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
-                                    <span v-if="payOrderForm.status!='F' && payOrderForm.status!='C'" style="color:grey">--</span>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-form-item :label="$t('reimburse.description')">
-                                <el-input type="textarea" :readonly="true"  :rows="4" v-model="payOrderForm.description"></el-input>
-                            </el-form-item>
-                        </el-row>
-                    </el-card>
-                </el-row>
-                <el-row>
-                    <el-card shadow="always" class="mgb10" style="padding-bottom:20px;" v-loading.lock="loading">
-                        <div slot="header" class="clearfix">
-                            <span>{{$t('reimburse.content')}}</span>
-                            <el-button v-if="!orderReadOnly" type=success size=large icon="el-icon-plus" class="card-header-r-btn" @click="handleAddItem">{{$t('btn.new')}}</el-button>
-                        </div>
-                        <el-table :data="payOrderForm.content_json" border height="300px" style="width: 100%">
-                            <el-table-column type="index" :label="$t('reimburse.id')" width="50" align="center" show-overflow-tooltip/>
-                            <el-table-column prop="type" :label="$t('reimburse.item_name')" width="110" align="center" show-overflow-tooltip/>
-                            <el-table-column prop="date" :label="$t('reimburse.date')" width="110" align="center" show-overflow-tooltip/>
-                            <el-table-column prop="content" :label="$t('reimburse.item_content')" width="auto" align="left" show-overflow-tooltip>
-                                <template slot-scope="scope">
-                                    <span v-for="item in scope.row.content" :key="item.id"> [{{item.title}}]:{{item.result}} </span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="amount" :label="$t('reimburse.amount')" width="120" align="right" :formatter="stateFormat"/>
-                            <el-table-column prop="action" :label="$t('btn.action')" width="200" align="center" fixed="right">
-                                <template slot-scope="scope">
-                                    <el-button v-if="orderReadOnly" type="info" size="mini" icon="el-icon-document" @click="handleUpdateItem(scope.row,scope.$index)">{{$t('btn.view')}}</el-button>
-                                    <el-button v-if="!orderReadOnly" type="warning" size="mini" icon="el-icon-edit" @click="handleUpdateItem(scope.row,scope.$index)">{{$t('btn.edit')}}</el-button>
-                                    <el-button v-if="!orderReadOnly" type="danger" size="mini" icon="el-icon-delete" @click="handleDeleteItem(scope.$index)">{{$t('btn.delete')}}</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <div style="float:right;color:red;">
-                            <span><h2>Total {{stateFormat("","",payOrderForm.total_amount)}} 元</h2></span>
-                        </div>
-                    </el-card>
-                </el-row>
-                <el-row>
-                    <el-card shadow="always" class="mgb10" style="padding-bottom:20px;"  v-loading.lock="loading">
-                        <div slot="header" class="clearfix">
-                            <span>{{$t('reimburse.payment_setting')}}</span>
-                             <el-button v-if="!orderReadOnly" type=success size=large icon="el-icon-plus" class="card-header-r-btn" @click="handleAddPaymentItem">{{$t('btn.new')}}</el-button>
-                        </div>
-                        <el-table :data="payOrderForm.payment_item" border height="300px" style="width: 100%">
-                            <el-table-column type="index" :label="$t('reimburse.id')" width="50" align="center" show-overflow-tooltip/>
-                            <el-table-column prop="pre_payment_date" :label="$t('reimburse.pre_payment_date')" width="110" align="center" show-overflow-tooltip/>
-                            <el-table-column prop="act_payment_date" :label="$t('reimburse.act_payment_date')" width="110" align="center" show-overflow-tooltip/>
-                            <el-table-column prop="payment_note" :label="$t('reimburse.payment_note')" width="100" show-overflow-tooltip/>
-                            <el-table-column prop="payment_method" :label="$t('reimburse.payment_method')" width="100" align="center" >
-                                <template slot-scope="scope">
-                                    <span>{{$t('reimburse.'+ scope.row.payment_method)}}</span>
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="account_name" :label="$t('reimburse.beneficiary')" min-widht="80" width="auto"/>
-                            <el-table-column prop="amount" :label="$t('reimburse.amount')" width="120" align="right" :formatter="stateFormat"/>
-                            <el-table-column prop="action" :label="$t('btn.action')" width="200" align="center" fixed="right">
-                                <template slot-scope="scope">
-                                    <el-button v-if="is_accountant && payOrderForm.status=='F' && payOrderForm.is_paied==0" type="success" size="mini" @click="handleSettingPaymentDate(scope.row)">更新付款日</el-button>
-                                    <el-button v-if="orderReadOnly" type="info" size="mini" icon="el-icon-document" @click="handleUpdatePayItem(scope.row,scope.$index)">{{$t('btn.view')}}</el-button>
-                                    <el-button v-if="!orderReadOnly" type="warning" size="mini" icon="el-icon-edit" @click="handleUpdatePayItem(scope.row,scope.$index)">{{$t('btn.edit')}}</el-button>
-                                    <el-button v-if="!orderReadOnly" type="danger" size="mini" icon="el-icon-delete" @click="handleRemovePaymentItem(scope.$index)">{{$t('btn.delete')}}</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                        <div style="float:right;color:red;">
-                            <span><h2>Total {{stateFormat("","",handleCaculatePayItemTotalAmount)}} 元</h2></span>
-                        </div>
-                    </el-card>
-                </el-row>
-                <el-row>
-                    <el-card shadow="always" v-loading.lock="loading">
-                        <div slot="header" class="clearfix">
-                            <span>{{$t('reimburse.status_history')}}</span>
-                        </div>
-                        <div>
-                            <el-table
-                            :data="pay_order_history"
-                            height="300px"
-                            style="width: 100%;">
-                            <el-table-column
-                                prop="recorded_at"
-                                :label="$t('reimburse.recorded_at')"
-                                align="center"
-                                width="180">
-                            </el-table-column>
-                            <el-table-column
-                                prop="employee_name"
-                                :label="$t('reimburse.employee_name')"
-                                align="center"
-                                width="180">
-                            </el-table-column>
-                           <el-table-column
-                                prop="prev_status"
-                                :label="$t('reimburse.action')"
-                                align="center"
-                                width="200">
-                                <template slot-scope="scope">
-                                    {{scope.row.prev_status}} → {{scope.row.current_status}}
-                                </template>
-                            </el-table-column>
-                            <el-table-column
-                                prop="note"
-                                :label="$t('reimburse.note')">
-                            </el-table-column>
-                            </el-table>
-                        </div>
-                    </el-card>
-                </el-row>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button type="info" size="large" @click="closeAllDialog">{{$t('btn.close')}}</el-button>
-                <el-button v-if="is_accountant && payOrderForm.status=='F'" type="danger" size="large" @click="handleRejectAc(payOrderForm)">{{$t('btn.reject')}}</el-button>
-                <el-button v-if="is_accountant && payOrderForm.status=='F'" type="success" size="large" @click="handleConfirmPayment(form)">確認請款單</el-button>
-                <!-- <el-button v-if="is_accountant && payOrderForm.status=='F' && payOrderForm.is_paied==0" type="warning" size="large" icon="el-icon-money" @click="handlePay(payOrderForm)">{{$t('btn.grant')}}</el-button> -->
-                <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="danger" size="large" style="width:150px;" @click="handleReject">{{$t('btn.reject')}}</el-button>
-                <el-button v-if="is_project_owner && payOrderForm.status=='P'" type="primary" size="large" style="width:150px;" @click="handlePass">{{$t('btn.proccess')}}</el-button>
-            </div>
+        <el-dialog :title="$t('reimburse.edit_reimburse')" v-if="viewPayOrderVisible" :visible.sync="viewPayOrderVisible" width="1100px" :key="tbKey" :before-close="closeAllDialog" top="8%" 
+        :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog" >
+            <paymentOrderItem v-if="viewPayOrderVisible" :order_id="current_order_id" @close="closeAllDialog"></paymentOrderItem>
         </el-dialog>
-
         
-
         <el-dialog :title="$t('cost.update_predict_work_time')" :visible.sync="updatePreTimeVisible" width="500px" :before-close="closeAllDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <el-form :model="preTimeForm" ref="form" :rules="rules" label-position="right" label-width="auto">
                 <el-row>
@@ -470,42 +310,6 @@
             </div>
         </el-dialog>
 
-        <el-dialog :title="$t('cost.approval')" :visible.sync="passVisible" width="300px" center :before-close="cancelPayOrderDialog">
-            <div style="text-align:center;">
-                <span>{{$t('cost.confirm_approval')}}</span>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmPass">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-
-        <el-dialog :title="$t('cost.withdraw')" :visible.sync="rejectVisible" width="300px" center :before-close="cancelPayOrderDialog">
-            <div style="text-align:left;">
-                <span>{{$t('cost.confirm_withdraw')}}</span>
-            </div>
-            <div style="margin-top:10px;text-align:center;">
-                <el-input type="textarea" v-model="reject_note" :rows="3" :placeholder="$t('cost.reject_reason')"></el-input>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmReject">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-
-        <el-dialog :title="$t('cost.appropriate')" :visible.sync="payVisible" width="300px" center :before-close="cancelPayOrderDialog">
-            <div style="text-align:center;">
-                <span>{{$t('cost.select_appropriate_date')}}</span>
-            </div>
-            <div style="margin-top:10px;text-align:center;">
-               <el-date-picker v-model="pay_date" type="date" align="right" value-format="yyyy-MM-dd" />
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmPay">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-
         <el-dialog :title="$t('menus.day_item_review')" :visible.sync="workItemView" width="1200px" :before-close="closeViewWorkItem">
             <el-row>
                 <el-select size="large" class="mgr10 handle-input" v-model="subFilter.pid" filterable clearable multiple collapse-tags
@@ -548,137 +352,6 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('cost.appropriate')" :visible.sync="payDateVisible" width="300px" center :before-close="cancelPayOrderDialog">
-            <div style="text-align:center;">
-                <span>{{$t('cost.select_appropriate_date')}}</span>
-            </div>
-            <div style="margin-top:10px;text-align:center;">
-               <el-date-picker v-model="pay_date" type="date" align="right" value-format="yyyy-MM-dd" />
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelPayOrderDialog">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmPaymentDate">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-
-        <el-dialog :title="$t('reimburse.update_payment_item_setting')" :visible.sync="updateItemVisible" width="500px" center :before-close="cancelUpdateItem" :close-on-click-modal="false" :close-on-press-escape="false">
-            <div>
-                 <el-form ref="form" label-width="80px">
-                    <el-form-item :label="$t('reimburse.id')">
-                        <span>{{item_index+1}}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('reimburse.item_name')">
-                        <span>{{item_form.type}}</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('reimburse.date')">
-                        <el-date-picker :readonly="orderReadOnly" v-model="item_form.date" style="width:155px" type="date" align="right" unlink-panels value-format="yyyy-MM-dd"  />
-                    </el-form-item>
-                    <el-form-item  v-for="data in item_form.content" :key="data.id+item_form.id" :label="data.title">
-                        <el-input :type="data.type" :rows="3" autosize :readonly="orderReadOnly" v-model="data.result" :placeholder="'請輸入'+data.title" clearable></el-input>
-                    </el-form-item>
-                    <el-form-item :label="$t('reimburse.amount')">
-                        <el-input 
-                        style="width:200px;"
-                        :readonly="orderReadOnly" 
-                        type="number"  
-                        v-model.number="item_form.amount" 
-                        ><template slot="append">元</template>
-                        </el-input>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelUpdateItem">{{$t('btn.cancel')}}</el-button>
-                <el-button  v-if="!orderReadOnly" type="primary" @click="confirmUpdateItem">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-
-        <el-dialog :title="$t('reimburse.update_payment_setting')" :visible.sync="updatePayItemVisible" width="1000px" center  :before-close="cancelUpdatePayItem" :close-on-click-modal="false" :close-on-press-escape="false">
-            <div>
-                <el-row>
-                <el-form ref="form" label-width="auto">
-                    <el-col :span="10">
-                        <el-form-item :label="$t('reimburse.pre_payment_date')">
-                            <el-date-picker v-model="pay_item_form.pre_payment_date" :readonly="orderReadOnly" type="date" align="right" :placeholder="$t('common_msg.optional')" unlink-panels value-format="yyyy-MM-dd" />
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.payment_note')">
-                            <el-select
-                            v-model="pay_item_form.payment_note"
-                            filterable
-                            allow-create
-                            default-first-option
-                            :disabled="orderReadOnly"
-                            :readonly="orderReadOnly"
-                            :placeholder="$t('common_msg.select')">
-                                <el-option
-                                v-for="note in option.payment_note"
-                                :key="note.value"
-                                :label="note.label"
-                                :value="note.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.amount')">
-                            <el-input :readonly="orderReadOnly" type="number" v-model.number="pay_item_form.amount"  style="width:200px;" @keyup.native="prevent($event)" @mousewheel.native.prevent><template slot="append">元</template></el-input>
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.reimburse_status')">
-                            <span v-if="form.status=='F'&&pay_item_form.is_paied==1" style="color:green">{{$t('reimburse.allocate_tag.allocated')}}</span>
-                            <span v-if="form.status=='F'&&pay_item_form.is_paied==0" style="color:red">{{$t('reimburse.allocate_tag.waiting')}}</span>
-                            <span v-if="form.status!='F'" style="color:grey">--</span>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item :label="$t('reimburse.payment_method')">
-                            <el-radio-group v-model="pay_item_form.payment_method" :disabled="orderReadOnly" size="mini">
-                                <el-radio label="transfer" border>{{$t('reimburse.remit')}}</el-radio>
-                                <el-radio label="cash" border>{{$t('reimburse.cash')}}</el-radio>
-                                <el-radio label="check" border>{{$t('reimburse.check')}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.remit_options')">
-                            <el-radio-group v-model="pay_item_form.remittance_setting" :disabled="pay_item_form.payment_method!='transfer' || orderReadOnly" size="mini">
-                                <el-radio label="deduct" border>{{$t('reimburse.deduct')}}</el-radio>
-                                <el-radio label="no_deduct" border>{{$t('reimburse.no_deduct')}}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.beneficiary')">
-                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.account_name" ></el-input>
-                            <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.beneficiary_bank')">
-                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_bank" ></el-input>
-                        </el-form-item>
-                        <el-form-item :label="$t('reimburse.swift_code')">
-                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_account" ></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-form>
-                </el-row>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelUpdatePayItem">{{$t('btn.cancel')}}</el-button>
-            </span>
-        </el-dialog>
-
-        <el-dialog :title="$t('reimburse.confirm_payment_order')" :visible.sync="confirmPaymentVisible" width="300px" center :before-close="cancelConfirmPayment">
-            <div>
-                <el-form ref="form" label-width="80px">
-                    <el-form-item :label="$t('reimburse.total_amount')">
-                        <span>{{stateFormat(0,0,handleCaculatePayItemTotalAmount)}} 元</span>
-                    </el-form-item>
-                    <el-form-item :label="$t('reimburse.paied_amount')">
-                        <span>{{stateFormat(0,0,caculatePaiedTotalAmount)}} 元</span>
-                    </el-form-item>
-                </el-form>
-                <span v-if="handleCaculatePayItemTotalAmount == caculatePaiedTotalAmount" style="color:blue;">{{$t('reimburse.quest_complete_payment')}}</span>
-                <span v-if="handleCaculatePayItemTotalAmount > caculatePaiedTotalAmount" style="color:red;">{{$t('reimburse.quest_complete_payment_unpaied')}}</span>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelConfirmPayment">{{$t('btn.cancel')}}</el-button>
-                <el-button type="primary" @click="confirmPayment">{{$t('btn.confirm')}}</el-button>
-            </span>
-        </el-dialog>
-
     </div>
 </template>
 <script>
@@ -686,8 +359,12 @@ import { accountService } from "@/_services";
 import { workItemService } from "@/_services";
 import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
+import paymentOrderItem from "./payment_order_item.vue";
 export default {
     name: "work_item_manage",
+    components: {
+        paymentOrderItem
+    },
     data(){
         return {
             orderReadOnly:true,
@@ -701,38 +378,30 @@ export default {
             total_actual_cost:0,
             total_standard_income:0,
             total_actual_income:0,
-
             today:"",
-
+            tbKey:0,
             tbKey1:1,
             tbKey2:2,
             tbKey3:3,
             tbKey4:4,
-            
+
+            current_order_id:null,
+
             cost_sort_column:"date",
             cost_sort:"desc",
-
             income_sort_column:"date",
             income_sort:"desc",
-
             pay_sort_column:"order_date",
             pay_sort:"desc",
 
-            action_list:accountService.get_user_actions(),
-            
             loading:false,
             deleteID:null,
             deleteView:false,
             viewPayOrderVisible:false,
-            checkPayOrderVisible:false,
             incomeEditVisible:false,
             costEditVisible:false,
             updatePreTimeVisible:false,
             workItemView:false,
-
-            payVisible:false,
-            passVisible:false,
-            rejectVisible:false,
 
             updateItemVisible: false,
             item_form:{
@@ -742,13 +411,6 @@ export default {
                 content:[]
             },
             item_index:null,
-            updatePayItemVisible:false,
-            pay_item_form:{},
-            pay_item_index:null,
-            payDateVisible:false,
-            confirmPaymentVisible: false,
-
-            reject_note:"",
             pay_date:"",
             pay_id:"",
 
@@ -766,6 +428,7 @@ export default {
                 pid:[],
                 work_date:[]
             },
+
             option:{
                 employee:[]
             },
@@ -783,6 +446,7 @@ export default {
                 description:"",
                 amount:""
             },
+
             costForm:{
                 type:"cost",
                 actionType:"create",
@@ -795,7 +459,6 @@ export default {
             payOrderForm:{
                 payment_item:[]
             },
-            pay_order_history:[],
 
             filter:{
                 costKeyWord:"",
@@ -859,8 +522,6 @@ export default {
     },
 
     async created(){
-        // await this.get_dept_employee();
-        // await this.getOption();
         await this.getData();
         await this.getToday();
         await this.get_employee();
@@ -876,19 +537,15 @@ export default {
             });
             return total
         },
-        handleCaculatePayItemTotalAmount(){
-            var total = 0;
-            this.payOrderForm.payment_item.forEach(element => {
-                total+=element.amount
-            });
-            return total
-        },
+
         totalStandardIncome(){
             return Math.round((this.total_standard_income - this.total_standard_cost) * 10) / 10;
         },
+
         totalActualIncome(){
             return Math.round((this.total_actual_income - this.total_actual_cost) * 10) / 10;
         },
+
         is_project_owner(){
             if(this.form.owner_id == accountService.get_user_info("ms_odoo_employee_id")){
                 return true
@@ -896,13 +553,7 @@ export default {
                 return false
             }
         },
-        is_accountant(){
-            if(accountService.get_user_menus().includes("accountant")){
-                return true
-            }else{
-                return false
-            }
-        },
+
         sub_count_page(){
             this.sub_start_row=(this.sub_cur_page-1)*this.sub_page_size;
         },
@@ -916,6 +567,7 @@ export default {
                 return { rowspan:_row, colspan:_col }
             }
         },
+
         getSpanArr(data){
             this.resetSpanArr();
             for(var i=0;i<data.length;i++){
@@ -933,10 +585,12 @@ export default {
                 }
             }
         },
+
         resetSpanArr(){
             this.spanArr=[];
             this.pos=null;
         },
+
         async get_employee(){
             var param = {
                 odoo_employee_id:this.odoo_employee_id,
@@ -948,12 +602,13 @@ export default {
                 this.option.employee = res.tree_data;
             })
         },
+
         subHandleSortChange({prop, order}){
-            console.log(prop,order);
             this.sub_sort_column = prop;
             this.sub_sort = order;
             this.subHandleCurrentChange(1);
         },
+    
         subHandleCurrentChange(currentPage){
             this.sub_cur_page = currentPage;
             this.sub_count_page;
@@ -966,7 +621,6 @@ export default {
         },
 
         async getSubData(){
-            console.log("get data !")
             this.table_loading=true;
             var param = {
                 action:"table",
@@ -982,19 +636,19 @@ export default {
                     dept_id:[],
                     pid:this.subFilter.pid,
                 }
-            }
+            };
             await dayItemService.review_day_list(param).then(res =>{ 
-                console.log(res);
-                
                 this.subTableData=res.day_items;
                 this.subTotalRow=res.total;
-            })
+            });
             this.table_loading=false;
         },
+
         handleViewWorkItem(){
             this.getSubData();
             this.workItemView = true;
         },
+
         closeViewWorkItem(){
             this.dlKey++;
             this.subTableData=[]
@@ -1008,93 +662,7 @@ export default {
             };
             this.workItemView = false;
         },
-        handleUpdateItem(row,index){
-            this.item_form = JSON.parse(JSON.stringify(row));
-            this.item_index = index;
-            console.log(index);
-            this.updateItemVisible = true;
-        },
-        cancelUpdateItem(){
-            this.updateItemVisible = false;
-        },
-        handleUpdatePayItem(row,index){
-            this.pay_item_form = JSON.parse(JSON.stringify(row));
-            this.pay_item_index = index;
-            this.updatePayItemVisible = true;
-        },
-        cancelUpdatePayItem(){
-            this.updatePayItemVisible = false;
-        },
-        cancelPayOrderDialog(){
-            this.payVisible=false;
-            this.passVisible=false;
-            this.rejectVisible=false;
-            this.payDateVisible=false;
-        },
-        cancelConfirmPayment(){
-            this.confirmPaymentVisible = false;
-        },
-        confirmPayment(){
-            var param = {
-                action:"ConfirmPayment",
-                form:{
-                    odoo_employee_id:this.odoo_employee_id,
-                    order_id: this.payOrderForm.order_id,
-                    paied_amount: this.caculatePaiedTotalAmount
-                }
-            };
-            payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
-                if(res.code>0){
-                    this.$message.success("Success") 
-                    this.getData();
-                    this.handleViewPayOrder({order_id:this.payOrderForm.order_id});
-                    this.confirmPaymentVisible = false;
-                }else{
-                    this.$message.error(res.msg);
-                } 
-            })
-            this.confirmPaymentVisible = false;
-        },
-        handlePass(){
-            this.passVisible=true;
-        },
-        handlePay(id,date=""){
-            this.pay_id = id;
-            this.pay_date = date;
-            this.payVisible=true;
-        },
-        handleReject(){
-            this.reject_note = "";
-            this.rejectVisible=true;
-        },
-        handleRejectAc(row){
-            this.payOrderForm.order_id = row.order_id;
-            this.reject_note = "";
-            this.rejectVisible=true;
-        },
-        confirmPass(){
-            var param = {
-                action:"review",
-                form:{
-                    odoo_employee_id:this.odoo_employee_id,
-                    order_id: this.payOrderForm.order_id,
-                    status:"F"
-                }
-            };
-            payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
-                if(res.code>0){
-                    this.$message.success("Success") 
-                    this.getCostData();
-                    this.closeAllDialog();
-                    this.cancelPayOrderDialog();
-                }else{
-                    this.$message.error(res.msg)
-                }
-                    
-            })
-        },
+
         confirmPay(){
             if (this.pay_date=="" || this.pay_date==null){
                 return this.$message.error("請選擇撥款日期")
@@ -1108,35 +676,10 @@ export default {
                 }
             };
             payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
-                if(res.code>0){
-                    this.$message.success("Success") 
-                    this.getCostData();
-                    this.cancelPayOrderDialog();
-                    this.closeAllDialog();
-                }else{
-                    this.$message.error(res.msg)
-                }
-                    
-            })
-        },
-        confirmReject(){
-            var param = {
-                action:"review",
-                form:{
-                    odoo_employee_id:this.odoo_employee_id,
-                    order_id: this.payOrderForm.order_id,
-                    status:"A",
-                    review_note:this.reject_note
-                }
-            };
-            payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
                 if(res.code>0){
                     this.$message.success("Success") 
                     this.getCostData();
                     this.closeAllDialog();
-                    this.cancelPayOrderDialog();
                 }else{
                     this.$message.error(res.msg)
                 }
@@ -1148,26 +691,12 @@ export default {
             let time =new Date();
             this.today = time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
         },
+
         async handleViewPayOrder(row){
-            var param = {
-                action:"info",
-                filter:{
-                    order_id:row.order_id
-                }
-            };
-            await payOrderService.get_pay_orders(param).then(res =>{ 
-                console.log(res);
-                if(res.code>0){
-                    // this.$message.success("OK")
-                    this.payOrderForm=res.data;
-                    this.pay_order_history=res.histories;
-                    this.viewPayOrderVisible=true;
-                }else{
-                    this.$message.error(res.msg)
-                }
-                    
-            })
+            this.current_order_id = row.order_id;
+            this.viewPayOrderVisible=true;
         },
+
         handleUpdatePreTime(){
             this.preTimeForm={
                 old_setting:this.form.pre_work_time,
@@ -1175,6 +704,7 @@ export default {
             };
             this.updatePreTimeVisible = true;
         },
+
         confirmUpdatePreTime(){
             if(this.preTimeForm.old_setting == this.preTimeForm.new_setting){
                 this.$message.error("未變更");
@@ -1182,7 +712,6 @@ export default {
                 workItemService
                 .update_pre_time({id:this.item_id,pre_work_time:this.preTimeForm.new_setting})
                 .then(res =>{ 
-                    // console.log(res);
                     if(res.code==1){
                         this.$message.success(res.msg);
                         // this.form.pre_work_time = this.preTimeForm.new_setting;
@@ -1195,52 +724,22 @@ export default {
             };
             this.updatePreTimeVisible = true;
         },
-        handleSettingPaymentDate(row){
-            this.pay_id = row.id;
-            this.pay_date = row.act_payment_date;
-            this.payDateVisible=true;
-        },
-        confirmPaymentDate(){
-            var param = {
-                action:"paymentdate",
-                form:{
-                    odoo_employee_id:this.odoo_employee_id,
-                    order_item_id: this.pay_id,
-                    pay_date:this.pay_date
-                }
-            };
-            payOrderService.update_pay_orders(param).then(res =>{ 
-                console.log(res);
-                if(res.code>0){
-                    this.$message.success("success"); 
-                    this.handleViewPayOrder({order_id:this.payOrderForm.order_id});
-                    this.getData();
-                    this.cancelPayOrderDialog();
-                }else{
-                    this.$message.error(res.msg)
-                }
-                    
-            })
-        },
-
-        handleConfirmPayment(){
-            this.confirmPaymentVisible = true;
-        },
 
         closeAllDialog(){
             this.viewPayOrderVisible=false;
-            // this.checkPayOrderVisible=false;
             this.incomeEditVisible=false;
             this.costEditVisible=false;
             this.updatePreTimeVisible = false;
-
             this.deleteView=false;
+            this.current_order_id = null;
             
             this.$refs.form.clearValidate();
         },
+
         handleLeave(){
             this.$router.push({path:"/work_item_cost",query:this.$route.query});
         },
+
         stateFormat(row, column, cellValue) {
 			cellValue += '';
 			if (!cellValue.includes('.')) cellValue += '.';
@@ -1248,6 +747,7 @@ export default {
 				return $1 + ',';
 			}).replace(/\.$/, '');
 		},
+
         getCellStyle({row, column}){
             const tempWidth=column.realWidth||column.width;
             var return_dict = {};
@@ -1257,8 +757,7 @@ export default {
             };
             return return_dict;
         },
-
-        // Cost Record        
+      
         handleCostCreate(){
             this.costForm={
                 actionType:"create",
@@ -1272,12 +771,14 @@ export default {
             }
             this.costEditVisible=true;
         },
+
         handleCostEdit(index, row){
             this.costForm=Object.assign({}, row);
             this.costForm.username = accountService.get_user_info("ms_username");
             this.costForm.actionType="update";
             this.costEditVisible=true;
         },
+
         confirmCostDialog(){
             this.$refs.costForm.validate(valid => {
                 if(valid){
@@ -1292,9 +793,7 @@ export default {
         },
 
         confirmCostUpdate(param){ 
-            // console.log(param);
             workItemService.update_cost_record(param).then(res =>{ 
-                console.log(res);
                 if(res.code==1){ 
                     this.$message.success(this.$t(res.msg)); 
                     if(param.action=="create"){
@@ -1315,18 +814,7 @@ export default {
                 } 
             }) 
         },
-        resetPayOrderForm(){
-            this.payOrderForm={};
-        },
-        resetCostForm(){
-            this.costForm={
-               
-            };
-            
-            this.$refs.form.clearValidate();
-        },
-
-        // Income Record
+       
         handleIncomeCreate(){
             this.incomeForm={
                 actionType:"create",
@@ -1340,6 +828,7 @@ export default {
             }
             this.incomeEditVisible=true;
         },
+
         handleIncomeEdit(index, row){
             this.incomeForm=Object.assign({}, row);
             this.incomeForm.username = accountService.get_user_info("ms_username");
@@ -1359,16 +848,6 @@ export default {
                 }
             })
         },
-        
-        resetIncomeForm(){
-           
-            this.incomeForm={
-               
-            };
-            this.$refs.form.clearValidate();
-        },
-
-        //  Handle Delete
 
         handleDelete(index, row){
             this.deleteID=row.id;
@@ -1389,18 +868,18 @@ export default {
             this.confirmCostUpdate(param);
         },
 
-        //  Other Data
-
         handleCostSortChange({prop, order}){
             this.cost_sort_column = prop;
             this.cost_sort = order;
             this.getCostData();
         },
+
         handleIncomeSortChange({prop, order}){
             this.income_sort_column = prop;
             this.income_sort = order;
             this.getCostData();
         },
+
         handlePaySortChange({prop, order}){
             this.pay_sort_column = prop;
             this.pay_sort = order;
@@ -1409,13 +888,11 @@ export default {
         
         async getData(){
             this.loading=true;
-            // console.log(this.$route.query);
             var param = {
                 username:this.username,
                 item_id:this.item_id
             }
             await workItemService.get_project_cost_info(param).then(res =>{ 
-                // console.log(res);
                 if(res.code){
                     this.form = res.data;
                     this.getCostData();
@@ -1435,18 +912,16 @@ export default {
                 sort_column:this.income_sort_column,
                 key_word:this.filter.incomeKeyWord
             }).then(res =>{ 
-                // console.log(res);
                 if(res.success){
                     this.tableData_standard_income = res.data.standard;
                     this.total_standard_income = res.total.standard;
-
                     this.tableData_actual_income = res.data.actual;
                     this.total_actual_income = res.total.actual;
-
                 }else{
                     this.$message.error(res.msg);
                 }
             });
+
             await workItemService.get_project_cost_records({
                 item_id:this.item_id,
                 type:"cost",
@@ -1454,27 +929,24 @@ export default {
                 sort_column:this.cost_sort_column,
                 key_word:this.filter.costKeyWord
             }).then(res =>{ 
-                // console.log(res);
                 if(res.success){
                     this.tableData_standard_cost = res.data.standard;
                     this.total_standard_cost = res.total.standard;
-
                     this.tableData_actual_cost = res.data.actual;
                     this.total_actual_cost = res.total.actual;
                 }else{
                     this.$message.error(res.msg);
                 }
             });
+
             await payOrderService.get_project_pay_orders({
                 filter:{item_id:this.item_id},
                 sort:this.cost_sort,
                 sort_column:this.cost_sort_column                
             }).then(res =>{ 
-                // console.log(res);
                 if(res.code > 0){
                     this.tableData_pay_order= res.data;
                     this.getSpanArr(this.tableData_pay_order);
-                    // console.log(this.tableData_pay_order);
                 }else{
                     this.$message.error(res.msg);
                 }
@@ -1484,13 +956,7 @@ export default {
      
         search(){
             this.getCostData();
-        },
-        
-        cancelSearch(){
-            this.filter={
-                
-            };
-        },
+        }
     }
 }
 </script>
