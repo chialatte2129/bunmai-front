@@ -54,12 +54,28 @@
                         <el-input v-model="form.account_name" style="width:400px;"></el-input>
                     </el-form-item>
                     <el-form-item label="銀行" >
-                        <el-input v-model="form.bank" style="width:400px;"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        style="width:400px;"
+                        v-model="form.bank"
+                        :fetch-suggestions="querySearchBank"
+                        :placeholder="$t('common_msg.input_string')"
+                        @select="handleBankSelect"
+                        ></el-autocomplete>
                     </el-form-item>
                     <el-form-item label="分行" >
-                        <el-input v-model="form.branch" style="width:400px;"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        style="width:400px;"
+                        v-model="form.branch"
+                        :fetch-suggestions="querySearchBranch"
+                        :placeholder="$t('common_msg.input_string')"
+                        ></el-autocomplete>
                     </el-form-item>
-                    <el-form-item label="帳號" >
+                    <el-form-item label="SWIFT code" >
+                        <el-input v-model="form.swift_code" style="width:400px;"></el-input>
+                    </el-form-item>
+                    <el-form-item :label="$t('reimburse.swift_code')" >
                         <el-input v-model="form.account" style="width:400px;"></el-input>
                     </el-form-item>
                 </el-form>
@@ -126,9 +142,10 @@ export default {
             },
 
             option:{
-            
+                bank_list:[],
+                branch_list:[],
             },
-           
+            current_bank_id:"",
             rules: {
               
             },
@@ -136,7 +153,6 @@ export default {
     },
 
     async created(){
-        // await this.get_dept_employee();
         await this.getOption();
         await this.getData();
     },
@@ -163,11 +179,42 @@ export default {
             this.start_row=(this.cur_page-1)*this.page_size;
         },
     }, 
+
+    watch: {
+        "form.bank"(val){
+            this.init_branch(val)
+        }
+    },
     
     methods: {
+        querySearchBank(queryString, cb) {
+            var banks = this.option.bank_list;
+            var results = queryString ? banks.filter(this.createFilter(queryString)) : banks;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+
+        querySearchBranch(queryString, cb) {
+            var branches = this.option.branch_list;
+            var results = queryString ? branches.filter(this.createFilter(queryString)) : branches;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+
+        createFilter(queryString) {
+            return (item) => {
+                return (item.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0);
+            };
+        },
+
+        handleBankSelect(item) {
+            this.option.branch_list = item.branch_json;
+        },
+
         handleFinishCreate(){
             this.getData();
         },
+
         async handleCreate(){
             this.form = {
                 name:"",
@@ -180,12 +227,22 @@ export default {
             this.createView=true;
         },
 
+        init_branch(bank){
+            var index = this.option.bank_list.findIndex(element => element.value==bank)
+            if(index>=0){
+                this.option.branch_list = this.option.bank_list[index].branch_json;
+            }else{
+                this.option.branch_list=[];
+            }
+        },
+
         async handleEdit(index, row){
             this.form=Object.assign({}, row);
             this.form.odoo_employee_id = this.odoo_employee_id;
             this.edit_idx=index;
             this.updateView=true;
         },
+
         handleDelete(index, row){
             this.deleteInfo={
                 id:row.id
@@ -312,7 +369,9 @@ export default {
         },
         
         async getOption(){
-            
+            await partnerService.get_bank_list({action:"table"}).then(res=>{
+                this.option.bank_list = res.data;
+            })
         }
     }
 }

@@ -263,12 +263,11 @@
             </span>
         </el-dialog>
 
-        <el-dialog :title="$t('reimburse.partner_account')" :modal="true" :append-to-body="true"  :visible.sync="partnerVisible" width="900px" center :before-close="cancelPartnerVisivle"  v-draggable>
-            <div >
+        <el-dialog :title="$t('reimburse.partner_account')" :modal="true" :append-to-body="true"  :visible.sync="partnerVisible" width="1200px" center :before-close="cancelPartnerVisivle"  v-draggable>
+            <div>
                 <span style="width:250px;margin-bottom:20px;">{{$t('reimburse.select_partner')}}: {{select_partner.name}}</span>
-                <addNewPartner style="float:right" class="mgl10" :btnTitle="$t('btn.new')" ></addNewPartner>
+                <addNewPartner style="float:right" class="mgl10" :btnTitle="$t('btn.new')" @finish="handleFinishCreate"></addNewPartner>
                 <el-input v-model="partner_search" size="mini" style="float:right;width:250px;margin-bottom:20px;" :placeholder="$t('btn.key_word')" clearable/>
-                
                 <el-table :data="option.partner.filter(
                     data => !partner_search || ( 
                         data.name.toLowerCase().includes(partner_search.toLowerCase()) || 
@@ -276,15 +275,17 @@
                         data.bank.toLowerCase().includes(partner_search.toLowerCase()) || 
                         data.name.toLowerCase().includes(partner_search.toLowerCase()))
                     )" border height="400px" style="width: 100%">
-                    <el-table-column :label="$t('reimburse.option')" width="55"  align="center">
+                    <el-table-column :label="$t('reimburse.option')" width="70"  align="center">
                         <template slot-scope="scope">
-                            <el-radio  v-model="select_partner" :label="scope.row"><i></i></el-radio>
+                            <el-radio  v-model="select_partner_id" :label="scope.row.id"><i></i></el-radio>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="name" :label="$t('reimburse.partner_name')" width="180" align="left" show-overflow-tooltip/>
-                    <el-table-column prop="account_name" :label="$t('reimburse.beneficiary')" width="180" align="left" show-overflow-tooltip/>
+                    <el-table-column prop="name" :label="$t('reimburse.partner_name')" min-width="180" width="auto" align="left" show-overflow-tooltip/>
+                    <el-table-column prop="account_name" :label="$t('reimburse.beneficiary')" min-width="180" width="auto" align="left" show-overflow-tooltip/>
                     <el-table-column prop="bank" :label="$t('reimburse.beneficiary_bank')" width="180" align="left" show-overflow-tooltip/>
-                    <el-table-column prop="account" :label="$t('reimburse.swift_code')" min-width="180px" width="auto" align="left" show-overflow-tooltip/>
+                    <el-table-column prop="branch" :label="$t('reimburse.beneficiary_branch')" width="180" align="left" show-overflow-tooltip/>
+                    <el-table-column prop="swift_code" label="swift code" min-width="100px" width="auto" align="left" show-overflow-tooltip/>
+                    <el-table-column prop="account" :label="$t('reimburse.swift_code')" min-width="120px" width="auto" align="left" show-overflow-tooltip/>
                 </el-table>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -360,6 +361,21 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="幣別">
+                            <el-select
+                            v-model="pay_item_form.currency"
+                            filterable
+                            :disabled="orderReadOnly"
+                            :readonly="orderReadOnly"
+                            :placeholder="$t('common_msg.select')">
+                                <el-option
+                                v-for="note in option.pos_currency"
+                                :key="note.value"
+                                :label="note.label"
+                                :value="note.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
                         <el-form-item :label="$t('reimburse.amount')">
                             <el-input :readonly="orderReadOnly" type="number" v-model.number="pay_item_form.amount"  style="width:200px;"><template slot="append">元</template></el-input>
                         </el-form-item>
@@ -388,9 +404,33 @@
                             <el-button v-if="!orderReadOnly" class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
                         </el-form-item>
                         <el-form-item :label="$t('reimburse.beneficiary_bank')">
-                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_bank" ></el-input>
+                            <el-autocomplete
+                            class="inline-input"
+                            style="width:300px;"
+                            clearable
+                            v-model="pay_item_form.remittance_bank"
+                            :readonly="orderReadOnly"
+                            :fetch-suggestions="querySearchBank"
+                            :placeholder="$t('common_msg.input_string')"
+                            @select="handleBankSelect"
+                            ></el-autocomplete>
                         </el-form-item>
-                        <el-form-item :label="$t('reimburse.swift_code')">
+                        <el-form-item :label="$t('reimburse.beneficiary_branch')">
+                            <el-autocomplete
+                            class="inline-input"
+                            style="width:300px;"
+                            clearable
+                            v-model="pay_item_form.remittance_branch"
+                            :readonly="orderReadOnly"
+                            :fetch-suggestions="querySearchBranch"
+                            :placeholder="$t('common_msg.input_string')"
+                            @select="handleBranchSelect"
+                            ></el-autocomplete>
+                        </el-form-item>
+                        <el-form-item label="SWIFT Code">
+                            <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.swift_code" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="Account">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_account" ></el-input>
                         </el-form-item>
                     </el-col>
@@ -458,11 +498,8 @@ export default {
             pos:0,
 
             approval_key:0,
-
             odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
-
             loading:false,
-            
             deleteID:null,
             deleteView:false,
             createView:false,
@@ -496,11 +533,14 @@ export default {
             pay_date:"",
             pay_id:"",
 
+            select_partner_id:"",
             select_partner:{
                 account:"",
                 name:"",
                 bank:"",
-                account_name:""
+                branch:"",
+                account_name:"",
+                id:""
             },
             partner_search:"",
 
@@ -535,6 +575,7 @@ export default {
                 payment_method:"",
                 remittance_date:"",
                 remittance_bank:"",
+                remittance_branch:"",
                 remittance_account:"",
                 remittance_setting:"",
                 acount_name:"",
@@ -545,9 +586,12 @@ export default {
             pay_order_history:[],
 
             option:{
+                bank_list:[],
+                branch_list:[],
                 projects:[],
                 partner:[],
                 members:[],
+                pos_currency:[],
                 payment_note:[
                     {label:"請款",value:"請款"},
                     {label:"訂金",value:"訂金"},
@@ -637,8 +681,27 @@ export default {
         // await this.get_dept_employee();
         await this.getOption();
         await this.getData();
-        console.log(this.max_cert_date);
-        console.log(this.min_cert_date);
+    },
+    watch:{
+        select_partner_id(val){
+            console.log(val);
+            let index = this.option.partner.findIndex(element => element.id==val);
+            if(index >= 0){
+                this.select_partner = this.option.partner[index];
+            }else{
+                this.select_partner = {
+                    name:"",
+                    account:"",
+                    account_name:"",
+                    bank:"",
+                    branch:""
+                }
+            }
+        },
+
+        "pay_item_form.remittance_bank"(val){
+            this.init_branch(val)
+        }
     },
 
     computed: {
@@ -783,6 +846,53 @@ export default {
     }, 
     
     methods: {
+        querySearchBank(queryString, cb) {
+            var banks = this.option.bank_list;
+            var results = queryString ? banks.filter(this.createFilter(queryString)) : banks;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+
+        querySearchBranch(queryString, cb) {
+            var branches = this.option.branch_list;
+            var results = queryString ? branches.filter(this.createFilter(queryString)) : branches;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+
+        createFilter(queryString) {
+            return (item) => {
+                return (item.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0);
+            };
+        },
+
+        handleBankSelect(item) {
+            this.option.branch_list = item.branch_json;
+        },
+
+        handleBranchSelect(item) {
+            console.log(item);
+        },
+
+        init_branch(bank){
+            console.log("init");
+            var index = this.option.bank_list.findIndex(element => element.value==bank)
+            if(index>=0){
+                this.option.branch_list = this.option.bank_list[index].branch_json;
+            }else{
+                this.option.branch_list=[];
+            }
+        },
+
+        async handleFinishCreate(result){
+            await this.getOption();
+            console.log(result);
+            console.log(result.data);
+            console.log(result.data.name);
+            this.partner_search = result.data.name;
+            this.select_partner_id = result.data.id;
+        },
+
         disabledDate (time) {
             let count_date = 0;
             this.form.content_json.forEach(element=>{
@@ -831,12 +941,14 @@ export default {
             this.partner_search = "";
             this.pay_item_form.remittance_account = this.select_partner.account;
             this.pay_item_form.remittance_bank = this.select_partner.bank;
+            this.pay_item_form.remittance_branch = this.select_partner.branch;
             this.pay_item_form.account_name = this.select_partner.account_name;
+            this.pay_item_form.swift_code = this.select_partner.swift_code;
             this.partnerVisible = false;
         },
 
-        handlePartner(row_id){
-            this.select_partner = "";
+        handlePartner(){
+            this.select_partner_id = null;
             this.partnerVisible = true;
         },
 
@@ -1075,6 +1187,9 @@ export default {
         handleUpdatePayItem(row,index){
             this.pay_item_form = JSON.parse(JSON.stringify(row));
             this.pay_item_index = index;
+            if(this.pay_item_form.currency==null){
+                this.pay_item_form.currency = "TWD";
+            };
             this.updatePayItemVisible = true;
         },
 
@@ -1094,8 +1209,11 @@ export default {
         async handleAddPaymentItem(){
             if (!this.select_partner){
                 this.select_partner = {
+                    "name":"",
                     "account_name":"",
                     "bank":"",
+                    "branch":"",
+                    "swift_code":"",
                     "account":""
                 }
             };
@@ -1107,10 +1225,13 @@ export default {
                     payment_note:"請款",
                     payment_method:"transfer",
                     remittance_setting:"deduct",
+                    currency:"TWD",
                     pre_payment_date:null,
                     remittance_bank:this.select_partner.bank,
+                    remittance_branch:this.select_partner.branch,
                     remittance_account:this.select_partner.account,
                     account_name:this.select_partner.account_name,
+                    swift_code:this.select_partner.swift_code,
                     is_set_paied_date:0
                 };
                 var new_uuid = this.create_UUID(8);
@@ -1244,8 +1365,6 @@ export default {
 
         },   
 
-     
-
         resetForm(){
             this.form={
                 order_id:"",
@@ -1259,7 +1378,7 @@ export default {
                 status_name:"",
                 payment_method:"",
                 remittance_date:"",
-                remittance_bank:"",
+                remittance_branch:"",
                 remittance_account:"",
                 remittance_setting:"",
                 acount_name:"",
@@ -1272,7 +1391,14 @@ export default {
             await partnerService.get_supplier_account({action:"table",filter:{start_row:0, page_size:1000, key_word:"" }}).then(res =>{
                 this.option.partner=res.data;
             });
-            
+
+            await partnerService.get_bank_list({action:"table"}).then(res=>{
+                this.option.bank_list = res.data;
+            });
+
+            await partnerService.get_pos_currency().then(res=>{
+                this.option.pos_currency = res.data;
+            });
         },
 
         closeDialog(){

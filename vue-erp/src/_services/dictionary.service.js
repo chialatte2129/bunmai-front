@@ -65,5 +65,4 @@ function get_setting_by_key(keystr) {
       reject(error)
     })
    })
-
 }

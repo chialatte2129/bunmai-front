@@ -15,10 +15,26 @@
                         <el-input v-model="form.account_name" style="width:400px;"></el-input>
                     </el-form-item>
                     <el-form-item label="銀行" >
-                        <el-input v-model="form.bank" style="width:400px;"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        style="width:400px;"
+                        v-model="form.bank"
+                        :fetch-suggestions="querySearchBank"
+                        :placeholder="$t('common_msg.input_string')"
+                        @select="handleBankSelect"
+                        ></el-autocomplete>
                     </el-form-item>
                     <el-form-item label="分行" >
-                        <el-input v-model="form.branch" style="width:400px;"></el-input>
+                        <el-autocomplete
+                        class="inline-input"
+                        style="width:400px;"
+                        v-model="form.branch"
+                        :fetch-suggestions="querySearchBranch"
+                        :placeholder="$t('common_msg.input_string')"
+                        ></el-autocomplete>
+                    </el-form-item>
+                    <el-form-item label="SWIFT Code" >
+                        <el-input v-model="form.swift_code" style="width:400px;"></el-input>
                     </el-form-item>
                     <el-form-item label="帳號" >
                         <el-input v-model="form.account" style="width:400px;"></el-input>
@@ -30,7 +46,6 @@
                 </div>
             </div>
         </el-dialog>
-        
     </div>
 </template>
 <script>
@@ -65,7 +80,13 @@ export default {
                 account_name:"",
                 bank:"",
                 branch:"",
+                swift_code:"",
                 account:""
+            },
+
+            option:{
+                bank_list:[],
+                branch_list:[],
             },
 
             rules: {
@@ -74,11 +95,54 @@ export default {
         }
     },
 
-    async created(){},
+    async created(){
+        this.getOption();
+    },
 
     computed: {}, 
+    watch: {
+        "form.bank"(val){
+            this.init_branch(val)
+        }
+    },
     
     methods: {
+        querySearchBank(queryString, cb) {
+            var banks = this.option.bank_list;
+            var results = queryString ? banks.filter(this.createFilter(queryString)) : banks;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+
+        querySearchBranch(queryString, cb) {
+            var branches = this.option.branch_list;
+            var results = queryString ? branches.filter(this.createFilter(queryString)) : branches;
+            // 调用 callback 返回建议列表的数据
+            cb(results);
+        },
+
+        createFilter(queryString) {
+            return (item) => {
+                return (item.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0);
+            };
+        },
+
+        handleBankSelect(item) {
+            this.option.branch_list = item.branch_json;
+        },
+
+        handleBranchSelect(item) {
+            console.log(item);
+        },
+
+        init_branch(bank){
+            var index = this.option.bank_list.findIndex(element => element.value==bank)
+            if(index>=0){
+                this.option.branch_list = this.option.bank_list[index].branch_json;
+            }else{
+                this.option.branch_list=[];
+            }
+        },
 
         async handleCreate(){
             this.form = {
@@ -86,6 +150,7 @@ export default {
                 account_name:"",
                 bank:"",
                 branch:"",
+                swift_code:"",
                 account:"",
                 odoo_employee_id: this.odoo_employee_id
             };
@@ -95,12 +160,12 @@ export default {
         async update_supplier_account(param){ 
             this.dialog_loading=true;
             await partnerService.update_supplier_account(param).then(res =>{ 
-                console.log(res);
                 if(res.code==1){ 
+                    this.form.id = res.data.id;
+                    this.finishCreate();
                     this.$message.success(this.$t(res.msg)); 
                     this.tbKey++;
                     this.cancelDialog();
-                    this.finishCreate();
                 }else if(res.code==0){ 
                     this.$message.warning(this.$t(res.msg)); 
                 }else{ 
@@ -135,8 +200,19 @@ export default {
         },
 
         finishCreate(){
-            this.$emit('finish',{})
+            // console.log(this.form);
+            this.$emit('finish', {data:this.form});
         },
+
+        async getOption(){
+            console.log("Get Options");
+            var params = {
+                action:"table"
+            }
+            await partnerService.get_bank_list(params).then(res=>{
+                this.option.bank_list = res.data;
+            })
+        }
     }
 }
 </script>
