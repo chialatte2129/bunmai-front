@@ -9,7 +9,7 @@
         width="30%"
         :before-close="handleClose">
             <el-form label-position="top">
-                <el-form-item label="批示">
+                <el-form-item :label="$t('work_flow.instructions')">
                     <el-input v-model="instructions" type="textarea" :rows="3"></el-input>
                 </el-form-item>
             </el-form>

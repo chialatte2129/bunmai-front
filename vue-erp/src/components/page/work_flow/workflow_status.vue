@@ -35,7 +35,7 @@
         :modal="false"
         width="30%"
         :before-close="handleStepClose">
-            <el-form label-width="100px">
+            <el-form label-width="150px">
                 <el-form-item :label="$t('work_flow.status')">
                     <span >{{status_map[step_info.status]}}</span>
                 </el-form-item>
