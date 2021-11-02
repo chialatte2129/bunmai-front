@@ -266,7 +266,7 @@
         <el-dialog :title="$t('reimburse.partner_account')" :modal="true" :append-to-body="true"  :visible.sync="partnerVisible" width="1200px" center :before-close="cancelPartnerVisivle"  v-draggable>
             <div>
                 <span style="width:250px;margin-bottom:20px;">{{$t('reimburse.select_partner')}}: {{select_partner.name}}</span>
-                <addNewPartner style="float:right" class="mgl10" :btnTitle="$t('btn.new')" @finish="handleFinishCreate"></addNewPartner>
+                <addNewPartner v-if="is_purchasing" style="float:right" class="mgl10" :btnTitle="$t('btn.new')" @finish="handleFinishCreate"></addNewPartner>
                 <el-input v-model="partner_search" size="mini" style="float:right;width:250px;margin-bottom:20px;" :placeholder="$t('btn.key_word')" clearable/>
                 <el-table :data="option.partner.filter(
                     data => !partner_search || ( 
