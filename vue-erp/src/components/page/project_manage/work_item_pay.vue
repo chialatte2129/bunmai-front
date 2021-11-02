@@ -11,14 +11,14 @@
             <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
                 <el-tab-pane label="我的請款單" name="mine">
                     <span slot="label">
-                        <i class="el-icon-document"> 我的請款單</i>
+                        <i class="el-icon-document"> {{$t("reimburse.my_payment_order")}}</i>
                     </span>
                     <paymentAll></paymentAll>
                 </el-tab-pane>
 
                 <el-tab-pane label="待審請款單" name="waiting" :key="tbKey">
                     <span slot="label">
-                        <i class="el-icon-message"> 待審請款單</i>
+                        <i class="el-icon-message"> {{$t("reimburse.waiting_payment_order")}}</i>
                         <el-badge :value="todo" v-if="todo>0" size="mini" class="item"></el-badge>
                     </span>
                     <keep-alive><paymentWaiting :tbKey="tbKey" @SyncTodo="handleSyncTodo"></paymentWaiting></keep-alive>
@@ -26,7 +26,7 @@
                 
                 <el-tab-pane v-if="is_accountant" label="請款單撥款" name="accountant">
                     <span slot="label">
-                        <i class="el-icon-coin"> 請款單撥款</i>
+                        <i class="el-icon-coin"> {{$t("reimburse.accountant")}}</i>
                     </span>
                     <paymentAccountant></paymentAccountant>
                 </el-tab-pane>

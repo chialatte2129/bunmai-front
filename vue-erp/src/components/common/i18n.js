@@ -560,7 +560,30 @@ export const messages = {
             filler:"填寫人",
             applicant:"申請人",
             applicant_withcomment:"申請(承辦)人",
-            applicant_dept:"申請人部門"
+            applicant_dept:"申請人部門",
+
+            my_payment_order:"我的請款單",
+            waiting_payment_order:"待審請款單",
+            accountant:"請款單撥款"
+        },
+        work_flow:{
+            approval_flow:"簽核狀態",
+            no_approval_flow:"尚無簽核流程",
+            start:"建單",
+            start_at:"建單時間",
+            status:"狀態",
+            allow_approvers:"簽核權限人員",
+            approver_dept:"簽核部門",
+            approver_name:"簽核人員",
+            time:"時間",
+            instructions:"批示",
+            finish:"完成",
+            status_options:{
+                F:"已審核",
+                P:"待審核",
+                A:"退回",
+                D:"等待中"
+            }
         },
         cost:{
 
@@ -1166,7 +1189,30 @@ export const messages = {
             filler:"Filler",
             applicant:"Applicant",
             applicant_withcomment:"Applicant",
-            applicant_dept:"Department"
+            applicant_dept:"Department",
+
+            my_payment_order:"My Order",
+            waiting_payment_order:"Pending",
+            accountant:"Allocate"
+        },
+        work_flow:{
+            approval_flow:"Approval Stages",
+            no_approval_flow:"No Approval Stage",
+            start:"Start",
+            start_at:"Start At",
+            status:"Status",
+            allow_approvers:"Allow Approvers",
+            approver_dept:"Approver Dept.",
+            approver_name:"Approver",
+            time:"Time",
+            instructions:"Instructions",
+            finish:"Finish",
+            status_options:{
+                F:"Pass",
+                P:"Processing",
+                A:"Reject",
+                D:"Pending"
+            }
         },
         cost:{
             work_hour_percent:"Productivity",

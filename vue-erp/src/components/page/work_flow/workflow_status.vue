@@ -1,11 +1,11 @@
 <template>
     <div>
         <div v-if="!tableData.length" style="width:100%;">
-            <span style="color:grey;">尚無簽核流程</span>
+            <span style="color:grey;">{{$t("work_flow.no_approval_flow")}}</span>
         </div>
         <div v-if="tableData.length"> 
             <el-steps direction="vertical" :active="current_proccess" >
-                <el-step title="建單" status="finish" class="mgb10" :description="'建單時間:'+approval_info.created_at" icon="el-icon-success"></el-step>
+                <el-step :title="$t('work_flow.start')" status="finish" class="mgb10" :description="$t('work_flow.start_at')+':'+approval_info.created_at" icon="el-icon-success"></el-step>
                 <el-step v-for="(item, index) in tableData" class="stage-step mgb10" 
                 :key="index+1" 
                 :title="item.stage_description" 
@@ -14,19 +14,19 @@
                 @click.native="handleStepClick(item)">
                     <template slot="description">
                         <el-row>
-                            <span>狀態: {{status_map[item.status]}}</span><br/>
+                            <span>{{$t('work_flow.status')}}: {{status_map[item.status]}}</span><br/>
                         </el-row>
                         <el-row v-if="item.status=='D'||item.status=='P'">
-                            <span >簽核權限人員: </span><el-tag v-for="member in item.allow_approvers" :key="member.name">{{member.name}}</el-tag>
+                            <span >{{$t('work_flow.allow_approvers')}}: </span><el-tag v-for="member in item.allow_approvers" :key="member.name">{{member.name}}</el-tag>
                         </el-row>
                         <el-row v-if="item.status=='F'||item.status=='A'">
-                            <span v-if="item.approver_info">簽核部門: {{item.approver_info.dept_name}}</span><br/>
-                            <span v-if="item.approver_info">簽核人員: {{item.approver_info.name}}</span><br/>
-                            <span>時間: {{item.signed_at}}</span><br/>
+                            <span v-if="item.approver_info">{{$t('work_flow.approver_dept')}}: {{item.approver_info.dept_name}}</span><br/>
+                            <span v-if="item.approver_info">{{$t('work_flow.approver_name')}}: {{item.approver_info.name}}</span><br/>
+                            <span>{{$t('work_flow.time')}}: {{item.signed_at}}</span><br/>
                         </el-row>
                     </template>
                 </el-step>
-                <el-step title="完成" class="mgb10" :status="is_approval_finish()" icon="el-icon-success"></el-step>
+                <el-step :title="$t('work_flow.finish')" class="mgb10" :status="is_approval_finish()" icon="el-icon-success"></el-step>
             </el-steps>
         </div>
         <el-dialog
@@ -36,25 +36,25 @@
         width="30%"
         :before-close="handleStepClose">
             <el-form label-width="100px">
-                <el-form-item label="簽核狀態">
+                <el-form-item :label="$t('work_flow.status')">
                     <span >{{status_map[step_info.status]}}</span>
                 </el-form-item>
                 <div v-if="step_info.status=='D'||step_info.status=='P'">
-                    <el-form-item label="簽核權限人員">
+                    <el-form-item :label="$t('work_flow.allow_approvers')">
                         <el-tag v-for="member in step_info.allow_approvers" :key="member.name">{{member.name}}</el-tag>
                     </el-form-item>
                 </div>
                 <div  v-if="step_info.status=='F'||step_info.status=='A'">
-                    <el-form-item v-if="step_info.approver_info" label="簽核人員">
+                    <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.approver_name')">
                         <span>{{step_info.approver_info.name}}</span>
                     </el-form-item>
-                    <el-form-item v-if="step_info.approver_info" label="簽核人員部門">
+                    <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.approver_dept')">
                         <span>{{step_info.approver_info.dept_name}}</span>
                     </el-form-item>
-                    <el-form-item v-if="step_info.approver_info" label="簽核日期">
+                    <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.approve')">
                         <span>{{step_info.signed_at}}</span>
                     </el-form-item>
-                    <el-form-item v-if="step_info.approver_info" label="批示">
+                    <el-form-item v-if="step_info.approver_info":label="$t('work_flow.instructions')">
                         <el-input type="textarea" :rows="3" :readonly="true" v-model="step_info.instructions"></el-input>
                     </el-form-item>
                 </div>
@@ -93,10 +93,10 @@ export default {
             approval_info:{},
             active:0,
             status_map:{
-                "F":"已審核",
-                "P":"待審核",
-                "A":"退回",
-                "D":"等待中"
+                "F":this.$t("work_flow.status_options.F"),
+                "P":this.$t("work_flow.status_options.P"),
+                "A":this.$t("work_flow.status_options.A"),
+                "D":this.$t("work_flow.status_options.D"),
             },
 
             stepInfoVisible:false,

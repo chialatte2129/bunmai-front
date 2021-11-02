@@ -1,6 +1,6 @@
 <template>
     <div class="table">
-        <div v-loading.fullscreen.lock="loading">
+        <div v-loading.lock="loading">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="100px">
                 <el-row class="mgb10" >
                     <div style="float:right;">
@@ -136,7 +136,7 @@
                     <el-col :span="9">
                         <el-card shadow="always">
                             <div slot="header" class="clearfix">
-                                <span>簽核狀態</span>
+                                <span>{{$t("work_flow.approval_flow")}}</span>
                             </div>
                             <div style="height:400px;">
                                 <el-scrollbar style="height:100%">
@@ -430,7 +430,7 @@
                         <el-form-item label="SWIFT Code">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.swift_code" ></el-input>
                         </el-form-item>
-                        <el-form-item label="Account">
+                        <el-form-item :label="$t('reimburse.swift_code')">
                             <el-input :readonly="orderReadOnly" type="text" style="width:200px;" v-model="pay_item_form.remittance_account" ></el-input>
                         </el-form-item>
                     </el-col>
@@ -678,9 +678,8 @@ export default {
     },
 
     async created(){
-        // await this.get_dept_employee();
-        await this.getOption();
         await this.getData();
+        await this.getOption();
     },
     watch:{
         select_partner_id(val){
@@ -1263,6 +1262,7 @@ export default {
         },
        
         async getData(){
+            this.loading = true;
             var param = {
                 action:"info",
                 filter:{
@@ -1271,6 +1271,7 @@ export default {
             };
             await payOrderService.get_pay_orders(param)
             .then(res =>{ 
+                this.loading = false;
                 console.log(res.data);
                 if(res.code>0){
                     this.form=res.data;
@@ -1323,7 +1324,9 @@ export default {
         },
 
         update_pay_order_handin(param){ 
+            this.loading = true;
             payOrderService.update_pay_orders(param).then(res =>{ 
+                this.loading = false;
                 if(res.code > 0){ 
                     var handin_form = {
                         action:"handin",
