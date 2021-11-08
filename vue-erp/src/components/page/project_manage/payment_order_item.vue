@@ -811,7 +811,6 @@ export default {
             if(max_date){
                 let date = new Date(max_date);
                 date.setDate(date.getDate() - 30);
-                // console.log(date);
                 return date;
             }else{
                 return false
@@ -893,6 +892,9 @@ export default {
         },
 
         disabledDate (time) {
+            let today = new Date();
+            var limit_min_date = today.setDate(today.getDate()-90);
+
             let count_date = 0;
             this.form.content_json.forEach(element=>{
                 if(element.date){
@@ -900,11 +902,11 @@ export default {
                 }
             });
             if(!count_date){
-                return false
+                return time.getTime() < limit_min_date;
             }else if(this.form.content_json.length==1 && this.item_index==0){
-                return false
+                return time.getTime() < limit_min_date;
             }else{
-                return  time.getTime() <= this.min_cert_date  ||  time.getTime() >= this.max_cert_date;
+                return time.getTime() < limit_min_date || ( time.getTime() <= this.min_cert_date  ||  time.getTime() >= this.max_cert_date ) ;
             }
         },
         

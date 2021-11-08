@@ -7,6 +7,9 @@
         :visible.sync="dialogVisible"
         :modal="true" :append-to-body="true"
         width="30%"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        v-loading="loading"
         :before-close="handleClose">
             <el-form label-position="top">
                 <el-form-item :label="$t('work_flow.instructions')">
@@ -33,7 +36,7 @@ export default {
     data(){
         return {
             user_token: localStorage.getItem("ms_user_token"),
-            
+            loading:false,
             dialogVisible:false,
             instructions:""
         }
@@ -63,6 +66,7 @@ export default {
         },
 
         confirmAction(){
+            this.loading = true;
             let params = {
                 approval_stage_id:this.current_stage_id,
                 user_token:this.user_token,
@@ -71,8 +75,7 @@ export default {
             workFlowService
             .approval_stage_reject(params)
             .then(res=>{
-                console.log(res);
-                // this.getData();
+                this.loading = false;
                 this.handleClose();
                 this.beforeClose();
             });
