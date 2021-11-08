@@ -51,10 +51,10 @@
                     <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.approver_dept')">
                         <span>{{step_info.approver_info.dept_name}}</span>
                     </el-form-item>
-                    <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.approve')">
+                    <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.signed_at')">
                         <span>{{step_info.signed_at}}</span>
                     </el-form-item>
-                    <el-form-item v-if="step_info.approver_info":label="$t('work_flow.instructions')">
+                    <el-form-item v-if="step_info.approver_info" :label="$t('work_flow.instructions')">
                         <el-input type="textarea" :rows="3" :readonly="true" v-model="step_info.instructions"></el-input>
                     </el-form-item>
                 </div>

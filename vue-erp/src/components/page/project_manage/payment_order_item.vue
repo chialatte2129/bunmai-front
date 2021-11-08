@@ -1326,7 +1326,6 @@ export default {
         update_pay_order_handin(param){ 
             this.loading = true;
             payOrderService.update_pay_orders(param).then(res =>{ 
-                this.loading = false;
                 if(res.code > 0){ 
                     var handin_form = {
                         action:"handin",
@@ -1337,6 +1336,7 @@ export default {
                         }
                     };
                     payOrderService.update_pay_orders(handin_form).then(res =>{
+                        this.loading = false;
                         if(res.code > 0){ 
                             this.$message.success("Success"); 
                             this.closeDialog();
