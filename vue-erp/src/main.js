@@ -17,7 +17,7 @@ import JsonExcel from 'vue-json-excel';
 import VueClipboard from 'vue-clipboard2';
 import HighchartsVue from "highcharts-vue";
 import LoadScript from "vue-plugin-load-script";
-import DlgDraggable from "vue-element-dialog-draggable"
+import DlgDraggable from "vue-element-dialog-draggable";
 Vue.config.productionTip = false
 Vue.use(LoadScript);
 Vue.use(VueI18n);
