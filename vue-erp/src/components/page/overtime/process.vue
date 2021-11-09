@@ -36,8 +36,8 @@
                     <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
                         <el-tab-pane :label="$t('overtime.to_be_processed')" name="to_be_processed" :disabled="count_loading" :key="tabKey">
                             <div v-if="activeTabs=='to_be_processed'">
-                            <el-button size="large" type="success" v-html="$t('common_msg.pass')" @click="passVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
-                            <el-button size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click="rejectVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button v-if="handleStaff" size="large" type="success" v-html="$t('common_msg.pass')" @click="passVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
+                            <el-button v-if="handleStaff" size="large" type="danger" class="mgr10" v-html="$t('common_msg.reject')" @click="rejectVisible=true" :disabled="count_loading||multipleSelection.length==0"/>
                             <el-select size="large" class="mgr10 handle-input-pid" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="count_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -65,7 +65,7 @@
                                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
-                                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                                <el-table-column prop="description" :label="$t('employee.description')" min-width="300" width="auto">
                                     <template slot-scope="scope">
                                         <el-tooltip effect="light" placement="top">
                                             <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
@@ -73,8 +73,8 @@
                                         </el-tooltip>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="100" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="100" align="right" header-align="left"/>
                                 <!-- <el-table-column type="expand" width="40">
                                     <template slot-scope="props">
                                         <el-form label-position="left" label-width="85px">
@@ -167,14 +167,15 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { dayItemService, overtimeService } from "@/_services";
 export default {
     name: "overtime_process",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
-            username:localStorage.getItem("ms_username"),
+            username:accountService.get_user_info("ms_username"),
             tree_loading:false,
             checked_id:[],
             expand_key:[],
@@ -309,6 +310,13 @@ export default {
     },
 
     computed: {
+        handleStaff(){
+            if(localStorage.getItem('ms_user_actions').includes("hide_actions")){
+                return false
+            }else{
+                return true
+            };
+        },
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
         },

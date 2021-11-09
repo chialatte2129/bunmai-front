@@ -37,7 +37,7 @@
                 </el-table-column>
                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="item_name" :label="$t('project.name')" width="250" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                <el-table-column prop="description" :label="$t('employee.description')" width="auto" min-width="300">
                     <template slot-scope="scope">
                         <el-tooltip effect="light" placement="top">
                             <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
@@ -49,7 +49,7 @@
                 <el-table-column prop="status" :label="$t('overtime.process_status')" width="100" show-overflow-tooltip>
                     <template slot-scope="scope">{{$t("overtime.status."+scope.row.status)}}</template>
                 </el-table-column>
-                <el-table-column :label="$t('menus.work_items')" width="80" align="center">
+                <el-table-column :label="$t('menus.work_items')" width="100" align="center">
                     <template slot-scope="scope">
                         <el-button type=text size=mini icon="el-icon-edit" @click="handlePersonProject(scope.row)" :disabled="table_loading||['A', 'F'].includes(scope.row.status)"/>
                     </template>
@@ -63,12 +63,13 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { overtimeService } from "@/_services";
 export default {
     name: "day_item_person",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
             comp_time_sum:0,
             tbKey:0,
@@ -88,7 +89,7 @@ export default {
                 form_id:"",
                 status:[],
                 work_date:[],
-                pid:[localStorage.getItem("ms_odoo_employee_id")],
+                pid:[accountService.get_user_info("ms_odoo_employee_id")],
             },
             option:{
                 status:[
@@ -249,7 +250,7 @@ export default {
         async getCompSum(){
             this.table_loading=true;
             var param = {
-                pid:localStorage.getItem("ms_odoo_employee_id")
+                pid:accountService.get_user_info("ms_odoo_employee_id")
             }
             await overtimeService.overtime_comp_sum(param).then(res =>{ 
                 this.comp_time_sum=res.comp_time_sum;

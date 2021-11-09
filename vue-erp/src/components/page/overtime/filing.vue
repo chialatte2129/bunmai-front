@@ -63,11 +63,11 @@
                                 <el-table-column prop="form_id" :label="$t('overtime.form_id')" width="140" show-overflow-tooltip/>
                                 <el-table-column prop="p_name" :label="$t('employee.name')" width="100" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="150" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="auto" show-overflow-tooltip>
+                                <el-table-column prop="item_id" :label="$t('project.name')" min-width="300" width="auto" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                                 </el-table-column>
                                 <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left"/>
+                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="90" align="right" header-align="left"/>
                                 <el-table-column prop="reviewer_name" :label="$t('overtime.reviewer')" width="85" show-overflow-tooltip/>
                                 <el-table-column prop="reviewed_at" :label="$t('overtime.reviewed_at')" width="100" show-overflow-tooltip>
                                     <template slot-scope="scope">
@@ -145,13 +145,14 @@
 </template>
 <script>
 import { dayItemService, overtimeService } from "@/_services";
+import { accountService } from "@/_services";
 export default {
     name: "overtime_filing",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
-            username:localStorage.getItem("ms_username"),
+            username:accountService.get_user_info("ms_username"),
             tree_loading:false,
             checked_id:[],
             expand_key:[],

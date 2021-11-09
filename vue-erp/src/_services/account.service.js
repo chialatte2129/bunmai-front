@@ -7,9 +7,65 @@ export const accountService = {
   list_by_page,
   update_account,
   delete_account,
-  clean_login_info
+  clean_login_info,
+  redirect_login,
+
+  get_user_info,
+  get_user_menus,
+  get_user_actions
 }
 
+function get_user_info(key=""){
+  
+  var user_info_str = localStorage.getItem("ms_user_info");
+  if(user_info_str){
+    var user_info = JSON.parse(atob(atob(user_info_str)));
+    if(key!=""){
+      if(key in user_info){
+        return user_info[key]
+      }else{
+        return null
+      }
+    }else{
+      return user_info
+    }
+  }
+}
+
+function get_user_menus(){
+  var user_menu = localStorage.getItem("ms_user_menus");
+  if(user_menu){
+    return atob(atob(user_menu)).split(",");
+  }else{
+    return []
+  }
+  
+}
+
+function get_user_actions(){
+  var user_actions = localStorage.getItem("ms_user_actions");
+  if(user_actions){
+    return atob(atob(user_actions)).split(",");
+  }else{
+    return []
+  }
+}
+
+
+function redirect_login(uname,token) {  
+  var param = {       
+      'username': uname,
+      'token' : token
+  }  
+  return new Promise((resolve, reject) => {
+    axios.post(process.env.VUE_APP_API+ '/api/v1/redirect_login', param).then((resp) => {
+      resolve(resp.data)
+    }).catch((error) => {
+      reject(error)
+    })
+   })
+
+}
 
 function clean_login_info(localStorage,router) {  
   console.log('call clean login');

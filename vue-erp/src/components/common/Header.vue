@@ -71,8 +71,8 @@ export default {
       message: 2,  
       formLabelWidth: "150px",
       dialogFormVisible: false,
-      isadmin:localStorage.getItem("ms_is_admin")=='true' ? true:false,
-      isodoo:localStorage.getItem('ms_is_odoo')==0 ? true:false,
+      isadmin: accountService.get_user_info("ms_is_admin")=='true' ? true:false,
+      isodoo:accountService.get_user_info("ms_is_odoo")==0 ? true:false,
       form: {
         old_pass: "",
         new_pass: "",
@@ -91,7 +91,7 @@ export default {
   computed: {
     username() {
       let userfullname = localStorage.getItem("ms_user_fullname");
-      let username = localStorage.getItem("ms_username");
+      let username = accountService.get_user_info("ms_username");
       return userfullname !='' ? userfullname: username;
     },
     user_lang(){
@@ -114,8 +114,19 @@ export default {
     },
     handleCommand(command) {
       if (command == "loginout") {
-        localStorage.removeItem("ms_username");
+        // localStorage.removeItem("ms_user_id");
         localStorage.removeItem("ms_user_token");
+        // localStorage.removeItem("ms_username");
+        localStorage.removeItem("ms_user_fullname");
+        // localStorage.removeItem("ms_is_admin");  
+        // localStorage.removeItem("ms_is_odoo");  
+        // localStorage.removeItem("ms_odoo_user_id");  
+        localStorage.removeItem("ms_user_menus"); 
+        localStorage.removeItem("ms_user_actions");
+        localStorage.removeItem("ms_user_info");
+        // localStorage.removeItem("ms_odoo_user_id");
+        // localStorage.removeItem("ms_odoo_employee_id");
+        // localStorage.removeItem("ms_odoo_is_dept_manager");
         this.$router.push("/login");
       }
       if (command == "opendialog") {

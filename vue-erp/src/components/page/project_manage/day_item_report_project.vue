@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item>{{$t('menus.task_report')}}</el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t("menus.view_report")}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.day_item_report_project')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -143,14 +143,13 @@
 <script>
 import { dayItemService } from "@/_services";
 import { workItemService } from "@/_services";
-import { Loading } from 'element-ui';
-import { overtimeService } from "@/_services";
+import { accountService } from "@/_services";
 export default {
     name: "day_item_person",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
-            username:localStorage.getItem("ms_username"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
+            username:accountService.get_user_info("ms_username"),
             fullname:localStorage.getItem("ms_user_fullname"),
             tbKey:0,
             dlKey:0,

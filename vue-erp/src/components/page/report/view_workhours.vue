@@ -79,6 +79,7 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { reportService } from "@/_services";
 export default {
     name: "view_work_hours",
@@ -101,7 +102,7 @@ export default {
             black_list:[],
             bk_black_list:[],
             dept_tree:[],
-            black_list_action:localStorage.getItem("ms_user_actions").includes("workhour_view_black_list"),
+            black_list_action:accountService.get_user_actions().includes("workhour_view_black_list"),
             activeTabs:("tabs" in this.$route.query)?this.$route.query.tabs:"view_work_hours",
             filter:{
                 p_name:"",

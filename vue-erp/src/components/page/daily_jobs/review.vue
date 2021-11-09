@@ -3,8 +3,8 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
-                <el-breadcrumb-item>{{$t('menus.task_report')}}</el-breadcrumb-item>
-                <el-breadcrumb-item><b>{{$t('menus.day_item_review')}}</b></el-breadcrumb-item>
+                <el-breadcrumb-item>{{$t('menus.daily_jobs')}}</el-breadcrumb-item>
+                <el-breadcrumb-item><b>{{$t('menus.daily_jobs_review')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -33,9 +33,12 @@
                     </el-card>
                 </el-col>
                 <el-col :span="19">
-                    <el-tabs v-model="activeTabs" type="border-card" @tab-click="handleTabClick" style="min-height:710px;">
-                        <el-tab-pane :label="$t('employee.daily_details')" name="daily_details">
-                            <div v-if="activeTabs=='daily_details'">
+                    <el-card shadow="hover" body-style="padding:10px" class="mgr10" style="height:710px;">
+                        <div slot="header" class="clearfix">
+                            <span><b>{{$t('menus.daily_jobs')}}</b></span>
+                        </div>
+                        <div v-if="activeTabs=='daily_details'">
+                            <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
                             <el-select size="large" class="mgr10 handle-input" v-model="filter.pid" filterable clearable multiple collapse-tags
                             :placeholder="$t('employee.name')" :disabled="table_loading||tree_loading" @change="search">
                                 <el-option-group v-for="group in option.employee" :key="group.id" :label="group.name">
@@ -44,54 +47,120 @@
                                     </el-option>
                                 </el-option-group>
                             </el-select>
-                            <el-select size="large" class="mgr10 handle-input" v-model="filter.item_id" filterable clearable multiple collapse-tags
-                            :placeholder="$t('project.name')" :disabled="table_loading||tree_loading" @change="search">
-                                <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
-                            </el-select>
                             <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" 
                             :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"
                             :disabled="table_loading||tree_loading" @change="search" class="mgr10" size="large"/>
                             <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading||tree_loading"/>
+                            <el-checkbox v-model="filter.hide_self"  class="mgr10" @change="search">{{$t('todo_list.hide_myself')}}</el-checkbox>
+                            <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">{{$t('todo_list.hide_abandon')}}</el-checkbox>
                             <el-table :data="tableData" border class="table mgt10" ref="multipleTable" tooltip-effect="light" height="521" v-loading="table_loading"
                             @sort-change="handleSortChange" :span-method="dateCellMerge" :cell-style="getCellStyle" :key="tbKey">
-                                <el-table-column prop="work_date" :label="$t('employee.work_date')" width="150" show-overflow-tooltip>
+                                <el-table-column prop="work_date" :label="$t('todo_list.date')" width="150" show-overflow-tooltip>
                                     <template slot-scope="scope">{{scope.row.work_date}} ({{$t(`employee.dayofweek.${scope.row.day_of_week}`)}})</template>
                                 </el-table-column>
-                                <el-table-column prop="p_name" :label="$t('employee.name')" width="90" show-overflow-tooltip/>
+                                <el-table-column prop="p_name" :label="$t('todo_list.member')" width="90" show-overflow-tooltip/>
                                 <el-table-column prop="dept_name" :label="$t('employee.dept')" width="120" show-overflow-tooltip/>
-                                <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
-                                    <template slot-scope="scope">{{scope.row.item_name}}</template>
-                                </el-table-column>
-                                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                                <el-table-column prop="content" :label="$t('todo_list.task_name')" width="auto">
                                     <template slot-scope="scope">
-                                        <el-tooltip effect="light" placement="top">
-                                            <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
-                                            <div class="one-line">{{scope.row.description}}</div>
-                                        </el-tooltip>
+                                        <div class="one-line">{{scope.row.content}}</div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="100" align="right" header-align="left"/>
-                                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="120" align="right" header-align="left"/>
-                                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="100" align="right" header-align="left">
+                                <el-table-column prop="note" :label="$t('todo_list.result')" width="auto">
                                     <template slot-scope="scope">
-                                        <span v-if="scope.row.comp_time>0">{{scope.row.comp_time}}</span><span v-else>-</span>
+                                            <div class="one-line">{{scope.row.note}}</div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="120" align="right" header-align="left"/>
+                                <el-table-column prop="status" :label="$t('todo_list.status')" width="120" align="center" header-align="center">
+                                    <template slot-scope="scope">
+                                        <el-button v-if="scope.row.status=='F'" type="success" style="width:80px">{{$t('todo_list.status_item.F')}}</el-button>
+                                        <el-button v-if="scope.row.status=='P' && today<=scope.row.work_date" type="primary" style="width:80px" >{{$t('todo_list.status_item.P')}}</el-button>
+                                        <el-button v-if="scope.row.status=='P' && today>scope.row.work_date" type="danger" style="width:80px" >{{$t('todo_list.status_item.P_over')}}</el-button>
+                                        <el-button v-if="scope.row.status=='O'" type="info" style="width:80px">{{$t('todo_list.status_item.A')}}</el-button>
+                                    </template>
+                                </el-table-column>
+                                    <el-table-column :label="$t('btn.action')" width="150" align="center" fixed="right">
+                                    <template slot-scope="scope">
+                                        <el-button class="el-icon-edit" type="warning" size="mini" @click="handleEdit(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.edit')}}</el-button>
+                                        <!-- <el-button v-if="scope.row.status=='O'" class="el-icon-delete" type="danger" size="mini" @click="handleDelete(scope.$index, scope.row)" :disabled="table_loading">{{$t('btn.delete')}}</el-button> -->
+                                    </template>
+                                </el-table-column>
                             </el-table>
                             <div class="pagination">
                                 <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper"
                                 :disabled="table_loading||tree_loading" :current-page="cur_page" :page-sizes="page_size_list" :page-size="page_size" :total="totalRow" background/>
                             </div>
-                            </div>
-                        </el-tab-pane>
-                    </el-tabs>
+                        </div>
+                    </el-card>
                 </el-col>
             </el-row>
         </div>
+
+        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
+            <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelDelete">{{$t("btn.cancel")}}</el-button>
+                <el-button type="primary" @click="confirmDelete">{{$t("btn.confirm")}}</el-button>
+            </span>
+        </el-dialog>
+
+        <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
+        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
+            <div v-loading.lock="dialog_loading">
+                <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
+                    <el-form-item v-if="createView" :label="$t('todo_list.date')" prop="work_date">
+                        <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
+                        :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
+                            disabledDate(time){ 
+                                return time.getTime()>Date.now()+day_mileseconds*31;
+                            }
+                        }"/>
+                    </el-form-item>
+                    <el-form-item v-if="updateView"  :label="$t('todo_list.date')" prop="item_id">
+                        <span >{{form.work_date}}</span>
+                    </el-form-item>
+                    <el-form-item v-if="createView"  :label="$t('todo_list.member')" prop="p_name">
+                        <el-select size="large" class="mgr10 handle-input" v-model="form.pid" filterable clearable collapse-tags
+                        :placeholder="$t('employee.name')">
+                            <el-option-group v-for="group in option.worker" :key="group.id" :label="group.name">
+                                <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled" @click.native="handleClickWorker(item)">
+                                    <span class="mgl10">{{item.name}}</span>
+                                </el-option>
+                            </el-option-group>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item v-if="updateView"  :label="$t('todo_list.member')" prop="item_id">
+                        <span >{{form.p_name}}</span>
+                    </el-form-item>
+                    <el-form-item :label="$t('todo_list.task_name')" prop="content">
+                        <el-input v-model="form.content" type="textarea" :rows="5" style="width:95%;"/>
+                    </el-form-item>
+                    <el-form-item v-if="!createView" :label="$t('todo_list.result')" prop="note">
+                        <el-input v-model="form.note" type="textarea" :rows="3" style="width:95%;"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('todo_list.status')" prop="status">
+                        <el-select v-model="form.status" class="handle-input" >
+                            <el-option value="F" :label="$t('todo_list.status_item.F')"/>
+                            <el-option value="P" :label="$t('todo_list.status_item.P')"/>
+                            <el-option value="O" :label="$t('todo_list.status_item.A')"/>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item :label="$t('todo_list.create_by')" prop="status">
+                        <span style="color:blue;">{{form.created_by}}</span>
+                    </el-form-item>
+                    <el-form-item :label="$t('todo_list.create_at')" prop="status">
+                       <span style="color:blue;">{{form.created_at}}</span>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer-loading">
+                    <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
+                    <el-button type="primary" @click="confirmDialog">{{$t("btn.confirm")}}</el-button>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
+import { dailyJobsService } from "@/_services";
 import { dayItemService } from "@/_services";
 import { accountService } from "@/_services";
 export default {
@@ -100,6 +169,17 @@ export default {
         return {
             odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             username:accountService.get_user_info("ms_username"),
+            fullname:localStorage.getItem("ms_user_fullname"),
+            today:"",
+            createView:false,
+            updateView:false,
+            deleteView:false,
+            copyView:false,
+            form:{},
+            tbKey:0,
+            dlKey:0,
+            dialog_loading:false,
+
             tree_loading:false,
             checked_id:[],
             expand_key:[],
@@ -130,14 +210,17 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             filter:{
-                item_id:null,
                 work_date:[],
                 dept_id:[],
                 pid:[],
+                hide_self:true,
+                self_id:accountService.get_user_info("ms_odoo_employee_id"),
+                hide_void:true,
             },
             option:{
                 work_item:[],
                 employee:[],
+                worker:[],
             },
             day_mileseconds:86400000,
             pickerOptions:{
@@ -193,6 +276,26 @@ export default {
                     }
                 ]
             },
+            rules_org: {
+                p_name: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                work_date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                copy_date: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+                content: [
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ]
+            },
+
+            rules_com:{
+                description:[
+                    {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
+                ],
+            }
         }
     },
 
@@ -218,16 +321,167 @@ export default {
 
     async created(){
         await this.get_dept_tree();
-        await this.getOption();
+        this.getToday();
     },
 
     computed: {
+        
+        rules(){
+            var output_rules = this.rules_org;
+            var com_key = Object.keys(this.rules_com);
+            if(this.des_flag){
+                for(var key of com_key){
+                    output_rules[key] = this.rules_com[key];
+                };
+            }else{
+                for(var key of com_key){
+                    delete output_rules[key];
+                };
+            };
+            this.desKey++;
+            return output_rules;
+        },
         count_page(){
             this.start_row=(this.cur_page-1)*this.page_size;
+        },
+        showTitle(){
+            if(this.createView) return this.$t('todo_list.create_task');
+            else if(this.updateView) return this.$t('todo_list.update_task');
+            else if(this.copyView) return "複製待辦事項";
+            else return "";
+        },
+
+        showVisible(){
+            if(this.createView) return this.createView;
+            else if(this.updateView) return this.updateView;
+            else if(this.copyView) return this.copyView;
+            else return false;
         },
     },    
     
     methods: {
+        handleClickWorker(item){
+            console.log(item);
+            this.form.p_name = item.name;
+        },
+        resetForm(){
+            this.dlKey++;
+            this.form={
+                pid:"",
+                p_name:"",
+                work_date:"",
+                content:"",
+                note:"",
+                created_by:this.fullname
+            };
+            this.edit_idx=null;
+            this.$refs.form.clearValidate();
+        },
+        cancelDialog(){
+            this.resetForm();
+            this.createView=false;
+            this.updateView=false;
+            this.copyView=false;
+        },
+
+        confirmDialog(){
+            this.$refs.form.validate(valid => {
+                if(valid){
+                    var temp_form = Object.assign({}, this.form);
+                    delete temp_form["total_comp_time"];
+                    delete temp_form["total_work_hour"];
+                    var param = {
+                        action:this.createView?"create":(this.updateView?"update":"copy"),
+                        form:temp_form
+                    };
+                    this.update_day_item(param);
+                }
+            })
+        },
+
+        async update_day_item(param){ 
+            this.dialog_loading=true;
+            await dailyJobsService.update_daily_jobs(param).then(res =>{ 
+                console.log(res);
+                if(res.code==1){ 
+                    this.$message.success(this.$t(res.msg)); 
+                    if(["create", "copy", "update"].includes(param.action)){
+                        this.tbKey++;
+                        this.getData();
+                        this.cancelDialog();
+                    }else if(param.action=="delete"){
+                        this.cancelDelete()
+                        this.handleDeleteChange();
+                    }
+                }else if(res.code==0){ 
+                    this.$message.warning(this.$t(res.msg)); 
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                } 
+            }) 
+            this.dialog_loading=false;
+        },
+
+        handleDelete(index, row){
+            this.deleteInfo={
+                id:row.id,
+                pid:this.odoo_employee_id,
+                work_date:row.work_date
+            };
+            this.deleteView=true;
+        },
+
+        handleDeleteChange(){
+            if(this.start_row==(this.totalRow-1)&&this.start_row!=0){ this.start_row-=this.page_size }
+            this.getData();
+        },
+
+        cancelDelete(){
+            this.deleteInfo={
+                id:null
+            };
+            this.deleteView=false;
+        },
+
+        confirmDelete(){
+            var param = {
+                action:"delete",
+                form:this.deleteInfo
+            }
+            this.update_day_item(param);
+        },
+
+        cancelDialog(){
+            this.resetForm();
+            this.createView=false;
+            this.updateView=false;
+            this.copyView=false;
+        },
+
+
+        async handleCreate(){
+            var today = new Date();
+            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()+1);
+            this.form.p_name="";
+            this.form.created_by=this.fullname;
+            this.form.updated_by=this.odoo_employee_id;
+            this.form.created_at=new Date().toLocaleString('zh-TW', {timeZone: 'Asia/Taipei'});
+            this.form.status="P";
+            this.createView=true;
+        },
+
+
+        async handleEdit(index, row){
+            this.form=Object.assign({}, row);
+            this.form.updated_by = this.odoo_employee_id;
+            this.edit_idx=index;
+            this.updateView=true;
+        },
+
+        getToday(){
+            let time =new Date();
+            this.today = time.getFullYear()+'-'+String(time.getMonth()+1).padStart(2, '0')+'-'+String(time.getDate()).padStart(2, '0')
+        },
         getSpanArr(data){
             this.resetSpanArr();
             for(var i=0;i<data.length;i++){
@@ -302,7 +556,7 @@ export default {
         },
 
         handleCheckChange(data, checked, indeterminate){
-            // console.log("check change");
+            console.log(data);
             if(checked){
                 if(!this.checked_id.includes(data.id)){
                     this.checked_id.push(data.id);
@@ -404,9 +658,7 @@ export default {
             await dayItemService.get_dept_tree(param).then(res =>{ 
                 this.tree_data=res.tree_data;
                 this.tree_data.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
-                // for(var dept of this.tree_data){
-                //     dept.disabled=true;
-                // };
+                this.option.worker = res.tree_data;
             })
             await this.allCheckBox();
             this.tree_loading=false;
@@ -425,18 +677,13 @@ export default {
                 odoo_employee_id:this.odoo_employee_id,
                 filter:this.filter
             }
-            await dayItemService.review_day_list(param).then(res =>{ 
+            await dailyJobsService.review_daily_jobs_list(param).then(res =>{ 
                 this.tableData=res.day_items;
                 this.totalRow=res.total;
+                console.log(res);
                 this.getSpanArr(this.tableData);
             })
             this.table_loading=false;
-        },
-        
-        async getOption(){
-            await dayItemService.get_option_list({action:["work_item"]}).then(res =>{ 
-                this.option.work_item=res.work_item;
-            }) 
         },
 
         handleCurrentChange(currentPage){
@@ -466,6 +713,8 @@ export default {
                 work_date:[],
                 dept_id:this.filter.dept_id,
                 pid:[],
+                hide_self:true,
+                self_id:this.odoo_employee_id
             };
             this.tbKey++;
             this.sort_column="work_date";
@@ -481,7 +730,7 @@ export default {
         padding:15px;
     }
     .handle-input{
-        width:280px;
+        width:200px;
         display:inline-block;
     }
     .del-dialog-cnt{

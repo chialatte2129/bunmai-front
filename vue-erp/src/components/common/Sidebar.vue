@@ -43,6 +43,7 @@
 </template>
 <script>
 import bus from "../common/bus";
+import { accountService } from "@/_services";
 export default {
     data(){
         return {
@@ -53,13 +54,48 @@ export default {
                     icon: "el-icon-collection",
                     index: "project",
                     title: this.$t("menus.project_manage"),
-                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items"]),
+                    show: this.includeSubMenu(["day_item_person", "day_item_review", "work_items", "work_item_cost","work_item_pay","project_cost_upload" ]),
                     subs: [            
                         {
                             index: "work_items",
-                            title: this.$t("menus.work_items"),
-                            show: this.hasThisMenu("work_items")
+                            title: this.$t("menus.work_items_manage"),
+                            show: this.includeSubMenu([
+                                "work_items", 
+                                "work_item_cost",
+                                "work_item_pay", 
+                                "project_cost_upload",
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "work_items",
+                                    title: this.$t("menus.work_items"),
+                                    show: this.hasThisMenu("work_items")
+                                },
+                                {
+                                    index: "work_item_cost",
+                                    title: this.$t("menus.work_item_cost"),
+                                    show: this.hasThisMenuOrMgr("work_item_cost"),
+                                    // show: false
+                                },
+                                {
+                                    index: "work_item_pay",
+                                    title: this.$t("menus.work_item_pay"),
+                                    show: this.hasThisMenu("work_item_pay"),
+                                    // show:false
+                                },
+                                {
+                                    index: "project_cost_upload",
+                                    title: this.$t("menus.project_cost_upload"),
+                                    show: this.hasThisMenu("project_cost_upload"),
+                                },
+                                   {
+                                    index: "project_funnel_review",
+                                    title: this.$t("menus.project_funnel_review"),
+                                    show: this.hasThisMenu("project_funnel_review"),
+                                },
+                            ]
                         },
+                        
                         {
                             index: "task_report",
                             title: this.$t("menus.task_report"),
@@ -87,6 +123,7 @@ export default {
                                 },
                             ]
                         },
+                        
                         {
                             index: "overtime_manage",
                             title: this.$t("menus.overtime_manage"),
@@ -120,10 +157,31 @@ export default {
                             ]
                         },
                         {
+                            index: "daily_jobs",
+                            title: this.$t("menus.daily_jobs"),
+                            show: this.includeSubMenu([
+                                "daily_jobs_person", 
+                                "daily_jobs_review"
+                            ]),
+                            subs: [ 
+                                {
+                                    index: "daily_jobs_person",
+                                    title: this.$t("menus.daily_jobs_person"),
+                                    show: this.hasThisMenu("daily_jobs_person")
+                                },
+                                {
+                                    index: "daily_jobs_review",
+                                    title: this.$t("menus.daily_jobs_review"),
+                                    show: this.hasThisMenuOrMgr("daily_jobs_review"),
+                                }
+                            ]
+                        },
+                        {
                             index: "view_report",
                             title: this.$t("menus.view_report"),
                             show: this.includeSubMenu([
                                 "view_work_hours",
+                                "day_item_report_project"
                             ]),
                             subs: [ 
                                 {
@@ -138,6 +196,19 @@ export default {
                                 },
                             ]
                         },
+                    ]
+                },
+                {
+                    icon: "el-icon-user",
+                    index: "member",
+                    title: this.$t("menus.partner_manage"),
+                    show: this.includeSubMenu(["supplier_accounts"]),
+                    subs: [            
+                        {
+                            index: "supplier_accounts",
+                            title: this.$t("menus.supplier_accounts"),
+                            show: this.hasThisMenu("supplier_accounts")
+                        }
                     ]
                 },
                 {
@@ -192,7 +263,7 @@ export default {
     },
     methods: {
         hasThisMenu(menu_path){
-            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            var my_menus = accountService.get_user_menus();
             if (my_menus.includes(menu_path)) {
                 return true;
             } else {
@@ -200,13 +271,20 @@ export default {
             }
         },
 
+        updateUserMenus(menu_path){
+            console.log("Add to menus:", menu_path);
+            var base64_user_menu = localStorage.getItem("ms_user_menus");
+            var user_menu = atob(atob(base64_user_menu));
+            localStorage.setItem("ms_user_menus", btoa(btoa(`${user_menu},${menu_path}`))); 
+        },
+
         hasThisMenuOrMgr(menu_path){
-            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            var my_menus = accountService.get_user_menus();
             if (my_menus.includes(menu_path)) {
                 return true;
             } else {
-                if (localStorage.getItem("ms_odoo_is_dept_manager")=="true") {
-                    localStorage.setItem("ms_user_menus", `${localStorage.getItem('ms_user_menus')}, ${menu_path}`); 
+                if (accountService.get_user_info("ms_odoo_is_dept_manager")==true) {
+                    this.updateUserMenus(menu_path);
                     return true;
                 }
             }
@@ -216,7 +294,7 @@ export default {
         includeSubMenu(sys_menus){
             var find_flag = false;
             var arrayLength = sys_menus.length;
-            var my_menus = localStorage.getItem("ms_user_menus").split(",");
+            var my_menus = accountService.get_user_menus();
             for (var i = 0; i < arrayLength; i++) {
                 var menu_path = sys_menus[i];
                 if (my_menus.includes(menu_path)) {

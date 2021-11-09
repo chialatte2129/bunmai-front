@@ -26,7 +26,7 @@
                 <el-table-column prop="item_id" :label="$t('project.name')" width="200" show-overflow-tooltip>
                     <template slot-scope="scope">{{scope.row.item_name}}</template>
                 </el-table-column>
-                <el-table-column prop="description" :label="$t('employee.description')" width="auto">
+                <el-table-column prop="description" :label="$t('employee.description')" min-width="300" width="auto">
                     <template slot-scope="scope">
                         <el-tooltip effect="light" placement="top">
                             <div v-html="scope.row.description.replaceAll('\n', '<br/>')" slot="content"></div>
@@ -34,14 +34,14 @@
                         </el-tooltip>
                     </template>
                 </el-table-column>
-                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="80" align="right" header-align="left"/>
-                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="80" align="right" header-align="left"/>
-                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="80" align="right" header-align="left">
+                <el-table-column prop="work_hours" :label="$t('employee.table_work_hour')" width="100" align="right" header-align="left"/>
+                <el-table-column prop="total_work_hour" :label="$t('employee.table_total_work_hour')" width="120" align="right" header-align="left"/>
+                <el-table-column prop="comp_time" :label="$t('overtime.table_comp_time')" width="100" align="right" header-align="left">
                     <template slot-scope="scope">
                         <span v-if="scope.row.comp_time>0">{{scope.row.comp_time}}</span><span v-else>-</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="80" align="right" header-align="left"/>
+                <el-table-column prop="total_comp_time" :label="$t('overtime.table_total_comp_time')" width="120" align="right" header-align="left"/>
                 <el-table-column prop="tag1" :label="$t('project.tag1')" width="115" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="230" align="center" fixed="right">
                     <template slot-scope="scope">
@@ -59,7 +59,7 @@
             </div>
         </div>
         
-        <el-dialog :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
+        <el-dialog v-draggable :title="$t('common_msg.warning')" :visible.sync="deleteView" width="500px" center :before-close="cancelDelete">
             <div class="del-dialog-cnt"><i class="el-icon-warning" style="color:#E6A23C;"/> {{$t('common_msg.ask_for_delete')}} ?</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelDelete">{{$t("btn.cancel")}}</el-button>
@@ -68,7 +68,7 @@
         </el-dialog>
         
         <el-dialog :title="showTitle" :visible.sync="showVisible" width="600px" :before-close="cancelDialog" 
-        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey">
+        :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="dlKey" v-draggable>
             <div v-loading.lock="dialog_loading">
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
@@ -130,7 +130,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog :title="$t('employee.edit_personal_tags')" :visible.sync="tagView" top="90px" width="1100px" 
+        <el-dialog :title="$t('employee.edit_personal_tags')" :visible.sync="tagView" top="90px" width="1100px" v-draggable
         :before-close="cancelTagDialog" :close-on-press-escape="false" :close-on-click-modal="false" :destroy-on-close="true" :key="tagDlKey">
             <div v-loading.lock="tag_dl_loading">
                 <el-row class="mgb10 mgl10">
@@ -206,12 +206,13 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { dayItemService, personTagService } from "@/_services";
 export default {
     name: "day_item_person",
     data(){
         return {
-            odoo_employee_id:localStorage.getItem("ms_odoo_employee_id"),
+            odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             fullname:localStorage.getItem("ms_user_fullname"),
             tbKey:0,
             dlKey:0,
@@ -231,7 +232,7 @@ export default {
             sort_column:"work_date",
             sort:"desc",
             deleteInfo:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 item_id:null,
                 work_date:"",
                 tag1:"",
@@ -249,13 +250,13 @@ export default {
             filter:{
                 item_id:null,
                 work_date:[],
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
             },
             ban_status:["F"],
             overtime_ban_status:["F", "A"],
             edit_idx:null,
             form:{
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 p_name:localStorage.getItem("ms_user_fullname"),
                 item_id:"",
                 work_date:"",
@@ -268,7 +269,7 @@ export default {
             },
             tag_form:{
                 item_id:"",
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 tags:[],
             },
             edit_tag_info:{
@@ -576,7 +577,7 @@ export default {
         resetTagForm(){
             this.tag_form={
                 item_id:"",
-                pid:localStorage.getItem("ms_odoo_employee_id"),
+                pid:accountService.get_user_info("ms_odoo_employee_id"),
                 tags:[],
             };
             this.edit_tag_info={
@@ -656,6 +657,9 @@ export default {
 
         async handleEdit(index, row){
             this.form=Object.assign({}, row);
+            if(this.form.comp_time){
+                this.des_flag=true;
+            };
             this.form.org_tag1=row.tag1;
             await this.get_filter_tag();
             this.edit_idx=index;
@@ -743,6 +747,7 @@ export default {
         },
 
         cancelDialog(){
+            this.des_flag=false;
             this.resetForm();
             this.createView=false;
             this.updateView=false;

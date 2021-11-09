@@ -3,6 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-collection"></i> {{$t('menus.project_manage')}}</el-breadcrumb-item>
+                <el-breadcrumb-item> {{$t('menus.work_items_manage')}}</el-breadcrumb-item>
                 <el-breadcrumb-item><b>{{$t('menus.work_items')}}</b></el-breadcrumb-item>
             </el-breadcrumb>
         </div>
@@ -18,7 +19,7 @@
                 <el-select size="large" class="mgr10" v-model="filter.owner" filterable clearable multiple collapse-tags
                 :placeholder="$t('project.owner')" :disabled="loading" @change="search">
                     <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                        <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
+                        <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
                             <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
                             <span v-else class="mgl10">{{item.name}}</span>
                         </el-option>
@@ -38,11 +39,15 @@
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                 <el-table-column prop="id" :label="$t('common_column.id')" width="150" sortable="custom" align="left" show-overflow-tooltip/>
-                <el-table-column prop="name" :label="$t('common_column.name')" width="auto" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="description" :label="$t('project.description')" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="name" :label="$t('common_column.name')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="description" :label="$t('project.description')" min-width="300" width="auto" sortable="custom" show-overflow-tooltip/>
                 <!-- <el-table-column prop="category" :label="$t('common_column.category')" width="auto" sortable="custom" show-overflow-tooltip/> -->
-                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip/>
-                <el-table-column prop="owner" :label="$t('project.owner')" width="150" sortable="custom" show-overflow-tooltip/>
+                <el-table-column prop="status_name" :label="$t('common_column.status')" width="150" sortable="custom" show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <span>{{$t('project.status_tag.'+scope.row.status)}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="owner" :label="$t('project.owner')" width="155" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="start_date" :label="$t('common_column.start_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column prop="end_date" :label="$t('common_column.end_date')" width="150" align="center" sortable="custom" show-overflow-tooltip/>
                 <el-table-column :label="$t('btn.action')" width="100" align="center" fixed="right">
@@ -89,15 +94,15 @@
                         </el-form-item>
                         <el-form-item :label="$t('project.status')" prop="status">
                             <el-select :disabled="setReadOnly" v-model="form.status" filterable class="wd80pa">
-                                <el-option v-for="item in option.status" :key="item.id" :label="item.name" :value="item.id"/>
+                                <el-option v-for="item in option.status" :key="item.id" :label="$t('project.status_tag.'+item.id)" :value="item.id"/>
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item :label="$t('project.owner')" prop="owner">
-                            <el-select :disabled="setReadOnly" v-model="form.owner" filterable clearable class="wd80pa">
+                            <el-select :disabled="setReadOnly" v-model="form.owner_id" filterable clearable class="wd80pa">
                                 <el-option-group v-for="group in tree_data" :key="group.id" :label="group.name">
-                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.name" :disabled="item.disabled">
+                                    <el-option v-for="item in group.members" :key="item.id" :label="item.name" :value="item.id" :disabled="item.disabled">
                                         <span v-if="item.id==-100" class="mgl10">{{$t(item.name)}}</span>
                                         <span v-else class="mgl10">{{item.name}}</span>
                                     </el-option>
@@ -140,8 +145,44 @@
                                 :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
                             </el-form-item>
                         </el-collapse-item>
+                        <el-collapse-item v-if="updateView" name="history" class="tag-collapse">
+                            <template slot="title">
+                                <div class="mgl10">{{$t('project.project_status_record')}}</div>
+                            </template>
+                            <el-table
+                            v-loading="histable_load"
+                            :data="item_history"
+                            style="width: 100%">
+                            <el-table-column
+                                prop="recorded_at"
+                                :label="$t('project.recorded_at')"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                            <el-table-column
+                                prop="employee_name"
+                                :label="$t('project.member')"
+                                align="center"
+                                width="180">
+                            </el-table-column>
+                           <el-table-column
+                                prop="prev_status"
+                                :label="$t('project.action')"
+                                align="center"
+                                width="200">
+                                <template slot-scope="scope">
+                                    {{scope.row.prev_status}} → {{scope.row.current_status}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="note"
+                                :label="$t('project.note')">
+                            </el-table-column>
+                            </el-table>
+                        </el-collapse-item>
                     </el-collapse>
                 </el-row>
+                
             </el-form>
             <div v-if="setReadOnly==false" slot="footer" class="dialog-footer">
                 <el-button @click="cancelDialog">{{$t('btn.cancel')}}</el-button>
@@ -151,6 +192,7 @@
     </div>
 </template>
 <script>
+import { accountService } from "@/_services";
 import { workItemService } from "@/_services";
 export default {
     name: "work_item_manage",
@@ -166,7 +208,7 @@ export default {
             start_row:0,
             sort_column:"id",
             sort:"desc",
-            action_list:localStorage.getItem("ms_user_actions"),
+            action_list:accountService.get_user_actions(),
             loading:false,
             deleteID:null,
             deleteView:false,
@@ -196,9 +238,13 @@ export default {
                 end_date:null,
                 description:"",
                 owner:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
+                owner_id:"",
+                employ_id:accountService.get_user_info("ms_odoo_employee_id"),
                 is_open_tags:false,
             },
+
+            item_history:[],
+            histable_load:false,
 
             tag_form:{
                 item_id:"",
@@ -352,20 +398,36 @@ export default {
         },
 
         handleProjectCreate(){
+            console.log(this.tree_data);
             this.form.is_project = 1;
             this.form.category = "預設";
             this.form.status = "D";
             this.createView=true;
         },
-
+        getStatusRecord(item_id){
+            this.item_history=[];
+            this.histable_load=true;
+            workItemService.get_project_status_record({item_id:item_id}).then(res =>{ 
+                console.log(res);
+                if(res.success){ 
+                    this.item_history=res.result;
+                    this.histable_load=false;
+                }else{ 
+                    this.$message.error(this.$t(res.msg)); 
+                    this.histable_load=false;
+                } 
+            }) 
+            
+        },
         handleEdit(index, row){
             this.form=Object.assign({}, row);
-            this.form.employ_id = localStorage.getItem("ms_odoo_employee_id");
+            this.form.employ_id = accountService.get_user_info("ms_odoo_employee_id");
             this.tag_form=Object.assign({}, {
                 item_id:this.form.id,
                 pid:"",
                 tags:this.form.tags,
             });
+            this.getStatusRecord(row.id);
             this.updateView=true;
         },
 
@@ -449,7 +511,7 @@ export default {
                 end_date:"",
                 description:"",
                 owner:"",
-                employ_id:localStorage.getItem("ms_odoo_employee_id"),
+                employ_id:accountService.get_user_info("ms_odoo_employee_id"),
                 is_open_tags:false,
             };
             this.$refs.form.clearValidate();
@@ -524,8 +586,9 @@ export default {
 }
 </script>
 <style scoped>
+
     .handle-input{
-        width:300px;
+        width:200px;
         display:inline-block;
     }
     .del-dialog-cnt{

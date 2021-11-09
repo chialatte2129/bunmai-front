@@ -51,6 +51,46 @@
         {
             "index": "view_work_hours",
             "title": "menus.view_work_hours"
+        },
+        {
+            "index": "daily_jobs_person",
+            "title": "menus.daily_jobs_person"
+        },
+        {
+            "index": "daily_jobs_review",
+            "title": "menus.daily_jobs_review"
+        },
+        {
+            "index": "work_item_cost",
+            "title": "menus.work_item_cost"
+        },
+        {
+            "index": "work_item_cost_edit",
+            "title": "menus.work_item_cost_edit"
+        },
+        {
+            "index": "work_item_pay",
+            "title": "menus.work_item_pay"
+        },
+        {
+            "index": "accountant",
+            "title": "menus.accountant"
+        },
+        {
+            "index": "purchasing",
+            "title": "menus.purchasing"
+        },
+        {
+            "index": "project_cost_upload",
+            "title": "menus.project_cost_upload"
+        },
+        {
+            "index": "supplier_accounts",
+            "title": "menus.supplier_accounts"
+        },
+        {
+            "index": "project_funnel_review",
+            "title": "menus.project_funnel_review"
         }
     ]
 }

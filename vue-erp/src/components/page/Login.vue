@@ -64,29 +64,30 @@ export default {
         if (valid) {
           //加密
           if (localStorage.getItem("ms_user_lang")==undefined || localStorage.getItem("ms_user_lang")==null){
-            localStorage.setItem("ms_user_lang","en");
+            localStorage.setItem("ms_user_lang","en_US");
           }
           var scr_pass = btoa(btoa(this.ruleForm.password));
           accountService
             .login(this.ruleForm.username,scr_pass)
             .then(function(result) {
               if (result.msg_code == 1) {
-                var menus = ["dictionary_setting","role_edit","user_edit"];
-                localStorage.setItem("ms_user_id", result.data.account_id);
-                localStorage.setItem("ms_odoo_token",scr_pass);
+                // var menus = ["dictionary_setting","role_edit","user_edit"];
+
+                var user_info = {
+                  ms_is_admin: result.data.is_admin,
+                  ms_is_odoo: result.data.is_odoo_user,
+                  ms_odoo_user_id: result.data.odoo_user_id,
+                  ms_odoo_employee_id: result.data.odoo_employee_id,
+                  ms_odoo_is_dept_manager: result.data.odoo_is_dept_manager,
+                  ms_user_id: result.data.account_id,
+                  ms_username: result.data.username
+                };
+
+                localStorage.setItem("ms_user_info", btoa(btoa(JSON.stringify(user_info))));
+                localStorage.setItem("ms_user_menus", btoa(btoa(result.data.user_menus))); 
+                localStorage.setItem("ms_user_actions", btoa(btoa(result.data.user_actions)));
                 localStorage.setItem("ms_user_token", result.data.token);
-                localStorage.setItem("ms_username", result.data.username);
                 localStorage.setItem("ms_user_fullname", result.data.user_full_name);
-                localStorage.setItem("ms_is_admin", result.data.is_admin);  
-                localStorage.setItem("ms_is_odoo", result.data.is_odoo_user);  
-                localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);  
-                localStorage.setItem("ms_user_menus", result.data.user_menus); 
-                localStorage.setItem("ms_user_actions", result.data.user_actions);
-                localStorage.setItem("ms_odoo_user_id", result.data.odoo_user_id);
-                localStorage.setItem("ms_odoo_employee_id", result.data.odoo_employee_id);
-                localStorage.setItem("ms_odoo_is_dept_manager", result.data.odoo_is_dept_manager);
-                // console.log('menus =',result.data.user_menus)
-                // console.log('actions =',result.data.user_actions)
                 console.log("is_odoo_user = ",result.data.is_odoo_user==1)
                 if (result.data.user_menus.length > 0) {
                   localStorage.setItem(
