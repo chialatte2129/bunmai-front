@@ -487,7 +487,7 @@ export const messages = {
             status_tag:{
                 D:"草稿",
                 P:"待審",
-                F:"通過",
+                F:"待撥款",
                 A:"退回",
                 C:"完成"
             },

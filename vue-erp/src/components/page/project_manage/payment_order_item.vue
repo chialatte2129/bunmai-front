@@ -220,7 +220,7 @@
             </span>
         </el-dialog>
 
-         <el-dialog :title="$t('reimburse.confirm_abandon')" :modal="true" :append-to-body="true" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog"  v-draggable>
+        <el-dialog :title="$t('reimburse.confirm_abandon')" :modal="true" :append-to-body="true" :visible.sync="deleteVisible" width="300px" center :before-close="cancelQuestDialog"  v-draggable>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancelQuestDialog">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmDelete">{{$t('btn.confirm')}}</el-button>
@@ -808,6 +808,7 @@ export default {
                     max_date = element.date
                 }
             });
+
             if(max_date){
                 let date = new Date(max_date);
                 date.setDate(date.getDate() - 30);
@@ -830,10 +831,11 @@ export default {
                     min_date = element.date
                 }
             });
+
             if(min_date){
                 let date = new Date(min_date);
+                console.log(date.getMonth());
                 date.setDate(date.getDate() + 30);
-                // console.log(date);
                 return date;
             }else{
                 return false
@@ -896,18 +898,46 @@ export default {
             var limit_min_date = today.setDate(today.getDate()-90);
 
             let count_date = 0;
+            let month_list = [];
             this.form.content_json.forEach(element=>{
                 if(element.date){
-                    count_date++
-                }
+                    // count_date++
+                    var date = new Date(element.date);
+                    var year_month = date.getFullYear()+"-"+(date.getMonth()+1).toString().padStart(2, '0');
+                    if(!month_list.includes(year_month)){
+                        month_list.push(year_month);
+                    }
+                };
             });
-            if(!count_date){
+
+            var min_month = month_list.sort()[0];
+            var max_month = month_list.sort().at(-1);
+
+            if((!month_list.length) || (this.form.content_json.length==1 && this.item_index==0)){
                 return time.getTime() < limit_min_date;
-            }else if(this.form.content_json.length==1 && this.item_index==0){
-                return time.getTime() < limit_min_date;
+            }else if(min_month==max_month){
+                var min_month_list = min_month.split("-");
+                if(min_month_list[1]=="12"){
+                    var nextMonthDays = new Date((Number(min_month_list[0])+1), 1, 0).getDate();
+                    var max_date = new Date((Number(min_month_list[0])+1)+"-01-"+nextMonthDays);
+                }else{
+                    var nextMonthDays = new Date(min_month_list[0], (Number(min_month_list[1])+1), 0).getDate();
+                    var max_date = new Date(min_month_list[0]+"-"+(Number(min_month_list[1])+1)+"-"+nextMonthDays);
+                };
+                if(min_month_list[1]=="01"){
+                   var min_date = new Date((Number(min_month_list[0])-1)+"-12-01");
+                }else{
+                    var min_date = new Date(min_month_list[0]+"-"+(Number(min_month_list[1])-1)+"-01");
+                };
+                return time.getTime() < limit_min_date || ( time.getTime() < min_date  ||  time.getTime() > max_date );
             }else{
-                return time.getTime() < limit_min_date || ( time.getTime() <= this.min_cert_date  ||  time.getTime() >= this.max_cert_date ) ;
-            }
+                var min_month_list = min_month.split("-");
+                var max_month_list = max_month.split("-");
+                var maxMonthDays = new Date(max_month_list[0], Number(max_month_list[1]), 0).getDate();
+                var max_date = new Date(max_month_list[0]+"-"+(Number(max_month_list[1]))+"-"+maxMonthDays);
+                var min_date = new Date(min_month_list[0]+"-"+(Number(min_month_list[1]))+"-01");
+                return time.getTime() < limit_min_date || ( time.getTime() < min_date  ||  time.getTime() > max_date );
+            };
         },
         
         handleOpenProjectCost(item_id){
