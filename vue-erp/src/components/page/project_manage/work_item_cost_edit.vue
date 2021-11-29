@@ -63,7 +63,7 @@
                                     </el-col>
                                 </el-row>
                             </el-collapse-item>
-                            <el-collapse-item name="payment" :title="$t('cost.reimbursement')">
+                            <el-collapse-item v-if="false" name="payment" :title="$t('cost.reimbursement')">
                                 <el-row  style="padding-bottom:20px;">
                                     <el-col :span="24">
                                         <el-table :data="tableData_pay_order" height="500" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"

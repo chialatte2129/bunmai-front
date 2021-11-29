@@ -8,6 +8,7 @@
                 </el-select>
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('reimburse.information_key_word')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
+                <el-checkbox v-model="filter.is_wait_allocate"  class="mgr10" @change="search">待撥款</el-checkbox>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">
@@ -123,6 +124,7 @@ export default {
                 status:[],
                 only_mine:false,
                 only_accountant:true,
+                is_wait_allocate:true,
                 item_id:[],
             },
             
@@ -315,7 +317,7 @@ export default {
         async getData(){
             this.loading=true;
             var param = {
-                action:"table",
+                action:"tableaccountant",
                 filter:{
                     odoo_employee_id:this.odoo_employee_id,
                     sort_column:this.sort_column,
@@ -326,6 +328,7 @@ export default {
                     status:this.filter.status,
                     only_mine:this.filter.only_mine,
                     only_accountant:this.filter.only_accountant,
+                    is_wait_allocate:this.filter.is_wait_allocate,
                     item_id:this.filter.item_id,
                     username:this.username
                 }

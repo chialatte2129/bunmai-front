@@ -17,7 +17,7 @@
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('reimburse.information_key_word')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
                 <el-checkbox v-model="filter.only_mine"  class="mgr10" @change="search">{{$t('reimburse.show_mine')}}</el-checkbox>
-                <el-checkbox v-if="is_accountant" v-model="filter.only_accountant"  class="mgr10" @change="search">{{$t('reimburse.show_accountant')}}</el-checkbox>
+                <!-- <el-checkbox v-if="is_accountant" v-model="filter.only_accountant"  class="mgr10" @change="search">{{$t('reimburse.show_accountant')}}</el-checkbox> -->
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">

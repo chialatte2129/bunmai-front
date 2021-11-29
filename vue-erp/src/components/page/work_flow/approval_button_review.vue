@@ -76,9 +76,19 @@ export default {
             .approval_stage_review(params)
             .then(res=>{
                 this.loading = false;
-                this.getData();
-                this.handleClose();
-                this.beforeClose();
+                if(res.code==1){
+                    this.$message.success("審核完成")
+                    this.getData();
+                    this.handleClose();
+                    this.beforeClose();
+                }else{
+                    if(res.msg=="Token matching query does not exist."){
+                        this.$message.error("憑證過期請重新登入");
+                    }else{
+                        this.$message.error("驗證錯誤")
+                        console.log(res.msg);
+                    }
+                };
             });
         },
 
