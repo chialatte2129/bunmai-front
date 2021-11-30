@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
     <div class="ms-login">
-      <div class="ms-title">{{$t('app.title')}} </div>
+      <div class="ms-title">{{company_title}}{{$t('app.title')}} </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
         <el-form-item prop="username">
           <el-input  v-model="ruleForm.username" placeholder="username">
@@ -19,7 +19,9 @@
           </el-input>
         </el-form-item>
         <div class="login-btn">
-          <el-button type="primary" @click="submitForm('ruleForm')">{{$t('account.login')}}</el-button>
+          <el-button type="primary" 
+          v-bind:style="{background : company_theme_color, 'background-color' : company_theme_color}" 
+          @click="submitForm('ruleForm')">{{$t('account.login')}}</el-button>
         </div>
       </el-form>
     </div>
@@ -27,15 +29,17 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { comp_theme } from "@/theme/company_theme.js";
 import { accountService } from "@/_services";
 import router from "@/router";
 import { Message } from "element-ui";
-import * as myFun from "@/components/common/functions.js";
 
 export default {
   data: function() {
-    return {     
+    return {  
+      company_title: comp_theme[process.env.VUE_APP_THEME].title,
+      company_theme_color: comp_theme[process.env.VUE_APP_THEME].theme_color,
+
       ruleForm: {
         username: "",
         password: ""
@@ -162,9 +166,10 @@ export default {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
-  background: #875a7b;
-  border-color: #875a7b;
+  /* background: #875a7b; */
+  /* border-color: #875a7b; */
   color: #FFF;
+  border: 0px;
 }
 .login-tips {
   font-size: 12px;

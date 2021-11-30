@@ -1,16 +1,17 @@
 <template>
-  <div class="header">
-    <!-- 折叠按钮 -->
+  <div class="header" v-bind:style="{'background-color':company_theme_color}">
     <div class="collapse-btn" @click="collapseChage">
-       <el-image
+      <el-image
+      v-if="company_title=='VAR'"
       style="width: 50px; height: 50px; margin-top:10px;"
       src="/image/logo/vrlive_logo_nobg.png"
       fit='scale-down'></el-image>
+      <i v-else class="el-icon-menu" style="font-size:30px;"/>
     </div>
-    <div class="logo">VAR <b>ERP</b></div>
+    <div class="logo">{{company_title}} <b>ERP</b></div>
     <div class="header-right">
       <div class="header-user-con">
-            <i v-if="isadmin" class="el-icon-lx-crown" ></i>   
+        <i v-if="isadmin" class="el-icon-lx-crown" ></i>   
         <el-dropdown class="user-name" trigger="click" @command="handleCommand_lang">
           <span class="el-dropdown-link">
             {{$t('btn.i18n_lang')}} : {{$t(user_lang)}}
@@ -60,10 +61,14 @@
 import bus from "../common/bus";
 import { accountService } from "@/_services";
 import { Message } from "element-ui";
+import { comp_theme } from "@/theme/company_theme.js";
 
 export default {
   data() {
     return {
+      company_title: comp_theme[process.env.VUE_APP_THEME].title,
+      company_theme_color: comp_theme[process.env.VUE_APP_THEME].theme_color,
+
       ms_user_lang:localStorage.getItem("ms_user_lang"),
       collapse: false,
       fullscreen: false,
@@ -102,37 +107,32 @@ export default {
     }
   },
   methods: {
-      reload () {
-     this.isRouterAlive = false
-     this.$nextTick(() => (this.isRouterAlive = true))
-   }  ,
-     handleCommand_lang(command) { 
-       console.log(command)              
-        localStorage.setItem("ms_user_lang",command);
-        this.$i18n.locale =command     
-        this.$router.go(0)   //reload page
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(() => (this.isRouterAlive = true))
     },
+
+    handleCommand_lang(command) { 
+      console.log(command)              
+      localStorage.setItem("ms_user_lang",command);
+      this.$i18n.locale =command     
+      this.$router.go(0)   //reload page
+    },
+
     handleCommand(command) {
       if (command == "loginout") {
-        // localStorage.removeItem("ms_user_id");
         localStorage.removeItem("ms_user_token");
-        // localStorage.removeItem("ms_username");
         localStorage.removeItem("ms_user_fullname");
-        // localStorage.removeItem("ms_is_admin");  
-        // localStorage.removeItem("ms_is_odoo");  
-        // localStorage.removeItem("ms_odoo_user_id");  
         localStorage.removeItem("ms_user_menus"); 
         localStorage.removeItem("ms_user_actions");
         localStorage.removeItem("ms_user_info");
-        // localStorage.removeItem("ms_odoo_user_id");
-        // localStorage.removeItem("ms_odoo_employee_id");
-        // localStorage.removeItem("ms_odoo_is_dept_manager");
         this.$router.push("/login");
       }
       if (command == "opendialog") {
         this.dialogFormVisible = true;
       }  
     },
+
     confirm_password(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -170,19 +170,19 @@ export default {
                      this.dialogFormVisible = false;
                  }
               }
-              );
-          
+            );
           }
         } else {         
           return false;
         }
       });
     },
+
     collapseChage() {
       this.collapse = !this.collapse;
       bus.$emit("collapse", this.collapse);
     },
-    // 全屏事件
+
     handleFullScreen() {
       let element = document.documentElement;
       if (this.fullscreen) {
@@ -225,7 +225,6 @@ export default {
   height: 70px;
   font-size: 22px;
   color: #fff;
-  background-color: #875a7b;
 }
 .collapse-btn {
   float: left;

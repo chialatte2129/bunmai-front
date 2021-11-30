@@ -10,6 +10,8 @@ import { messages } from './components/common/i18n';
 import './assets/css/icon.css';
 import './assets/css/fonts/font.css';
 import './components/common/directives';
+import { accountService } from "@/_services";
+import { Message } from "element-ui";
 import "babel-polyfill";
 import { store } from './_store';
 import JsEncrypt from 'jsencrypt';
@@ -18,6 +20,7 @@ import VueClipboard from 'vue-clipboard2';
 import HighchartsVue from "highcharts-vue";
 import LoadScript from "vue-plugin-load-script";
 import DlgDraggable from "vue-element-dialog-draggable";
+import { comp_theme } from "@/theme/company_theme.js";
 Vue.config.productionTip = false
 Vue.use(LoadScript);
 Vue.use(VueI18n);
@@ -42,11 +45,12 @@ const i18n = new VueI18n({
     messages
 })
 ElementLocale.i18n((key, value) => i18n.t(key, value))
-import { accountService } from "@/_services";
-import { Message } from "element-ui";
+
+
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {     
     var path_id=to.path.replace("/","");
+    document.title = comp_theme[process.env.VUE_APP_THEME].title+" ERP";
 
     if(localStorage.getItem("ms_username")){
         console.log("Clear Old Storage Data");

@@ -62,7 +62,7 @@ export const messages = {
         app:{ 
             title_short: 'VAR ERP', 
             title_mobile :'OPMS 行動版',
-            title: 'VAR ERP 企業資源管理系統', 
+            title: ' ERP 企業資源管理系統', 
             full_screen: '全屏',
             not_full_screen: '取消全屏',
             tag_options : '標籤選項',
@@ -688,7 +688,7 @@ export const messages = {
         app: { 
             title_short: 'VAR ERP', 
             title_mobile :'VAR ERP Mobile',
-            title: 'VAR ERP Manage System', 
+            title: ' ERP Manage System', 
             full_screen: 'full screen',
             not_full_screen: 'close full screen',
             tag_options : 'tag option',
