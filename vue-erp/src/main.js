@@ -50,7 +50,7 @@ ElementLocale.i18n((key, value) => i18n.t(key, value))
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {     
     var path_id=to.path.replace("/","");
-    document.title = comp_theme[process.env.VUE_APP_THEME].title+" ERP";
+    // document.title = process.env.VUE_APP_THEME+" ERP";
 
     if(localStorage.getItem("ms_username")){
         console.log("Clear Old Storage Data");
