@@ -62,7 +62,7 @@ export const messages = {
         app:{ 
             title_short: 'VAR ERP', 
             title_mobile :'OPMS 行動版',
-            title: 'VAR ERP 企業資源管理系統', 
+            title: ' ERP 企業資源管理系統', 
             full_screen: '全屏',
             not_full_screen: '取消全屏',
             tag_options : '標籤選項',
@@ -570,6 +570,7 @@ export const messages = {
             approval_flow:"簽核狀態",
             no_approval_flow:"尚無簽核流程",
             start:"建單",
+            applicant:"建單人員",
             start_at:"建單時間",
             status:"狀態",
             allow_approvers:"簽核權限人員",
@@ -688,7 +689,7 @@ export const messages = {
         app: { 
             title_short: 'VAR ERP', 
             title_mobile :'VAR ERP Mobile',
-            title: 'VAR ERP Manage System', 
+            title: ' ERP Manage System', 
             full_screen: 'full screen',
             not_full_screen: 'close full screen',
             tag_options : 'tag option',
@@ -1203,6 +1204,7 @@ export const messages = {
             start_at:"Start At",
             status:"Status",
             allow_approvers:"Allow Approvers",
+            applicant:"Applicant",
             approver_dept:"Department",
             approver_name:"Approver",
             time:"Time",
