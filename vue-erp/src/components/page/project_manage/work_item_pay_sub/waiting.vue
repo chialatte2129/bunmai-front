@@ -42,7 +42,7 @@
             </div>
         </div>
         
-        <el-dialog :title="$t('reimburse.edit_reimburse')" v-if="updateView" :visible.sync="updateView" width="1100px" :key="tbKey1" :before-close="cancelDialog" top="8%" 
+        <el-dialog :title="$t('reimburse.edit_reimburse')" v-if="updateView" :visible.sync="updateView" width="1200px" :key="tbKey1" :before-close="cancelDialog" top="8%" 
         :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog" >
             <paymentOrderItem v-if="updateView" :order_id="current_order_id" @close="cancelDialog"></paymentOrderItem>
         </el-dialog>
@@ -276,6 +276,7 @@ export default {
             this.loading=true;
             var param = {
                 action:"waitingTable",
+                token:localStorage.getItem("ms_user_token"),
                 filter:{
                     odoo_employee_id:this.odoo_employee_id,
                     sort_column:this.sort_column,
@@ -299,8 +300,13 @@ export default {
                     this.handleSyncTodo();
                     this.loading=false;
                 }else{
-                    this.loading=false;
-                    this.$message.error(res.msg)
+                   this.loading=false;
+                    if(res.msg=="token_expire"){
+                        // this.$message.error("驗證失效")
+                        accountService.logout();
+                    }else{
+                        this.$message.error(res.msg);
+                    }
                 };             
             })
         },
@@ -339,6 +345,7 @@ export default {
             let count = 0;
             var param = {
                 action:"waitingTable",
+                token:localStorage.getItem("ms_user_token"),
                 filter:{
                     odoo_employee_id:this.odoo_employee_id,
                     start_row:0,

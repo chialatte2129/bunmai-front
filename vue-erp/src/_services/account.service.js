@@ -1,7 +1,9 @@
 import axios from 'axios'
+import router from '../router'
 
 export const accountService = {
   login,
+  logout,
   check_token,
   change_password,
   list_by_page,
@@ -13,6 +15,15 @@ export const accountService = {
   get_user_info,
   get_user_menus,
   get_user_actions
+}
+
+function logout(){
+  localStorage.removeItem("ms_user_token");
+  localStorage.removeItem("ms_user_fullname");
+  localStorage.removeItem("ms_user_menus"); 
+  localStorage.removeItem("ms_user_actions");
+  localStorage.removeItem("ms_user_info");
+  router.push("/login");
 }
 
 function get_user_info(key=""){

@@ -5,7 +5,16 @@
         </div>
         <div v-if="tableData.length"> 
             <el-steps direction="vertical" :active="current_proccess" >
-                <el-step :title="$t('work_flow.start')" status="finish" class="mgb10" :description="$t('work_flow.start_at')+':'+approval_info.created_at" icon="el-icon-success"></el-step>
+                <el-step :title="$t('work_flow.start')" status="finish" class="mgb10" :description="$t('work_flow.start_at')+':'+approval_info.created_at" icon="el-icon-success">
+                    <template slot="description">
+                        <el-row>
+                            <span>{{$t('work_flow.applicant')+':'+approval_info.applicant_name}}</span><br/>
+                        </el-row>
+                        <el-row>
+                            <span>{{$t('work_flow.start_at')+':'+approval_info.created_at}}</span><br/>
+                        </el-row>
+                    </template>
+                </el-step>
                 <el-step v-for="(item, index) in tableData" class="stage-step mgb10" 
                 :key="index+1" 
                 :title="item.stage_description" 

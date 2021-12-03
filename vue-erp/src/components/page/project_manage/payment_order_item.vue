@@ -16,54 +16,68 @@
                         <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">{{$t('reimburse.submit')}}</el-button>
                     </div>
                 </el-row>
-                <el-row>
-                    <el-card shadow="always" class="mgb10" >
-                        <div slot="header" class="clearfix">
-                            <span>{{$t('reimburse.basic_info')}}</span>
-                        </div>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item :label="$t('reimburse.order_id')" >
-                                    <span>{{form.display_order_id}}</span>
+                <el-row :gutter="10" style="min-height:400px;">
+                    <el-col :span="18">
+                        <el-card shadow="always" class="mgb10" >
+                            <div slot="header" class="clearfix">
+                                <span>{{$t('reimburse.basic_info')}}</span>
+                            </div>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item :label="$t('reimburse.order_id')" >
+                                        <span>{{form.display_order_id}}</span>
+                                    </el-form-item>
+                                    <el-form-item :label="$t('reimburse.project_name')">
+                                        <span style="width:80%;font-size:16px;cursor: pointer;color:blue" @click="handleOpenProjectCost(form.item_id)">{{form.item_id}} - {{form.item_name}}</span>
+                                    </el-form-item>
+                                    <el-form-item :label="$t('reimburse.order_date')">
+                                        <span>{{form.order_date}}</span>
+                                    </el-form-item>
+                                    <el-form-item :label="$t('reimburse.status')">
+                                        <span v-if="form.status=='D'" style="color:grey">{{$t('reimburse.status_tag.D')}}</span>
+                                        <span v-if="form.status=='P'" style="color:blue">{{$t('reimburse.status_tag.P')}}</span>
+                                        <span v-if="form.status=='F'" style="color:green">{{$t('reimburse.status_tag.F')}}</span>
+                                        <span v-if="form.status=='A'" style="color:red">{{$t('reimburse.status_tag.A')}}</span>
+                                        <span v-if="form.status=='C'" style="color:green">{{$t('reimburse.status_tag.C')}}</span>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item :label="$t('reimburse.filler')">
+                                        <span>{{form.p_name}}</span>
+                                    </el-form-item>
+                                    <el-form-item :label="$t('reimburse.applicant')">
+                                        <span>{{form.applicant_name}}</span>
+                                    </el-form-item>
+                                    <el-form-item :label="$t('reimburse.applicant_dept')">
+                                        <span>{{form.dept_name}}</span>
+                                    </el-form-item>
+                                    <el-form-item :label="$t('reimburse.total_amount')">
+                                        <span>{{stateFormat(0,0, handleCaculateTotalAmount)}} 元</span>
+                                    </el-form-item>
+                                    <el-form-item v-if="form.status =='F' || form.status =='C'" :label="$t('reimburse.paied_amount')">
+                                        <span>{{stateFormat(0,0,caculatePaiedTotalAmount)}} 元</span>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-form-item :label="$t('reimburse.description')">
+                                    <el-input :readonly="orderReadOnly" type="textarea" :rows="4" v-model="form.description" ></el-input>
                                 </el-form-item>
-                                <el-form-item :label="$t('reimburse.project_name')">
-                                    <span style="width:80%;font-size:16px;cursor: pointer;color:blue" @click="handleOpenProjectCost(form.item_id)">{{form.item_id}} - {{form.item_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.order_date')">
-                                    <span>{{form.order_date}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.status')">
-                                    <span v-if="form.status=='D'" style="color:grey">{{$t('reimburse.status_tag.D')}}</span>
-                                    <span v-if="form.status=='P'" style="color:blue">{{$t('reimburse.status_tag.P')}}</span>
-                                    <span v-if="form.status=='F'" style="color:green">{{$t('reimburse.status_tag.F')}}</span>
-                                    <span v-if="form.status=='A'" style="color:red">{{$t('reimburse.status_tag.A')}}</span>
-                                    <span v-if="form.status=='C'" style="color:green">{{$t('reimburse.status_tag.C')}}</span>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item :label="$t('reimburse.filler')">
-                                    <span>{{form.p_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.applicant')">
-                                    <span>{{form.applicant_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.applicant_dept')">
-                                    <span>{{form.dept_name}}</span>
-                                </el-form-item>
-                                <el-form-item :label="$t('reimburse.total_amount')">
-                                    <span>{{stateFormat(0,0, handleCaculateTotalAmount)}} 元</span>
-                                </el-form-item>
-                                <el-form-item v-if="form.status =='F' || form.status =='C'" :label="$t('reimburse.paied_amount')">
-                                    <span>{{stateFormat(0,0,caculatePaiedTotalAmount)}} 元</span>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-form-item :label="$t('reimburse.description')">
-                                <el-input :readonly="orderReadOnly" type="textarea" :rows="4" v-model="form.description" ></el-input>
-                            </el-form-item>
-                        </el-row>
-                    </el-card>
+                            </el-row>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-card shadow="always" style="height:100%" class="mgb10">
+                            <div slot="header" class="clearfix">
+                                <span>{{$t("work_flow.approval_flow")}}</span>
+                            </div>
+                            <div style="height:308px;">
+                                <el-scrollbar style="height:100%">
+                                    <workFlowStatus type="payment" :related_id="order_id" :load_key="tbkey"></workFlowStatus>
+                                </el-scrollbar>
+                            </div>
+                        </el-card>
+                    </el-col>
                 </el-row>
 
                 <!-- 請款內容 -->
@@ -133,7 +147,7 @@
 
                 <!-- 簽核狀態 -->
                 <el-row :gutter="10">
-                    <el-col :span="9">
+                    <!-- <el-col :span="9">
                         <el-card shadow="always">
                             <div slot="header" class="clearfix">
                                 <span>{{$t("work_flow.approval_flow")}}</span>
@@ -144,8 +158,8 @@
                                 </el-scrollbar>
                             </div>
                         </el-card>
-                    </el-col>
-                    <el-col :span="15">
+                    </el-col> -->
+                    <el-col :span="24">
                         <el-card shadow="always">
                             <div slot="header" class="clearfix">
                                 <span>{{$t('reimburse.status_history')}}</span>
@@ -153,7 +167,7 @@
                             <div>
                                 <el-table
                                 :data="pay_order_history"
-                                height="400px"
+                                height="300px"
                                 style="width: 100%;">
                                 <el-table-column
                                     prop="recorded_at"
@@ -472,6 +486,7 @@ import workFlowStatus from "../work_flow/workflow_status.vue";
 import approvalRejectButton from "../work_flow/approval_button_reject.vue";
 import approvalReviewButton from "../work_flow/approval_button_review.vue";
 import addNewPartner from "../partner/add_new_partner";
+
 export default {
     name: "pay_order",
     components: {
@@ -1297,6 +1312,7 @@ export default {
             this.loading = true;
             var param = {
                 action:"info",
+                token:localStorage.getItem("ms_user_token"),
                 filter:{
                     order_id:this.order_id
                 }
@@ -1310,7 +1326,12 @@ export default {
                     this.pay_order_history=res.histories;
                     this.tbkey++;
                 }else{
-                    this.$message.error(res.msg);
+                    if(res.msg=="token_expire"){
+                        this.$message.error("驗證失效")
+                        accountService.logout();
+                    }else{
+                        this.$message.error(res.msg);
+                    }
                 }
             })
         },
