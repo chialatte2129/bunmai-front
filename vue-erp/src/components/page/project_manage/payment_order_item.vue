@@ -924,13 +924,13 @@ export default {
                     }
                 };
             });
-
-            var min_month = month_list.sort()[0];
-            var max_month = month_list.sort().at(-1);
-
+            
             if((!month_list.length) || (this.form.content_json.length==1 && this.item_index==0)){
                 return time.getTime() < limit_min_date;
-            }else if(min_month==max_month){
+            };
+            var min_month = month_list.sort()[0];
+            var max_month = month_list.sort()[month_list.length-1];
+            if(min_month==max_month){
                 var min_month_list = min_month.split("-");
                 if(min_month_list[1]=="12"){
                     var nextMonthDays = new Date((Number(min_month_list[0])+1), 1, 0).getDate();
@@ -1208,7 +1208,6 @@ export default {
         handleUpdateItem(row,index){
             this.item_form = JSON.parse(JSON.stringify(row));
             this.item_index = index;
-            // console.log(index);
             this.updateItemVisible = true;
         },
 
