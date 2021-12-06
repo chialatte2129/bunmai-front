@@ -314,7 +314,6 @@
             <div>
                  <el-form ref="form" label-width="80px">
                     <el-form-item v-if="item_index>-1" :label="$t('reimburse.id')">
-                        <!-- <span>{{item_form}}</span> -->
                         <span>{{item_index+1}}</span>
                     </el-form-item>
                     <el-form-item :label="$t('reimburse.item_name')">
@@ -1209,7 +1208,6 @@ export default {
         handleUpdateItem(row,index){
             this.item_form = JSON.parse(JSON.stringify(row));
             this.item_index = index;
-            console.log(this.item_form);
             this.updateItemVisible = true;
         },
 
