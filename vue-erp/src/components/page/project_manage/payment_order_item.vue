@@ -317,7 +317,16 @@
                         <span>{{item_index+1}}</span>
                     </el-form-item>
                     <el-form-item :label="$t('reimburse.item_name')">
-                        <span>{{item_form.type}}</span>
+                        <el-select v-model="item_form.type">
+                            <el-option
+                            v-for="item in option.item_content_types"
+                            :key="item"
+                            :label="item"
+                            :value="item"
+                            @click="">
+                            </el-option>
+                        </el-select>
+                        <!-- <span>{{item_form.type}}</span> -->
                     </el-form-item>
                     <!-- 選擇日期 -->
                     <el-form-item :label="$t('reimburse.date')">
@@ -619,6 +628,7 @@ export default {
                     {label:this.$t("reimburse.status_tag.C"),value:"C"},
                     {label:this.$t("reimburse.status_tag.A"),value:"A"}
                 ],
+                item_content_types:["一般請款", "交通費請款", "住宿費請款", "生活費(膳食)", "辦公費(郵電/交際/車資等)"],
                 item_types:[
                     {
                         title:"一般",
@@ -1224,6 +1234,7 @@ export default {
                 }else{
                     this.form.content_json.splice(this.item_index, 1, this.item_form);
                 };
+                this.confirmDialog();
                 this.updateItemVisible = false;
             }
             
