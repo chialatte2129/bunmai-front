@@ -317,13 +317,12 @@
                         <span>{{item_index+1}}</span>
                     </el-form-item>
                     <el-form-item :label="$t('reimburse.item_name')">
-                        <el-select v-model="item_form.type">
+                        <el-select v-model="item_form.type" @change="handleItemTypeClick">
                             <el-option
                             v-for="item in option.item_content_types"
                             :key="item"
                             :label="item"
-                            :value="item"
-                            @click="">
+                            :value="item">
                             </el-option>
                         </el-select>
                         <!-- <span>{{item_form.type}}</span> -->
@@ -628,7 +627,7 @@ export default {
                     {label:this.$t("reimburse.status_tag.C"),value:"C"},
                     {label:this.$t("reimburse.status_tag.A"),value:"A"}
                 ],
-                item_content_types:["一般請款", "交通費請款", "住宿費請款", "生活費(膳食)", "辦公費(郵電/交際/車資等)"],
+                item_content_types:[ "一般請款", "交通費請款", "住宿費請款", "生活費(膳食)", "辦公費(郵電/交際/車資等)"],
                 item_types:[
                     {
                         title:"一般",
@@ -637,7 +636,7 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:"1",title:"摘要",width:24,type:"textarea",result:""}
+                                {id:"1",title:"說明",width:24,type:"textarea",result:""}
                             ]
                         }
                     },
@@ -660,7 +659,7 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:"1",title:"地點",width:24,type:"text",result:""}
+                                {id:"1",title:"說明",width:24,type:"textarea",result:""}
                             ]
                         }
                     },
@@ -671,7 +670,7 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:"1",title:"說明",width:24,type:"text",result:""}
+                                {id:"1",title:"說明",width:24,type:"textarea",result:""}
                             ]
                         }
                     },
@@ -682,7 +681,7 @@ export default {
                             amount:0,
                             date:"",
                             content:[
-                                {id:"1",title:"說明",width:24,type:"text",result:""}
+                                {id:"1",title:"說明",width:24,type:"textarea",result:""}
                             ]
                         }
                     },
@@ -871,6 +870,22 @@ export default {
     }, 
     
     methods: {
+        handleItemTypeClick(val){
+            console.log(val)
+            if(val=="交通費請款"){
+                this.item_form.content = [
+                    {id:"1",title:"起訖地點",width:12,type:"text",result:""},
+                    {id:"2",title:"票種",width:12,type:"text",result:""}
+                ];
+            }else{
+                if(this.item_form.content.length==2){
+                    this.item_form.content =[
+                        {id:"1",title:"說明",width:24,type:"textarea",result:""}
+                    ];
+                }
+            }
+        },
+
         querySearchBank(queryString, cb) {
             var banks = this.option.bank_list;
             var results = queryString ? banks.filter(this.createFilter(queryString)) : banks;
@@ -920,7 +935,7 @@ export default {
 
         disabledDate (time) {
             let today = new Date();
-            var limit_min_date = today.setDate(today.getDate()-90);
+            var limit_min_date = today.setDate(today.getDate()-93);
 
             let count_date = 0;
             let month_list = [];
