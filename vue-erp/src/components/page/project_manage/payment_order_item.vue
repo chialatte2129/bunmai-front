@@ -317,7 +317,7 @@
                         <span>{{item_index+1}}</span>
                     </el-form-item>
                     <el-form-item :label="$t('reimburse.item_name')">
-                        <el-select :readonly="orderReadOnly" v-model="item_form.type" @change="handleItemTypeClick">
+                        <el-select :disabled="orderReadOnly" v-model="item_form.type" @change="handleItemTypeClick">
                             <el-option
                             v-for="item in option.item_content_types"
                             :key="item"
