@@ -73,7 +73,7 @@
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
-                        :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
+                        :placeholder="$t('common_msg.select_date')" :disabled="copyView" :picker-options="{
                             disabledDate(time){ 
                                 return time.getTime()>Date.now()+day_mileseconds*31;
                             }
@@ -89,7 +89,7 @@
                         }"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.name')" prop="item_id">
-                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView||copyView" @change="handleChangeProj">
+                        <el-select v-model="form.item_id" filterable clearable class="handle-input"  @change="handleChangeProj">
                             <el-option v-for="item in option.work_item_now" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                         </el-select>
                     </el-form-item>
@@ -649,13 +649,15 @@ export default {
         },
 
         async handleCreate(){
-            var today = new Date();
-            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            // var today = new Date();
+            // this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            this.form.work_date="";
             await this.get_filter_tag();
             this.createView=true;
         },
 
         async handleEdit(index, row){
+            console.log(row);
             this.form=Object.assign({}, row);
             if(this.form.comp_time){
                 this.des_flag=true;
@@ -668,11 +670,12 @@ export default {
 
         handleDelete(index, row){
             this.deleteInfo={
-                pid:this.odoo_employee_id,
-                item_id:row.item_id,
-                work_date:row.work_date,
-                tag1:row.tag1,
-                overtime_application_udid:row.overtime_application_udid,
+                row:row.id
+                // pid:this.odoo_employee_id,
+                // item_id:row.item_id,
+                // work_date:row.work_date,
+                // tag1:row.tag1,
+                // overtime_application_udid:row.overtime_application_udid,
             };
             this.deleteView=true;
         },

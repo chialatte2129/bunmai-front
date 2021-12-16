@@ -10,13 +10,9 @@
         <div class="container">
             <div class="mgb10">
                 <el-button size="large" type="success" icon="el-icon-circle-plus-outline" class="mgr10" @click="handleCreate" :disabled="table_loading">{{$t('btn.new')}}</el-button>
-                <!-- <el-select size="large" v-model="filter.item_id" filterable clearable :placeholder="$t('project.name')" @change="search" class="mgr10 wd250" :disabled="table_loading">
-                    <el-option v-for="item in option.work_item" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id" :disabled="table_loading"/>
-                </el-select> -->
                 <el-date-picker v-model="filter.work_date" type="daterange" align="right" unlink-panels value-format="yyyy-MM-dd" :picker-options="pickerOptions" class="mgr10" :disabled="table_loading"
                 size="large" @change="search" :range-separator="$t('employee.date_range')" :start-placeholder="$t('employee.start_date')" :end-placeholder="$t('employee.end_date')"/>
                 <el-button size="large" type="info" class="mgr10" plain v-html="$t('btn.clean')" @click="cancelSearch" :disabled="table_loading"/>
-                <!-- <el-button size="large" type="warning" style="float:right;" plain v-html="$t('employee.edit_personal_tags')" @click="openTagManager"/> -->
                 <el-checkbox v-model="filter.hide_void"  class="mgr10" @change="search">{{$t('todo_list.hide_abandon')}}</el-checkbox>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" @sort-change="handleSortChange" v-loading="table_loading" 
@@ -26,18 +22,12 @@
                 </el-table-column>
                 <el-table-column prop="description" :label="$t('todo_list.task_name')" width="auto">
                     <template slot-scope="scope">
-                        <!-- <el-tooltip effect="light" placement="top"> -->
-                            <!-- <div v-html="scope.row.content.replaceAll('\n', '<br/>')" slot="content"></div> -->
-                            <div class="one-line">{{scope.row.content}}</div>
-                        <!-- </el-tooltip> -->
+                        <div class="one-line">{{scope.row.content}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="note" :label="$t('todo_list.result')" width="auto">
                     <template slot-scope="scope">
-                        <!-- <el-tooltip effect="light" placement="top"> -->
-                            <!-- <div v-html="scope.row.note.replaceAll('\n', '<br/>')" slot="content"></div> -->
-                            <div class="one-line">{{scope.row.note}}</div>
-                        <!-- </el-tooltip> -->
+                        <div class="one-line">{{scope.row.note}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" :label="$t('todo_list.status')" width="120" align="center" header-align="center">

@@ -593,7 +593,7 @@ export const messages = {
             predict_net_income:"預估淨利",
             predict_net_income_content:"預估收入 - 預估支出 ＝ 預估淨利",
             actual_net_income:"實際淨利",
-            actual_net_income_content:"實際收入 - 實際支出 ＝ 實際淨利",
+            actual_net_income_content:"實際收入 - 實際支出(請款金額,人力成本)＝ 實際淨利",
             reimbursement:"請款單",
             
             project_income:"專案收益",
