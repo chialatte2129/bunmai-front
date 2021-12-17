@@ -9,7 +9,7 @@
         :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
         <el-table-column
         prop="title"
-        :label="$('cost.item')"
+        :label="$t('cost.item')"
         width="250">
             <template slot-scope="scope">
                 <span v-if="scope.row.level==1" style="font-weight:bolder;color:blue;">{{scope.row.title}}</span>
@@ -19,7 +19,7 @@
         </el-table-column>
         <el-table-column
         prop="amount"
-        :label="$('cost.cost')"
+        :label="$t('cost.cost')"
         align="right"
         width="auto">
             <template slot-scope="scope">
@@ -30,7 +30,7 @@
         </el-table-column>
         <el-table-column
         prop="amount"
-        :label="$('cost.income')"
+        :label="$t('cost.income')"
         align="right"
         width="auto">
             <template slot-scope="scope">
