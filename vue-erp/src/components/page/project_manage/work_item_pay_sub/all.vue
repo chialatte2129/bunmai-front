@@ -89,7 +89,6 @@
         :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog" >
             <paymentOrderItem v-if="updateView" :order_id="current_order_id" @close="cancelDialog"></paymentOrderItem>
         </el-dialog>
-
     </div>
 </template>
 <script>

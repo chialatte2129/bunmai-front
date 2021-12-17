@@ -89,7 +89,7 @@
                         }"/>
                     </el-form-item>
                     <el-form-item :label="$t('project.name')" prop="item_id">
-                        <el-select v-model="form.item_id" filterable clearable class="handle-input" :disabled="updateView||copyView" @change="handleChangeProj">
+                        <el-select v-model="form.item_id" filterable clearable class="handle-input"  @change="handleChangeProj">
                             <el-option v-for="item in option.work_item_now" :key="item.item_id" :label="`${item.item_id} - ${item.item_name}`" :value="item.item_id"/>
                         </el-select>
                     </el-form-item>
@@ -122,6 +122,9 @@
                         </el-tooltip>
                     </el-form-item>
                 </el-form>
+                <div v-if="updateView" >
+                    <dayItemPersonHistory :day_item_id="form.id"></dayItemPersonHistory>
+                </div>
                 <div slot="footer" class="dialog-footer-loading">
                     <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
                     <el-button type="primary" @click="confirmDialog" 
@@ -208,8 +211,12 @@
 <script>
 import { accountService } from "@/_services";
 import { dayItemService, personTagService } from "@/_services";
+import dayItemPersonHistory from "./day_item_person_history.vue";
 export default {
     name: "day_item_person",
+    components:{
+        dayItemPersonHistory
+    },
     data(){
         return {
             odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
@@ -279,7 +286,7 @@ export default {
             filterProjText:"",
             filterPersText:"",
             proj_tree:[],
-            pers_tree:[],            
+            pers_tree:[],   
             defaultProps: {
                 children:"children",
                 label:"label",
@@ -344,7 +351,6 @@ export default {
                     }
                 ]
             },
-            
             rules_org: {
                 work_date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
@@ -363,7 +369,6 @@ export default {
                     {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
                 ],
             },
-
             rules_com:{
                 description:[
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
@@ -649,13 +654,15 @@ export default {
         },
 
         async handleCreate(){
-            var today = new Date();
-            this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            // var today = new Date();
+            // this.form.work_date=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            this.form.work_date="";
             await this.get_filter_tag();
             this.createView=true;
         },
 
         async handleEdit(index, row){
+            console.log(row);
             this.form=Object.assign({}, row);
             if(this.form.comp_time){
                 this.des_flag=true;
@@ -668,11 +675,12 @@ export default {
 
         handleDelete(index, row){
             this.deleteInfo={
-                pid:this.odoo_employee_id,
-                item_id:row.item_id,
-                work_date:row.work_date,
-                tag1:row.tag1,
-                overtime_application_udid:row.overtime_application_udid,
+                row:row.id
+                // pid:this.odoo_employee_id,
+                // item_id:row.item_id,
+                // work_date:row.work_date,
+                // tag1:row.tag1,
+                // overtime_application_udid:row.overtime_application_udid,
             };
             this.deleteView=true;
         },
