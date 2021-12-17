@@ -73,7 +73,7 @@
                 <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="auto">
                     <el-form-item :label="$t('employee.work_date')" prop="work_date">
                         <el-date-picker v-model="form.work_date" type="date" unlink-panels value-format="yyyy-MM-dd" class="handle-input" 
-                        :placeholder="$t('common_msg.select_date')" :disabled="copyView" :picker-options="{
+                        :placeholder="$t('common_msg.select_date')" :disabled="updateView||copyView" :picker-options="{
                             disabledDate(time){ 
                                 return time.getTime()>Date.now()+day_mileseconds*31;
                             }
@@ -122,6 +122,9 @@
                         </el-tooltip>
                     </el-form-item>
                 </el-form>
+                <div v-if="updateView" >
+                    <dayItemPersonHistory :day_item_id="form.id"></dayItemPersonHistory>
+                </div>
                 <div slot="footer" class="dialog-footer-loading">
                     <el-button @click="cancelDialog">{{$t("btn.cancel")}}</el-button>
                     <el-button type="primary" @click="confirmDialog" 
@@ -208,8 +211,12 @@
 <script>
 import { accountService } from "@/_services";
 import { dayItemService, personTagService } from "@/_services";
+import dayItemPersonHistory from "./day_item_person_history.vue";
 export default {
     name: "day_item_person",
+    components:{
+        dayItemPersonHistory
+    },
     data(){
         return {
             odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
@@ -279,7 +286,7 @@ export default {
             filterProjText:"",
             filterPersText:"",
             proj_tree:[],
-            pers_tree:[],            
+            pers_tree:[],   
             defaultProps: {
                 children:"children",
                 label:"label",
@@ -344,7 +351,6 @@ export default {
                     }
                 ]
             },
-            
             rules_org: {
                 work_date: [
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},
@@ -363,7 +369,6 @@ export default {
                     {pattern: /^[0-9.]+$/, message: `${this.$t('rules.only_numbers')} [0123456789.]`, trigger: ["blur", "change"]},
                 ],
             },
-
             rules_com:{
                 description:[
                     {required: true, message: this.$t("common_msg.must_fill"), trigger: ["blur"]},

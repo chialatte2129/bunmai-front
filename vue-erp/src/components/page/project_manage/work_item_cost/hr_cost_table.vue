@@ -2,15 +2,15 @@
     <div>
         <el-card class="box-card">
             <div slot="header" class="clearfix" style="padding:0px;position:relative;">
-                <span>人事支出</span>
+                <span>{{$t('cost.hr_expense')}}</span>
                 <el-input v-model="filter.key_word" clearable class="mgr10 handle-input" style="position:absolute;top:-7px;right:10px;" :placeholder="$t('btn.key_word')" @change="search" />
             </div>
             <div>
                 <el-table :data="tableData" height="400" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
                 @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
                     <el-table-column prop="date" :label="$t('project.date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                    <el-table-column prop="normal_hours_cost" label="一般工時成本" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip/>
-                    <el-table-column prop="overtime_hours_cost" label="加班工時成本" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip/>
+                    <el-table-column prop="normal_hours_cost" :label="$t('cost.normal_worktime')" width="180" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip/>
+                    <el-table-column prop="overtime_hours_cost" :label="$t('cost.overtime_worktime')" width="180" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip/>
                     <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip/>
                     <el-table-column v-show="is_project_owner" :label="$t('btn.action')" width="100" align="center" >
                         <template slot-scope="scope">
@@ -20,7 +20,7 @@
                     </el-table-column>
                 </el-table>
                 <div style="margin-top:10px;margin-bottom:10px;float:right;color:red;">
-                    <span><h2>人事支出合計 {{stateFormat("","",total)}} 元</h2></span>
+                    <span><h2>{{$t('cost.hr_expense_total')}} {{stateFormat("","",total)}} 元</h2></span>
                 </div>
             </div>
         </el-card>

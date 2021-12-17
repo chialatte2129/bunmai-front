@@ -94,7 +94,7 @@
             </el-card>
         </div>
         
-        <el-dialog title="專案實際淨利" v-draggable :visible.sync="statementVisible" width="600px" :before-close="handleStatementClose" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog :title="$t('cost.pj_act_income')" v-draggable :visible.sync="statementVisible" width="600px" :before-close="handleStatementClose" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
            <statementIncome :item_id="form.id" v-if="statementVisible"></statementIncome>
         </el-dialog>
 

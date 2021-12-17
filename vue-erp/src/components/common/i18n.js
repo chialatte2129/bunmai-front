@@ -264,6 +264,10 @@ export const messages = {
             select:"請選擇",
             contact_maintainer:"發生未知錯誤請聯絡維護工程師，謝謝您",
             optional:"選填",
+
+            recorded_at:"修改日期",
+            change_record:"修改紀錄",
+            changes:"更動",
         },
         common_column:{
             id:"ID",
@@ -607,6 +611,17 @@ export const messages = {
             predict_expense_total:"預估支出合計",
             actual_expense:"實際支出",
             actual_expense_total:"實際支出合計",
+            total:"合計",
+
+            normal_worktime:"一般工時成本",
+            overtime_worktime:"加班工時成本",
+            hr_expense:"人事支出",
+            hr_expense_total:"人事支出合計",
+
+            income:"收入",
+            cost:"費用",
+            Item:"項目",
+            pj_act_income:"專案實際淨利",
 
             confirm_delete:"刪除後不可恢復,您要刪除這筆紀錄嗎？",
             
@@ -890,6 +905,10 @@ export const messages = {
             select:"Select",
             contact_maintainer:"Unknown Error happened, contact maintainer please, thanks for your help",
             optional:"Optional",
+
+            recorded_at:"Recorded At",
+            change_record:"Update Record",
+            changes:"Content",
         },
         common_column:{
             id:"ID",
@@ -1237,8 +1256,19 @@ export const messages = {
             predict_expense_total:"Estimated Cost Total",
             actual_expense:"Actual Income",
             actual_expense_total:"Actual Cost Total",
+            total:"Total",
 
+            normal_worktime:"Normal Hours",
+            overtime_worktime:"Overtime Hours",
+            hr_expense:"Human Resource Cost",
+            hr_expense_total:"HR Cost Total",
+            
             confirm_delete:"Confirm Delete",
+
+            income:"Income",
+            cost:"Cost",
+            Item:"Item",
+            pj_act_income:"Project Actual Net Income",
             
             update_predict_work_time:"Estimate Work Hours",
             org_predict_work_time:"Current est. Hours",

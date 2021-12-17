@@ -2,7 +2,7 @@
     <div>
         <el-card class="box-card">
             <div slot="header" class="clearfix" style="padding:0px;position:relative;">
-                <span>實際支出</span>
+                <span>{{$t('cost.actual_expense')}}</span>
                 <el-select v-model="filter.status" multiple clearable class="mgr10 handle-input" style="position:absolute;top:-7px;right:280px;" :placeholder="$t('reimburse.status')" @change="search" >
                     <el-option
                     v-for="item in options.status"
@@ -16,17 +16,17 @@
             <div>
                 <el-table :data="tableData" height="400" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading" :span-method="objectSpanMethod"
                 @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey">
-                    <el-table-column prop="order_date" label="申請日期" width="120" sortable="custom" align="center" show-overflow-tooltip/>
-                    <el-table-column prop="display_id" label="請款單編號" width="200" sortable="custom" align="left" show-overflow-tooltip/>
+                    <el-table-column prop="order_date" :label="$t('reimburse.order_date')" width="120" sortable="custom" align="center" show-overflow-tooltip/>
+                    <el-table-column prop="display_id" :label="$t('reimburse.order_id')" width="200" sortable="custom" align="left" show-overflow-tooltip/>
                     <el-table-column prop="description" :label="$t('project.cost_description')" width="auto" sortable="custom" show-overflow-tooltip/>
-                    <el-table-column prop="status" label="請款狀態" width="150" align="center" sortable="custom" show-overflow-tooltip>
+                    <el-table-column prop="status" :label="$t('reimburse.status')" width="150" align="center" sortable="custom" show-overflow-tooltip>
                         <template slot-scope="scope">
                             <span v-if="scope.row.status=='P'" style="color:blue">{{$t('reimburse.status_tag.P')}}</span>
                             <span v-if="scope.row.status=='F'" style="color:blue">{{$t('reimburse.status_tag.F')}}</span>
                             <span v-if="scope.row.status=='C'" style="color:green">{{$t('reimburse.status_tag.C')}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="date" label="付款日期" width="160" sortable="custom" align="center" show-overflow-tooltip/>
+                    <el-table-column prop="date" :label="$t('reimburse.payment_date')" width="160" sortable="custom" align="center" show-overflow-tooltip/>
                     <el-table-column prop="amount" :label="$t('project.amount')" width="150" align="right" sortable="custom" :formatter="stateFormat" show-overflow-tooltip></el-table-column>
                     <el-table-column prop="action" v-show="is_project_owner" :label="$t('btn.action')" width="100" align="center" fixed="right">
                         <template slot-scope="scope">
@@ -36,12 +36,12 @@
                     </el-table-column>
                 </el-table>
                 <div style="margin-top:10px;margin-bottom:10px;float:right;color:red;">
-                    <span><h2>實際支出合計 {{stateFormat("","",total)}} 元</h2></span>
+                    <span><h2>{{$t('cost.actual_expense_total')}} {{stateFormat("","",total)}} 元</h2></span>
                 </div>
             </div>
         </el-card>
 
-        <el-dialog title="實際支出" :visible.sync="editVisible" width="1200px" :before-close="closeDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
+        <el-dialog :title="$t('cost.actual_expense')" :visible.sync="editVisible" width="1200px" :before-close="closeDialog" top="8%" :close-on-press-escape="false" :close-on-click-modal="false" class="edit-Dialog">
             <paymentOrderItem v-if="editVisible" :order_id="current_order_id" @close="closeDialog"></paymentOrderItem>
         </el-dialog>
     </div>

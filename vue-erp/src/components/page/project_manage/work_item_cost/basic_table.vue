@@ -21,7 +21,7 @@
                     </el-table-column>
                 </el-table>
                 <div style="margin-top:10px;margin-bottom:10px;float:right;color:red;">
-                    <span><h2>{{title}}合計 {{stateFormat("","",total)}} 元</h2></span>
+                    <span><h2>{{title}} {{$t('cost.total')}} {{stateFormat("","",total)}} 元</h2></span>
                 </div>
             </div>
         </el-card>
