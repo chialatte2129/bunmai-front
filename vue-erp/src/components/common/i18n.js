@@ -620,7 +620,7 @@ export const messages = {
 
             income:"收入",
             cost:"費用",
-            Item:"項目",
+            item:"項目",
             pj_act_income:"專案實際淨利",
 
             confirm_delete:"刪除後不可恢復,您要刪除這筆紀錄嗎？",
@@ -1267,7 +1267,7 @@ export const messages = {
 
             income:"Income",
             cost:"Cost",
-            Item:"Item",
+            item:"Item",
             pj_act_income:"Project Actual Net Income",
             
             update_predict_work_time:"Estimate Work Hours",
