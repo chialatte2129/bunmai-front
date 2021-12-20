@@ -8,7 +8,7 @@
         width="1200px" center 
         :close-on-click-modal="false" :close-on-press-escape="false" 
         :before-close="cancelUpload">
-            <el-row>
+            <el-row style="margin-bottom:20px;">
                 <el-card>
                     <el-form ref="form" label-width="auto">
                         <el-col :span="10">
