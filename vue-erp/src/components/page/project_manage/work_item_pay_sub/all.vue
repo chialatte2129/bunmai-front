@@ -2,6 +2,7 @@
     <div class="table">
         <div style="min-height:650px;">
             <div class="mgb10">
+                <payOrderUpload style="float:left;" class="mgr10"></payOrderUpload>
                 <el-button v-if="odoo_employee_id != null" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
                 @click="handleCreate">
                     {{$t('btn.new')}}
@@ -17,7 +18,6 @@
                 <el-input v-model="filter.name" clearable size="large" class="mgr10 handle-input" :placeholder="$t('reimburse.information_key_word')" :disabled="loading" @change="search"/>
                 <el-button size="large" type="info" class="mgr10" plain :disabled="loading" @click="cancelSearch">{{$t('btn.clean')}}</el-button>
                 <el-checkbox v-model="filter.only_mine"  class="mgr10" @change="search">{{$t('reimburse.show_mine')}}</el-checkbox>
-                <!-- <el-checkbox v-if="is_accountant" v-model="filter.only_accountant"  class="mgr10" @change="search">{{$t('reimburse.show_accountant')}}</el-checkbox> -->
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" tooltip-effect="light" v-loading="loading"
             @sort-change="handleSortChange" :cell-style="getCellStyle" :key="tbKey" :span-method="objectSpanMethod">
@@ -97,10 +97,12 @@ import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
 import { partnerService } from "@/_services";
 import { accountService } from "@/_services";
+import payOrderUpload from "../pay_order_item/pay_order_upload.vue";
 import paymentOrderItem from "../payment_order_item.vue";
 export default {
     name: "pay_order",
     components: {
+        payOrderUpload,
         paymentOrderItem
     },
     data(){
