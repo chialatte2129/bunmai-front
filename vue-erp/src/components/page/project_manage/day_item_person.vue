@@ -675,12 +675,12 @@ export default {
 
         handleDelete(index, row){
             this.deleteInfo={
-                row:row.id
-                // pid:this.odoo_employee_id,
-                // item_id:row.item_id,
-                // work_date:row.work_date,
-                // tag1:row.tag1,
-                // overtime_application_udid:row.overtime_application_udid,
+                id:row.id,
+                pid:this.odoo_employee_id,
+                item_id:row.item_id,
+                work_date:row.work_date,
+                tag1:row.tag1,
+                overtime_application_udid:row.overtime_application_udid,
             };
             this.deleteView=true;
         },
