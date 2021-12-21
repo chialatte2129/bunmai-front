@@ -135,7 +135,7 @@
                                 :multiple="false" :limit="1" :auto-upload="false" :on-remove="handleUploadRemove" :on-change="handleUploadChange">
                                     <el-button size="large"  type="primary" style="width:100%">上傳檔案</el-button>
                                 </el-upload>
-                                <!-- <el-button type="text" @click="handleDownloadSample()">下載範本.xlsx</el-button> -->
+                                <el-button type="text" @click="handleDownloadSample()">下載範本.xlsx</el-button>
                             </div>
                         </el-form-item>
                         <el-form-item label="資料筆數">
@@ -326,19 +326,29 @@ export default {
             this.loading = true;
             payOrderService.downlaod_upload_template({}).then(res => {
                 console.log(res);
-                const link = document.createElement('a');
-                let blob = new Blob([res.data], {type: 'application/vnd.ms-excel'});
-                link.style.display = 'none';
-                link.href = URL.createObjectURL(blob);
-                link.download = "sample.xlsx"
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-                this.loading = false;
+                if (res.status === 200) {
+                    if (res.headers["content-type"].includes("application/json")) {
+                        //如果有錯誤訊息格式是 json 但是要轉一下 blob
+                        var blb = new Blob([res.data], { type: "json" });
+                        var fr = new FileReader();
+                        var self = this
+                        fr.onload = function() {
+                            var res_json = JSON.parse(this.result);
+                            self.$message.warning(self.$i18n.t(res_json.msg));
+                        };
+                        fr.readAsText(blb);
+                        this.loading = false;
+                    } else {
+                        let blob = new Blob([res.data]);
+                        let link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.setAttribute("download", "temp.xlsx");
+                        link.click();
+                        this.loading = false;
+                    }
+                }      
             }).catch(err => {
                 console.log(err);
-                // this.cancelQuestDialog();
                 this.loading = false;
             });
         },
