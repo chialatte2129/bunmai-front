@@ -2,7 +2,7 @@
     <div class="table">
         <div style="min-height:650px;">
             <div class="mgb10">
-                <payOrderUpload style="float:left;" class="mgr10"></payOrderUpload>
+                <payOrderUpload v-if="is_purchasing" style="float:left;" class="mgr10" @finish="getData()"></payOrderUpload>
                 <el-button v-if="odoo_employee_id != null" size="large" type="success" class="mgr10" icon="el-icon-circle-plus-outline" :disabled="loading" 
                 @click="handleCreate">
                     {{$t('btn.new')}}
@@ -191,6 +191,14 @@ export default {
             }
         },
 
+        is_purchasing(){
+            if(accountService.get_user_menus().includes("purchasing")){
+                return true
+            }else{
+                return false
+            }
+        },
+
     }, 
     
     methods: {
@@ -256,9 +264,7 @@ export default {
                     }
                 };
                 payOrderService.update_pay_orders(param).then(res =>{ 
-                    // console.log(res);
                     if(res.code>0){
-                        // this.$message.success("OK")
                         this.getData();
                         this.createForm.project_id = "";
                         this.createForm.applicant_id = "";

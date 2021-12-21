@@ -4,10 +4,9 @@
         @click="handleUpload()">
             批次請款
         </el-button>
-        <el-dialog title="批次請款" v-if="uploadVisible" :visible.sync="uploadVisible" 
-        width="1200px" 
+        <el-dialog title="批次請款" v-if="uploadVisible" :visible.sync="uploadVisible" width="1200px" 
         :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false"
-        :before-close="cancelUpload">
+        :before-close="cancelUpload" v-loading="loading">
             <el-row style="margin-bottom:20px;">
                 <div style="float:left;">
                     <div >
@@ -136,7 +135,7 @@
                                 :multiple="false" :limit="1" :auto-upload="false" :on-remove="handleUploadRemove" :on-change="handleUploadChange">
                                     <el-button size="large"  type="primary" style="width:100%">上傳檔案</el-button>
                                 </el-upload>
-                                <el-button type="text" @click="handleDownloadSample()">下載範本.xlsx</el-button>
+                                <!-- <el-button type="text" @click="handleDownloadSample()">下載範本.xlsx</el-button> -->
                             </div>
                         </el-form-item>
                         <el-form-item label="資料筆數">
@@ -199,7 +198,6 @@
 </template>
 <script>
 import { payOrderService } from "@/_services";
-import { dayItemService } from "@/_services";
 import { accountService } from "@/_services";
 import { partnerService } from "@/_services";
 import addNewPartner from "../../partner/add_new_partner";
@@ -325,25 +323,24 @@ export default {
         },
 
         handleDownloadSample(){
-            // this.dialog_loading = true;
-            // dayItemService.downlaod_cost_sample({}).then(response => {
-            //     // console.log(response);
-            //     const link = document.createElement('a');
-            //     let blob = new Blob([response.data], {type: 'application/pdf'});
-            //     link.style.display = 'none';
-            //     link.href = URL.createObjectURL(blob);//创建url对象
-            //     link.download = "專案工時成本上傳範本.csv"
-            //     document.body.appendChild(link);
-            //     link.click();
-            //     document.body.removeChild(link);
-            //     URL.revokeObjectURL(link.href);//销毁url对象
-            //     // this.cancelQuestDialog();
-            //     this.dialog_loading = false;
-            // }).catch(err => {
-            //     console.log(err);
-            //     // this.cancelQuestDialog();
-            //     this.dialog_loading = false;
-            // });
+            this.loading = true;
+            payOrderService.downlaod_upload_template({}).then(res => {
+                console.log(res);
+                const link = document.createElement('a');
+                let blob = new Blob([res.data], {type: 'application/vnd.ms-excel'});
+                link.style.display = 'none';
+                link.href = URL.createObjectURL(blob);
+                link.download = "sample.xlsx"
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                this.loading = false;
+            }).catch(err => {
+                console.log(err);
+                // this.cancelQuestDialog();
+                this.loading = false;
+            });
         },
 
         handleUploadRemove(file, fileList){
@@ -479,6 +476,7 @@ export default {
             if(!this.dalen){
                 return this.$message.error("請上傳檔案")
             };
+            this.loading = true;
             payOrderService.group_create_payment_order({
                     odoo_employee_id:this.odoo_employee_id,
                     order_date:this.order_date,
@@ -487,12 +485,19 @@ export default {
                     payment_item:this.da
                 }).then(res =>{ 
                 console.log(res);
+                this.loading = false;
                 if(res.code>0){
-                    this.$message.success("Success") 
+                    this.$message.success("Success");
+                    this.uploadVisible = false;
+                    this.handleGetData();
                 }else{
                     this.$message.error(res.msg)
                 } 
             })
+        },
+
+        handleGetData(){
+            this.$emit('finish',{})
         },
 
         cancelUpload(){

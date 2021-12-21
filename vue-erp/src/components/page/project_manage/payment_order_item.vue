@@ -2,6 +2,7 @@
     <div class="table">
         <div v-loading.lock="loading">
             <el-form :model="form" ref="form" :rules="rules" label-position="right" label-width="100px">
+                
                 <el-row class="mgb10" >
                     <div style="float:right;">
                         <el-button v-if="true"  size="large" @click="closeDialog">{{$t('btn.close')}}</el-button>
@@ -16,6 +17,7 @@
                         <el-button v-if="orderReadOnly==false" size="large" type="success" style="width:120px;" @click="handleHandIn">{{$t('reimburse.submit')}}</el-button>
                     </div>
                 </el-row>
+
                 <el-row :gutter="10" style="min-height:400px;">
                     <el-col :span="18">
                         <el-card shadow="always" class="mgb10" >
@@ -145,20 +147,8 @@
                     </el-card>
                 </el-row>
 
-                <!-- 簽核狀態 -->
+                <!-- 請款紀錄 -->
                 <el-row :gutter="10">
-                    <!-- <el-col :span="9">
-                        <el-card shadow="always">
-                            <div slot="header" class="clearfix">
-                                <span>{{$t("work_flow.approval_flow")}}</span>
-                            </div>
-                            <div style="height:400px;">
-                                <el-scrollbar style="height:100%">
-                                    <workFlowStatus type="payment" :related_id="order_id" :load_key="tbkey"></workFlowStatus>
-                                </el-scrollbar>
-                            </div>
-                        </el-card>
-                    </el-col> -->
                     <el-col :span="24">
                         <el-card shadow="always">
                             <div slot="header" class="clearfix">
@@ -200,6 +190,7 @@
                     </el-col>
                     
                 </el-row>
+                
             </el-form>
             <div class="mgt10" style="height:50px;" >
                 <div class="flr">

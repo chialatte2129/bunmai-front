@@ -5,7 +5,8 @@ export const payOrderService = {
 	update_pay_orders,
 	get_project_pay_orders,
 	downlaod_pay_order,
-	group_create_payment_order
+	group_create_payment_order,
+	downlaod_upload_template
 }
 
 function get_pay_orders(param){
@@ -51,6 +52,16 @@ function downlaod_pay_order(param){
 function group_create_payment_order(params){
 	return new Promise((resolve, reject) => {
 		axios.post(`${process.env.VUE_APP_API}/api/v1/pay_orders/group_create`, params).then((resp) => {
+			resolve(resp.data)}).catch((error) => {
+				reject(error)
+			}
+		)
+	})
+}
+
+function downlaod_upload_template(params){
+	return new Promise((resolve, reject) => {
+		axios.post(`${process.env.VUE_APP_API}/api/v1/pay_orders/upload/template`, params,{responseType: 'blob'}).then((resp) => {
 			resolve(resp.data)}).catch((error) => {
 				reject(error)
 			}
