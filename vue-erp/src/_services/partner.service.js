@@ -5,7 +5,8 @@ export const partnerService = {
 	get_supplier_account,
 	update_supplier_account,
 	get_bank_list,
-	get_pos_currency
+	get_pos_currency,
+	
 }
 
 function get_supplier_account(param){
@@ -47,3 +48,4 @@ function get_pos_currency(){
 		)
 	})
 }
+

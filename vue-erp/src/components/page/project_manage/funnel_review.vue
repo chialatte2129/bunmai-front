@@ -8,14 +8,12 @@
             </el-breadcrumb>
         </div>          
          <div id="funnel" style="height:640px;"></div>       
-  <el-dialog :title="showTitle" :visible.sync="showOrgVisible" width="60%" center>
-      <el-row :gutter="24">
-         <el-col :span="18"> <highcharts :options="show_project_detail()"></highcharts>  </el-col>
-         <el-col v-show="isShowSubItemVisible" :span="6"> <highcharts :options="show_subitem_detail()"></highcharts> </el-col>
-      </el-row>
-  </el-dialog>
-
-
+        <el-dialog :title="showTitle" :visible.sync="showOrgVisible" width="60%" center>
+            <el-row :gutter="24">
+                <el-col :span="18"> <highcharts :options="show_project_detail()"></highcharts>  </el-col>
+                <el-col v-show="isShowSubItemVisible" :span="6"> <highcharts :options="show_subitem_detail()"></highcharts> </el-col>
+            </el-row>
+        </el-dialog>
     </div>
 </template>
 <script>
