@@ -2,22 +2,49 @@
     <div>
         <el-button size="large" type="primary" class="mgr10" icon="el-icon-upload" :disabled="loading" 
         @click="handleUpload()">
-            批量處理
+            批次請款
         </el-button>
         <el-dialog title="批次請款" v-if="uploadVisible" :visible.sync="uploadVisible" 
-        width="1200px" center 
-        :close-on-click-modal="false" :close-on-press-escape="false" 
+        width="1200px" 
+        :close-on-click-modal="false" :close-on-press-escape="false" :show-close="false"
         :before-close="cancelUpload">
             <el-row style="margin-bottom:20px;">
-                <el-card>
+                <div style="float:left;">
+                    <div >
+                        <span>下載範本後按照欄位填入資料上傳。系統會根據 <span style="color:red;"><b>專案、申請人、請款說明</b></span> 欄位產生請款單『草稿』。</span>
+                    </div>
+                    <div>
+                        <span>付款資訊會根據設定<span style="color:red;"><b>統一帶入請款單</b></span>。</span>
+                    </div>
+                </div>
+                <div style="float:right;">
+                    <el-button size="large"  @click="cancelUpload">{{$t('btn.cancel')}}</el-button>
+                    <el-button size="large" type="success" style="width:150px;" @click="confirmUpload">{{$t('btn.confirm')}}</el-button>
+                </div>
+            </el-row>
+            <el-row style="margin-bottom:20px;">
+                <el-card style="height:300px;">
+                    <div slot="header" class="clearfix">
+                        <span>請款設定</span>
+                        <el-switch
+                        style="float:right"
+                        v-model="auto_pay_info"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949"
+                        active-text="帶入付款資訊"
+                        inactive-text="不帶付款資訊">
+                        </el-switch>
+                    </div>
                     <el-form ref="form" label-width="auto">
-                        <el-col :span="10">
-                            <el-form-item :label="$t('reimburse.pre_payment_date')">
-                                <el-date-picker v-model="payment_form.pre_payment_date" type="date" align="right" :placeholder="$t('common_msg.optional')" unlink-panels value-format="yyyy-MM-dd" />
+                        <el-col :span="6">
+                            <el-form-item :label="$t('reimburse.pre_payment_date')" >
+                                <el-date-picker v-model="payment_form.pre_payment_date" type="date" align="right"  
+                                style="width:150px;" :placeholder="$t('common_msg.optional')" unlink-panels value-format="yyyy-MM-dd" />
                             </el-form-item>
                             <el-form-item :label="$t('reimburse.payment_note')">
                                 <el-select
                                 v-model="payment_form.payment_note"
+                                style="width:150px;"
                                 filterable
                                 allow-create
                                 default-first-option
@@ -34,6 +61,7 @@
                                 <el-select
                                 v-model="payment_form.currency"
                                 filterable
+                                style="width:150px;"
                                 :placeholder="$t('common_msg.select')">
                                     <el-option
                                     v-for="note in option.pos_currency"
@@ -43,11 +71,8 @@
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item :label="$t('reimburse.amount')">
-                                <el-input type="number" v-model.number="payment_form.amount"  style="width:200px;"><template slot="append">元</template></el-input>
-                            </el-form-item>
                         </el-col>
-                        <el-col :span="11">
+                        <el-col :span="10">
                             <el-form-item :label="$t('reimburse.payment_method')">
                                 <el-radio-group v-model="payment_form.payment_method" size="mini">
                                     <el-radio label="transfer" border>{{$t('reimburse.remit')}}</el-radio>
@@ -65,10 +90,12 @@
                                 <el-input type="text" style="width:200px;" v-model="payment_form.account_name" ></el-input>
                                 <el-button class="el-icon-user" type="text" size="large" style="margin-left:10px;" @click="handlePartner()">{{$t('reimburse.partner_account')}}</el-button>
                             </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
                             <el-form-item :label="$t('reimburse.beneficiary_bank')">
                                 <el-autocomplete
                                 class="inline-input"
-                                style="width:300px;"
+                                style="width:200px;"
                                 clearable
                                 v-model="payment_form.remittance_bank"
                                 :fetch-suggestions="querySearchBank"
@@ -79,7 +106,7 @@
                             <el-form-item :label="$t('reimburse.beneficiary_branch')">
                                 <el-autocomplete
                                 class="inline-input"
-                                style="width:300px;"
+                                style="width:200px;"
                                 clearable
                                 v-model="payment_form.remittance_branch"
                                 :fetch-suggestions="querySearchBranch"
@@ -99,41 +126,30 @@
             </el-row>
             <el-row>
                 <el-card>
+                    <div slot="header" class="clearfix">
+                        <span>請款細項上傳</span>
+                    </div>
                     <el-form label-position="left" label-width="100px">
-                        <el-form-item label="請款日期">
-                        <el-date-picker
-                            class="pickerStyle"
-                            v-model="upload_month"
-                            type="date"
-                            value-format="yyyy-MM-dd"
-                            size="small"
-                            placeholder="選擇上傳月份">
-                            </el-date-picker>
-                        </el-form-item>
                         <el-form-item label="上傳檔案">
                             <div style="width:400px;">
-                                <el-upload
-                                ref="upload"
-                                drag
-                                accept=".xlsx"
-                                action
-                                :multiple="false"
-                                :limit="1"
-                                :auto-upload="false"
-                                :on-remove="handleUploadRemove"
-                                :on-change="handleUploadChange">
+                                <el-upload ref="upload" drag accept=".xlsx" action
+                                :multiple="false" :limit="1" :auto-upload="false" :on-remove="handleUploadRemove" :on-change="handleUploadChange">
                                     <el-button size="large"  type="primary" style="width:100%">上傳檔案</el-button>
                                 </el-upload>
-                                <el-button type="text" @click="handleDownloadSample()">下載範本.csv</el-button>
+                                <el-button type="text" @click="handleDownloadSample()">下載範本.xlsx</el-button>
                             </div>
                         </el-form-item>
                         <el-form-item label="資料筆數">
                             <span>{{dalen}} 筆</span>
                         </el-form-item>
                     </el-form>
-                    <el-table :data="da" border class="table" style="max-height:500px;" ref="multipleTable" tooltip-effect="light" v-loading="loading" :cell-style="getCellStyle" :key="tbKey">
-                        <el-table-column prop="item_name" label="專案名稱" width="auto" align="left" show-overflow-tooltip/>
+                    <el-table :data="da" border class="table" 
+                    :default-sort="{prop:'item_name',order:'descending'}"
+                    height="500px" ref="multipleTable" tooltip-effect="light" 
+                    v-loading="loading" :cell-style="getCellStyle" :key="tbKey">
+                        <el-table-column prop="item_name" label="專案名稱" width="auto" align="left" show-overflow-tooltip sortable/>
                         <el-table-column prop="applicant" label="申請人" width="100px" align="center" show-overflow-tooltip/>
+                        <el-table-column prop="description" label="請款說明" width="auto" align="left" show-overflow-tooltip/>
                         <el-table-column prop="item_date" label="憑證日期"  width="100px" align="center" show-overflow-tooltip/>
                         <el-table-column prop="item_type" label="請款類別" width="130px" align="left" show-overflow-tooltip/>
                         <el-table-column prop="item_content" label="細項說明"  width="auto" align="left" show-overflow-tooltip/>
@@ -143,19 +159,16 @@
                     </el-table>
                 </el-card>
             </el-row>
-            <!-- <el-row>
-                
-            </el-row> -->
             <span slot="footer" class="dialog-footer">
                 <el-button size="large"  @click="cancelUpload">{{$t('btn.cancel')}}</el-button>
-                <el-button size="large" type="primary" @click="confirmUpload">{{$t('btn.confirm')}}</el-button>
+                <el-button size="large" type="success" style="width:150px;" @click="confirmUpload">{{$t('btn.confirm')}}</el-button>
             </span>
         </el-dialog>
 
-        <!-- <el-dialog :title="$t('reimburse.partner_account')" :modal="true" :append-to-body="true"  :visible.sync="partnerVisible" width="1200px" center :before-close="cancelPartnerVisivle"  v-draggable>
+        <el-dialog :title="$t('reimburse.partner_account')" :modal="true" :append-to-body="true"  :visible.sync="partnerVisible" width="1200px" center :before-close="cancelPartnerVisible"  v-draggable>
             <div>
                 <span style="width:250px;margin-bottom:20px;">{{$t('reimburse.select_partner')}}: {{select_partner.name}}</span>
-                <addNewPartner v-if="is_purchasing" style="float:right" class="mgl10" :btnTitle="$t('btn.new')" @finish="handleFinishCreate"></addNewPartner>
+                <addNewPartner style="float:right" class="mgl10" :btnTitle="$t('btn.new')" @finish="handleFinishCreate"></addNewPartner>
                 <el-input v-model="partner_search" size="mini" style="float:right;width:250px;margin-bottom:20px;" :placeholder="$t('btn.key_word')" clearable/>
                 <el-table :data="option.partner.filter(
                     data => !partner_search || ( 
@@ -178,25 +191,31 @@
                 </el-table>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelPartnerVisivle">{{$t('btn.cancel')}}</el-button>
+                <el-button @click="cancelPartnerVisible">{{$t('btn.cancel')}}</el-button>
                 <el-button type="primary" @click="confirmPartner">{{$t('btn.confirm')}}</el-button>
             </span>
-        </el-dialog> -->
+        </el-dialog>
     </div>
 </template>
 <script>
+import { payOrderService } from "@/_services";
 import { dayItemService } from "@/_services";
 import { accountService } from "@/_services";
+import { partnerService } from "@/_services";
+import addNewPartner from "../../partner/add_new_partner";
 export default {
     name: "pay_order_upload",
     components: {
-
+        addNewPartner
     },
     data(){
         return {
             tbKey:0,
-            upload_month:"",
+            payment_date:"",
             da:[],
+            spanArr:[],
+            pos:0,
+
             dalen:0,
             odoo_employee_id:accountService.get_user_info("ms_odoo_employee_id"),
             username:accountService.get_user_info("ms_username"),
@@ -205,7 +224,20 @@ export default {
             uploadVisible:false, 
             
             select_partner_id:"",
+            select_partner:{
+                account:"",
+                name:"",
+                bank:"",
+                branch:"",
+                swift_code:"",
+                account_name:"",
+                id:""
+            },
+            partner_search:"",
             partnerVisible:false,
+
+            auto_pay_info:true,
+
             payment_form:{
                 pay_order_id:"",
                 amount:0,
@@ -224,6 +256,8 @@ export default {
             option:{
                 bank_list:[],
                 branch_list:[],
+                pos_currency:[],
+                partner:[],
                 payment_note:[
                     {label:"請款",value:"請款"},
                     {label:"訂金",value:"訂金"},
@@ -240,7 +274,9 @@ export default {
         }
     },
 
-    async created(){},
+    async created(){
+        this.getOption();
+    },
 
     computed: {
         today(){
@@ -253,6 +289,29 @@ export default {
         },
 
     }, 
+    
+    watch: {
+        select_partner_id(val){
+            console.log(val);
+            let index = this.option.partner.findIndex(element => element.id==val);
+            if(index >= 0){
+                this.select_partner = this.option.partner[index];
+            }else{
+                this.select_partner = {
+                    name:"",
+                    account:"",
+                    account_name:"",
+                    swift_code:"",
+                    bank:"",
+                    branch:""
+                }
+            }
+        },
+
+        "payment_form.remittance_bank"(val){
+            this.init_branch(val)
+        }
+    },
     
     methods: {
         orgDateFormat(originVal){
@@ -355,6 +414,7 @@ export default {
                         let obj = {};
                         obj.item_name = v["專案名稱"];
                         obj.applicant = v["申請人"];
+                        obj.description = v["請款說明"];
                         obj.item_date = _this.orgDateFormat(v["憑證日期"]);
                         obj.item_type = v["請款類別"];
                         obj.item_content = v["細項說明"];
@@ -364,7 +424,6 @@ export default {
                         arr.push(obj);
                     });
                     _this.da = arr;
-
                     _this.dalen = arr.length;
                     return arr;
                 };
@@ -396,30 +455,50 @@ export default {
 
         handleUpload(){
             this.uploadVisible = true;
+            this.da=[];
+            this.dalen=0;
+            this.auto_pay_info=true;
+            this.payment_form= {
+                payment_note:"請款",
+                payment_method:"transfer",
+                remittance_setting:"deduct",
+                currency:"TWD",
+                pre_payment_date:null,
+                remittance_bank:"",
+                remittance_branch:"",
+                remittance_account:"",
+                account_name:"",
+                swift_code:"",
+                is_set_paied_date:0
+            }
+
         },
 
         confirmUpload(){
             console.log(this.da);
-            // if(!this.upload_month){
-            //     return this.$message.error("請選擇月份")
-            // };
-            // if(!this.dalen){
-            //     return this.$message.error("請上傳檔案")
-            // };
-            // dayItemService.upload_worktime_cost({month:this.upload_month, data:this.da, odoo_employee_id:this.odoo_employee_id}).then(res =>{ 
-            //     console.log(res);
-            //     if(res.code>0){
-            //         this.$message.success("Success") 
-            //     }else{
-            //         this.$message.error(res.msg)
-            //     } 
-            // })
+            if(!this.dalen){
+                return this.$message.error("請上傳檔案")
+            };
+            payOrderService.group_create_payment_order({
+                    odoo_employee_id:this.odoo_employee_id,
+                    order_date:this.order_date,
+                    auto_pay_info:this.auto_pay_info,
+                    payment_info:this.payment_form,
+                    payment_item:this.da
+                }).then(res =>{ 
+                console.log(res);
+                if(res.code>0){
+                    this.$message.success("Success") 
+                }else{
+                    this.$message.error(res.msg)
+                } 
+            })
         },
 
         cancelUpload(){
             this.uploadVisible = false;
             this.handleUploadRemove("","");
-            this.upload_month = "";
+            this.payment_date = "";
         },
 
         getCellStyle({row, column}){
@@ -446,6 +525,22 @@ export default {
             cb(results);
         },
 
+        createFilter(queryString) {
+            return (item) => {
+                return (item.value.toLowerCase().indexOf(queryString.toLowerCase()) >= 0);
+            };
+        },
+
+        init_branch(bank){
+            console.log("init");
+            var index = this.option.bank_list.findIndex(element => element.value==bank)
+            if(index>=0){
+                this.option.branch_list = this.option.bank_list[index].branch_json;
+            }else{
+                this.option.branch_list=[];
+            }
+        },
+
         handleBankSelect(item) {
             this.option.branch_list = item.branch_json;
         },
@@ -458,7 +553,46 @@ export default {
             this.select_partner_id = null;
             this.partnerVisible = true;
         },
+
+        confirmPartner(){
+            this.partner_search = "";
+            this.payment_form.remittance_account = this.select_partner.account;
+            this.payment_form.remittance_bank = this.select_partner.bank;
+            this.payment_form.remittance_branch = this.select_partner.branch;
+            this.payment_form.account_name = this.select_partner.account_name;
+            this.payment_form.swift_code = this.select_partner.swift_code;
+            this.partnerVisible = false;
+        },
+
+        async handleFinishCreate(result){
+            await this.getOption();
+            console.log(result);
+            console.log(result.data);
+            console.log(result.data.name);
+            this.partner_search = result.data.name;
+            this.select_partner_id = result.data.id;
+        },
+
+        cancelPartnerVisible(){
+            this.partner_search = "";
+            this.partnerVisible = false;
+        },
+
+        async getOption(){
+            await partnerService.get_supplier_account({action:"table",filter:{start_row:0, page_size:1000, key_word:"" }}).then(res =>{
+                this.option.partner=res.data;
+            });
+
+            await partnerService.get_bank_list({action:"table"}).then(res=>{
+                this.option.bank_list = res.data;
+            });
+
+            await partnerService.get_pos_currency().then(res=>{
+                this.option.pos_currency = res.data;
+            });
+        },
         
+
     }
 }
 </script>
