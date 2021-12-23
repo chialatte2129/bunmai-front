@@ -107,6 +107,8 @@ export const messages = {
             supplier_accounts:"供應商帳戶管理",
             project_funnel_review:"專案漏斗管理",
             payment_order_review:"請款單連結",
+            calendar_setting:"行事曆設定",
+            hr_setting:"人資管理",
         },
         table_title:{
             role :'角色代號',
@@ -485,7 +487,7 @@ export const messages = {
 
         },
         reimburse:{
-            information_key_word:"請款ID及說明關鍵字",
+            information_key_word:"請款關鍵字搜尋",
             show_mine:"僅顯示我的申請",
             show_accountant:"僅顯示撥款審核",
             status_tag:{
@@ -749,6 +751,8 @@ export const messages = {
             supplier_accounts:"Supplier Account",
             project_funnel_review:"Funnel Review",
             payment_order_review:"Payment Hyperlink",
+            calendar_setting:"Calendar Setting",
+            hr_setting:"HR Setting",
         },
         table_title :{
             role :'Role id',
@@ -1126,7 +1130,7 @@ export const messages = {
 
         },
         reimburse:{
-            information_key_word:"ID & Info Keywords",
+            information_key_word:"Keywords",
             show_mine:"Only Show Mine",
             show_accountant:"Only Show Allocate",
             status_tag:{

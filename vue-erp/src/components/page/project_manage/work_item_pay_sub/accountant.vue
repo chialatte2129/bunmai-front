@@ -29,6 +29,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="payment_note" :label="$t('reimburse.payment_note')" width="100" align="left" :formatter="stateFormat" show-overflow-tooltip/>
+                <el-table-column prop="account_name" label="支付對象" min-width="150px" align="left" show-overflow-tooltip/>
                 <el-table-column prop="act_payment_date" :label="$t('reimburse.act_payment_date')" width="100" align="center" />
                 <el-table-column prop="amount" :label="$t('reimburse.amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>
                 <el-table-column prop="total_amount" :label="$t('reimburse.total_amount')" width="110" align="right" :formatter="stateFormat" show-overflow-tooltip/>

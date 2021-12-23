@@ -21,6 +21,7 @@ import HighchartsVue from "highcharts-vue";
 import LoadScript from "vue-plugin-load-script";
 import DlgDraggable from "vue-element-dialog-draggable";
 import { comp_theme } from "@/theme/company_theme.js";
+
 Vue.config.productionTip = false
 Vue.use(LoadScript);
 Vue.use(VueI18n);
