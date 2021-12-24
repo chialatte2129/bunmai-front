@@ -83,11 +83,6 @@ export default {
                                     show: this.hasThisMenu("work_item_pay"),
                                     // show:false
                                 },
-                                {
-                                    index: "project_cost_upload",
-                                    title: this.$t("menus.project_cost_upload"),
-                                    show: this.hasThisMenu("project_cost_upload"),
-                                },
                                    {
                                     index: "project_funnel_review",
                                     title: this.$t("menus.project_funnel_review"),
@@ -102,8 +97,6 @@ export default {
                             show: this.includeSubMenu([
                                 "day_item_person", 
                                 "day_item_review",
-                                "project_report_download",
-                                "day_item_report_project"
                             ]),
                             subs: [ 
                                 {
@@ -115,12 +108,7 @@ export default {
                                     index: "day_item_review",
                                     title: this.$t("menus.day_item_review"),
                                     show: this.hasThisMenuOrMgr("day_item_review"),
-                                },
-                                {
-                                    index: "project_report_download",
-                                    title: this.$t("menus.project_report_download"),
-                                    show: this.hasThisMenu("project_report_download"),
-                                },
+                                }
                             ]
                         },
                         
@@ -180,15 +168,10 @@ export default {
                             index: "view_report",
                             title: this.$t("menus.view_report"),
                             show: this.includeSubMenu([
-                                "view_work_hours",
                                 "day_item_report_project"
                             ]),
                             subs: [ 
-                                {
-                                    index: "view_work_hours",
-                                    title: this.$t("menus.view_work_hours"),
-                                    show: this.hasThisMenu("view_work_hours")
-                                },
+                                
                                 {
                                     index: "day_item_report_project",
                                     title: this.$t("menus.day_item_report_project"),
@@ -209,6 +192,34 @@ export default {
                             title: this.$t("menus.supplier_accounts"),
                             show: this.hasThisMenu("supplier_accounts")
                         }
+                    ]
+                },
+                {
+                    icon: "el-icon-user",
+                    index: "hr_setting",
+                    title: this.$t("menus.hr_setting"),
+                    show: this.includeSubMenu(["calendar_setting", "project_report_download", "project_cost_upload"]),
+                    subs: [            
+                        {
+                            index: "calendar_setting",
+                            title: this.$t("menus.calendar_setting"),
+                            show: this.hasThisMenu("calendar_setting")
+                        },
+                        {
+                            index: "view_work_hours",
+                            title: this.$t("menus.view_work_hours"),
+                            show: this.hasThisMenu("view_work_hours")
+                        },
+                        {
+                            index: "project_report_download",
+                            title: this.$t("menus.project_report_download"),
+                            show: this.hasThisMenu("project_report_download"),
+                        },
+                        {
+                            index: "project_cost_upload",
+                            title: this.$t("menus.project_cost_upload"),
+                            show: this.hasThisMenu("project_cost_upload"),
+                        },
                     ]
                 },
                 {
@@ -235,6 +246,7 @@ export default {
                         }
                     ]
                 },
+                
                 {
                     icon: "el-icon-lx-warn",
                     index: "7",

@@ -130,6 +130,11 @@ export default new Router({
                     path: '/project_funnel_review',
                     component: () => import('../components/page/project_manage/funnel_review.vue'),
                     meta: { title:  'menus.project_funnel_review' }
+                },   
+                {
+                    path: '/calendar_setting',
+                    component: () => import('../components/page/hr_setting/calendar_setting.vue'),
+                    meta: { title:  'menus.calendar_setting' }
                 }
             ]
         },

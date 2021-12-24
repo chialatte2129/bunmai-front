@@ -62,7 +62,7 @@ function group_create_payment_order(params){
 function downlaod_upload_template(params){
 	return new Promise((resolve, reject) => {
 		axios.post(`${process.env.VUE_APP_API}/api/v1/pay_orders/upload/template`, params,{responseType: 'blob'}).then((resp) => {
-			resolve(resp.data)}).catch((error) => {
+			resolve(resp)}).catch((error) => {
 				reject(error)
 			}
 		)

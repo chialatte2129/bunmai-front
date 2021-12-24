@@ -94,6 +94,7 @@ export default {
             tableData:[],
             totalRow:0,
             weekday_dict:{},
+            holiday:[],
             spanArr:[],
             pos:0,
             sort_column:"dept_name",
@@ -249,7 +250,7 @@ export default {
 
         getHeaderCellStyle({row, column}){
             var return_dict = {};
-            if([6, 7].includes(this.weekday_dict[column.property])){
+            if(this.holiday.includes(column.property)){
                 return_dict["color"]="#FF4F4F";
             };
             return return_dict;
@@ -319,6 +320,7 @@ export default {
             }
             await reportService.get_daily_workhour(param).then(res =>{ 
                 this.weekday_dict=res.weekday_dict;
+                this.holiday = res.holiday;
                 this.logCols=res.log_cols;
                 this.tableData=res.logs;
                 this.tableData.sort((a, b) => a.complete_name.localeCompare(b.complete_name));
