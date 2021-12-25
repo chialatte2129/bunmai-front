@@ -1,0 +1,44 @@
+{ 
+    "menus":[
+        {
+            "index": "user_edit",
+            "title": "menus.user_edit"
+        },
+        {
+            "index": "role_edit",
+            "title": "menus.role_edit"
+        },
+        {
+            "index": "dictionary_setting",
+            "title": "menus.dict_setting"
+        },
+        {
+            "index": "deshboard",
+            "title": "menus.deshboard"
+        },
+        {
+            "index": "description",
+            "title": "menus.description"
+        },
+        {
+            "index": "scanner",
+            "title": "menus.scanner"
+        },
+        {
+            "index": "hist_record",
+            "title": "menus.hist_record"
+        },
+        {
+            "index": "products",
+            "title": "menus.products"
+        },
+        {
+            "index": "categories",
+            "title": "menus.categories"
+        },
+        {
+            "index":"entry_setting",
+            "title":"menus.entry_setting"
+        }
+    ]
+}

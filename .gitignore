@@ -1,6 +1,6 @@
 
-vue-erp/\.env
-vue-swarm-erp\.yml
+vue-app/\.env
+docker-compose\.yml
 
 
 # Created by https://www.gitignore.io/api/vuejs
@@ -43,4 +43,4 @@ yarn-error.log*
 # key ignore
 *.pem
 
-vue-erp/package-lock.json
+# vue-app/package-lock.json
