@@ -18,16 +18,12 @@ import VueClipboard from 'vue-clipboard2';
 // import VueRouterReferer from '@tozd/vue-router-referer';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import LoadScript from 'vue-plugin-load-script';
+import HighchartsVue from 'highcharts-vue';
 
-
-// Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
-
-// Vue.use(VueRouterReferer);
-
 Vue.use(LoadScript);
+Vue.use(HighchartsVue);
 Vue.config.productionTip = false
 
 Vue.use(VueI18n);

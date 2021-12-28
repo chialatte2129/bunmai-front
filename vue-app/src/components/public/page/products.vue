@@ -25,14 +25,11 @@
           </div> 
           <div style="padding: 14px;">
             <div style="height:80px;">
-              <span>{{item.title}}</span>
+              <span style="font-size:20px">{{item.title}}</span>
             </div>
             <div style="height:auto;text-align:right;">
               <span style="color:red; ">$ <span style="color:red; font-weight:bolder;font-size:30px;">{{item.sale_price}}</span></span>
             </div>
-            <!--<div class="bottom clearfix">
-              <el-button type="danger" size="large" class="button" style="width:100%;background-color:#C00053;" @click="handlePush(item.id)">幫我賣</el-button>
-            </div>-->
           </div>
         </el-card>
       </el-col>
