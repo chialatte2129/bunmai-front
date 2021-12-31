@@ -1,212 +1,115 @@
 <template>
   <div id="body" style="font-family:'Yeseva One',sans-serif;" >
     <b-navbar toggleable="lg" type="dark" variant="faded" fixed="top" v-bind:class="{'bg-primary': isUserScrolling || isOpen}">
-      <b-navbar-brand style="position:absolute;top:0px;" href="#" ><span style="font-size:30px;font-weight:bold;color:#fff;">KOL幫賣</span></b-navbar-brand>
+      <b-navbar-brand style="position:absolute;top:0px;" href="#" ><span style="font-size:35px;font-weight:bold;color:#fff;">KOL幫賣</span></b-navbar-brand>
       <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
       <b-collapse style="margin:auto;" v-model="isOpen" id="nav-collapse" is-nav>
         <b-navbar-nav class="m-auto" >
-          <b-nav-item @click="handleClick('about')" ><span style="font-weight:bold;color:#fff;">關於我們</span></b-nav-item>
-          <b-nav-item @click="handleClick('feature')" ><span style="font-weight:bold;color:#fff;">服務提供</span></b-nav-item>
-          <b-nav-item>
-            <el-button type="primary" size="mini" style="margin-top:-5px;" @click="$router.push('admin/login');">商家登入</el-button>
+          <b-nav-item @click="handleClick('about')" >
+            <div style="height:35px;line-height:35px;">
+              <span style="font-size:20px; margin:auto;font-weight:bold;color:#fff;">KOL陣容</span>
+            </div>
           </b-nav-item>
-          <b-nav-item >
-            <el-button type="success" size="mini" style="margin-top:-5px;" @click="$router.push('admin/login');">KOL登入</el-button>
+          <b-nav-item @click="handleClick('feature')" >
+            <div style="height:35px;line-height:35px;">
+              <span style="font-size:20px; font-weight:bold;color:#fff;">重點特色</span>
+            </div>
+          </b-nav-item>
+          <b-nav-item  @click="$router.push('admin/login');">
+            <div class="login-btn" style="background-color:#024E82;">
+              <i class="el-icon-s-shop" style="font-size:20px;color:white;"/>
+              <span style="font-size:20px; color:white; font-weight:bold;"> 商家登入</span>
+            </div>
+          </b-nav-item>
+          <b-nav-item  @click="$router.push('admin/login');">
+            <div class="login-btn" style="background-color:#024E82;">
+              <i class="el-icon-s-custom" style="font-size:20px;color:white;"/>
+              <span style="font-size:20px; color:white; font-weight:bold;"> KOL登入</span>
+            </div>
           </b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <div style="position:related;height:30vw;min-height:150px;width:100%;background-image:url('/image/welcome/hand_shake.jpg');background-repeat: no-repeat;background-position: center;background-size: 100% auto"></div>
+    <div style="position:related;height:30vw;min-height:150px;width:100%;background-image:url('/image/welcome/new_hand_shake.jpg');background-repeat: no-repeat;background-position: center;background-size: 100% auto"></div>
     <div id="about" style="width:100%;height:50px;"></div>
+    
     <el-row style="margin-top:20px;" class="row d-flex justify-content-center" >
       <div class="text-center" style="width:100%;margin-bottom:20px;">
         <span class="section-title">最強KOL陣容</span>
       </div>
     </el-row>
+    
     <el-row class="row d-flex justify-content-center" >
-      <el-col :xs="24" :sm="8" :md="4" :lg="4" :xl="4">
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
+      <el-col v-for="kol in top_kol_list" :key="kol.name" :xs="24" :sm="8" :md="4" :lg="4" :xl="4">
+        <div style="padding:5%;">
+          <div style="width:100%;text-align:center;">
+            <img :src="kol.image_url" class="image drop-shadow"/>
+          </div>
           <div style="padding: 14px;">
-            <span>網紅1號</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">幫我賣</el-button>
+            <div style="width:100%;text-align:center;">
+              <span style="font-size:20px;font-weight:bolder;">{{kol.name}}</span>
+            </div>
+            <div style="width:100%;text-align:center;max-height:50px;">
+              <span>{{kol.description}}</span>
+            </div>
+            
+            <div style="width:100%;text-align:center;cursor:pointer;" @click="$router.push('admin/login');">
+              <span class="blink" style="font-size:25px;font-weight:bolder;" >KOL幫我賣</span>
             </div>
           </div>
-        </el-card>
+        </div>
       </el-col>
-
-      <el-col :xs="24" :sm="8" :md="4" :lg="4" :xl="4">
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-          <div style="padding: 14px;">
-            <span>網紅2號</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">幫我賣</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-
-      <el-col :xs="24" :sm="8" :md="4" :lg="4" :xl="4">
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-          <div style="padding: 14px;">
-            <span>網紅3號</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">幫我賣</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-
-      <el-col :xs="24" :sm="8" :md="4" :lg="4" :xl="4">
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-          <div style="padding: 14px;">
-            <span>網紅4號</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">幫我賣</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-
-      <el-col :xs="24" :sm="8" :md="4" :lg="4" :xl="4">
-        <el-card :body-style="{ padding: '0px' }">
-          <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-          <div style="padding: 14px;">
-            <span>網紅5號</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">幫我賣</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-     
     </el-row>
+
     <div id="feature" style="width:100%;height:50px;"></div>
-    <div class="d-flex justify-content-center content1-bg">
-      <div class="content-bg-filter">
-        <div class="row d-flex justify-content-center" style="height:100%">
-          <div class="col-lg-9 align-self-center" >
-            <div class="row">
-              <div class="text-center" style="width:100%;margin-bottom:20px;">
-                <span class="section-title">我們的服務</span>
-              </div>
-            </div>
-            <div class="row justify-content-center">
-              <div class="col-lg-7 pt-4 pt-lg-0 align-self-center">
-                <div class="p-3">
-                  <span style="font-size:45px; font-weight:620; color:#9E2227;">第一項服務</span>
-                  <p class="feature-parag">
-                    Pick one of the 3 abilities offered to you at the beginning of every wave! Form your own ability tree and take on waves of relentless zombie attacks.
-                  </p>
-                </div>
-              </div>
-              <div class="col-lg-5 align-self-center">
-                  <div style="background-color:none">
-                    <img src="/image/logo/logo_fall.png" width="100%">
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <el-row style="margin-top:20px;" class="row d-flex justify-content-center" >
+      <div class="text-center" style="width:100%;margin-bottom:20px;">
+        <span class="section-title">重點特色</span>
       </div>
+    </el-row>
+
+    <div style="width:100%;max-width:1200px;margin:auto;">
+      <el-row v-for="feature in features_list" :key="feature.title" style="width:100%;margin-bottom:70px;">
+        <el-col :xs="24" :sm="10" :md="10" :lg="10" :xl="10">
+          <div class="">
+            <img :src="feature.image_url" class="drop-shadow" width="100%">
+          </div>
+        </el-col>
+        <el-col :xs="24" :sm="14" :md="14" :lg="14" :xl="14">
+          <div class="p-3">
+            <span class="feature-title">{{feature.title}}</span>
+            <p class="feature-parag">
+              {{feature.description}}
+            </p>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-    <div class="d-flex justify-content-center content2-bg">
-      <div class="content-bg-filter">
-        <div class="row d-flex justify-content-center" style="height:100%">
-          <div class="col-lg-9 align-self-center" >
-            <div class="row">
-              <div class="col-lg-5">
-                <img src="/image/logo/logo_fall.png" width="100%">
-              </div>
-              <div class="col-lg-7 pt-4 pt-lg-0 align-self-center">
-                <div class="p-3">
-                  <span class="feature-title">第二項服務</span>
-                  <p class="feature-parag">
-                    Eliminate zombies crawling all over the city, loot the undead to get money and chips to upgrade your weapons and equipment.
-                  </p>
-                </div>
-              </div>
-            </div>
+
+    <div class="footer-bg footer-bg-format">
+      <el-row>
+        <div style="text-align:center">
+          <img src="/image/logo/logo_no_bg.png" width="200px;">
+        </div>
+        <div style="text-align:center">
+          <span style="font-size:40px; font-weight:bolder;color:white;font-family:Didot, serif;">KOL BUNMAI</span>
+        </div>
+      </el-row>
+      <el-row>
+        <div class="row justify-content-center" style="margin-top:20px;"  >
+          <div class="text-center">
+            <span style="font-size:45px; font-weight:540; color:#fff;">JOIN THE COMMUNITY</span>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="d-flex justify-content-center content3-bg">
-       <div class="content-bg-filter">
-        <div class="row d-flex justify-content-center" style="height:100%">
-          <div class="col-lg-9 align-self-center" >
-            <div class="row justify-content-center">
-              <div class="col-lg-7 pt-4 pt-lg-0 align-self-center">
-                <div class="p-3">
-                  <span style="font-size:45px; font-weight:620; color:#9E2227;">第三項服務</span>
-                  <p class="feature-parag">
-                    Pick one of the 3 abilities offered to you at the beginning of every wave! Form your own ability tree and take on waves of relentless zombie attacks.
-                  </p>
-                </div>
-              </div>
-              <div class="col-lg-5 align-self-center">
-                  <div style="background-color:none">
-                    <img src="/image/logo/logo_fall.png" width="100%">
-                  </div>
-              </div>
-            </div>
-          </div>
+        <div class="row justify-content-center" style="margin-top:30px;" >
+          <span style="font-size:18px; font-weight:540; color:#fff;">Contact Us: <a href="mailto:bunmai@example.com" style="color:#ccc" >bunmai@example.com</a></span>
         </div>
-      </div>
-    </div>
-    
-    
-    <!-- <div id="media" class="d-flex justify-content-center content6-bg" style="margin-top:50px">
-      <div class="content-bg-filter">
-        <div class="row d-flex justify-content-center" style="height:100%">
-          <div class="col-lg-8 align-self-center" >
-            <div class="row">
-              <div class="text-center" style="width:100%">
-                <span class="section-title">Media</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12" >
-                <el-carousel :interval="4000" type="card" :height="bannerHeight + 'px'" width="100%">
-                  <el-carousel-item v-for="item in media_array" :key="item.image">
-                    <img :src="item.image" width="100%">
-                  </el-carousel-item>
-                </el-carousel>
-              </div>
-            </div>
-          </div>
+        <div class="row justify-content-center" style="margin-top:20px;" >
+          <span style="font-size:10px; color:#ccc;">Copyright © 2022 KOL幫賣. All rights reserved.</span><br/>
         </div>
-      </div>
-    </div> -->
-    <div class="d-flex justify-content-center footer-bg" style="padding-top:75px;padding-bottom:100px;position:relative;">
-      <div class="row justify-content-center">
-        <div class="col-lg-12 align-self-center" >
-          <div class="row justify-content-center" style="margin-top:20px;"  >
-            <div class="text-center">
-              <img src="/image/logo/logo_fall.png" width="200px;">
-            </div>
-          </div>
-          <div class="row justify-content-center" style="margin-top:20px;"  >
-            <div class="text-center">
-              <span style="font-size:45px; font-weight:540; color:#fff;">JOIN THE COMMUNITY</span>
-            </div>
-          </div>
-          <div class="row justify-content-center" style="margin-top:30px;" >
-            <span style="font-size:18px; font-weight:540; color:#fff;">Contact Us: <a href="mailto:bunmai@example.com" style="color:#ccc" >bunmai@example.com</a></span>
-          </div>
-          <div class="row justify-content-center" style="margin-top:20px;" >
-            <span style="font-size:10px; color:#ccc;">Copyright © 2021 KOL幫賣. All rights reserved.</span><br/>
-          </div>
-        </div>
-      </div>
-      
+      </el-row>
     </div>
   </div>
-  
 </template>
 
 <script>
@@ -222,6 +125,18 @@ export default {
       isUserScrolling: false,
       activeString:null,
       current_path: this.$route.path ? this.$route.path : "/home",
+      top_kol_list:[
+        {name:"得得廚房", description:"IG超人氣宅男系廚神", image_url:"/image/kol/MARK_SQR.jpeg"},
+        {name:"葡萄主委", description:"小紅書億級葡萄銷售員", image_url:"/image/kol/JUWAI_SQR.jpeg"},
+        {name:"保養女王Joy", description:"微博唯一美妝信仰", image_url:"/image/kol/JOY_SQR.jpg"},
+        {name:"Cindy酥", description:"旅行美食油土伯", image_url:"/image/kol/CINDY_SQR.jpg"},
+        {name:"特級吃貨王", description:"元宇宙認證特級吃貨", image_url:"/image/kol/YORK_SQR.jpg"}
+      ],
+
+      features_list:[
+        {title:"AI智能配對", description:"透過AI深度學習，根據商品性質、品牌銷售數據，從眾多KOL中篩選出業績優異、品牌連結度高的KOL。", image_url:"/image/welcome/feature1.jpg"},
+        {title:"即時業績趨勢", description:"A網紅帶來多少流量? B網紅銷售多少商品? 哪一位網紅績效最優? 雲端資料庫即時呈現，讓您將流量一手掌握。", image_url:"/image/welcome/feature_3.jpg"},
+      ]
     };
   },
   computed: {},
@@ -262,21 +177,28 @@ export default {
 };
 </script>
 <style scope>
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 14px;
-  opacity: 0.75;
-  line-height: 200px;
-  margin: 0;
+
+.login-btn {
+  height:35px;
+  line-height:35px; 
+  cursor:pointer; 
+  width:150px;
+  text-align:center;
+  border-radius:5%;
 }
 
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+.image {
+  width:100%;
+  max-width:200px;
+  border-radius: 50%;
+  margin:auto;
 }
 
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #d3dce6;
+.drop-shadow {
+-webkit-filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.7));
+filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.7))
 }
+
 .section-title{
   font-size:45.2px; 
   font-weight:600; 
@@ -285,11 +207,11 @@ export default {
 .feature-title{
   font-size:40px; 
   font-weight:620; 
-  color:#9E2227;
+  color:#024E82;
 }
 .feature-parag{
   font-weight: bold;
-  font-size:18.08px;
+  font-size:24px;
 
 }
 
@@ -317,5 +239,29 @@ export default {
 }
 .footer-bg{
   background-color:#024E82
+}
+.footer-bg-format{
+  padding-top:75px;
+  padding-bottom:100px;
+  position:relative;
+}
+
+@keyframes fade {
+  from { opacity: 1.0; }
+  50% { opacity: 0.4;}
+  to {opacity: 1.0;}
+}
+@-webkit-keyframes fade {
+  from { opacity: 1.0; }
+  50% { opacity: 0.4; }
+  to {  opacity: 1.0; }
+}
+.blink {
+  color: #007BFF;
+  padding: 10px;
+  font-size: 15px;
+  height: 60px;
+  animation: fade 600ms infinite;
+  -webkit-animation: fade 600ms infinite;
 }
 </style>
