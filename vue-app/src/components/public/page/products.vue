@@ -2,14 +2,11 @@
   <div id="body" style="font-family:'Yeseva One',sans-serif;" >
     <b-navbar toggleable="lg" type="light" variant="faded" fixed="top" v-bind:class="{'bg-success': true}">
       <b-navbar-brand href="#" ><span style="font-size:30px;font-weight:bold;color:#fff;">我的賣場</span></b-navbar-brand>
-      
-      <b-navbar-toggle target="nav-collapse" class="ml-auto"></b-navbar-toggle>
-
-      <b-collapse v-model="isOpen" id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item @click="handleClick('about')" ><span style="font-weight:bold;color:#fff;"><i class="el-icon-shopping-cart-2" style="font-size:20px;"/> 購物車 <span v-if="buy_number">{{buy_number}}</span></span></b-nav-item>          
-        </b-navbar-nav>
-      </b-collapse>
+      <b-navbar-nav>
+        <b-nav-item>
+          <cartItem />
+        </b-nav-item>          
+      </b-navbar-nav>
     </b-navbar>
     <div style="position:related;height:300px;width:100%;background-image:url('/image/welcome/gress_land.jpg');background-repeat: no-repeat;background-position: center;background-size: 100% 100%"></div>
     
@@ -33,8 +30,6 @@
           </div>
         </el-card>
       </el-col>
-
-      
     </el-row>
     <div style="width:100%;height:50px;"></div>
     <div class="d-flex justify-content-center footer-bg" style="padding-top:75px;padding-bottom:100px;position:relative;">
@@ -60,11 +55,11 @@
 </template>
 
 <script>
-
+import cartItem from "./cart_item.vue"
 export default {
   name: "products",
   components: {
-    
+    cartItem
   },
   data() {
     return {
@@ -81,25 +76,25 @@ export default {
         {
           id:"COFFEE",  
           title:"【蒙恩咖啡】耶路撒冷手工烘焙咖啡豆",
-          sale_price:"1,980",
+          sale_price:"2,580",
           image_url:"/image/product/coffee_1.jpg"
         },
         {
           id:"GRAPE",  
           title:"【法國貴族晚宴必備】冰川淬煉洗禮聖母峰葡萄 600公克/箱",
-          sale_price:"1,980",
+          sale_price:"1,888",
           image_url:"/image/product/grape_1.jpeg"
         },
         {
           id:"MEAL",
           title:"【米其林一星激推】虎虎生風猛虎垂涎年菜組",
-          sale_price:"3,718",
+          sale_price:"3,688",
           image_url:"/image/product/MEAL_2.png"
         },
         {
           id:"LOTION",
           title:"【限量100瓶】28逆齡回春水 100ml/瓶",
-          sale_price:"3,718",
+          sale_price:"2,699",
           image_url:"/image/product/water.jpg"
         }
       ]
@@ -115,6 +110,8 @@ export default {
     
   },
   methods: {
+    
+
     handleScroll (event) {
       this.isUserScrolling = (event.srcElement.scrollTop > 0);
     },

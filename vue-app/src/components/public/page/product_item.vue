@@ -2,7 +2,11 @@
   <div id="body" style="font-family:'Yeseva One',sans-serif;" >
     <b-navbar toggleable="lg" type="light" variant="faded" v-bind:class="{'bg-success': true}">
       <b-navbar-brand href="/products" ><span style="font-size:30px;font-weight:bold;color:#fff;">我的賣場</span></b-navbar-brand>
-    
+      <b-navbar-nav>
+        <b-nav-item>
+          <cartItem :openCart="cartVisible" :tbkey="tbkey"/>
+        </b-nav-item>          
+      </b-navbar-nav>
     </b-navbar>
     <div style="padding:10px;width:100%;cursor:pointer;" @click="handleBack()"><span><span style="font-weight:bolder">推薦商品</span> / {{current_item.title}}</span></div>
     
@@ -23,9 +27,9 @@
                 <span>市售價<span style="text-decoration:line-through;">{{current_item.normal_price}}</span>元 促銷價<span style="text-decoration:line-through;">{{current_item.discount_price}}</span>元</span><br/>
                 <span>  折扣後價格  <span style="color:red; font-weight:bolder;font-size:40px;">{{current_item.sale_price}}</span>  元</span>
               </div>
-
-              <div style="max-width:500px;width:80%;background-color:#C00053;padding:10px 20px;text-align:center;cursor:pointer;"><span style="font-weight:bolder;color:white;font-size:25px;">我還不買爆</span></div>
-              
+              <div style="max-width:500px;width:80%;background-color:#C00053;padding:10px 20px;text-align:center;cursor:pointer;" @click="handleAddToCart(current_item)">
+                <span style="font-weight:bolder;color:white;font-size:25px;">我還不買爆</span>
+              </div>
             </div>
           </el-col>
         </el-row>
@@ -43,25 +47,38 @@
           </div>
         </div>
       </div>
-      
     </div>
+
+    <el-dialog :visible.sync="addToCartVisible" width="100%" :before-close="keepShopping" :append-to-body="true">
+      <div style="text-align:center;">
+        <span style="color:#000; font-size:20px;font-weight:bolder;">商品已加入購物車</span>
+      </div>
+      <div slot="footer" class="dialog-footer" style="text-align:center; margin-top:20px;">
+        <el-button type="primary" style="width:150px;height:40px;font-size:20px;font-weight:bolder;margin-right:20px;" @click="keepShopping">繼續購物</el-button>
+        <el-button type="success" style="width:150px;height:40px;font-size:20px;font-weight:bolder;" @click="handleOpenCart">我的購物車</el-button>
+      </div>
+    </el-dialog>
+
   </div>
-  
 </template>
 
 <script>
-
+import cartItem from "./cart_item.vue"
 export default {
-  name: "gps_intro",
+  name: "product_item",
   components: {
-    
+    cartItem
   },
   data() {
     return {
+      tbkey:0,
+      addToCartVisible:false,
       isUserScrolling: false,
       isOpen: false,
+      cartVisible:false,
       buy_number:0,
       current_item:{},
+      current_in_cart:[],
       item_content:{
         CRAB:{
           title:"【正宗老饕級】日月潭吮指大閘蟹x6隻(5兩九-6兩半/隻)",
@@ -70,8 +87,6 @@ export default {
           normal_price:"8,400",
           discount_price:"4,374",
           sale_price:"3,718",
-          num_normal_price:8400,
-          num_discount_price:4374,
           num_sale_price:3718,
           image_url:"/image/product/CRAB_2.jpg"
         },
@@ -79,20 +94,20 @@ export default {
           title:"【蒙恩咖啡】耶路撒冷手工烘焙咖啡豆",
           sub_title:"耶路撒冷專屬航班空運來台",
           contents:["‧蘊含奶與蜜交融天然香氣","‧虔誠職人咖啡師手工祝禱烘焙而成","‧產量稀少 製作耗時"],
-          normal_price:"9,527",
-          discount_price:"5,353",
-          sale_price:"1,980",
-          num_sale_price:1980,
+          normal_price:"6,420",
+          discount_price:"3,450",
+          sale_price:"2,580",
+          num_sale_price:2580,
           image_url:"/image/product/coffee_1.jpg"
         },
         GRAPE:{
           title:"【法國貴族晚宴必備】冰川淬煉洗禮聖母峰葡萄 600公克/箱",
           sub_title:"來自海拔八千公尺的美味",
           contents:["‧顆顆果粒飽滿富有彈性、甜度極高","‧深紫色的外皮光滑富含果粉","‧果肉香氣恬和如同漫步在波爾多五大酒莊", "‧咬下迸發香甜果汁 口感細膩終其一生為之痴狂、無憾"],
-          normal_price:"9,527",
-          discount_price:"5,353",
-          sale_price:"1,980",
-          num_sale_price:1980,
+          normal_price:"2,570",
+          discount_price:"2,200",
+          sale_price:"1,888",
+          num_sale_price:1888,
           image_url:"/image/product/grape_1.jpeg"
         },
         MEAL:{
@@ -105,9 +120,9 @@ export default {
             "‧日跑三千穠纖合度只融你口【如虎添翼豬蹄煲】",
             "‧米其林一星主廚漏夜搶購食材，殘酷限量要搶要快！",
           ],
-          normal_price:"8,400",
-          discount_price:"4,374",
-          sale_price:"3,718",
+          normal_price:"6,400",
+          discount_price:"4,370",
+          sale_price:"3,688",
           num_sale_price:3718,
           image_url:"/image/product/MEAL.jpg"
         },
@@ -115,10 +130,10 @@ export default {
           title:"【限量100瓶】28逆齡回春水 100ml/瓶",
           sub_title:"春節強檔 買一送一",
           contents:["‧可以喝 可以抹","‧男人用了回春 女人用了逆齡","‧多種天然植物萃取&玉山封頂雪水經100道工藝萃取提煉製成"],
-          normal_price:"8,400",
-          discount_price:"4,374",
-          sale_price:"3,718",
-          num_sale_price:3718,
+          normal_price:"5,980",
+          discount_price:"3,370",
+          sale_price:"2,699",
+          num_sale_price:2699,
           image_url:"/image/product/water.jpg"
         }
 
@@ -137,15 +152,49 @@ export default {
     
   },
   methods: {
-    // handleScroll (event) {
-    //   this.isUserScrolling = (event.srcElement.scrollTop > 0);
-    // },
+    handleOpenCart(){
+      this.addToCartVisible = false;
+      this.cartVisible = true;
+    },
+
+    async handleAddToCart(){
+      var add_value = {
+        id:this.$route.params.item,
+        name:this.current_item.title,
+        number:1,
+        price:this.current_item.num_sale_price
+      };
+      await this.current_in_cart.push(add_value);
+      await sessionStorage.setItem("cart",  JSON.stringify(this.current_in_cart));
+      this.tbkey++;
+      this.cartVisible = false;
+      this.addToCartVisible = true;
+    },
+
+    keepShopping(){
+      this.addToCartVisible = false;
+    },
 
     scrollToTop() {
       window.scrollTo(0,0);
     },
 
+    handleStoreKolID(){
+      if(this.$route.query.id){
+        sessionStorage.setItem("kol_id", this.$route.query.id)
+      }
+    },
+
     init(){
+      this.handleStoreKolID()
+      
+      var temp_val = sessionStorage.getItem("cart")
+      if(temp_val){
+        this.current_in_cart = JSON.parse(temp_val);
+      }else{
+        this.current_in_cart = []
+      };
+
       document.body.scrollTop = 0
       document.documentElement.scrollTop = 0;
       window.scrollTo(0, 0)
