@@ -158,6 +158,12 @@ export default {
       await sessionStorage.removeItem("cart");
       await this.init();
       await this.handleClose();
+      await this.$message.success("訂單完成!")
+      // await this.handleBack();
+    },
+
+    handleBack(){
+      this.$router.push("/products")
     }
   }
 };

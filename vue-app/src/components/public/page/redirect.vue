@@ -1,5 +1,6 @@
 <template>
-  <div style="width:100%;height:100%;background-color:#0070C0;">
+  <div></div>
+  <!--<div style="width:100%;height:100%;background-color:#0070C0;">
     <div  style="margin:auto;width:auto;text-align:center">
       <span style="font-size:100px;color:#fff;">KOL</span>
     </div>
@@ -9,7 +10,7 @@
     <div  style="margin:auto;width:auto;text-align:center">
       <span style="font-size:100px;color:#fff;">BunMai</span>
     </div>
-  </div>
+  </div>-->
 </template>
 
 <script>

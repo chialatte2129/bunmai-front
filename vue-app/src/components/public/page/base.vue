@@ -176,7 +176,7 @@ export default {
   }
 };
 </script>
-<style scope>
+<style scoped>
 
 .login-btn {
   height:35px;

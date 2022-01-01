@@ -35,10 +35,11 @@
     <div class="d-flex justify-content-center footer-bg" style="padding-top:75px;padding-bottom:100px;position:relative;">
       <div class="row justify-content-center">
         <div class="col-lg-12 align-self-center" >
-          <div class="row justify-content-center" style="margin-top:20px;"  >
-            <div class="text-center">
-              <img src="/image/logo/logo_fall.png" width="200px;">
-            </div>
+          <div style="text-align:center">
+            <img src="/image/logo/logo_no_bg.png" width="200px;">
+          </div>
+          <div style="text-align:center">
+            <span style="font-size:40px; font-weight:bolder;color:white;font-family:Didot, serif;">KOL BUNMAI</span>
           </div>
           <div class="row justify-content-center" style="margin-top:30px;" >
             <span style="font-size:18px; font-weight:540; color:#fff;">Contact Us: <a href="mailto:bunmai@example.com" style="color:#ccc" >bunmai@example.com</a></span>

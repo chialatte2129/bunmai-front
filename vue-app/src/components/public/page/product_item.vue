@@ -123,7 +123,7 @@ export default {
           normal_price:"6,400",
           discount_price:"4,370",
           sale_price:"3,688",
-          num_sale_price:3718,
+          num_sale_price:3688,
           image_url:"/image/product/MEAL.jpg"
         },
         LOTION:{
@@ -210,7 +210,7 @@ export default {
   }
 };
 </script>
-<style scope>
+<style scoped>
 .content-text {
   font-size:16px;
 }
