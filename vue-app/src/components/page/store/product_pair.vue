@@ -47,9 +47,61 @@
                 <span style="font-size:20px;font-weight:bolder;">優質KOL推薦</span>
               </div>
               <el-row :gutter="10">
-                <el-col v-for="kol,index in kol_list" :key="index" :xs="24" :sm="12" :md="8" :lg="6" :xl="4">
+                <el-col v-for="kol,index in kol_list_1" :key="index" :span="6">
                   <el-card :body-style="{ padding: '0px' }" style="margin-bottom:20px;">
-                    <div style="text-align:center;margin-top:10xp;width:100%;"><img :src="kol.image" class="image"></div>
+                    <div style="text-align:center;margin-top:10xp;width:100%;">
+                      <img :src="kol.image" class="image">
+                    </div>
+                    <div style="padding: 14px;">
+                      <div class="mgb10"><span style="font-size:20px;">{{kol.name}}</span></div>
+                      <div class="mgb10"><span>{{kol.description}}</span></div>
+                      <div class="mgb10"><el-tag v-for="cate in kol.category" :key="cate" type="info" class="mgr10" style="font-size:14px;">{{cate}}</el-tag></div>
+                      <div class="mgb10">
+                        <img v-if="kol.platform.includes('FB')"  src="/image/social_media/FB.png" class="mgr10" style="width:25px;height:25px;"/>
+                        <img v-if="kol.platform.includes('IG')"  src="/image/social_media/IG.png" class="mgr10" style="width:25px;height:25px;"/>
+                        <img v-if="kol.platform.includes('YT')" src="/image/social_media/YT.png" class="mgr10" style="width:25px;height:25px;"/>
+                        <img v-if="kol.platform.includes('WEB')"  src="/image/social_media/WEB.png" class="mgr10" style="width:25px;height:25px;/">
+                        <img v-if="kol.platform.includes('WB')"  src="/image/social_media/WB.png" class="mgr10" style="width:25px;height:25px;/">
+                        <img v-if="kol.platform.includes('RED')"  src="/image/social_media/red_book.png" class="mgr10" style="width:25px;height:25px;/">
+                      </div>
+                      <div class="bottom clearfix">
+                        <el-button type="success" class="button" style="font-size:20px;width:100%;height:50px;" @click="handleInviteClick(kol)">點我邀請</el-button>
+                      </div>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+              <el-row :gutter="10">
+                <el-col v-for="kol,index in kol_list_2" :key="index" :span="6">
+                  <el-card :body-style="{ padding: '0px' }" style="margin-bottom:20px;">
+                    <div style="text-align:center;margin-top:10xp;width:100%;">
+                      <img :src="kol.image" class="image">
+                    </div>
+                    <div style="padding: 14px;">
+                      <div class="mgb10"><span style="font-size:20px;">{{kol.name}}</span></div>
+                      <div class="mgb10"><span>{{kol.description}}</span></div>
+                      <div class="mgb10"><el-tag v-for="cate in kol.category" :key="cate" type="info" class="mgr10" style="font-size:14px;">{{cate}}</el-tag></div>
+                      <div class="mgb10">
+                        <img v-if="kol.platform.includes('FB')"  src="/image/social_media/FB.png" class="mgr10" style="width:25px;height:25px;"/>
+                        <img v-if="kol.platform.includes('IG')"  src="/image/social_media/IG.png" class="mgr10" style="width:25px;height:25px;"/>
+                        <img v-if="kol.platform.includes('YT')" src="/image/social_media/YT.png" class="mgr10" style="width:25px;height:25px;"/>
+                        <img v-if="kol.platform.includes('WEB')"  src="/image/social_media/WEB.png" class="mgr10" style="width:25px;height:25px;/">
+                        <img v-if="kol.platform.includes('WB')"  src="/image/social_media/WB.png" class="mgr10" style="width:25px;height:25px;/">
+                        <img v-if="kol.platform.includes('RED')"  src="/image/social_media/red_book.png" class="mgr10" style="width:25px;height:25px;/">
+                      </div>
+                      <div class="bottom clearfix">
+                        <el-button type="success" class="button" style="font-size:20px;width:100%;height:50px;" @click="handleInviteClick(kol)">點我邀請</el-button>
+                      </div>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+              <el-row :gutter="10">
+                <el-col v-for="kol,index in kol_list_3" :key="index" :span="6">
+                  <el-card :body-style="{ padding: '0px' }" style="margin-bottom:20px;">
+                    <div style="text-align:center;margin-top:10xp;width:100%;">
+                      <img :src="kol.image" class="image">
+                    </div>
                     <div style="padding: 14px;">
                       <div class="mgb10"><span style="font-size:20px;">{{kol.name}}</span></div>
                       <div class="mgb10"><span>{{kol.description}}</span></div>
@@ -76,7 +128,27 @@
 
       <el-dialog :title="select_kol.name" :visible.sync="inviteVisible" width="1000px" :before-close="cancelInvite" :append-to-body="true">
         <div>
-          <span></span>
+          <el-form label-width="150px" label-position="right">
+            <el-form-item label="KOL">
+              <span>{{select_kol.name}}</span>
+            </el-form-item>
+            <el-form-item label="商品售價">
+              <span>{{pair_invite_form.price}} 元</span>
+            </el-form-item>
+            <el-form-item label="分潤比例">
+              <el-input v-model="pair_invite_form.percent" style="width:200px;"> 
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="分潤比例">
+              <el-input v-model="pair_invite_form.percent" style="width:200px;"> 
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="合作邀約">
+              <el-input v-model="note" type="textarea" :rows="7" style="width:90%;"/> 
+            </el-form-item>
+          </el-form>
         </div>
 
         <div slot="footer" class="dialog-footer" style="text-align:center; margin-top:20px;">
@@ -95,15 +167,19 @@ export default {
   },
   data() {
     return {
-      kol_list:[
-        {id:1,image:"/image/kol/MARK_SQR.jpeg",name:"得得廚房",platform:["IG"],category:["水產", "食品", "蔬果"],description:"",url:""},
+      kol_list_1:[
+        {id:1,image:"/image/kol/MARK_SQR.jpeg",name:"得得廚房",platform:["IG"],category:["水產", "食品"],description:"",url:""},
         {id:2,image:"/image/kol/YORK_SQR.jpg",name:"特級吃貨王",platform:["YT"],category:["水產", "零食"],description:"",url:""},
         {id:3,image:"/image/kol/JUWAI_SQR.jpeg",name:"葡萄主委",platform:["RED", "WB"],category:["水產", "零食"],description:"",url:""},
         {id:4,image:"/image/kol/CINDY_SQR.jpg",name:"Cindy酥",platform:["YT", "IG"],category:["水產", "零食"],description:"",url:""},
+      ],
+      kol_list_2:[
         {id:5,image:"/image/kol/JOY_SQR.jpg",name:"美妝女王JOY",platform:["WB",  "IG"],category:["水產", "零食"],description:"",url:""},
         {id:1,image:"/image/kol/kol-1.jfif",name:"扎伊登‧富爾頓",platform:["RED"],category:["水產", "零食"],description:"",url:""},
         {id:2,image:"/image/kol/kol-2.jfif",name:"瑪德琳‧薩利納斯",platform:["FB"],category:["戶外用品"],description:"",url:""},
         {id:3,image:"/image/kol/kol-3.jfif",name:"帕克‧鮑爾斯",platform:["IG", "WB"],category:["日用品"],description:"",url:""},
+      ],
+      kol_list_3:[
         {id:4,image:"/image/kol/kol-4.jfif",name:"約翰娜‧倫納德",platform:["FB", "YT"],category:["理財商品"],description:"",url:""},
         {id:5,image:"/image/kol/kol-5.jfif",name:"莉蓮‧特雷維諾",platform:["IG"],category:["日韓"],description:"",url:""},
         {id:6,image:"/image/kol/kol-6.jfif",name:"達妮埃拉‧杭特",platform:["RED", "IG"],category:["食品", "美妝"],description:"",url:""},
@@ -124,6 +200,8 @@ export default {
         product_name:"",
 
       },
+
+      note:"你好，我是好棒棒商城合作負責窗口: 閃亮亮保養品是台灣在地品牌，主打天然植物成分，並通過多種過敏原測試。我們今年推出全新的「純天然裸妝系列唇膏」，預計在 3 月份進行促銷活動，希望能夠同步配合KOL的合作曝光，促進銷售。",
 
       inviteVisible:false,
       select_kol:{},
@@ -147,6 +225,7 @@ export default {
   methods: {
     handleInviteClick(row){
       this.select_kol = row;
+      this.pair_invite_form = this.product_form;
       this.inviteVisible=true;
     },
 

@@ -26,21 +26,70 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="15">
+            <el-row class="mgb10">
+              <el-card style="height:330px;">
+                <div slot="header" class="clearfix">
+                  <span>流量趨勢</span>
+                </div>
+                <highcharts style="width:100%; height:250px;" :options="chartOptions"></highcharts>
+              </el-card>
+            </el-row>
             <el-row>
-              <el-card style="height:300px;">
-                <highcharts style="width:100%; height:300px;" :options="chartOptions"></highcharts>
+              <el-card style="height:525px;">
+                <div slot="header" class="clearfix">
+                  <span>最新交易資訊</span>
+                </div>
+                <el-table
+                :data="tableData"
+                style="width: 100%; height:400px;">
+                  <el-table-column
+                    prop="date"
+                    align="center"
+                    label="時間"
+                    width="180">
+                  </el-table-column>
+                  <el-table-column
+                    prop="product_name"
+                    label="產品名稱"
+                    width="auto">
+                  </el-table-column>
+                  <el-table-column
+                    prop="kol_name"
+                    label="KOL"
+                    align="center"
+                    width="100">
+                  </el-table-column>
+                  <el-table-column
+                    prop="count"
+                    align="right"
+                    label="數量"
+                    width="80">
+                  </el-table-column>
+                  <el-table-column
+                    prop="amount"
+                    align="right"
+                    label="金額"
+                    width="80">
+                  </el-table-column>
+                </el-table>
               </el-card>
             </el-row>
           </el-col>
           <el-col :span="9">
             <el-row class="mgb10">
-              <el-card>
-                <highcharts style="width:100%;" :options="pieChartOption"></highcharts>
+              <el-card style="height:400px;" >
+                <div slot="header" class="clearfix">
+                  <span>本月銷售品項</span>
+                </div>
+                <highcharts style="width:100%;height:350px;" :options="pieChartOption"></highcharts>
               </el-card>
             </el-row>
             <el-row>
-              <el-card>
-                <highcharts style="width:100%;" :options="scoreBarChartOption"></highcharts>
+              <el-card style="height:450px;" >
+                <div slot="header" class="clearfix">
+                  <span>KOL產品銷售排行</span>
+                </div>
+                <highcharts style="width:100%;height:350px;" :options="scoreBarChartOption"></highcharts>
               </el-card>
             </el-row>
           </el-col>
@@ -61,22 +110,36 @@ export default {
   data() {
     return {
       header_data:[
-        {title:"總流量", icon:"el-icon-s-data", start: 0, end: 102400, duration:2600},
-        {title:"本週流量", icon:"el-icon-s-custom", start: 0, end: 102400, duration:2600},
-        {title:"成交筆數", icon:"el-icon-s-goods", start: 0, end: 102400, duration:2600},
-        {title:"合作網紅", icon:"el-icon-video-camera", start: 0, end: 102400, duration:2600},
+        {title:"總流量", icon:"el-icon-s-data", start: 0, end: 12457, duration:2600},
+        {title:"本週流量", icon:"el-icon-s-custom", start: 0, end: 574, duration:2600},
+        {title:"成交筆數", icon:"el-icon-s-goods", start: 0, end: 427, duration:2600},
+        {title:"合作網紅", icon:"el-icon-video-camera", start: 0, end: 12, duration:2600},
+      ],
+
+      tableData:[
+        {date:"2022-01-08 16:12", product_name:"【正宗老饕級】日月潭吮指大閘蟹x6隻(5兩九-6兩半/隻)", kol_name:"得得廚房", count:23, amount:1240},
+        {date:"2022-01-08 15:56", product_name:"【正宗老饕級】日月潭吮指大閘蟹x6隻(5兩九-6兩半/隻)", kol_name:"得得廚房", count:55, amount:1240},
+        {date:"2022-01-08 15:50", product_name:"【法國貴族晚宴必備】冰川淬煉洗禮聖母峰葡萄 600公克/箱", kol_name:"葡萄主委", count:18, amount:1240},
+        {date:"2022-01-08 14:15", product_name:"【限量100瓶】28逆齡回春水 100ml/瓶", kol_name:"美妝女王Joy", count:17, amount:1240},
+        {date:"2022-01-08 14:05", product_name:"【蒙恩咖啡】耶路撒冷手工烘焙咖啡豆", kol_name:"Cindy酥", count:3, amount:1240},
+        {date:"2022-01-08 14:03", product_name:"【米其林一星激推】虎虎生風猛虎垂涎年菜組", kol_name:"特級吃貨王", count:5, amount:1240},
+        {date:"2022-01-07 08:47", product_name:"【法國貴族晚宴必備】冰川淬煉洗禮聖母峰葡萄 600公克/箱", kol_name:"葡萄主委", count:2, amount:1240},
+        {date:"2022-01-07 05:53", product_name:"【蒙恩咖啡】耶路撒冷手工烘焙咖啡豆", kol_name:"Cindy酥", count:13, amount:1240},
+        {date:"2022-01-07 01:57", product_name:"【米其林一星激推】虎虎生風猛虎垂涎年菜組", kol_name:"特級吃貨王", count:25, amount:1240},
+        {date:"2022-01-06 12:50", product_name:"日月潭【限量100瓶】28逆齡回春水 100ml/瓶大閘蟹", kol_name:"美妝女王Joy", count:7, amount:1240}
+
       ],
 
       chartOptions: {
         title: {
-          text: "流量趨勢"
+          text: ""
         },
         credits: {
           //去掉水印
           enabled: false
         },
         xAxis: {
-          categories:["5-10", "6-10", "7-10", "8-10", "9-10", "10-10", "11-10"]
+          categories:["07-08", "08-08", "09-08", "10-08", "11-08", "12-08", "01-08"]
         },
         yAxis: {
           title: { text: "" }
@@ -96,8 +159,8 @@ export default {
         },
         series: [
           {
-            name: "活跃度",
-            data: [0, 0, 0, 0, 0, 1, 9]
+            name: "流量紀錄",
+            data: [187, 215, 574, 324, 423, 782, 574]
           }
         ]
       },
@@ -109,8 +172,12 @@ export default {
           plotShadow: false,
           type: 'pie'
         },
+        credits: {
+          //去掉水印
+          enabled: false
+        },
         title: {
-          text: '銷售產品占比, 2021'
+          text: ''
         },
         tooltip: {
           pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -131,37 +198,25 @@ export default {
           }
         },
         series: [{
-          name: 'Brands',
+          name: 'Products',
           colorByPoint: true,
           data: [{
-            name: 'Chrome',
-            y: 61.41,
+            name: '日月潭大閘蟹',
+            y: 40,
             sliced: true,
             selected: true
           }, {
-            name: 'Internet Explorer',
-            y: 11.84
+            name: '虎虎生風年菜組',
+            y: 24
           }, {
-            name: 'Firefox',
-            y: 10.85
+            name: '聖母峰葡萄',
+            y: 24
           }, {
-            name: 'Edge',
-            y: 4.67
+            name: '28逆齡回春水',
+            y: 15
           }, {
-            name: 'Safari',
-            y: 4.18
-          }, {
-            name: 'Sogou Explorer',
-            y: 1.64
-          }, {
-            name: 'Opera',
-            y: 1.6
-          }, {
-            name: 'QQ',
-            y: 1.2
-          }, {
-            name: 'Other',
-            y: 2.61
+            name: '蒙恩咖啡',
+            y: 15
           }]
         }]
       },
@@ -171,19 +226,19 @@ export default {
             type: 'bar'
         },
         title: {
-            text: 'KOL產品銷售排行'
+            text: ''
         },
         credits: {
           //去掉水印
           enabled: false
         },
         xAxis: {
-            categories: ['日月潭大閘蟹', '蒙恩咖啡', '聖母峰葡萄', '逆齡回春水', '虎虎生風年菜組']
+            categories: ['日月潭大閘蟹', '聖母峰葡萄', '虎虎生風年菜組', '蒙恩咖啡', '逆齡回春水']
         },
         yAxis: {
             min: 0,
             title: {
-                text: 'Total fruit consumption'
+                text: '商品銷售量'
             }
         },
         legend: {
@@ -196,24 +251,24 @@ export default {
         },
         series: [
         {
-          name: '得得',
-          data: [5, 3, 4, 7, 2]
+          name: '得得廚房',
+          data: [30, 13, 4, 5, 2]
         }, 
         {
-          name: 'Iris',
-          data: [0, 2, 3, 2, 1]
+          name: '美妝女王Joy',
+          data: [1, 4, 7, 1, 20]
         }, 
         {
-          name: '主委',
-          data: [0, 0, 4, 2, 5]
+          name: '葡萄主委',
+          data: [5, 25, 5, 2, 5]
         },
         {
-          name: 'York',
-          data: [0, 0, 4, 2, 5]
+          name: '特級吃貨王',
+          data: [10, 0, 20, 2, 0]
         }, 
         {
-          name: 'Cindy',
-          data: [0, 0, 4, 2, 5]
+          name: 'Cindy酥',
+          data: [5, 0, 4, 25, 8]
         }
       ]
     }
